@@ -901,3 +901,9 @@ html[data-motion="reduce"] .hs-card { animation: none !important; }
 html[data-motion="reduce"] .hg-col { animation: none !important; }
 @media (max-width: 900px) { .grid-hero .hero-grid { width: 100%; height: 560px; margin: 0; } }
 .grid-hero .hero-grid { z-index: 5; isolation: isolate; }
+/* v5.4.6: stronger top fade (clear of the Tokens pill), narrow side fades so cards stay crisp */
+.grid-hero .hero-grid { -webkit-mask-image: linear-gradient(to bottom, transparent 0, transparent 12%, #000 26%, #000 78%, transparent 92%), linear-gradient(to right, transparent 0, #000 5%, #000 97%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, transparent 12%, #000 26%, #000 78%, transparent 92%), linear-gradient(to right, transparent 0, #000 5%, #000 97%, transparent 100%); }
+/* v5.4.6: top and bottom fades only; no side fade */
+.grid-hero .hero-grid { -webkit-mask-image: linear-gradient(to bottom, transparent 0, transparent 12%, #000 26%, #000 78%, transparent 92%) !important; mask-image: linear-gradient(to bottom, transparent 0, transparent 12%, #000 26%, #000 78%, transparent 92%) !important; -webkit-mask-composite: source-over; mask-composite: add; }
+.grid-hero .hero-grid { -webkit-mask-image: linear-gradient(to bottom, transparent 0, transparent 17%, #000 30%, #000 78%, transparent 92%) !important; mask-image: linear-gradient(to bottom, transparent 0, transparent 17%, #000 30%, #000 78%, transparent 92%) !important; }

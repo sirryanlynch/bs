@@ -2,6 +2,10 @@
 
 `tokens.json` is the source of truth. `tokens.css` and the Figma variables are generated from it by `build_tokens.py`. Anyone building on `tokens.*` (for example the Storybook in `/workspace/tripup/storybook/`) should check here before they rebuild.
 
+## v5.4.6 (Oct 19, 2026)
+
+- **Slide 1 polish:** all 8 screens recaptured the same way, each with the status bar and Dynamic Island. The top fade is stronger, so no card sits under the Tokens and 01/10 pill. The side fade is removed and the grid fades only at the top and bottom, so the cards stay crisp. The Lisbon photo keeps its own fade into the text. Nothing else changed.
+
 ## v5.4.5 (Oct 19, 2026)
 
 - **Slide 1 only:** the angled showcase is replaced by a flat masonry of 8 real screens (Home, Trip home, live poll, Find a place, the plan, By item split, Money, Pay Nic). It's three columns in the right half with 18px gutters, staggered vertically and running off the top and bottom. Every card shows the full screen at 402:874, with a 28px radius, a 1px white inner border and a soft shadow, and no device frame. The edges fade into the text and above the bottom nav. The columns drift very slowly in alternating directions; Reduce Motion keeps them still. No 3D.
