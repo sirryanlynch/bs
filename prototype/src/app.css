@@ -358,3 +358,10 @@ html.is-embed, html.is-embed body, html.is-embed .prism, html.is-embed .pt-embed
 /* v5.4.3: toasts sit low, above the bottom action, so they never cover a switch or title */
 .prism .pt-toast { top: auto; bottom: calc(var(--layout-safe-bottom, 34px) + 96px); }
 @media (max-width: 500px) { .pt-fab { display: none !important; } }
+/* v5.4.4: every toast sits low, just above the bottom action stack, never over a switch, title or button. */
+.prism, .phone-screen { --toast-b: 124px; }
+.phone-screen:has(.p-sbottom > :nth-child(2)), .prism:has(.p-sbottom > :nth-child(2)) { --toast-b: 182px; }
+.pt-itoast { top: auto !important; bottom: var(--toast-b); max-width: calc(100% - 40px); animation: p-undo-in 320ms cubic-bezier(.2,.9,.25,1.05) both !important; }
+.prism .p-undo { bottom: var(--toast-b) !important; }
+.prism .p-undo ~ .pt-itoast, .phone-screen:has(.p-undo) .pt-itoast { bottom: calc(var(--toast-b) + 60px); }
+.pt-itoast { left: 0 !important; right: 0 !important; margin: 0 auto; width: fit-content; transform: none !important; }

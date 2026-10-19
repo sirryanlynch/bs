@@ -1,0 +1,20 @@
+// v5.4.2 core checks: plan card action, receipt before items, split editor, Money You/Whole trip, Request, pending Done/Nudge.
+const { chromium } = require('/workspace/tripup/qa/v3/node_modules/playwright-core'); const O = process.argv[3] || '/workspace/tripup/qa/v543/live/'; const B = process.argv[2] || 'http://localhost:8080/prototype/';
+(async () => { const b = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--no-sandbox'] });
+  const p = await b.newPage({ viewport: { width: 1280, height: 1000 }, deviceScaleFactor: 2 }); const errs = []; p.on('pageerror', e => errs.push(e.message));
+  const go = async h => { await p.goto(B + '?mode=self&v=' + Date.now() + h); await p.waitForTimeout(1600); };
+  const shot = n => p.locator('.phone').screenshot({ path: O + n + '.png' });
+  const c = async (sel, t = 900) => { const ok = await p.locator(sel).first().click({ timeout: 3000 }).then(() => 1).catch(() => 0); await p.waitForTimeout(t); if (!ok) console.log('  noclick', sel); };
+  await go('#/plan'); console.log('plan bottom CTA', await p.locator('text=Add the dinner bill').count()); await shot('plan');
+  await c('.pt-wincard-act', 1200); console.log('after card act', await p.evaluate(() => location.hash)); await shot('receipt-aim');
+  await p.waitForTimeout(2200); await shot('receipt-done'); await c('button:has-text("Split the items")', 1200); await shot('split-even');
+  await c('.b-se-seg button:has-text("By item")', 900); await c('.b-se-who[aria-label*="Vinho"], .b-se-who[aria-label*="wine" i]', 800);
+  await c('.b-se-sheet .b-se-chip:has-text("Ren")', 500); await c('.b-se-sheet .b-se-chip:has-text("Nic")', 700); await shot('split-sheet'); await c('.b-se-done', 800); await shot('split-item'); console.log('wine row', await p.locator('.b-se-who[aria-label*="Vinho"]').first().getAttribute('aria-label'));
+  await c('.b-se-face:has-text("Tomás")', 900); await shot('split-aud'); await c('.b-se-face:has-text("Tomás")', 600); console.log('per-person', await p.locator('.b-se-sum span').first().textContent());
+  await c('button:has-text("Save expense")', 1800); console.log('after save', await p.evaluate(() => location.hash)); await shot('money-trip');
+  await c('button:has-text("Simplify")', 900); await shot('money-netting'); await p.waitForTimeout(3600); await shot('money-solved');
+  await c('.pt-minfo', 800); await shot('money-info');
+  await c('.pt-mseg button:has-text("You")', 900); await shot('money-you'); await c('.pt-myrow-btn:has-text("Request")', 900); console.log('request toast', await p.locator('text=/Request sent/').count()); await shot('money-request');
+  await go('#/settle/pending'); await shot('pending'); console.log('pending Done', await p.locator('button:has-text("Done")').count(), 'Nudge', await p.locator('button:has-text("Nudge")').count());
+  await go('#/money'); await c('button:has-text("Simplify")', 5200); await c('.b-un-pill', 900); await shot('upnext-request');
+  console.log('errors', JSON.stringify(errs)); await b.close(); })();

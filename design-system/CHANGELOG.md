@@ -2,6 +2,11 @@
 
 `tokens.json` is the source of truth. `tokens.css` and the Figma variables are generated from it by `build_tokens.py`. Anyone building on `tokens.*` (for example the Storybook in `/workspace/tripup/storybook/`) should check here before they rebuild.
 
+## v5.4.4 (Oct 19, 2026)
+
+- **Toasts sit low everywhere,** just above the bottom action, centered. They never cover the You / Whole trip switch or a title. On Waiting for Nic, the "Marked $42.00 paid · Undo" toast sits above the Done / Nudge Nic stack, never over it. 
+- **Slide 1 showcase:** the cards sit on one tilted 3D plane (perspective 1600px, rotateX 18°, rotateZ −12°) at different depths. Every card has a 30px radius, clips cleanly, and has a frosted bezel and soft shadow. Back cards are at 90% opacity and the front card is opaque. The block fades out softly instead of a hard-cut bottom. Cards stagger in 80ms apart when the slide opens, then drift gently; Reduce Motion shows a static end state.
+
 ## v5.4.3 (Oct 19, 2026)
 
 - **Slide 1:** the live phone is replaced by a static showcase of six real screens (Trip home, live poll, Find a place, the plan, By item split, Money). Staggered glass cards, feathered edges, a gentle drift that stops under Reduce Motion. Nothing is clickable.
