@@ -5,7 +5,7 @@ import { FindHeader, FindQuestion, FindPicks } from '../components/beyond/findpl
 import { CurateAnswers } from '../components/beyond/explore';
 import { COMMUNITY, DAYS } from '../lib/beyond';
 
-const meta: Meta = { title: 'Components/Beyond tonight/Poll composer and Find a place', tags: ['autodocs'],
+const meta: Meta = { title: 'Components/Full JTBD analysis/Poll composer and Find a place', tags: ['autodocs'],
   parameters: { screen: 'phone', docs: { description: { component: 'New poll is one sentence with tappable tokens (type, when, closes). Options are photo tiles; swipe one left to remove it. One + Add option sheet takes a typed idea or an Explore pick. Find a place asks one question per screen with big tiles that answer and advance.' } } } };
 export default meta;
 type St = StoryObj;

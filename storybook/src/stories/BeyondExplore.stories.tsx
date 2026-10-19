@@ -8,7 +8,7 @@ import { COMMUNITY, POLLS, DAYS, SCUBA } from '../lib/beyond';
 import { ExperienceType } from '../data/experienceTypes';
 import { Label } from './_helpers';
 
-const meta: Meta = { title: 'Components/Beyond tonight/Explore and polls', tags: ['autodocs'],
+const meta: Meta = { title: 'Components/Full JTBD analysis/Explore and polls', tags: ['autodocs'],
   parameters: { docs: { description: { component: 'Explore shows what other crews booked, reviewed and photographed. No likes, comments or followers. The curated list starts with how you get there (Walk, Drive or Destination), then how long, then the rest. FilterChips use the shared experience-type taxonomy in src/data/experienceTypes.ts.' } } } };
 export default meta;
 type St = StoryObj;

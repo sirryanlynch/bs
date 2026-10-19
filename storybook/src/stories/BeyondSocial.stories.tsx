@@ -9,7 +9,7 @@ import { ACTIVITY, ALBUM, CREW, P } from '../lib/beyond';
 import { photo } from '../lib/data';
 import { Label } from './_helpers';
 
-const meta: Meta = { title: 'Components/Beyond tonight/Invite, recap, activity, settings', tags: ['autodocs'],
+const meta: Meta = { title: 'Components/Full JTBD analysis/Invite, recap, activity, settings', tags: ['autodocs'],
   parameters: { docs: { description: { component: 'Guest web view in a Safari frame, the recap card and map, the activity feed and actionable Lock Screen notifications, and settings rows.' } } } };
 export default meta;
 type St = StoryObj;

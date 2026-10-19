@@ -3,7 +3,7 @@ import React from 'react';
 import { FlowProvider, useFlowStore, FlowHost } from '../patterns/beyond/kit';
 import { BeyondScreen, FLOWS } from '../patterns/beyond/router';
 
-const meta: Meta = { title: 'Patterns/Beyond tonight', parameters: { screen: 'full', docs: { description: { component: 'Every flow beyond tonight, running live. Each story starts at the first screen of a flow and you can tap through all of it. Leaving the flow (Trips, Money) resets it here; in the prototype it returns to the Lisbon tour.' } } } };
+const meta: Meta = { title: 'Patterns/Full JTBD analysis', parameters: { screen: 'full', docs: { description: { component: 'Every flow in the Full JTBD analysis, running live. Each story starts at the first screen of a flow and you can tap through all of it. Leaving the flow (Trips, Money) resets it here; in the prototype it returns to the Lisbon tour.' } } } };
 export default meta;
 type St = StoryObj;
 

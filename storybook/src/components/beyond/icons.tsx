@@ -8,7 +8,7 @@ import {
 import type { Icon as PhIcon, IconWeight } from '@phosphor-icons/react';
 import { Icon, IconName } from '../Icon';
 
-/** Extra Phosphor glyphs used by the flows beyond tonight. Same rules as Icon: regular at 20 and 24, bold at 14 and under. */
+/** Extra Phosphor glyphs used by flows in the Full JTBD analysis. Same rules as Icon: regular at 20 and 24, bold at 14 and under. */
 const X = {
   bookmark: BookmarkSimple, star: Star, images: Images, cameraPlus: CameraPlus, grip: DotsSixVertical, scan: Scan, percent: Percent, moon: Moon,
   eye: Eye, shield: ShieldCheck, walk: PersonSimpleWalk, car: Car, map: MapTrifold, mountains: Mountains, waves: Waves, ticket: Ticket,

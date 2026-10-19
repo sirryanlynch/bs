@@ -1,4 +1,4 @@
-/* Prism, flows beyond tonight. Every value is a token from tokens.css; b- is the namespace. */
+/* Prism, flows in the Full JTBD analysis. Every value is a token from tokens.css; b- is the namespace. */
 .prism .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .prism .b-muted { color: var(--color-text-tertiary); }
 .prism .b-accent { color: var(--color-accent-text); }

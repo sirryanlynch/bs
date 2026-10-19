@@ -5,7 +5,7 @@ import { PairHero, MethodPicker, CashCount, SettleMethod } from '../components/s
 import { people as P } from '../lib/data';
 import { Label } from './_helpers';
 
-const meta: Meta = { title: 'Components/Beyond tonight/Hero patterns (v5.1)', tags: ['autodocs'],
+const meta: Meta = { title: 'Components/Full JTBD analysis/Hero patterns (v5.1)', tags: ['autodocs'],
   parameters: { docs: { description: { component: 'v5.1 elevation pass. Each confirmation or decision screen gets one hero element (photo or glass, display-type number) instead of a stack of rows. NextSteps ends a confirmation on what happens next instead of empty space.' } } } };
 export default meta;
 type St = StoryObj;

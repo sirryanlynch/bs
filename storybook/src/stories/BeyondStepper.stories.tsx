@@ -4,7 +4,7 @@ import { Stepper } from '../components/beyond/stepper';
 import { Label } from './_helpers';
 import { Button } from '../components/core';
 
-const meta: Meta = { title: 'Components/Beyond tonight/Stepper', tags: ['autodocs'],
+const meta: Meta = { title: 'Components/Full JTBD analysis/Stepper', tags: ['autodocs'],
   parameters: { docs: { description: { component: 'One progress stepper for every multi-step flow: Explore (Find a place), Create trip and Add expense. A top row with a fixed Back slot, a centered "Step n of N" mono caption and a fixed Skip slot, then a thin segmented bar (4 px, 2 px radius, 4 px gaps). Iris fills completed and current steps over 200 ms, instantly with Reduce Motion. Completed segments are tappable to go back. In the app the nav bar already has Back, so screens pass Skip only, and only on optional steps. Back in the stepper is for hosts without a nav back.' } } } };
 export default meta;
 type St = StoryObj;

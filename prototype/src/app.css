@@ -296,3 +296,7 @@ html.is-embed, html.is-embed body, html.is-embed .prism, html.is-embed .pt-embed
 .prism .pt-restline + .pt-restline { border-top: 1px solid var(--color-border-subtle); }
 .prism .pt-restline > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .prism .pt-restline b { font-weight: 600; }
+
+/* v5.2: in-app toast sits under the floating header (clear of the Dynamic Island and the header), above sheets. */
+.pt-itoast { top: calc(var(--layout-header-bottom, 110px) + 8px); }
+.pt-mobile .pt-itoast { top: calc(var(--layout-header-bottom, 110px) + 8px); }

@@ -12,7 +12,7 @@ import * as SO from './social';
 import * as ME from './me';
 import * as ST from './states';
 
-/** Every screen beyond tonight, with its flow, the status bar time, and whether the status bar sits on a photo. */
+/** Every screen in the Full JTBD analysis, with its flow, the status bar time, and whether the status bar sits on a photo. */
 export type RouteMeta = { route: string; flow: string; label: string; time: string; light?: boolean };
 const FLOW_DEFS: { id: string; title: string; start: string; routes: RouteMeta[] }[] = [
   { id: 'create', title: 'Create a trip', start: 'create/where', routes: [
@@ -56,7 +56,7 @@ const FLOW_DEFS: { id: string; title: string; start: string; routes: RouteMeta[]
     { route: 'expense/failed', flow: 'states', label: 'Receipt not read', time: '2:14 PM' }, { route: 'poll/novotes', flow: 'states', label: 'Poll with no votes', time: '9:31 PM' },
     { route: 'explore/offline', flow: 'states', label: 'Explore offline', time: '5:40 PM' }] },
 ];
-/** Story order for Part 2, Beyond tonight: each flow once, never revisited. The step list, Next and Back, and the guided tour all follow it. */
+/** Story order for Part 2, Full JTBD analysis: each flow once, never revisited. The step list, Next and Back, and the guided tour all follow it. */
 export const FLOW_ORDER = ['create', 'explore', 'polls', 'plan', 'expense', 'album', 'invite', 'activity', 'recap', 'profile'];
 /** Happy path only: 2 to 4 screens per use case. Place card rides inside Explore (feed, find a place, place card, add to poll). */
 const KEEP: Record<string, string[]> = {

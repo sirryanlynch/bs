@@ -1087,3 +1087,13 @@ button.p-row:active { background: var(--color-track-default); }
 .prism .b-hm-lead::before { content: ''; position: absolute; inset: -2px; }
 .prism .b-stepper-seg { position: relative; }
 .prism .b-stepper-seg::before { content: ''; position: absolute; inset: -8px 0; }
+
+/* v5.2: sheets stop below the floating header. Header = safe top - 8 + 56; sheets keep a 10px gap under it.
+   Sheet layers sit above the header (z 40 > 35), so the scrim dims header and content together; nothing slides under the header. */
+.prism { --layout-header-bottom: calc(var(--layout-safe-top) + 48px); --layout-sheet-top: calc(var(--layout-header-bottom) + 10px); }
+.p-sheet-layer, .p-modal-layer, .prism .b-sheet-layer { z-index: 40; }
+.prism .p-sheet { max-height: calc(100% - var(--layout-sheet-top) - 12px); }
+.prism .p-sheet.is-large, .prism .b-sheet.is-large { top: var(--layout-sheet-top); }
+.prism .b-sheet { max-height: calc(100% - var(--layout-sheet-top) - 12px); }
+.prism .b-cs { max-height: calc(100% - var(--layout-sheet-top) - 8px); }
+.prism .p-sheet-body { min-height: 0; }

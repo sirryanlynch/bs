@@ -1,0 +1,9 @@
+invite-scanned {"header":[54,110],"sheet":[296,862],"toast":[118,155]} ok
+invite {"header":[54,110],"sheet":[296,862],"toast":null} ok
+create-menu {"header":null,"sheet":[474,778],"toast":null} ok
+addpoll {"header":null,"sheet":[568,862],"toast":null} ok
+poll-token-when {"header":[0,110],"sheet":[223,866],"toast":null} ok
+poll-add-option {"header":[0,110],"sheet":[351,866],"toast":null} ok
+why {"header":[54,110],"sheet":[515,862],"toast":null} ok
+plan-add {"header":null,"sheet":[120,862],"toast":null} ok
+album-upload {"header":[62,106],"sheet":null,"toast":null} ok

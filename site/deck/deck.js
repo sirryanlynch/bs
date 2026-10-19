@@ -316,7 +316,7 @@
   $$('[data-drawer]').forEach(function (b) { b.addEventListener('click', function () { openDrawer(); }); });
   $('[data-close]', dr).addEventListener('click', closeDrawer);
   dr.addEventListener('click', function (e) { if (e.target === dr) closeDrawer(); });
-  /* ---------- 3 · Beyond tonight: jobs across the trip (dialog with focus trap) ---------- */
+  /* ---------- 3 · Full JTBD analysis: jobs across the trip (dialog with focus trap) ---------- */
   var jt = $('#jtbd'), jtBtn = $('#jtbdBtn'), jtLast = null;
   function openJtbd() {
     if (!jt.hidden) return;

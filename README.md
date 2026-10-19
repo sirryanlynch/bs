@@ -10,7 +10,7 @@ TripUp is a group trip app for the two arguments every trip has: where to eat, a
 - [Storybook](https://sirryanlynch.github.io/bs/storybook/)
 - [Figma](https://www.figma.com/design/z4TesJNPe6UfvgwmWtIA4y/TripUp-Working)
 
-The prototype is one scenario with seven friends. You can play as Ari, Nic, or Ren, walk the 13 steps, or let the guided tour play. Settle-up screens are `#/settle/cash` and `#/settle/confirm?as=nic`. Screens beyond tonight are `#/beyond/explore` and the other beyond routes. `?mode=self` and `?mode=tour` choose self guided or the guided tour.
+The prototype is one scenario with seven friends. You can play as Ari, Nic, or Ren, walk the 13 steps, or let the guided tour play. Settle-up screens are `#/settle/cash` and `#/settle/confirm?as=nic`. Full JTBD analysis screens are `#/beyond/explore` and the other beyond routes. `?mode=self` and `?mode=tour` choose self guided or the guided tour.
 
 ## Repo
 

@@ -5,7 +5,7 @@ import { FilterChips } from '../components/beyond/filterchips';
 import { DAYS, DAY_PLAN, PlanItem } from '../lib/beyond';
 import { ExperienceType } from '../data/experienceTypes';
 
-const meta: Meta = { title: 'Components/Beyond tonight/Day plan', tags: ['autodocs'],
+const meta: Meta = { title: 'Components/Full JTBD analysis/Day plan', tags: ['autodocs'],
   parameters: { docs: { description: { component: 'Morning, afternoon and evening. Drag the grip to reorder, or focus it and use the up and down arrow keys. The poll winner lands as a booked item at 8:30 PM.' } } } };
 export default meta;
 type St = StoryObj;

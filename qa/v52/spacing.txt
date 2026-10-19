@@ -1,0 +1,5 @@
+findings 3 {"collide":2,"clip":1}
+core:invite collide:overlaps the tab bar .p-btn.p-btn-primary [33,773,336,52]
+beyond:explore/addpoll collide:overlaps the tab bar .b-listrow [34,772,334,64]
+beyond:recap clip:text runs off screen: "Torre de Belém" figcaption [338,763,150,16]
+spacing 0

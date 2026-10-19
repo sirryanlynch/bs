@@ -2,6 +2,12 @@
 
 `tokens.json` is the source of truth. `tokens.css` and the Figma variables are generated from it by `build_tokens.py`. Anyone building on `tokens.*` (for example the Storybook in `/workspace/tripup/storybook/`) should check here before they rebuild.
 
+## v5.2 (Oct 19, 2026)
+- Sheets stop below the header. New layout tokens: `--layout-header-bottom` (safe top + 48 = 110) and `--layout-sheet-top` (header bottom + 10). Every bottom sheet (p-sheet, b-sheet, composer sheets) is capped at that top, so its grabber and title are always visible and nothing slides under the back and menu buttons. Sheet layers sit above the header, so the scrim dims header and screen together (no filled glass slab over the sheet). Add people opens at the medium detent.
+- Toasts (island toast, flow toasts) sit under the header, clear of the Dynamic Island, the status bar and any open sheet.
+- Deck slide 1 title: "Let’s do / *Lisbon.*"
+- Renamed "Beyond tonight" to "Full JTBD analysis" across the deck, prototype step list and tour, Storybook groups, case study and docs. Routes stay at `#/beyond/*`. Storybook IDs change from `*-beyond-tonight-*` to `*-full-jtbd-analysis-*`.
+
 ## v5.1 (Oct 19, 2026)
 - Elevation pass: one hero per screen on Create trip (Where to, Invite your crew), Pay Nic, Cash for Nic, Poll sent, Balances updated, Split dinner, Activity and Profile. New patterns: pay hero (photo faces + Iris thread), featured method tiles, cash bills hero, NextSteps strip, photo hero tiles, trip rail.
 - Motion: exit half of every transition (outgoing ghost: push parallax, pop slide-off, fade, sheet settle) and photo-to-hero FLIP from Explore into the place card. Reduce Motion: fades only.
@@ -14,7 +20,7 @@
 - **HeaderMenu**: one-row inset glass header (avatar or Back, title, glass menu that grows into Notifications, Album, Add expense, Invite, Settings). Used on Trips, Lisbon Crew, Tonight and Money.
 - **Insets**: GlassHeader and every sheet sit 12 px from the screen edges with full radius and float shadow. No full-bleed rounded cards.
 - **All squared up**: simplified to check, title, one summary line, face stack, Share the recap, and See payments for the list. The mono ledger and eyebrow are gone.
-- **Core poll and Find a place** use the same sentence composer and one-question tiles as the flows beyond tonight.
+- **Core poll and Find a place** use the same sentence composer and one-question tiles as flows in the Full JTBD analysis.
 - **Glass surfaces** replace flat white cards on the extended screens; section labels are sentence case; the create-trip stepper shows only the kept steps.
 - **Motion tokens** (`storybook/src/lib/motion.ts`, `motion.css`): tab crossfade with gliding lens and one icon bounce, push from the right, pop with parallax, sheets rise on a spring. Reduce Motion: 160 ms crossfades.
 - **Guided tour pacing** (`prototype/src/flows/pacing.ts`): glide, hover, press, hold, dwell; slow eased scrolls; a small "Tap ..." caption by the cursor. The tour now goes Explore feed, Add to poll, Start a new poll.

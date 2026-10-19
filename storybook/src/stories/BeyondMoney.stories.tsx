@@ -4,7 +4,7 @@ import { ReceiptScanner, ParsedLines, SplitModeControl, LineItemAssigner, Shares
 import { RECEIPT, RECEIPT_TOTAL, CREW, P } from '../lib/beyond';
 import { Label } from './_helpers';
 
-const meta: Meta = { title: 'Components/Beyond tonight/Add expense', tags: ['autodocs'],
+const meta: Meta = { title: 'Components/Full JTBD analysis/Add expense', tags: ['autodocs'],
   parameters: { docs: { description: { component: 'Receipt scan, parsed lines, assignment and split modes. Lunch at Zé da Mouraria is $185.50 plus a 10% tip ($204.05), and Ren and Nic skip the wine, so with Polvo for Mara and João they pay $16.58, and the crew owes Ari $175.60.' } } } };
 export default meta;
 type St = StoryObj;

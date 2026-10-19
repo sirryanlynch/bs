@@ -4,7 +4,7 @@ import { TripCreateStepper, DestinationSearch, DateRangePicker, CoverPicker, Bud
 import { DESTINATIONS, CREW, P, px } from '../lib/beyond';
 import { Label } from './_helpers';
 
-const meta: Meta = { title: 'Components/Beyond tonight/Create trip', tags: ['autodocs'],
+const meta: Meta = { title: 'Components/Full JTBD analysis/Create trip', tags: ['autodocs'],
   parameters: { docs: { description: { component: 'The pieces of Create trip: a five-step stepper, destination search with crew-aware suggestions, a date range calendar that blocks past days, cover photos, an optional per-person budget, crew picker and the milestone moment.' } } } };
 export default meta;
 type St = StoryObj;

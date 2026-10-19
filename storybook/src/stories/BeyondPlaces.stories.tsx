@@ -5,7 +5,7 @@ import { PhotoGrid, PhotoViewer, UploadPicker, UploadTagger } from '../component
 import { COMMUNITY, reviewsOf, ALBUM, CAMERA_ROLL, P } from '../lib/beyond';
 import { Label } from './_helpers';
 
-const meta: Meta = { title: 'Components/Beyond tonight/Places and album', tags: ['autodocs'],
+const meta: Meta = { title: 'Components/Full JTBD analysis/Places and album', tags: ['autodocs'],
   parameters: { docs: { description: { component: 'The place community card (gallery, ratings, been-here count, tags) opens from any place tap, including poll options. The shared album groups by day or place. Uploads tag a day and place, and each photo can also go to the public card.' } } } };
 export default meta;
 type St = StoryObj;

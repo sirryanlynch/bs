@@ -1,4 +1,4 @@
-/** Hash routing for the screens beyond tonight. Core steps keep `#/<step>`; these live at `#/beyond/<route>`, plus the `#/poll/new` alias. */
+/** Hash routing for screens in the Full JTBD analysis. Core steps keep `#/<step>`; these live at `#/beyond/<route>`, plus the `#/poll/new` alias. */
 export const routeFromHash = (h = location.hash): string | undefined => {
   const p = h.replace(/^#\/?/, '').split('?')[0];
   if (p.startsWith('beyond/')) return p.slice(7) || 'explore';

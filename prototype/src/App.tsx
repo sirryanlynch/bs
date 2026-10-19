@@ -110,7 +110,7 @@ export function App() {
   const [panelOpen, setPanelOpen] = useState(false);
   const [help, setHelp] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  // Shell modes: self guided (panel tucked away) or guided tour (cursor taps through, then the Beyond tonight chapter).
+  // Shell modes: self guided (panel tucked away) or guided tour (cursor taps through, then the Full JTBD analysis chapter).
   const [mode, setMode] = useState<Mode | null>(initialMode);
   const [chooser, setChooser] = useState(() => !EMBED && showChooserAtStart());
   const [drawer, setDrawer] = useState(false);
@@ -136,7 +136,7 @@ export function App() {
     const base = { ...stateAt(id, { ...sRef.current, ...over } as State), ...over } as State;
     d({ t: 'load', s: id === 'settle' ? settlePreset(view ?? 'choose', base) : base });
   };
-  // One story: Part 1 (the 13 Lisbon steps), then Part 2 (Beyond tonight, flow by flow). Next and Back walk straight through both.
+  // One story: Part 1 (the 13 Lisbon steps), then Part 2 (Full JTBD analysis, flow by flow). Next and Back walk straight through both.
   const beyondIdx = () => { const r = routeFromHash(); return r == null ? -1 : Math.max(0, ALL_ROUTES.findIndex(x => x.route === r)); };
   const next = () => { const bi = beyondIdx(); if (bi >= 0) { if (bi < ALL_ROUTES.length - 1) location.hash = hashForRoute(ALL_ROUTES[bi + 1].route); return; } if (idx === STEPS.length - 1 && !tour) { location.hash = hashForRoute(ALL_ROUTES[0].route); return; } nextCore(); };
   const nextCore = () => { const n = STEPS[idx + 1]; if (n) { const cur = sRef.current; if (!tour) track('step_jump', { from: cur.step, to: n.id, method: 'next' }); let x = STEPS[idx].complete(cur); if (n.id === 'squared') x = { ...x, me: 'ari' }; d({ t: 'load', s: { ...x, step: n.id, settleView: n.id === 'settle' ? 'choose' : x.settleView, settleOpen: false, done: { ...x.done, [n.id]: true } } }); } else if (EMBED) d({ t: 'reset' }); else if (tour) setChapter(true); };
@@ -310,8 +310,8 @@ export function App() {
       </header>
       <div className="fl-panelmode"><ModeSwitch mode={mode ?? 'self'} onMode={m => pickMode(m)} /></div>
       <section className="pt-stepcard" aria-live="polite">
-        <p className="pt-stepline tu-num">{bz.active ? `Part 2 · Beyond tonight · ${String.fromCharCode(65 + Math.max(0, FLOWS.findIndex(f => f.id === bz.meta.flow)))} of ${String.fromCharCode(64 + FLOWS.length)}` : `Part 1 · The Lisbon evening · ${+meta.n} of 13`}</p>
-        <h2>{bz.active ? FLOWS.find(f => f.id === bz.meta.flow)?.title ?? 'Beyond tonight' : meta.title}</h2>
+        <p className="pt-stepline tu-num">{bz.active ? `Part 2 · Full JTBD analysis · ${String.fromCharCode(65 + Math.max(0, FLOWS.findIndex(f => f.id === bz.meta.flow)))} of ${String.fromCharCode(64 + FLOWS.length)}` : `Part 1 · The Lisbon evening · ${+meta.n} of 13`}</p>
+        <h2>{bz.active ? FLOWS.find(f => f.id === bz.meta.flow)?.title ?? 'Full JTBD analysis' : meta.title}</h2>
         <p>{tour && chapter && caption ? caption : bz.active ? bz.meta.label : meta.caption}</p>
         <div className="pt-row">
           <button type="button" className="pt-btn" onClick={prev} disabled={idx === 0 && !bz.active} aria-label="Previous step"><Icon name="chevronLeft" size={20} /></button>

@@ -36,7 +36,7 @@ export function coreTarget(step: string, a: any, s: any): Target | null {
   return null;
 }
 
-/** The "Beyond tonight" chapter: real taps on real screens, with a few slow scrolls between them. */
+/** The "Full JTBD analysis" chapter: real taps on real screens, with a few slow scrolls between them. */
 export type TourStep =
   | { hash: string; wait?: number; say: string }
   | { tap: Target; wait?: number; say?: string; optional?: boolean }

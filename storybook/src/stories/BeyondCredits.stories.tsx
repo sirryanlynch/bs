@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
 import { PHOTO_CREDITS } from '../lib/beyond';
 
-const meta: Meta = { title: 'Patterns/Beyond tonight/Photo credits', tags: ['autodocs'],
-  parameters: { docs: { description: { component: 'Every photo in the Beyond tonight flows is from Pexels (free license). The list is the single source used by the code.' } } } };
+const meta: Meta = { title: 'Patterns/Full JTBD analysis/Photo credits', tags: ['autodocs'],
+  parameters: { docs: { description: { component: 'Every photo in the Full JTBD analysis flows is from Pexels (free license). The list is the single source used by the code.' } } } };
 export default meta;
 export const Credits: StoryObj = { name: 'Photo credits', render: () => (
   <table style={{ font: '13px/1.5 Inter, system-ui, sans-serif', borderCollapse: 'collapse' }}>

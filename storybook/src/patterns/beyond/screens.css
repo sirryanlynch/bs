@@ -179,3 +179,6 @@
 .prism .b-assign-row.is-open { box-shadow: inset 0 1px 0 var(--color-glass-highlight), 0 0 0 1.5px color-mix(in srgb, var(--color-accent-primary) 45%, transparent), 0 16px 32px -20px rgba(60, 50, 110, .45); }
 .prism[data-transparency="reduce"] .b-crewcard, .prism[data-transparency="reduce"] .b-cal, .prism[data-transparency="reduce"] .b-dest-row, .prism[data-transparency="reduce"] .b-assign-row, .prism[data-transparency="reduce"] .b-linkbox,
 .prism[data-transparency="reduce"] .b-profile-stats, .prism[data-transparency="reduce"] .b-set-body, .prism[data-transparency="reduce"] .b-tli-card, .prism[data-transparency="reduce"] .b-list, .prism[data-transparency="reduce"] .b-review { background: var(--color-bg-surface) !important; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.prism .b-toast { top: calc(var(--layout-header-bottom) + 8px); } /* v5.2: under the header, clear of the Dynamic Island */
+.prism .b-sheet.is-large { top: var(--layout-sheet-top); }
+.prism .b-sheet { max-height: calc(100% - var(--layout-sheet-top) - 12px); }

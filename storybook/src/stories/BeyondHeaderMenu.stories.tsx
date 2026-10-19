@@ -4,7 +4,7 @@ import { HeaderMenu } from '../components/beyond/headermenu';
 import { AVATAR } from '../assets/solver-assets';
 import { photo } from '../lib/data';
 
-const meta: Meta = { title: 'Components/Beyond tonight/Header menu', tags: ['autodocs'],
+const meta: Meta = { title: 'Components/Full JTBD analysis/Header menu', tags: ['autodocs'],
   parameters: { screen: 'full', docs: { description: { component: 'One-row header for top-level screens: avatar or Back, the page title, and one glass menu button. The button grows leftward into a capsule of five shortcuts (Notifications, Album, Add expense, Invite, Settings) while the title steps aside. Inset 12px from the screen edges with glass elevation, never full bleed. Escape, tap outside or scroll closes it; arrow keys move between shortcuts. Reduce Motion: crossfade only.' } } } };
 export default meta;
 type St = StoryObj;

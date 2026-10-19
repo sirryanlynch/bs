@@ -4,7 +4,7 @@ import { CreateMenu, CreateKind } from '../components/beyond/createmenu';
 import { TabBar } from '../components/nav';
 import { TABS } from '../patterns/beyond/kit';
 
-const meta: Meta = { title: 'Components/Beyond tonight/Create menu', tags: ['autodocs'],
+const meta: Meta = { title: 'Components/Full JTBD analysis/Create menu', tags: ['autodocs'],
   parameters: { screen: 'full', docs: { description: { component: 'The global + sits next to the 5-tab bar (Trips, Plan, Explore, Polls, Money) on every tab. It opens a glass menu: New poll, Add expense, Add to plan, New trip. Escape or the scrim closes it. Reduce Motion drops the scale-in.' } } } };
 export default meta;
 type St = StoryObj;

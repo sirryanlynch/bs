@@ -1,4 +1,4 @@
-/* Story data for the flows beyond tonight: create a trip, Explore, place cards, the album, the day plan,
+/* Story data for flows in the Full JTBD analysis: create a trip, Explore, place cards, the album, the day plan,
    receipt scan, invites, the recap, activity and settings. Same crew, same numbers as the Lisbon scenario. */
 import { people, photo, places } from './data';
 import type { ExperienceType } from '../data/experienceTypes';

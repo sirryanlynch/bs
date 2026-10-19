@@ -19,7 +19,7 @@ npm run build    # outputs dist/ with relative paths (base './')
 
 Left and right arrows step through, Space plays the tour, 1 2 3 switch between Ari, Nic and Ren, D toggles dark mode, M toggles Reduce Motion, R resets.
 
-## Modes and Beyond tonight
+## Modes and Full JTBD analysis
 
-- The shell opens with a choice: **Self guided** (the step panel tucks away behind a small Steps button) or **Guided tour** (a touch cursor taps through tonight, then the Beyond tonight chapter). `?mode=self` and `?mode=tour` skip the choice. The pick fires `guided_mode_select {mode}` to `gtag` if present, else `dataLayer`.
-- Flows beyond tonight live at `#/beyond/<route>` (plus `#/poll/new`). Screens come from `storybook/src/patterns/beyond`; `src/flows/` holds only routing, the panel section, the cursor and the mode shell.
+- The shell opens with a choice: **Self guided** (the step panel tucks away behind a small Steps button) or **Guided tour** (a touch cursor taps through tonight, then the Full JTBD analysis chapter). `?mode=self` and `?mode=tour` skip the choice. The pick fires `guided_mode_select {mode}` to `gtag` if present, else `dataLayer`.
+- Flows in the Full JTBD analysis live at `#/beyond/<route>` (plus `#/poll/new`). Screens come from `storybook/src/patterns/beyond`; `src/flows/` holds only routing, the panel section, the cursor and the mode shell.

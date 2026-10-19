@@ -37,7 +37,7 @@ export function Tabs({ active }: { active: string }) {
   );
 }
 
-/** One-row inset glass header for top-level screens. The menu opens the flows beyond tonight. */
+/** One-row inset glass header for top-level screens. The menu opens flows in the Full JTBD analysis. */
 export function CoreHeader(props: { title?: string; sub?: string; onBack?: () => void; backLabel?: string; avatar?: boolean; light?: boolean }) {
   const bz = useBridge();
   const to: Record<string, string> = { notifications: 'activity', album: 'album', expense: 'expense/scan', invite: 'invite', settings: 'profile' };
@@ -138,7 +138,7 @@ export function InviteSheet() {
   const close = () => d({ t: 'go', step: 'trip' });
   const contacts = [{ id: 'ren', name: 'Ren Matsuda', sub: 'Lisbon, spring' }, { id: 'renata', name: 'Renata Lopes', sub: "Mara's friend" }];
   return (
-    <BottomSheet title="Add people" detent="large" onClose={close}>
+    <BottomSheet title="Add people" detent="medium" onClose={close}>
       <div className="pt-invite">
         <SegmentedControl options={['QR code', 'From TripUp']} value={tab} onChange={v => { haptic(); setTab(v); }} />
         {tab === 'QR code' ? (
@@ -219,7 +219,7 @@ export function Explore() {
   const spots = st === 0 || pickLabel[0] === 'Any way' && st <= 2 ? 120 : (QUESTIONS[st - 1].opts.find(o => o[0] === pickLabel[st - 1]) ?? QUESTIONS[st - 1].opts[QUESTIONS[st - 1].def])[1];
   const shortlist = s.shortlist.length ? s.shortlist : picks;
   const toggle = (id: string) => { haptic(); setPicks(p => p.includes(id) ? p.filter(x => x !== id) : p.length >= 3 ? p : [...p, id]); };
-  // v5: the questions use the same one-question-per-screen tiles as Find a place beyond tonight.
+  // v5: the questions use the same one-question-per-screen tiles as Find a place in the Full JTBD analysis.
   const A = syncAnswers(ansRef.current, st); ansRef.current = A;
   const setStage = (a: CurateAnswers) => { ansRef.current = a; d({ t: 'set', patch: { exploreStage: curateStage(a), shortlist: [] } }); };
   // v5.1: Part 1 lands on the Explore feed first (places other crews booked), then the hero tile starts the questions.

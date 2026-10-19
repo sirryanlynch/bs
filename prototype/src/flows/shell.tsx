@@ -41,7 +41,7 @@ export function ModeChooser({ onPick }: { onPick: (m: Mode) => void }) {
         <div className="fl-choose-opts">
           <button ref={first} type="button" className="fl-opt" onClick={() => onPick('tour')}>
             <span className="fl-opt-art"><Render3D name="itinerary" size={72} /></span>
-            <b>Guided tour</b><span>Sit back for about four minutes. A cursor taps through tonight, then beyond. Pause or take over whenever you like.</span>
+            <b>Guided tour</b><span>Sit back for about four minutes. A cursor taps through tonight, then the Full JTBD analysis. Pause or take over whenever you like.</span>
             <i className="fl-opt-go">Start the tour</i>
           </button>
           <button type="button" className="fl-opt" onClick={() => onPick('self')}>
@@ -68,7 +68,7 @@ export function ModeSwitch({ mode, onMode, onSteps, compact }: { mode: Mode; onM
 }
 
 const sleep = (ms: number, gen: { id: number }, id: number) => new Promise<boolean>(r => setTimeout(() => r(gen.id === id), ms));
-/** Runs the Beyond tonight chapter while `on`. Pausing stops at the current step; playing again resumes there. */
+/** Runs the Full JTBD analysis chapter while `on`. Pausing stops at the current step; playing again resumes there. */
 export function useChapter({ on, reduce, onCaption, onEnd }: { on: boolean; reduce: boolean; onCaption: (s: string) => void; onEnd: () => void }) {
   const [i, setI] = useState(0);
   const gen = useRef({ id: 0 });
