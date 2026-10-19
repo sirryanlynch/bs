@@ -880,3 +880,24 @@ html[data-motion="reduce"] .hs-card { animation: none !important; }
 .grid-hero .hero-show { -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 80%, transparent 100%), linear-gradient(to right, transparent 0, #000 8%, #000 94%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0, #000 80%, transparent 100%), linear-gradient(to right, transparent 0, #000 8%, #000 94%, transparent 100%); }
 .hs-plane { inset: 10% 4% -6% 2%; }
 .hs-card { opacity: .9; } .hs-2 { opacity: 1 !important; }
+
+/* v5.4.5 slide 1: flat masonry of real screens, right half only. No 3D. */
+.grid-hero .hero-grid { position: relative; align-self: stretch; width: min(660px, 48vw); height: 100vh; margin: -12vh -64px -12vh 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; overflow: hidden; pointer-events: none; user-select: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 16%, #000 76%, transparent 92%), linear-gradient(to right, transparent 0, #000 14%, #000 100%);
+  -webkit-mask-composite: source-in; mask-image: linear-gradient(to bottom, transparent 0, #000 16%, #000 76%, transparent 92%), linear-gradient(to right, transparent 0, #000 14%, #000 100%); mask-composite: intersect; }
+.hg-col { display: flex; flex-direction: column; gap: 18px; will-change: transform; }
+.hg-card { margin: 0; flex: none; aspect-ratio: 402 / 874; border-radius: 28px; overflow: hidden; position: relative; background: #fff;
+  box-shadow: 0 24px 48px -24px rgba(40,28,110,.45), 0 8px 18px -10px rgba(110,91,255,.22); }
+.hg-card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(255,255,255,.75); pointer-events: none; }
+.hg-card img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.hg-c0 { --o: 0%; } .hg-c1 { --o: -40%; } .hg-c2 { --o: -15%; }
+.hg-col { transform: translateY(calc(var(--o) * .46)); }
+.hg-c0 { transform: translateY(2%); } .hg-c1 { transform: translateY(-16%); } .hg-c2 { transform: translateY(-5%); }
+.slide.is-in .hg-c0, .slide.is-in .hg-c2 { animation: hgDown 40s ease-in-out infinite alternate; }
+.slide.is-in .hg-c1 { animation: hgUp 40s ease-in-out infinite alternate; }
+@keyframes hgDown { to { translate: 0 24px; } }
+@keyframes hgUp { to { translate: 0 -24px; } }
+@media (prefers-reduced-motion: reduce) { .slide.is-in .hg-col { animation: none; } }
+html[data-motion="reduce"] .hg-col { animation: none !important; }
+@media (max-width: 900px) { .grid-hero .hero-grid { width: 100%; height: 560px; margin: 0; } }
+.grid-hero .hero-grid { z-index: 5; isolation: isolate; }

@@ -2,6 +2,10 @@
 
 `tokens.json` is the source of truth. `tokens.css` and the Figma variables are generated from it by `build_tokens.py`. Anyone building on `tokens.*` (for example the Storybook in `/workspace/tripup/storybook/`) should check here before they rebuild.
 
+## v5.4.5 (Oct 19, 2026)
+
+- **Slide 1 only:** the angled showcase is replaced by a flat masonry of 8 real screens (Home, Trip home, live poll, Find a place, the plan, By item split, Money, Pay Nic). It's three columns in the right half with 18px gutters, staggered vertically and running off the top and bottom. Every card shows the full screen at 402:874, with a 28px radius, a 1px white inner border and a soft shadow, and no device frame. The edges fade into the text and above the bottom nav. The columns drift very slowly in alternating directions; Reduce Motion keeps them still. No 3D.
+
 ## v5.4.4 (Oct 19, 2026)
 
 - **Toasts sit low everywhere,** just above the bottom action, centered. They never cover the You / Whole trip switch or a title. On Waiting for Nic, the "Marked $42.00 paid · Undo" toast sits above the Done / Nudge Nic stack, never over it. 
