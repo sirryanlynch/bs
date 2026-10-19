@@ -9,7 +9,9 @@ for p in photos:
     im = Image.open(root / f'moodboards/photos/px_{p}.jpg').convert('RGB'); im.thumbnail((1600, 1600))
     im.save(out / f'img/px_{p}.jpg', quality=80, optimize=True, progressive=True)
 for b in ['prism', 'golden', 'night']:
-    im = Image.open(root / f'moodboards/board_{b}.png').convert('RGB'); im.thumbnail((1600, 900))
+    # Prefer the 2x US-English render from qa/v5/render-boards.cjs; the 1920 px PNGs still show euros and 24-hour times.
+    hi = out / f'img/board_{b}@2x.jpg'
+    im = Image.open(hi if hi.exists() else root / f'moodboards/board_{b}.png').convert('RGB'); im.thumbnail((1600, 900))
     im.save(out / f'img/board_{b}.jpg', quality=84, optimize=True, progressive=True)
 # Journey shots. The Figma exports still show euros and the 24-hour clock, so the deck uses US-English captures of the
 # built prototype from deck-src/shots/ (made by qa/v3/usshots.cjs) when they exist, and falls back to the exports.

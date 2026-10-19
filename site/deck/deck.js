@@ -159,10 +159,10 @@
     if (instant) { void device.offsetWidth; device.classList.remove('no-anim'); }
   }
   function setProto(h) {
-    if (!proto.src) { proto.src = 'prototype/?embed=1#' + h; protoHash = h; return; }
+    if (!proto.src) { proto.src = 'prototype/?embed=1&v=5#' + h; protoHash = h; return; }
     if (h === protoHash) return;
     protoHash = h;
-    try { proto.contentWindow.location.hash = '#' + h; } catch (e) { proto.src = 'prototype/?embed=1#' + h; }
+    try { proto.contentWindow.location.hash = '#' + h; } catch (e) { proto.src = 'prototype/?embed=1&v=5#' + h; }
   }
 
   /* ---------- navigation ---------- */
@@ -398,8 +398,14 @@
     line.setAttribute('d', d); base.setAttribute('d', d);
     $('.curve').setAttribute('viewBox', '0 0 1000 ' + H);
     $('.curve .mid').setAttribute('y1', H / 2); $('.curve .mid').setAttribute('y2', H / 2);
-    var L = line.getTotalLength(), frac = xs.map(function (x) { var lo = 0, hi = L; for (var j = 0; j < 22; j++) { var m = (lo + hi) / 2; if (line.getPointAtLength(m).x < x) lo = m; else hi = m; } return lo / L; });
-    line.style.strokeDasharray = L; line.style.strokeDashoffset = L;
+    // The highlight is clipped in user units at the active dot's x. A dash offset can't be used here: the stroke is non-scaling,
+    // so dash lengths are measured in screen pixels and drift from the dots as soon as the SVG stretches.
+    var NS = 'http://www.w3.org/2000/svg', svgC = $('.curve'), defs = svgC.querySelector('defs') || svgC.insertBefore(document.createElementNS(NS, 'defs'), svgC.firstChild);
+    var cp = document.createElementNS(NS, 'clipPath'); cp.setAttribute('id', 'curveClip'); cp.setAttribute('clipPathUnits', 'userSpaceOnUse');
+    var cr = document.createElementNS(NS, 'rect'); cr.setAttribute('x', 0); cr.setAttribute('y', -40); cr.setAttribute('width', 1000); cr.setAttribute('height', H + 80); cr.setAttribute('class', 'curve-clip');
+    cp.appendChild(cr); defs.appendChild(cp); line.setAttribute('clip-path', 'url(#curveClip)');
+    function reach(x) { cr.style.transform = 'scaleX(' + (x / 1000) + ')'; }
+    reach(0);
     var btns = S.map(function (s, i) {
       var b = document.createElement('button'); b.type = 'button'; b.className = 'stage'; b.setAttribute('role', 'tab'); b.style.setProperty('--y', s.y);
       b.innerHTML = '<span class="dot"></span><b>' + s.name + '</b><small>' + s.time + '</small>';
@@ -410,7 +416,7 @@
     function sel(i) {
       at = i;
       btns.forEach(function (b, k) { b.setAttribute('aria-selected', k === i); b.classList.toggle('reached', k <= i); b.tabIndex = k === i ? 0 : -1; });
-      line.style.strokeDashoffset = L * (1 - (i === S.length - 1 ? 1 : frac[i]));
+      reach(xs[i]);
       imgs.forEach(function (im, k) { im.classList.toggle('on', k === i); });
       var s = S[i];
       $('#spPain').textContent = s.pain; $('#spJob').textContent = '“' + s.job + '”'; $('#spMoment').textContent = s.moment;
@@ -424,8 +430,8 @@
     });
     enter[3] = function () {
       auto = true;
-      if (RM()) { sel(0); line.style.strokeDashoffset = 0; btns.forEach(function (b) { b.classList.add('reached'); }); return; }
-      line.style.transition = 'none'; line.style.strokeDashoffset = L; void line.getBoundingClientRect(); line.style.transition = '';
+      if (RM()) { sel(0); return; }
+      cr.style.transition = 'none'; reach(0); void cr.getBoundingClientRect(); cr.style.transition = '';
       later(function () { sel(0); }, 500);
       for (var k = 1; k < S.length; k++) (function (k) { later(function () { if (auto) sel(k); }, 500 + k * 1700); })(k);
     };
@@ -517,7 +523,7 @@
     var adds = $$('.add-list button');
     adds.forEach(function (b) { b.addEventListener('click', function () {
       adds.forEach(function (x) { x.setAttribute('aria-selected', x === b); });
-      addHash = b.dataset.hash; setProto(addHash); $('#addOpen').href = 'prototype/#' + addHash;
+      addHash = b.dataset.hash; setProto(addHash); $('#addOpen').href = protoLink(addHash, 7);
     }); });
   })();
 
@@ -674,6 +680,15 @@
       var s = document.createElement('span'); s.className = 'sr-only'; s.textContent = ' (opens in a new tab)'; a.appendChild(s);
     });
   }
+  markExt(document);
+
+  /* ---------- prototype links: always a new tab, self guided, at the exact route, with a way back to this slide ---------- */
+  function protoLink(hash, slide) { return 'prototype/?mode=self&from=deck&slide=' + slide + '#' + (hash || '/home'); }
+  $$('a[href^="prototype/"], a[href^="./prototype/"]').forEach(function (a) {
+    var sec = a.closest('.slide'), n = sec ? slides.indexOf(sec) + 1 : 1;
+    var raw = a.getAttribute('href'), h = raw.indexOf('#') >= 0 ? raw.slice(raw.indexOf('#') + 1) : '/home';
+    a.href = protoLink(h, n); a.target = '_blank'; a.rel = 'noopener';
+  });
   markExt(document);
   var mdet = $('.mdetail'); /* matrix detail rewrites its source links on every selection */
   if (mdet && 'MutationObserver' in window) new MutationObserver(function () { markExt(mdet); }).observe(mdet, { childList: true, subtree: true });

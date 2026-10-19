@@ -2,17 +2,18 @@ import React, { useEffect, useRef } from 'react';
 import './beyond.css';
 import { BIcon, BIconName } from './icons';
 
-export type CreateKind = 'poll' | 'expense' | 'plan' | 'trip';
+export type CreateKind = 'poll' | 'expense' | 'photos' | 'plan' | 'trip';
 export const CREATE_ITEMS: { id: CreateKind; title: string; sub: string; icon: BIconName }[] = [
   { id: 'poll', title: 'New poll', sub: 'Any day, time or activity', icon: 'poll' },
   { id: 'expense', title: 'Add expense', sub: 'Scan or type it', icon: 'receiptX' },
+  { id: 'photos', title: 'Add photos', sub: 'To the shared album', icon: 'images' },
   { id: 'plan', title: 'Add to plan', sub: 'From Explore or your saves', icon: 'calendarPlus' },
   { id: 'trip', title: 'New trip', sub: 'Start fresh', icon: 'add' },
 ];
 
 /**
  * CreateMenu: the global + next to the tab bar opens this from every tab.
- * A glass card anchored over the + with four ways to create. Escape or the scrim closes it; focus moves to the first item.
+ * A glass card anchored over the + with five ways to create. Escape or the scrim closes it; focus moves to the first item.
  */
 export function CreateMenu({ onPick, onClose }: { onPick: (k: CreateKind) => void; onClose: () => void }) {
   const ref = useRef<HTMLDivElement>(null);

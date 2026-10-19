@@ -190,7 +190,8 @@ kbd { font: 600 11px/1 var(--mono); padding: 3px 6px; border-radius: 6px; backgr
 .curve { display: block; width: 100%; height: 130px; overflow: visible; }
 .curve .mid { stroke: var(--line); stroke-dasharray: 2 6; }
 .curve .base { fill: none; stroke: rgba(22,22,29,.08); stroke-width: 2; }
-.curve .line { fill: none; stroke: var(--color-accent-primary); stroke-width: 3; stroke-linecap: round; vector-effect: non-scaling-stroke; transition: stroke-dashoffset 1s var(--ease); }
+.curve .line { fill: none; stroke: var(--color-accent-primary); stroke-width: 3; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.curve .curve-clip { transform-origin: 0 0; transition: transform 1s var(--ease); }
 .curve .base { vector-effect: non-scaling-stroke; }
 .curve-axis { position: absolute; left: 0; top: 0; height: 130px; display: flex; flex-direction: column; justify-content: space-between; font: 600 10.5px/1 var(--ui); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
 .stages { display: grid; grid-template-columns: repeat(5, 1fr); margin-top: -2px; position: relative; }
@@ -428,9 +429,12 @@ body.show-tokens [data-token]::after { content: attr(data-token); position: abso
 .jt-head { align-items: flex-start; margin-bottom: 10px; }
 .jt-head .eyebrow { margin-bottom: 8px; }
 .jt-lede { margin: 0 0 16px; font-size: 16px; line-height: 1.5; color: var(--ink-2); max-width: 680px; }
-.jt-line { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 0 0 12px; margin-bottom: 14px; font: 650 11px/1 var(--ui); letter-spacing: .09em; text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid var(--line); }
-.jt-slice { position: absolute; left: 44%; right: 22%; bottom: -2px; height: 3px; border-radius: 3px; background: var(--color-accent-primary); }
-.jt-slice b { position: absolute; left: 0; bottom: 9px; font: 650 11px/1 var(--ui); letter-spacing: .06em; color: var(--color-accent-text); white-space: nowrap; }
+/* Non-interactive timeline. It lives inside .jt-cols and uses the same tracks (subgrid), so each segment lines up with its column at any width. */
+.jt-line { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; gap: 16px; margin: 2px 0 4px; font: 650 11px/1 var(--ui); letter-spacing: .09em; text-transform: uppercase; color: var(--ink-3); cursor: default; user-select: none; pointer-events: none; }
+.jt-line span { position: relative; display: block; padding: 0 0 10px 14px; }
+.jt-line span::after { content: ''; position: absolute; left: 0; right: -16px; bottom: 0; height: 1px; background: var(--line); }
+.jt-line span:last-child::after { right: 0; }
+.jt-line span::before { content: ''; position: absolute; left: 0; top: 2px; width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid var(--ink-3); background: var(--color-bg-surface); box-sizing: border-box; }
 .jt-cols { flex: 1; min-height: 0; overflow: auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-content: start; padding: 2px; }
 .jt-phase { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .jt-phase h3 { display: flex; align-items: baseline; gap: 10px; margin: 0; font: 400 28px/1.05 var(--font-display); }
@@ -507,7 +511,7 @@ html[data-motion="reduce"] .s1 .photo img { transform: none; }
 html[data-motion="reduce"] .m { transition: none; transform: scale(1); }
 html[data-motion="reduce"] .device { transition: opacity .24s linear; }
 html[data-motion="reduce"] .opt .fill { transition: transform 0s; }
-html[data-motion="reduce"] .curve .line { transition: none; }
+html[data-motion="reduce"] .curve .curve-clip { transition: none; }
 html[data-motion="reduce"] .edge path, html[data-motion="reduce"] .edge, html[data-motion="reduce"] .node .net { transition: opacity .2s linear; }
 html[data-motion="reduce"] .glow { transition: none; transform: scale(1); }
 html[data-motion="reduce"] .chk { transition: stroke-dashoffset 0s; }
@@ -597,3 +601,7 @@ html[data-motion="reduce"] .ov-grid button { transform: none; transition: opacit
 .cashrow a[data-ext] .nw::after { content: ""; display: inline-block; flex: none; width: .58em; height: .58em; margin-left: .32em; vertical-align: .04em; background: currentColor; opacity: .7; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 2h6v6M10 2 3 9'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 2h6v6M10 2 3 9'/%3E%3C/svg%3E") center / contain no-repeat; }
 /* Slide 8 photo medallions (v5.1). */
 .g-node .disc { fill: var(--color-bg-surface); filter: drop-shadow(0 2px 3px rgba(20, 18, 51, .10)); } .g-node .edge { fill: none; stroke: var(--color-border-subtle); stroke-width: 1; }
+
+/* Slide 8 after the cash thumbnails and Splitwise quote came out: one text link under the graph, one plain line under the bill. */
+.cashlink { margin-top: 16px; }
+.money-note { margin: 18px 0 0; padding-left: 16px; border-left: 2px solid var(--color-accent-primary); font: 400 16px/1.45 var(--ui); color: var(--ink); max-width: 44ch; }

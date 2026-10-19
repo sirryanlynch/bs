@@ -103,7 +103,7 @@ export const TABS = [
   { id: 'explore', label: 'Explore', icon: 'compass' as const }, { id: 'polls', label: 'Polls', icon: 'poll' as const }, { id: 'money', label: 'Money', icon: 'wallet' as const },
 ];
 /** Where each item in the global create menu lands. */
-export const CREATE_ROUTES: Record<CreateKind, string> = { poll: 'poll/new', expense: 'expense/scan', plan: 'plan/add', trip: 'create/where' };
+export const CREATE_ROUTES: Record<CreateKind, string> = { poll: 'poll/new', expense: 'expense/scan', photos: 'album/upload', plan: 'plan/add', trip: 'create/where' };
 /** The 5-tab bar plus the global + (create menu) that sits next to it on every tab. */
 export function GlobalTabs({ active, onTab, onCreate }: { active: string; onTab: (id: string) => void; onCreate: (k: CreateKind) => void }) {
   const [open, setOpen] = useState(false);

@@ -2,6 +2,63 @@
 
 `tokens.json` is the source of truth. `tokens.css` and the Figma variables are generated from it by `build_tokens.py`. Anyone building on `tokens.*` (for example the Storybook in `/workspace/tripup/storybook/`) should check here before they rebuild.
 
+## 2026-10-18 (PDT), 11:10 PM: removed "How we got here"
+
+No token values changed. Figma only: AI Enabled, Walkthrough deck and Deck (web). Pages 0:1 and 3:402 untouched.
+
+- Itinerary Item (123:4375), State=From poll: the poll icon and link are gone. What's left is a plain caption, "Picked by poll, 5 of 7", in `text/tertiary`. That matches the 5 to 1 to 1 result; the old text said 4 of 7. All 10 instances follow the component, and 8 text overrides were reset.
+- Docs: Usage, anatomy item 4 ("Poll caption, optional, text only") and the Don't rule were rewritten. Anatomy item 1 now reads "Time (12-hour)".
+- Removed: Hi-fi E07 sheet frame with its label and caption (E08 to E10 moved left 482 to close the gap), feature tree node (scope note now 24 MVP), click flow tag on screen 7, walkthrough slide 07 third phone and third point (the two remaining points moved to x 938, 640 wide), and the Deck (web) slide 07 "Value adds" tab.
+- Copy: research gap and pillar, journey map cell 4, Start here checklist ("09 · Hi-fi 07"). Deck (web) Wanderlog answer now reads "A poll with a deadline, and the winner lands on the itinerary."
+- Hi-fi 09a IOU table (and its walkthrough copy): "Ari (you)" in both columns, with padding widened to keep the mono columns aligned.
+- Exports: re-exported hifi-07-poll-closed.png and hifi-09a-tangled.png. edge-07-how-we-got-here.png was removed from exports (kept at /tmp/fig/removed/).
+- Rescan: 0 nodes on the 3 pages match "how we got here".
+
+## 2026-10-18 (PDT), 10:45 PM: Debt Simplification v5.1 restraint pass
+
+No token values changed. This entry covers style usage on the Debt Simplification component (121:4174, all 3 variants, light and dark through modes).
+
+- Removed: source chips, money tokens, 12-tick gauge rings and balance arcs, the HUD dot grid and edge ticks, on-thread $ tags in Tangled, knot beads and twist glyphs, ribbon glow, gradient and sheen, the iridescent rim on You and the photo highlights. The solver core now shows only in Netting.
+- Tangled threads use one paint, `text/secondary` at 72%, and two stroke weights: 2 pt for IOUs of $30 and up, 1.25 pt below. Curves are skewed cubics that pass through the middle of the card. The 4 crossings are 6 pt `bg/surface` dots with a 0.75 pt `text/tertiary` ring at 55%.
+- Medallion: 36 pt `bg/surface-raised`, 1 pt `border/subtle`, one shadow at 10%. Photo 32 pt. Zero-net people at 40% in Solved. Avatar photos are unchanged.
+- Netting: 40 pt core, 1.25 pt `accent/primary` spokes at 45%, Σ 0.00 pill. Solved: 3 arcs at 2.25 pt `accent/primary` with 3 tags and the single glint.
+- Iris is the only accent in every state. `status/owe` and `status/owed` appear only in label text.
+- Labels: `bg/surface` 85% plate, no shadow. Panel: `bg/surface` 70%, background blur 12. Layout check: 0 label overlaps.
+- Propagated to hi-fi 09a, 09b, 09 light and dark, the walkthrough slide 08 and Deck (web) slide 08. Dark core image overrides reapplied on the 29 instances.
+- Spec: `prototype/SPEC-settle-v3.md`, section "Debt Simplification v5.1 restraint pass". Build script: `figma-scripts/v5/run51.js`.
+
+## 2026-10-18 (PDT), 10:30 PM: Figma US pass and Debt Simplification v5 "Solver"
+
+**US English pass in Figma** (AI Enabled 108:3229, Walkthrough deck 158:8442, Deck (web) 225:81; pages 0:1 and 3:402 untouched):
+
+- Text was rewritten in place with style-preserving range edits, first on plain text and then as overrides on instances. Rules: US spelling (color, behavior, center, favorite, organize, canceled, traveler, gray), € to $ with the same numbers, EUR to USD, 24-hour to 12-hour (10:39 PM, 10:39:04 PM), month-first dates (Oct 12 to 17, Fri, Oct 16, Oct 18, 2026). Proper nouns and quoted source titles kept. Countdown timers stay mm:ss.
+- Rescan after the pass: 0 euro signs, 0 UK spellings, 0 day-first dates and 0 times from 13:00 to 23:59 across 7,632 text nodes. The 12:xx and 10:xx strings left are 12-hour status bars and countdowns.
+- Status bars use 12-hour time without AM/PM, as iOS does, and are never earlier than the screen's own timestamp: S1 and S2 10:38, S3 to S5 10:39, S6 10:40, S7 10:41, E1 10:39, E2 10:41, E3 10:39, E02 10:38, light and dark, plus the 7 strip clones. 117:3887 reads "7:30 PM · 7 of 7 voted".
+- Cash copy follows US money: bill pills read $20 × 2 and $1 × 2 (7 nodes). The dispute reads "Got two twenties, nothing else." and "Hand over the missing $2.00" (4 nodes).
+- Descriptions: 2 text styles and the Balance Chip and Debt Simplification component descriptions now use US spelling and $. No variable, style or component was renamed.
+- Deck (web): the 8 baked screenshots that showed euros (slide 1 phone, slide 4 thumbnails x5, slide 7 Lock Screen, slide 9 recap) are now live clones of the hi-fi frames. The old images are hidden and named "(old capture, hidden)".
+- Layout check after the pass: 302 frames, 0 sibling text overlaps, 0 clipped text.
+
+**Debt Simplification v5 "Solver"** (component set 121:4174, same 362×268 card, same data):
+
+- Photo avatars in 44 pt glass medallions with a 12-tick balance gauge. The current user gets an iridescent rim. Photos uploaded to Figma: ari, sofia, mara, ren, nic, tomas, joao (Pexels, see `exports/settle-v5/avatars/CREDITS.md`).
+- Glass ribbons: glow, gradient body, white sheen and arrowhead, width by amount. Money tokens on each path. Crossings are graphite knots that untie in Netting.
+- A 3D solver core (three.js render, 6 PNGs uploaded: tangled, netting and solved in light and dark). The dark instances override the core image, because image fills do not follow variable modes.
+- Prism light field, a faint HUD at 60% and a glass panel. Source chips in Tangled (Dinner, Boat tour, Flat, Fado). Netting spokes run into the core. The Solved state has a single spectrum glint.
+- Fix in `prelude5.js`: `solid()` now writes the resolved light value into the placeholder color and applies paint opacity after binding. Before this fix, bound paints exported as black and lost their opacity.
+- Instances update everywhere (29 across the three pages). Deck (web) slide 08: the Graph art images 242:15340, 242:15413 and 242:15462 and their 61 text overlays are hidden and replaced with v5 instances scaled 1.276x. The hi-fi 09 settle-up rows (137:6808, 137:6901, 178:14588, 178:10597) now show photos in place of initials.
+- Spec: `prototype/SPEC-settle-v3.md`, section "Debt Simplification v5". Render source: `render-v5/core.html`. Assets: `exports/settle-v5/`.
+
+## 2026-10-18 (PDT): settle-up v3, DebtUntangle v4 and US English
+
+- **US English and US formats everywhere.** All UI copy, stories, docs and the deck use US spelling (color, behavior, center, gray, canceled, traveler). Money is formatted with `Intl.NumberFormat('en-US', { currency: 'USD' })` through `usd()` in `lib/data.ts` (it replaces `eur()`). Times are 12-hour (10:39 PM) and dates month-first (Oct 12 to 17). The status bar shows the time without AM/PM, as iOS does. Older entries below keep their original wording.
+- **New: settle-up cash flow** (`components/settle.tsx`): MethodPicker, CashCount with US bills and coins, cash rounding with a carried remainder, SlideToSettle and LongPressSettle, PendingMark, UndoToast (always inverse: text/primary fill), ReceiverConfirm, PaymentSuccess, SettleProgress, PlanRows, ReceiptView, PartialCash, DisputeView, OfflineView, plus Money logs (IouLog, NetLog, PairRows, MoneyBalance).
+- **New: SquaredSheet** for the All squared up recap, with a mono receipt table. `CelebrationOverlay kind="squared"` uses it.
+- **DebtUntangle v4 "Instrument":** graphite threads, Iris arcs for the solved payments, computed knots, balance rings, dot grid and a mono stats panel. The visual layer is now a skin: `registerUntangleSkin(name, Component)` receives an `UntangleFrame` (positions, phase, graph, stats) while replay, scrubber, the net-unchanged check and the screen-reader summary stay shared.
+- **DebtUntangle skin "solver" (v5.1 restraint pass, SPEC-settle-v3.md)**, now on the Money screen: photo medallions, six graphite threads (2 pt from $30, 1.25 pt below) with computed hollow crossing dots and no amounts, a 40 pt solver core with Iris spokes and a Σ pill only in Netting, three Iris arcs with tags and one glint in Solved. Rose and jade appear only in balance text. No source chips, money tokens, gauge rings, grid or ribbon effects. v4 stays available as `skin="instrument"`. The IOU log labels the user "Ari (you)". Deck slide 8 drops its dot grid, Tangled tags, Iris knots and balance rings to match.
+- **Type:** JetBrains Mono added for readouts (`--font-mono`).
+- Icons: `globe`, `bank`, `warningCircle`. Button variant `surface`.
+
 ## 2026-10-18 (PDT): celebration and settle-up rework
 
 - **CelebrationOverlay** is now calm pearl glass. The 3D party render, confetti and gradient title are gone. A crafted mark plays instead: seven threads let go, the ring closes, a check draws in. The celebration spectrum appears once, as light sweeping the card edge (1.4 s), then rests as a faint rim. Hierarchy: mono eyebrow, Instrument Serif title in ink, callout line, stats, one primary action. Reduce Motion shows the settled state.
@@ -96,3 +153,19 @@ Screens: new Hi-fi 09a Tangled (201:9341) and 09b Netting (201:9484); 09/09 dark
 - Settle-up Row reasons now follow the ledger: "Tejo boat tour, via Tomás", "Dinner share minus Fado tickets", "Flat deposit, via Sofia".
 - Poll Builder and Invite Sheet: the Grabber frame was 100px tall and is now hug (13). Spacer now fills, so the primary action clears the home indicator.
 - E07 address shortened. AI Enabled section gaps are back to 240.
+
+## 2026-10-18 (evening) · Tangled graph v4 and the cash settle flow
+Token changes: none in tokens.json. Two Figma text styles added for the instrument readouts, both on `font.mono`:
+- `Prism/mono/value`: JetBrains Mono Medium 13/16, for panel values.
+- `Prism/mono/micro`: JetBrains Mono Medium 10/12, +0.4 tracking, uppercase captions. Started at 9px and moved to 10 because 9 was hard to read at 1x.
+
+Components (Figma):
+- Debt Simplification 121:4174 rebuilt as v4 "Instrument" in all 3 states: chips with balance rings, weighted gradient threads, crossing knots, dot grid and orbit, stepper, and a 3-cell instrument panel. Same ledger data. Ari's label stacks name over net in Netting and Solved, and Sofia's label is clamped right, so they no longer touch.
+- New board "Explore · Tangled graph directions" in Design System next to the component: Direction A (Instrument, chosen) and Direction B (Flow) in light and dark, with a decision note.
+
+Screens:
+- Section 09: 10 new settle frames (light y 7800, dark y 8800) covering choose method, cash count and round, slide, pending with undo, Nic's confirm, confirmed 1 of 3, receipt, and edge states for partial cash, dispute and offline. Plus a "Settle notes" text block. The section is now 4880 × about 9900.
+- Edge E02 (143:6885) rebuilt from the new cash count and round screen.
+- Section 07: "Settle flow strip" (227:7989) with 8 scaled frames and mono captions. Section 07 is now 2818 tall.
+- Sections 08 to 14 reflowed with 240 gaps.
+- Spec: prototype/SPEC-settle-v3.md now has the v4 graph spec and a full spec for the settle flow.

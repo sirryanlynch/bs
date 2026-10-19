@@ -9,8 +9,8 @@ import { Create, Push, PollView, Closed, Plan, usePollStream } from './screens2'
 import { Expense, Squared } from './screens3';
 import { RenWeb } from './renweb';
 import { useBeyond, BeyondLayer, BeyondPanel, BeyondBridge } from './flows';
-import { isBeyondHash } from './flows/nav';
-import { FLOWS } from '@sb/patterns/beyond/router';
+import { isBeyondHash, routeFromHash, hashForRoute } from './flows/nav';
+import { FLOWS, ALL_ROUTES } from '@sb/patterns/beyond/router';
 import { TourCursor, cursor } from './flows/cursor';
 import { coreTarget } from './flows/tour';
 import { ModeChooser, ModeSwitch, initialMode, showChooserAtStart, trackMode, useChapter, Mode } from './flows/shell';
@@ -18,6 +18,16 @@ import { track } from './analytics';
 
 const params = new URLSearchParams(location.search);
 const EMBED = params.has('embed');
+/** The deck sits one level up. Opened from the deck (?from=deck&slide=7), Back returns to that slide. */
+const DECK_SLIDE = (() => {
+  const n = parseInt(params.get('slide') ?? '', 10);
+  if (params.get('from') === 'deck') return n >= 1 && n <= 9 ? n : 0;
+  try { const r = new URL(document.referrer); if (r.origin === location.origin && !/\/(prototype|case-study|storybook)\//.test(r.pathname)) return parseInt(r.hash.slice(1), 10) || 0; } catch {}
+  return 0;
+})();
+/** Relative when served next to the deck; the single-file build points at the live deck instead. */
+const DECK_HREF = (location.pathname.includes('/prototype/') ? '../' : 'https://sirryanlynch.github.io/bs/') + (DECK_SLIDE ? `#${DECK_SLIDE}` : '');
+const BackToDeck = ({ cls = '' }: { cls?: string }) => EMBED ? null : <a className={`fl-back ${cls}`} href={DECK_HREF}><Icon name="chevronLeft" size={16} />Back to deck</a>;
 const isPhone = () => window.matchMedia('(max-width: 560px)').matches;
 
 function parseHash(): { step?: StepId; view?: SettleView; me?: Me; tie?: boolean } {
@@ -122,8 +132,11 @@ export function App() {
     const base = { ...stateAt(id, { ...sRef.current, ...over } as State), ...over } as State;
     d({ t: 'load', s: id === 'settle' ? settlePreset(view ?? 'choose', base) : base });
   };
-  const next = () => { const n = STEPS[idx + 1]; if (n) { const cur = sRef.current; if (!tour) track('step_jump', { from: cur.step, to: n.id, method: 'next' }); let x = STEPS[idx].complete(cur); if (n.id === 'squared') x = { ...x, me: 'ari' }; d({ t: 'load', s: { ...x, step: n.id, settleView: n.id === 'settle' ? 'choose' : x.settleView, settleOpen: false, done: { ...x.done, [n.id]: true } } }); } else if (EMBED) d({ t: 'reset' }); else if (tour) setChapter(true); };
-  const prev = () => { const p = STEPS[idx - 1]; if (p) { if (!tour) track('step_jump', { from: sRef.current.step, to: p.id, method: 'prev' }); jump(p.id); } };
+  // One story: Part 1 (the 13 Lisbon steps), then Part 2 (Beyond tonight, flow by flow). Next and Back walk straight through both.
+  const beyondIdx = () => { const r = routeFromHash(); return r == null ? -1 : Math.max(0, ALL_ROUTES.findIndex(x => x.route === r)); };
+  const next = () => { const bi = beyondIdx(); if (bi >= 0) { if (bi < ALL_ROUTES.length - 1) location.hash = hashForRoute(ALL_ROUTES[bi + 1].route); return; } if (idx === STEPS.length - 1 && !tour) { location.hash = hashForRoute(ALL_ROUTES[0].route); return; } nextCore(); };
+  const nextCore = () => { const n = STEPS[idx + 1]; if (n) { const cur = sRef.current; if (!tour) track('step_jump', { from: cur.step, to: n.id, method: 'next' }); let x = STEPS[idx].complete(cur); if (n.id === 'squared') x = { ...x, me: 'ari' }; d({ t: 'load', s: { ...x, step: n.id, settleView: n.id === 'settle' ? 'choose' : x.settleView, settleOpen: false, done: { ...x.done, [n.id]: true } } }); } else if (EMBED) d({ t: 'reset' }); else if (tour) setChapter(true); };
+  const prev = () => { const bi = beyondIdx(); if (bi > 0) { location.hash = hashForRoute(ALL_ROUTES[bi - 1].route); return; } if (bi === 0) { location.hash = `#/${STEPS[STEPS.length - 1].id}`; return; } const p = STEPS[idx - 1]; if (p) { if (!tour) track('step_jump', { from: sRef.current.step, to: p.id, method: 'prev' }); jump(p.id); } };
 
   // Deep links: #/step?as=nic&tie=1
   useEffect(() => {
@@ -287,13 +300,13 @@ export function App() {
       </header>
       <div className="fl-panelmode"><ModeSwitch mode={mode ?? 'self'} onMode={m => pickMode(m)} /></div>
       <section className="pt-stepcard" aria-live="polite">
-        <p className="pt-stepline tu-num">{bz.active ? 'Beyond tonight' : `${meta.n} of 13`}</p>
+        <p className="pt-stepline tu-num">{bz.active ? `Part 2 · Beyond tonight · ${String.fromCharCode(65 + Math.max(0, FLOWS.findIndex(f => f.id === bz.meta.flow)))} of ${String.fromCharCode(64 + FLOWS.length)}` : `Part 1 · The Lisbon evening · ${+meta.n} of 13`}</p>
         <h2>{bz.active ? FLOWS.find(f => f.id === bz.meta.flow)?.title ?? 'Beyond tonight' : meta.title}</h2>
         <p>{tour && chapter && caption ? caption : bz.active ? bz.meta.label : meta.caption}</p>
         <div className="pt-row">
-          <button type="button" className="pt-btn" onClick={prev} disabled={idx === 0} aria-label="Previous step"><Icon name="chevronLeft" size={20} /></button>
+          <button type="button" className="pt-btn" onClick={prev} disabled={idx === 0 && !bz.active} aria-label="Previous step"><Icon name="chevronLeft" size={20} /></button>
           <button type="button" className={`pt-btn is-primary ${tour ? 'is-on' : ''}`} onClick={() => setTour(t => !t)}>{tour ? 'Pause tour' : 'Play guided tour'}</button>
-          <button type="button" className="pt-btn" onClick={next} disabled={idx === STEPS.length - 1 && !tour} aria-label="Next step"><Icon name="chevronRight" size={20} /></button>
+          <button type="button" className="pt-btn" onClick={next} disabled={bz.active && bz.route === ALL_ROUTES[ALL_ROUTES.length - 1].route} aria-label="Next step"><Icon name="chevronRight" size={20} /></button>
         </div>
         {s.step === 'live' && !s.pollClosed && <button type="button" className="pt-link" onClick={() => d({ t: 'close', by: 'timer' })}>Skip to 7:30 PM</button>}
         {s.step === 'settle' && <div className="pt-actions">
@@ -304,14 +317,16 @@ export function App() {
           {!s.stl && (s.settleView === 'cash' || s.settleView === 'partial') && <label className="pt-check"><input type="checkbox" checked={s.offline} onChange={e => d({ t: 'set', patch: { offline: e.target.checked } })} />Simulate offline</label>}
         </div>}
       </section>
-      <nav aria-label="Steps" onClickCapture={() => setChapter(false)}><ol className="pt-jumps">{STEPS.map(x => { const ok = stepDone(x.id); return (
+      <p className="pt-eyebrow fl-part">Part 1 · The Lisbon evening</p>
+      <nav aria-label="Part 1, the Lisbon evening" onClickCapture={() => setChapter(false)}><ol className="pt-jumps">{STEPS.map(x => { const ok = stepDone(x.id); return (
         <li key={x.id}><a href={`#/${x.id}`} className={x.id === s.step ? 'is-on' : ''} aria-current={x.id === s.step ? 'step' : undefined}>
           <span className={`pt-dot ${ok ? 'is-ok' : ''}`} aria-hidden>{ok ? <Icon name="check" size={14} /> : <span className="tu-num">{+x.n}</span>}</span>{x.title}<span className="sr-only">{ok ? ', done' : ''}</span></a>
           {x.id === 'settle' && <ol className="pt-subjumps" aria-label="Settle up screens">{SETTLE_VIEWS.map(v => { const on = s.step === 'settle' && s.settleView === v.id; const seen = !!s.done[`v-${v.id}`]; return (
             <li key={v.id}><a href={`#/settle/${v.id}${v.as ? `?as=${v.as}` : ''}`} className={on ? 'is-on' : ''} aria-current={on ? 'page' : undefined}><span className={`pt-subdot ${seen ? 'is-ok' : ''}`} aria-hidden />{v.label}<span className="sr-only">{seen ? ', seen' : ''}</span></a></li>); })}</ol>}</li>
       ); })}</ol></nav>
       <BeyondPanel bz={bz} playing={tour && chapter} onPlay={() => { if (tour && chapter) setTour(false); else { setChapter(true); setTour(true); if (mode !== 'tour') { setMode('tour'); trackMode('tour'); } } }} />
-      <p className="pt-foot"><a href="../">Case study</a><a href="../storybook/">Storybook</a><a href="https://www.figma.com/design/z4TesJNPe6UfvgwmWtIA4y/TripUp-Working" target="_blank" rel="noreferrer">Figma</a></p>
+      {phone && <BackToDeck cls="is-panel" />}
+      <p className="pt-foot"><a href={DECK_HREF}>Deck</a><a href="../case-study/">Case study</a><a href="../storybook/">Storybook</a><a href="https://www.figma.com/design/z4TesJNPe6UfvgwmWtIA4y/TripUp-Working" target="_blank" rel="noreferrer">Figma</a></p>
     </aside>
   );
 
@@ -327,6 +342,7 @@ export function App() {
           </div>
         ) : (
           <div className={`pt-desk ${dark ? 'is-dark' : ''} ${mode === 'self' ? 'fl-self' : ''} ${drawer ? 'fl-drawer' : ''}`}>
+            {!EMBED && <div className="fl-backwrap"><BackToDeck /></div>}
             {mode === 'self' && !drawer && <div className="fl-float"><ModeSwitch mode="self" onMode={m => pickMode(m)} onSteps={() => setDrawer(true)} /></div>}
             {drawer && <div className="fl-scrim" onClick={() => setDrawer(false)} />}
             <main className="pt-stage">

@@ -17,8 +17,17 @@
 .prism .fl-steps { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px 0 12px; border-radius: 18px; border: 1px solid var(--color-border-subtle); background: var(--color-bg-surface); color: var(--color-text-primary); font: 600 13px var(--font-ui); cursor: pointer; }
 .prism .fl-float { position: fixed; z-index: 80; top: 20px; right: 20px; padding: 5px; border-radius: 24px; background: color-mix(in srgb, var(--color-bg-surface) 78%, transparent); backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4); box-shadow: 0 0 0 1px var(--color-border-subtle), 0 8px 24px rgba(20,18,40,.10); }
 .prism .fl-float .fl-steps { border: 0; }
-.pt-desk.fl-self { grid-template-columns: 1fr; }
-.pt-desk.fl-self > .pt-panel { display: none; }
+/* Docked panel collapses when Self guided is picked and opens again for Guided tour.
+   The panel keeps its width and rides out with the shrinking grid track, so the phone recenters as 1fr grows. */
+@media (min-width: 901px) {
+  .pt-desk { --pt-pw: 380px; grid-template-columns: minmax(0, 1fr) var(--pt-pw); overflow-x: clip; transition: grid-template-columns 320ms cubic-bezier(.2, 0, 0, 1); }
+  .pt-desk > .pt-panel { width: var(--pt-pw); justify-self: start; transition: opacity 320ms cubic-bezier(.2, 0, 0, 1), visibility 0s linear 0s; }
+  .pt-desk.fl-self { grid-template-columns: minmax(0, 1fr) 0px; }
+  .pt-desk.fl-self:not(.fl-drawer) > .pt-panel { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 320ms cubic-bezier(.2, 0, 0, 1), visibility 0s linear 320ms; }
+  .prism[data-motion="reduce"] .pt-desk, .prism[data-motion="reduce"] .pt-desk > .pt-panel { transition: none; }
+}
+@media (min-width: 901px) and (max-width: 1240px) { .pt-desk { --pt-pw: 340px; } }
+@media (max-width: 900px) { .pt-desk.fl-self > .pt-panel { display: none; } }
 .pt-desk.fl-self.fl-drawer > .pt-panel { display: flex; position: fixed; z-index: 85; top: 12px; right: 12px; bottom: 12px; width: 380px; height: auto; border-radius: 24px; border: 1px solid var(--color-border-subtle); box-shadow: 0 24px 60px rgba(20,18,40,.22); animation: fl-in 260ms cubic-bezier(.2,.8,.2,1) both; }
 .fl-scrim { position: fixed; inset: 0; z-index: 84; background: rgba(20,18,40,.12); }
 @keyframes fl-in { from { opacity: 0; transform: translateX(24px); } }
@@ -69,14 +78,16 @@
 .prism .fl-roundbtn { position: relative; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; color: var(--color-text-primary); }
 .prism .fl-roundbtn.is-accent { background: var(--color-accent-primary); color: #fff; box-shadow: 0 6px 16px rgba(110,91,255,.3); }
 .prism .fl-badge { position: absolute; top: 10px; right: 11px; width: 8px; height: 8px; border-radius: 50%; background: var(--color-accent-primary); box-shadow: 0 0 0 2px var(--color-bg-canvas); }
-.prism .fl-avatar:focus-visible, .prism .fl-roundbtn:focus-visible, .prism .fl-shortcut:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 2px; }
-.prism .fl-shortcuts { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; padding-bottom: 8px; }
-.prism .fl-shortcut { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; padding: 4px 0; color: var(--color-text-secondary); font: 500 12px/15px var(--font-ui); text-align: center; }
-.prism .fl-shortcut-ico { width: 52px; height: 52px; border-radius: 18px; display: grid; place-items: center; color: var(--color-accent-text); transition: transform 160ms cubic-bezier(.3,.7,.3,1); }
-.prism .fl-shortcut:active .fl-shortcut-ico { transform: scale(.92); }
-.prism[data-motion="reduce"] .fl-shortcut:active .fl-shortcut-ico { transform: none; opacity: .7; }
+.prism .fl-avatar:focus-visible, .prism .fl-roundbtn:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 2px; }
 
 /* Phone-size web shell: keep top-right controls clear of the reviewer button */
 .pt-mobile .b-top-right, .pt-mobile .b-head-tools { margin-right: 52px; }
 .pt-mobile .b-float-top .b-top-right { margin-right: 52px; }
 .pt-mobile .b-appbanner { padding-right: 60px; }
+
+/* Back to deck: shown only when the deck opened this tab. Top left, clear of the phone and the mode switch. */
+.prism .fl-backwrap { position: fixed; z-index: 80; top: 20px; left: 20px; }
+.prism .fl-back { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 16px 0 10px; border-radius: 22px; font: 600 14px/1 var(--font-sans, Inter, system-ui); color: var(--color-text-primary); text-decoration: none; background: color-mix(in srgb, var(--color-bg-surface) 78%, transparent); backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4); box-shadow: 0 1px 0 rgba(255,255,255,.5) inset, 0 8px 24px rgba(20,18,40,.12); border: 1px solid var(--color-border-subtle); }
+.prism .fl-back:hover { color: var(--color-accent-primary); }
+.prism .fl-back:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 2px; }
+.prism .fl-back.is-panel { align-self: flex-start; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; background: var(--color-bg-subtle, transparent); }

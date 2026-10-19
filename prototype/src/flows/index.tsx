@@ -54,7 +54,7 @@ export function BeyondPanel({ bz, onPlay, playing }: { bz: Beyond; onPlay: () =>
   const cur = bz.active ? bz.meta.flow : '';
   return (
     <nav aria-label="Beyond tonight" className="fl-panel">
-      <div className="fl-panel-head"><p className="pt-eyebrow">Beyond tonight</p>
+      <div className="fl-panel-head"><p className="pt-eyebrow">Part 2 · Beyond tonight</p>
         <button type="button" className={`fl-chapter ${playing ? 'is-on' : ''}`} onClick={onPlay}>{playing ? <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden><rect x="3" y="2" width="3" height="10" rx="1" fill="currentColor" /><rect x="8" y="2" width="3" height="10" rx="1" fill="currentColor" /></svg> : <Icon name="play" size={14} />}{playing ? 'Playing' : 'Tour this chapter'}</button></div>
       <ol className="pt-jumps">{FLOWS.map((f, i) => { const on = f.id === cur; return (
         <li key={f.id}><a href={hashForRoute(f.start)} className={on ? 'is-on' : ''} aria-current={on ? 'step' : undefined}>

@@ -11,7 +11,7 @@ import * as ST from './states';
 
 /** Every screen beyond tonight, with its flow, the status bar time, and whether the status bar sits on a photo. */
 export type RouteMeta = { route: string; flow: string; label: string; time: string; light?: boolean };
-export const FLOWS: { id: string; title: string; start: string; routes: RouteMeta[] }[] = [
+const FLOW_DEFS: { id: string; title: string; start: string; routes: RouteMeta[] }[] = [
   { id: 'create', title: 'Create a trip', start: 'create/where', routes: [
     { route: 'create/where', flow: 'create', label: 'Where', time: '9:12 PM' }, { route: 'create/when', flow: 'create', label: 'When', time: '9:12 PM' },
     { route: 'create/cover', flow: 'create', label: 'Cover photo', time: '9:13 PM' }, { route: 'create/budget', flow: 'create', label: 'Budget', time: '9:13 PM' },
@@ -53,6 +53,9 @@ export const FLOWS: { id: string; title: string; start: string; routes: RouteMet
     { route: 'expense/failed', flow: 'states', label: 'Receipt not read', time: '2:14 PM' }, { route: 'poll/novotes', flow: 'states', label: 'Poll with no votes', time: '9:31 PM' },
     { route: 'explore/offline', flow: 'states', label: 'Explore offline', time: '5:40 PM' }] },
 ];
+/** Story order for Part 2, Beyond tonight: each flow once, never revisited. The step list, Next and Back, and the guided tour all follow it. */
+export const FLOW_ORDER = ['create', 'explore', 'place', 'polls', 'plan', 'expense', 'album', 'invite', 'activity', 'recap', 'profile', 'states'];
+export const FLOWS = FLOW_ORDER.map(id => FLOW_DEFS.find(f => f.id === id)!);
 export const ALL_ROUTES = FLOWS.flatMap(f => f.routes);
 export const metaOf = (route: string): RouteMeta => ALL_ROUTES.find(r => r.route === route) ?? (route.startsWith('place/') ? { route, flow: 'place', label: 'Place', time: '9:50 PM', light: !route.endsWith('/add') } : { route, flow: 'explore', label: route, time: '9:41 PM' });
 export const isBeyondRoute = (r: string) => !!ALL_ROUTES.find(x => x.route === r) || /^place\/[a-z]+(\/add)?$/.test(r);

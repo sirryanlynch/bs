@@ -116,21 +116,9 @@ export function Trip() {
             <ItinBlock it={{ time: '11:00 PM', title: 'Fado at Tasca do Chico', icon: 'music', kind: 'plan' }} last />
           </ol>
         </section>
-        <TripShortcuts />
       </div>
       <Tabs active="plan" />
     </div>
-  );
-}
-
-/** Trip home shortcuts into the flows beyond tonight. */
-function TripShortcuts() {
-  const { go } = useBridge();
-  const items: [string, React.ComponentProps<typeof BIcon>['name'], string][] = [['explore', 'compass', 'Explore'], ['album', 'images', 'Album'], ['plan/day', 'calendar', 'Day plan'], ['expense/scan', 'receipt', 'Expense'], ['poll/new', 'poll', 'New poll']];
-  return (
-    <section className="scr-section fl-shortcuts" aria-label="Shortcuts">
-      {items.map(([r, ic, l]) => <button key={r} type="button" className="fl-shortcut" onClick={() => { haptic(); go(r); }}><span className="fl-shortcut-ico tu-glass"><BIcon name={ic} size={24} /></span><span>{l}</span></button>)}
-    </section>
   );
 }
 
