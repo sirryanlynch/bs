@@ -139,6 +139,7 @@ export type UntanglePhase = 0 | 1 | 2;
  * 'instrument' (v4) is built in; 'solver' (v5.1 restraint pass) lives in untangle-solver.tsx and registers itself on import.
  */
 export type UntangleFrame = {
+  /** v5.3: numbers only in the metric panel (steps mode). */ minimal?: boolean;
   t: number; intro: number; phase: UntanglePhase; reduce: boolean; playing: boolean; uid: string; W: number; H: number; CX: number; CY: number;
   ids: string[]; pos: Record<string, Pt>; people: Record<string, Person>; net: Record<string, number>; maxNet: number;
   raw: Edge[]; simple: Edge[]; graph: { tangled: { e: Edge; g: any }[]; solvedG: { e: Edge; g: any }[]; knots: Pt[]; lab0: any; lab1: any; tags0: any; tags2: any };
@@ -152,7 +153,8 @@ export function DebtUntangle({ raw = rawDebts, simple = simplifiedDebts, people 
   { raw?: Edge[]; simple?: Edge[]; people?: Record<string, Person>; solved?: boolean; onSolved?: () => void; onPhase?: (p: UntanglePhase) => void;
     /** Visual layer: 'solver' (v5.1, default once untangle-solver is imported) or 'instrument' (legacy v4, built in). Unknown names fall back to instrument. */ skin?: string;
     /** full: Untangle or Replay button, scrubber and the nets check under the card. inline: a replay control and scrubbable stepper inside the card. none: static. */
-    controls?: 'full' | 'inline' | 'none' | boolean;
+    /** steps (v5.3): Tangled by default, Next walks Tangled → Netting → Solved, then a quiet Start over. */
+    controls?: 'full' | 'inline' | 'none' | 'steps' | boolean;
     /** Off when the screen already has its own primary CTA; Replay still appears once solved. */ startButton?: boolean; compact?: boolean }) {
   void compact;
   const ctl = controls === true ? 'full' : controls === false ? 'none' : controls;
@@ -255,11 +257,12 @@ export function DebtUntangle({ raw = rawDebts, simple = simplifiedDebts, people 
   const panelW = [1 - clamp((t - 0.3) / 0.4), clamp((t - 0.3) / 0.4) * (1 - clamp((t - 1.3) / 0.4)), clamp((t - 1.3) / 0.4)];
   const lab0Op = 1 - clamp(t / 0.4), lab1Op = clamp(t / 0.4);
 
+  // v5.3: steps mode (deck slide 9 mirror) keeps metric labels minimal, numbers only.
   const panels: [string, React.ReactNode][][] = [
-    [['IOUS', <><tspan>{raw.length}</tspan><tspan className="p-ut-sub" dx="6">{ids.length} people</tspan></>], ['CROSSINGS', <tspan>{G.knots.length}</tspan>], ['FLOW', <tspan>${sum(raw).toFixed(2)}</tspan>]],
+    [['IOUS', <><tspan>{raw.length}</tspan>{ctl !== 'steps' && <tspan className="p-ut-sub" dx="6">{ids.length} people</tspan>}</>], ['CROSSINGS', <tspan>{G.knots.length}</tspan>], ['FLOW', <tspan>${sum(raw).toFixed(2)}</tspan>]],
     [['Σ NET', <><tspan>{Math.abs(sigma).toFixed(2)}</tspan><tspan className="p-ut-ok" dx="5">{Math.abs(sigma) < 0.005 ? '✓' : '!'}</tspan></>], ['OWED', <tspan className="p-ut-owed">+{owed.toFixed(2)}</tspan>], ['OWE', <tspan className="p-ut-owe">−{owed.toFixed(2)}</tspan>]],
-    [['PAYMENTS', <><tspan>{simple.length}</tspan><tspan className="p-ut-sub" dx="6">was {raw.length}</tspan></>], ['FLOW', <tspan>${sum(simple).toFixed(2)}</tspan>],
-      ['SAVED', <><tspan className="p-ut-acc">{Math.round((1 - simple.length / Math.max(1, raw.length)) * 100)}%</tspan><tspan className="p-ut-sub" dx="6">{raw.length - simple.length} fewer</tspan></>]],
+    [['PAYMENTS', <><tspan>{simple.length}</tspan>{ctl !== 'steps' && <tspan className="p-ut-sub" dx="6">was {raw.length}</tspan>}</>], ['FLOW', <tspan>${sum(simple).toFixed(2)}</tspan>],
+      ['SAVED', <><tspan className="p-ut-acc">{Math.round((1 - simple.length / Math.max(1, raw.length)) * 100)}%</tspan>{ctl !== 'steps' && <tspan className="p-ut-sub" dx="6">{raw.length - simple.length} fewer</tspan>}</>]],
   ];
   const stepNames = ['TANGLED', 'NETTING', 'SOLVED'];
   const stepX = [16, 125, 236];
@@ -279,7 +282,7 @@ export function DebtUntangle({ raw = rawDebts, simple = simplifiedDebts, people 
   };
 
   const Skin = skin !== 'instrument' ? UNTANGLE_SKINS[skin] : undefined;
-  const frame: UntangleFrame | null = Skin ? { t, intro, phase, reduce, playing, uid, W, H, CX, CY, ids, pos, people, net, maxNet, raw, simple, graph: G,
+  const frame: UntangleFrame | null = Skin ? { minimal: ctl === 'steps', t, intro, phase, reduce, playing, uid, W, H, CX, CY, ids, pos, people, net, maxNet, raw, simple, graph: G,
     stats: { ious: raw.length, people: ids.length, crossings: G.knots.length, flowRaw: sum(raw), flowSimple: sum(simple), sigma, owed, saved: Math.round((1 - simple.length / Math.max(1, raw.length)) * 100), netsHold }, summary } : null;
   return (
     <div className={`p-ut ${ctl === 'full' ? 'has-ctl' : ''} is-skin-${Skin ? skin : 'instrument'}`}>
@@ -393,6 +396,14 @@ export function DebtUntangle({ raw = rawDebts, simple = simplifiedDebts, people 
           <input type="range" min={0} max={200} step={reduce ? 100 : 1} value={Math.round(t * 100)} aria-label="Scrub the solve" aria-valuetext={stepNames[phase]}
             onChange={e => { stop(); setIntro(1); const v = +e.target.value / 100; setT(v); if (v >= 1.999) finish(); }} />
           <span className={`p-ut-check ${t >= 1.999 && netsHold ? 'is-ok' : ''}`}>{t >= 1.999 ? (netsHold ? 'nets unchanged ✓' : 'nets changed') : 'nets ·'}</span>
+        </div>
+      )}
+      {ctl === 'steps' && (
+        <div className="p-ut-steps">
+          <ol className="p-ut-steps-l" aria-label="Untangle step">{['Tangled', 'Netting', 'Solved'].map((s, i) => (
+            <li key={s}><button type="button" className={phase === i ? 'is-on' : ''} aria-current={phase === i ? 'step' : undefined} onClick={() => { setIntro(1); goTo(i); }}><i className="tu-num">{i + 1}</i>{s}</button></li>))}</ol>
+          {phase < 2 || playing ? <button type="button" className="p-ut-next" onClick={() => { setIntro(1); goTo(Math.min(2, phase + 1)); }} disabled={playing}>Next<Icon name="chevronRight" size={16} /></button>
+            : <button type="button" className="p-ut-restart" onClick={() => goTo(0)}>Start over</button>}
         </div>
       )}
       <p className="sr-only" aria-live="polite">{summary}</p>

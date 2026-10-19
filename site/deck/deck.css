@@ -784,3 +784,31 @@ html.theme-dark .more a, [data-theme="dark"] .more a { background: rgba(40,38,56
 .eyebrow .tie:hover, .eyebrow .tie:focus-visible { color: var(--color-accent-primary, #6E5BFF); text-decoration: underline; }
 .sb-counts { margin: 10px 0 0; font-size: 14px; color: var(--ink-3); } .sb-counts b { color: var(--ink); font-weight: 600; }
 .zoom[hidden] { display: none !important; }
+
+/* ---------- v5.3 ---------- */
+/* 5 · the Prism board is the hero; the moment moved to slide 6 */
+.grid-5 { grid-template-columns: minmax(0, 2.25fr) minmax(0, 1fr); gap: 44px; }
+.grid-5 .why .title { font-size: clamp(34px, 3.3vw, 52px); }
+.grid-5 .rules li { font-size: 15px; }
+.grid-5 .board-stage { box-shadow: 0 0 0 1px var(--line), 0 40px 80px -40px rgba(40,30,110,.6); }
+/* 6 · Motion tile carries the Moment demo */
+.moment.is-tile { margin: 12px 0 10px; padding: 10px 12px 10px 6px; gap: 8px; border-radius: 18px; background: var(--color-bg-sunken, rgba(30,28,60,.04)); }
+.moment.is-tile .glow-wrap { width: 64px; height: 64px; }
+.moment.is-tile .disc { width: 38px; height: 38px; } .moment.is-tile .disc svg { width: 20px; height: 20px; }
+.moment.is-tile .moment-t { font-size: 22px; margin: 0; }
+.moment.is-tile .moment-s { margin: 2px 0 8px; font-size: 12px; line-height: 16px; }
+.moment.is-tile .btn-s { height: 30px; padding: 0 12px; font-size: 12.5px; }
+.ds-motion .ds-meta { margin: 0; }
+/* 6 · chips wrap inside the card instead of running past its edge */
+.ds-chiprow { flex-wrap: wrap; gap: 6px; max-width: 100%; }
+.ds-chips { overflow: hidden; }
+/* 8 · one mode: hidden until you vote */
+.pc-hidden { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; font-size: 12.5px; font-weight: 600; color: var(--color-accent-primary, #6E5BFF); background: rgba(110,91,255,.1); white-space: nowrap; }
+.pc-hidden svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+/* 9 · Next walks Tangled → Netting → Solved; Start over is a quiet text link */
+#gNext { gap: 4px; padding-right: 10px; }
+#gNext svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#gNext[hidden], .g-restart[hidden] { display: none; }
+.g-restart { border: 0; background: none; padding: 6px 4px; font: 500 13px var(--font-ui, inherit); color: var(--ink-3); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.g-restart:hover, .g-restart:focus-visible { color: var(--color-accent-primary, #6E5BFF); }
+.money-copy .bill dl > div { padding: 9px 0; }

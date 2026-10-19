@@ -2,6 +2,18 @@
 
 `tokens.json` is the source of truth. `tokens.css` and the Figma variables are generated from it by `build_tokens.py`. Anyone building on `tokens.*` (for example the Storybook in `/workspace/tripup/storybook/`) should check here before they rebuild.
 
+## v5.3 (Oct 19, 2026)
+No token changes. New and changed components:
+- `FlowMenu` (components/beyond/headermenu): a 44 pt glass menu button for in-flow screens, next to Back. Same five items as the top-nav menu. `MenuNav` context routes the picks.
+- `Composer` Add an option sheet: a light glass Explore button beside the field (`onExplore`) opens Find a place.
+- `FindPicks`: rank badges replaced by + buttons (`picked`, `onToggle`). The card body still opens the place. CTA reads "Start a poll with N".
+- `SquaredSheet`: `onDismiss`. Tap the scrim, swipe down past 80 pt or press Escape to close. 44 pt grabber.
+- `PhotoGrid`: an avatar badge on each photo (`onPerson`). The album filters to one person, with a header you can dismiss.
+- `DebtUntangle`: `controls="steps"` starts on Tangled, then Next goes Tangled → Netting → Solved and ends on a small Start over. Metric labels are numbers only. This is the default in Storybook.
+- Polls: counts stay hidden until you vote, everywhere. The Counts visible option is gone.
+- Ren's guest vote (prototype `RenVote`): an iMessage link preview, then the web poll with photo tiles and hidden counts, then the vote, "Your vote is in. Results at 7:30 PM.", then back to Messages.
+- Deck: slide 5 has a bigger mood board. The All squared up moment moved into slide 6's Motion card. Slide 6 chips wrap. Slide 7 opens the Storybook with the addons panel collapsed. Slide 8 starts on stage 1. Slide 9 has less text and a Next stepper.
+
 ## v5.2 (Oct 19, 2026)
 - Sheets stop below the header. New layout tokens: `--layout-header-bottom` (safe top + 48 = 110) and `--layout-sheet-top` (header bottom + 10). Every bottom sheet (p-sheet, b-sheet, composer sheets) is capped at that top, so its grabber and title are always visible and nothing slides under the back and menu buttons. Sheet layers sit above the header, so the scrim dims header and screen together (no filled glass slab over the sheet). Add people opens at the medium detent.
 - Toasts (island toast, flow toasts) sit under the header, clear of the Dynamic Island, the status bar and any open sheet.

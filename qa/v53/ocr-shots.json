@@ -1,0 +1,43 @@
+{
+ "checked": [
+  "qa/v53/after2/add-option.png",
+  "qa/v53/after2/album-person.png",
+  "qa/v53/after2/album.png",
+  "qa/v53/after2/composer-menu.png",
+  "qa/v53/after2/create-trip.png",
+  "qa/v53/after2/expense-menu.png",
+  "qa/v53/after2/find-menu.png",
+  "qa/v53/after2/picks-added.png",
+  "qa/v53/after2/picks-open.png",
+  "qa/v53/after2/picks.png",
+  "qa/v53/after2/ren-back.png",
+  "qa/v53/after2/ren-msg.png",
+  "qa/v53/after2/ren-voted.png",
+  "qa/v53/after2/ren-web.png",
+  "qa/v53/after2/settle-cash.png",
+  "qa/v53/after2/settle-receipt-menu.png",
+  "qa/v53/after2/squared-dismiss.png",
+  "qa/v53/after2/squared.png",
+  "qa/v53/deck-after/deck-s5.png",
+  "qa/v53/deck-after/deck-s6.png",
+  "qa/v53/deck-after/deck-s7.png",
+  "qa/v53/deck-after/deck-s8-ren38420.png",
+  "qa/v53/deck-after/deck-s8-ren42185.png",
+  "qa/v53/deck-after/deck-s8-ren45916.png",
+  "qa/v53/deck-after/deck-s8-ren50129.png",
+  "qa/v53/deck-after/deck-s8.png",
+  "qa/v53/deck-after/deck-s9.png",
+  "qa/v53/deck-after/s8-ren-seq.png"
+ ],
+ "flagged": [
+  [
+   "qa/v53/after2/squared.png",
+   [
+    [
+     "euro",
+     "\u20ac"
+    ]
+   ]
+  ]
+ ]
+}

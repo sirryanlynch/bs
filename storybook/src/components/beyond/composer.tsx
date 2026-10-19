@@ -1,3 +1,4 @@
+import { FlowMenu } from './headermenu';
 import React, { useEffect, useRef, useState } from 'react';
 import './beyond.css';
 import './composer.css';
@@ -80,8 +81,8 @@ function OptionTile({ o, onRemove, i }: { o: ComposerOption; onRemove: () => voi
   );
 }
 
-export function PollComposer({ value, onChange, days, today, picks, crew = 7, onSend, onBack }: {
-  value: ComposerValue; onChange: (v: Partial<ComposerValue>) => void; days: ComposerDay[]; today: string; picks: ComposerPick[]; crew?: number; onSend: () => void; onBack?: () => void;
+export function PollComposer({ value, onChange, days, today, picks, crew = 7, onSend, onBack, onExplore }: {
+  value: ComposerValue; onChange: (v: Partial<ComposerValue>) => void; days: ComposerDay[]; today: string; picks: ComposerPick[]; crew?: number; onSend: () => void; onBack?: () => void; onExplore?: () => void;
 }) {
   const [sheet, setSheet] = useState<'' | 'type' | 'when' | 'closes' | 'add'>('');
   const [draft, setDraft] = useState('');
@@ -104,7 +105,7 @@ export function PollComposer({ value, onChange, days, today, picks, crew = 7, on
       <header className={`b-cmp-head ${scrolled ? 'is-scrolled' : ''}`}>
         <button type="button" className="b-cmp-round tu-glass" onClick={onBack} aria-label="Back"><BIcon name="chevronLeft" size={20} /></button>
         <div className="b-cmp-headt"><b>New poll</b><small>Lisbon Crew · {crew} people</small></div>
-        <span className="b-cmp-sp" />
+        <FlowMenu />
       </header>
       <div className="b-scroll has-cta b-cmp-scroll" onScroll={e => setScrolled((e.currentTarget as HTMLElement).scrollTop > 8)}>
         <section className="b-cmp-hero" aria-label="Poll">
@@ -157,10 +158,11 @@ export function PollComposer({ value, onChange, days, today, picks, crew = 7, on
       </CSheet>}
 
       {sheet === 'add' && <CSheet title="Add an option" onClose={close}>
-        <form className="b-cs-type-in" onSubmit={e => { e.preventDefault(); if (!draft.trim()) return; addOpt({ label: draft.trim(), from: 'Typed by you' }); setDraft(''); close(); }}>
+        <div className="b-cs-addrow"><form className="b-cs-type-in" onSubmit={e => { e.preventDefault(); if (!draft.trim()) return; addOpt({ label: draft.trim(), from: 'Typed by you' }); setDraft(''); close(); }}>
           <input value={draft} onChange={e => setDraft(e.target.value)} placeholder="Type an option" aria-label="Type an option" />
           <button type="submit" disabled={!draft.trim()}>Add</button>
         </form>
+        <button type="button" className="b-cs-explore" onClick={() => { close(); onExplore?.(); }} aria-label="Find a place in Explore"><BIcon name="explore" size={20} /><small>Explore</small></button></div>
         {sorted.length > 0 && <p className="b-cs-k">From Explore</p>}
         <ul className="b-cs-picks">{sorted.map(p => (
           <li key={p.id}><button type="button" className="b-cs-pick" onClick={() => { addOpt({ label: p.name, from: p.meta, photo: p.photo }); close(); }}>

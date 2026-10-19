@@ -58,3 +58,44 @@ export function HeaderMenu({ title, sub, avatar, onAvatar, onBack, backLabel = '
     </div>
   );
 }
+
+/** v5.3: where a shortcut goes. The prototype provides it; on its own (Storybook) the menu still opens and closes. */
+export const MenuNav = React.createContext<((id: string) => void) | null>(null);
+
+/**
+ * FlowMenu: the same menu button for in-flow screens (Find a place, New poll, Add expense, New trip, settle steps).
+ *   Back stays on the left. The button sits at the right end of the nav row; the five shortcuts drop into a glass
+ *   capsule under it, so you can leave a flow for any screen at any time. Reduce Motion: fade only.
+ */
+export function FlowMenu({ items = HEADER_MENU_ITEMS, dot = true, light, onPick }: { items?: HeaderMenuItem[]; dot?: boolean; light?: boolean; onPick?: (id: string) => void }) {
+  const nav = React.useContext(MenuNav);
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null); const btn = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const t = setTimeout(() => (ref.current?.querySelector('.b-fm-item') as HTMLElement | null)?.focus({ preventScroll: true }), 60);
+    const down = (e: Event) => { if (!ref.current?.contains(e.target as Node)) setOpen(false); };
+    const key = (e: KeyboardEvent) => { if (e.key === 'Escape') { setOpen(false); btn.current?.focus(); } };
+    document.addEventListener('pointerdown', down, true); document.addEventListener('keydown', key);
+    return () => { clearTimeout(t); document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key); };
+  }, [open]);
+  const onKey = (e: React.KeyboardEvent) => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const els = Array.from(ref.current?.querySelectorAll<HTMLElement>('.b-fm-item') ?? []); const i = els.indexOf(document.activeElement as HTMLElement);
+    if (i < 0) return; e.preventDefault(); els[(i + (e.key === 'ArrowRight' ? 1 : els.length - 1)) % els.length].focus();
+  };
+  return (
+    <div className={`b-fm ${open ? 'is-open' : ''} ${light ? 'is-light' : ''}`} ref={ref}>
+      <button type="button" ref={btn} className="b-fm-btn" aria-expanded={open} aria-haspopup="menu" aria-label={open ? 'Close shortcuts' : `Shortcuts${dot ? ', new activity' : ''}`} onClick={() => setOpen(o => !o)}>
+        <span className="b-hm-ico is-grid"><BIcon name="grid" size={20} /></span><span className="b-hm-ico is-x"><BIcon name="close" size={18} /></span>
+        {dot && !open && <span className="b-hm-dot" aria-hidden />}
+      </button>
+      <div className="b-fm-pop" role="menu" aria-label="Shortcuts" aria-hidden={!open} onKeyDown={onKey}>
+        {items.map((it, i) => (
+          <button key={it.id} type="button" role="menuitem" className="b-fm-item" style={{ ['--i' as any]: i }} tabIndex={open ? 0 : -1} title={it.label}
+            onClick={() => { setOpen(false); (onPick ?? nav)?.(it.id); }}><BIcon name={it.icon} size={20} /><small>{it.label.replace('Add expense', 'Expense')}</small>{it.dot && dot && <span className="b-hm-dot" aria-hidden />}</button>
+        ))}
+      </div>
+    </div>
+  );
+}

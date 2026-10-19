@@ -48,8 +48,8 @@ export const Simplify: StoryObj<typeof DebtSimplify> = {
 
 export const Untangle: StoryObj<typeof DebtUntangle> = {
   name: 'DebtUntangle (v5.1 Solver, default)',
-  args: { solved: false, controls: 'full', startButton: true, skin: 'solver' },
-  argTypes: { controls: { control: 'inline-radio', options: ['full', 'inline', 'none'] }, skin: { control: 'inline-radio', options: ['solver', 'instrument'] } },
+  args: { solved: false, controls: 'steps', startButton: true, skin: 'solver' },
+  argTypes: { controls: { control: 'inline-radio', options: ['steps', 'full', 'inline', 'none'] }, skin: { control: 'inline-radio', options: ['solver', 'instrument'] } },
   render: (a) => <div style={{ maxWidth: 362 }}><DebtUntangle {...a} /></div>,
   parameters: { docs: { description: { story: 'The Money screen skin. Same model, timeline and controls as v4; only the visual layer changes. Photo medallions in glass, one graphite thread color with two weights (1.25 under $40, 2 from $40), no amounts on threads in Tangled (the IOU log carries them), the 4 crossings as soft dots. Netting: ghost dashes, spokes into a small still solver core, Σ 0.00. Solved: 3 Iris arcs with amounts and one glint, played once per solve and never while scrubbing. No source chips, tokens, gauge rings or grid. Reduce Motion: 200 ms cross-fades, no drawing, a still core and a static star.' } } },
 };

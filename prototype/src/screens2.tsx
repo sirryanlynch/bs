@@ -25,6 +25,7 @@ export function Create() {
   return (
     <div className="scr">
       <PollComposer value={v} onChange={x => setV(o => ({ ...o, ...x }))} days={DAYS} today="oct17" picks={picks} crew={7} onBack={() => d({ t: 'go', step: 'explore' })}
+        onExplore={() => { haptic(); d({ t: 'set', patch: { exploreFeed: false, exploreStage: 0, shortlist: [] } }); d({ t: 'go', step: 'explore' }); }}
         onSend={() => { haptic(18); d({ t: 'set', patch: { pollSent: true } }); d({ t: 'done', key: 'create' }); d({ t: 'go', step: 'push' }); }} />
     </div>
   );
@@ -63,12 +64,14 @@ export function usePollStream() {
   const live = s.step === 'live';
   useEffect(() => {
     if (!live || s.pollClosed) return;
+    // v5.3: as Ren, the crew is at 5 of 7 when the link arrives; the rest wait for Ren's own vote.
+    if (s.me === 'ren' && s.votes.ren == null && Object.keys(s.votes).length >= 5) return;
     const next = STREAM(s.tiePath).find(v => s.votes[v.who] == null && v.who !== s.me);
     if (!next) return;
     const t = setTimeout(() => { haptic(6); d({ t: 'vote', who: next.who, opt: next.opt, via: next.via }); }, reduce ? 700 : 1300);
     return () => clearTimeout(t);
   }, [live, s.votes, s.pollClosed, s.tiePath, reduce]);
-  useEffect(() => { if (live && s.pollClosed) { const t = setTimeout(() => d({ t: 'go', step: 'closed' }), 900); return () => clearTimeout(t); } }, [live, s.pollClosed]);
+  useEffect(() => { if (live && s.pollClosed && s.me !== 'ren') { const t = setTimeout(() => d({ t: 'go', step: 'closed' }), 900); return () => clearTimeout(t); } }, [live, s.pollClosed]);
 }
 
 export function PollView() {
@@ -84,11 +87,11 @@ export function PollView() {
     <div className="scr">
       <div className="scr-scroll">
         <TopBar back="Lisbon Crew" onBack={() => d({ t: 'go', step: 'trip' })} title="Saturday dinner" sub={closed ? `Closed · ${n} of 7 voted` : `${n} of 7 voted · closes 7:30 PM`} />
-        {!closed && mine == null && <p className="pt-prompt">Tap a place to vote</p>}
+        {!closed && mine == null && <p className="pt-prompt">Tap a place to vote. Counts show once you do.</p>}
         <div className="pt-poll-opts" aria-live="polite">
           {optIds(s).map((id, i) => (
-            <PollOption key={id} label={PLACE_NAMES[id][0]} detail={optDetail(s, i)} votes={t[i]} total={Math.max(n, 1)} photo={photoOf(id)}
-              state={closed ? (s.winner === i ? 'winner' : mine === i ? 'yourVote' : 'default') : mine === i ? 'yourVote' : t[i] === max && max > 0 && leaders === 1 ? 'leading' : 'default'}
+            <PollOption key={id} label={PLACE_NAMES[id][0]} detail={optDetail(s, i)} votes={mine == null && !closed ? 0 : t[i]} total={Math.max(n, 1)} photo={photoOf(id)}
+              state={closed ? (s.winner === i ? 'winner' : mine === i ? 'yourVote' : 'default') : mine === i ? 'yourVote' : mine != null && t[i] === max && max > 0 && leaders === 1 ? 'leading' : 'default'}
               closed={closed} onVote={() => { if (!closed) { haptic(); d({ t: 'vote', who: s.me, opt: i }); } }} />
           ))}
         </div>

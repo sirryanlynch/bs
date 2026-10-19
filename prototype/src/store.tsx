@@ -35,6 +35,7 @@ export const optDetail = (s: { shortlist: string[] }, i: number) => PLACE_NAMES[
 export type State = {
   step: StepId;
   me: Me;
+  renStage?: 'web' | 'back'; // v5.3: the guided tour drives Ren's link vote
   renJoined: boolean; renVia?: 'qr' | 'tripup';
   exploreStage: number; shortlist: string[]; exploreFeed?: boolean; // v5.1: the Explore feed shows before the questions
   pollSent: boolean; votes: Record<string, number>; voteVia: Record<string, string>;

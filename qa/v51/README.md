@@ -60,3 +60,5 @@ Before/after pairs in `qa/v51/pairs/` (before = v5 spacing-after capture, after 
 * `qa/v51/tourfeed.cjs`, `qa/v51/motion.cjs`: pass, no page errors.
 * `qa/v4/stories.cjs`: 194 stories, 0 bad.
 * Contact sheet: `qa/v51/contact-sheet.jpg` (all 40 kept screens).
+
+Note (v5.3 package): contact-sheet.jpg ships in tripup-update-v5-1.tar.gz and was left out here to keep this package under 25 MB.

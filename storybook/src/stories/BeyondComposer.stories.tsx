@@ -17,8 +17,9 @@ function Composer({ n = 3 }: { n?: number }) {
 }
 function Find({ start = {} }: { start?: CurateAnswers }) {
   const [a, setA] = useState<CurateAnswers>(start);
+  const [picked, setPicked] = useState<string[]>([]);
   return <div className="b-scr b-cmp" style={{ position: 'relative', height: 874 }}><div className="b-cmp-amb" aria-hidden /><FindHeader answers={a} onBack={() => setA({})} />
-    <div className="b-scroll b-cmp-scroll is-q"><FindQuestion answers={a} onAnswer={setA} />{a.budget != null && <FindPicks answers={a} list={COMMUNITY.slice(0, 6)} onOpen={() => {}} />}</div></div>;
+    <div className="b-scroll b-cmp-scroll is-q"><FindQuestion answers={a} onAnswer={setA} />{a.budget != null && <FindPicks answers={a} list={COMMUNITY.slice(0, 6)} onOpen={() => {}} picked={picked} onToggle={id => setPicked(x => x.includes(id) ? x.filter(y => y !== id) : [...x, id])} />}</div></div>;
 }
 export const ThreeOptions: St = { name: 'Composer · Saturday dinner, 3 options', render: () => <Composer /> };
 export const OneOption: St = { name: 'Composer · from the feed, 1 option', render: () => <Composer n={1} /> };

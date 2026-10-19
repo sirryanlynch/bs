@@ -1,3 +1,4 @@
+import { FlowMenu } from '../../components/beyond/headermenu';
 import { CreateMenu, CreateKind } from '../../components/beyond/createmenu';
 import React, { createContext, useContext, useEffect, useMemo, useReducer, useState } from 'react';
 import '../../components/beyond/beyond.css';
@@ -17,7 +18,7 @@ export type FlowState = {
   create: { q: string; dest?: string; start?: YMD; end?: YMD; cover?: string; budget?: number; crew: string[]; name: string; created: boolean; fromRecap?: boolean };
   saved: string[]; inPoll: string[]; exploreXt: ExperienceType; curate: CurateAnswers; sheetPlace?: string;
   place: { mine?: Review; picked: string[]; rating: number; text: string; privacy: 'crew' | 'public' };
-  album: { photos: AlbumPhoto[]; fresh: string[]; groupBy: 'day' | 'place'; xt: ExperienceType; viewer: number; sel: string[]; tagPlace: string; pub: string[] };
+  album: { photos: AlbumPhoto[]; fresh: string[]; groupBy: 'day' | 'place'; xt: ExperienceType; viewer: number; sel: string[]; tagPlace: string; pub: string[]; who?: string };
   plan: { day: string; items: Record<string, PlanItem[]>; xt: ExperienceType; editId?: string; addPart: PlanItem['part']; landed?: string; addTab: string };
   expense: { assign: Record<string, string[]>; mode: SplitMode; open: string; shares: Record<string, number>; excluded: string[]; tip: number; saved: boolean };
   guest: { voted?: number; banner: boolean };
@@ -133,13 +134,13 @@ export function FlowTabs({ active }: { active: string }) {
     if (id === 'explore') go('explore'); else if (id === 'polls') go('polls'); else if (id === 'plan') go('plan/day'); else host.exit(id === 'trips' ? 'home' : 'money');
   }} />;
 }
-export function Top({ title, sub, right, onBack, back = true, light }: { title?: string; sub?: string; right?: React.ReactNode; onBack?: () => void; back?: boolean; light?: boolean }) {
+export function Top({ title, sub, right, onBack, back = true, light, menu = true }: { title?: string; sub?: string; right?: React.ReactNode; onBack?: () => void; back?: boolean; light?: boolean; menu?: boolean }) {
   const f = useFlow();
   return (
     <div className={`b-top ${light ? 'is-light' : ''}`}>
       {back ? <button type="button" className="b-top-btn" onClick={onBack ?? f.back} aria-label="Back"><BIcon name="chevronLeft" size={20} /></button> : <span className="b-top-sp" />}
       <div className="b-top-title">{title && <b>{title}</b>}{sub && <small>{sub}</small>}</div>
-      <div className="b-top-right">{right ?? <span className="b-top-sp" />}</div>
+      <div className="b-top-right">{right}{menu ? <FlowMenu light={light} /> : !right && <span className="b-top-sp" />}</div>
     </div>
   );
 }

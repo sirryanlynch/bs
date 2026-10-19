@@ -73,14 +73,24 @@ const SQ_PEOPLE = ['ari', 'nic', 'ren', 'mara', 'joao'];
  * Reduce Motion shows it at rest with a 200 ms fade.
  */
 export function SquaredSheet({ title = 'All squared up.', body = '3 payments · $124.50 · everyone at $0.00', people = SQ_PEOPLE,
-  rows = SQ_ROWS, actionLabel = 'Share the recap', onAction, replayKey = 0, detailsOpen = false }:
-  { eyebrow?: string; title?: string; body?: React.ReactNode; people?: string[]; rows?: SquaredRow[]; total?: [string, string]; actionLabel?: string; onAction?: () => void; replayKey?: number; detailsOpen?: boolean }) {
+  rows = SQ_ROWS, actionLabel = 'Share the recap', onAction, replayKey = 0, detailsOpen = false, onDismiss }:
+  { eyebrow?: string; title?: string; body?: React.ReactNode; people?: string[]; rows?: SquaredRow[]; total?: [string, string]; actionLabel?: string; onAction?: () => void; replayKey?: number; detailsOpen?: boolean; onDismiss?: () => void }) {
   const reduce = useReducedMotion();
   const [open, setOpen] = React.useState(detailsOpen);
+  // v5.3: tap the scrim, swipe the card down, or press Escape to dismiss. The card follows the finger, then slides away.
+  const [dy, setDy] = React.useState(0); const [leaving, setLeaving] = React.useState(false);
+  const drag = React.useRef<{ y: number; id: number } | null>(null);
+  const dismiss = () => { if (!onDismiss || leaving) return; setLeaving(true); setTimeout(onDismiss, reduce ? 160 : 300); };
+  React.useEffect(() => { if (!onDismiss) return; const k = (e: KeyboardEvent) => e.key === 'Escape' && dismiss(); window.addEventListener('keydown', k); return () => window.removeEventListener('keydown', k); }, [onDismiss, leaving]);
+  const down = (e: React.PointerEvent) => { if (!onDismiss || (e.target as HTMLElement).closest('button')) return; drag.current = { y: e.clientY, id: e.pointerId }; (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); };
+  const move = (e: React.PointerEvent) => { if (drag.current) setDy(Math.max(0, e.clientY - drag.current.y)); };
+  const up = () => { if (!drag.current) return; drag.current = null; if (dy > 80) dismiss(); else setDy(0); };
   return (
-    <div className={`p-sq ${reduce ? 'is-reduced' : ''}`} key={replayKey} role="status" aria-live="polite">
-      <div className="p-sq-scrim" aria-hidden />
-      <section className="p-sq-card" aria-label={title}>
+    <div className={`p-sq ${reduce ? 'is-reduced' : ''} ${leaving ? 'is-leaving' : ''} ${onDismiss ? 'is-dismissable' : ''}`} key={replayKey} role="status" aria-live="polite">
+      <div className="p-sq-scrim" aria-hidden onClick={dismiss} />
+      <section className="p-sq-card" aria-label={title} onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up}
+        style={dy ? { transform: `translateY(${dy}px)`, transition: 'none', animation: 'none' } : undefined}>
+        {onDismiss && <button type="button" className="p-sq-grab" aria-label="Close and go to Lisbon Crew" onClick={dismiss}><i /></button>}
         <div className="p-sq-mark" aria-hidden>
           <span className="p-sq-glow" />
           <svg className="p-sq-disc" width="72" height="72" viewBox="0 0 72 72"><circle cx="36" cy="36" r="35.5" /><path d="M23 37.5 32 46.5 50 27" pathLength={100} /></svg>

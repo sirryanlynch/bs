@@ -1,0 +1,89 @@
+/* v5.3 Ren votes from a link: Messages → web poll → vote → back. Prism: glass chrome, photo tiles, Iris only. */
+.prism .rv { background: var(--color-bg-canvas); overflow: hidden; }
+/* Messages */
+.prism .rv-msgs { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--color-bg-surface); transition: transform 520ms cubic-bezier(0.32, 0.72, 0, 1), filter 520ms ease; }
+.prism .rv.is-web .rv-msgs, .prism .rv.is-done .rv-msgs { transform: scale(.94); filter: brightness(.82); }
+.prism .rv-mhead { flex: none; padding: calc(var(--layout-safe-top) + 2px) 16px 10px; display: flex; flex-direction: column; align-items: center; gap: 3px; border-bottom: 1px solid var(--color-border-subtle);
+  background: color-mix(in srgb, var(--color-bg-surface) 80%, transparent); -webkit-backdrop-filter: var(--glass-backdrop-thick); backdrop-filter: var(--glass-backdrop-thick); }
+.prism .rv-mhead img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+.prism .rv-mhead b { font: 500 12px var(--font-ui); } .prism .rv-mhead small { display: none; }
+.prism .rv-thread { flex: 1; padding: 14px 14px 0; display: flex; flex-direction: column; gap: 6px; }
+.prism .rv-stamp { align-self: center; margin: 4px 0 8px; font: 500 11px var(--font-ui); color: var(--color-text-tertiary); }
+.prism .rv-b { max-width: 78%; margin: 0; padding: 9px 13px; border-radius: 19px; font: 400 16px/21px var(--font-ui); }
+.prism .rv-b.is-in { align-self: flex-start; background: var(--color-bg-sunken, #E9E9EB); color: var(--color-text-primary); border-bottom-left-radius: 6px;
+  transform-origin: 0 100%; animation: rv-in 520ms cubic-bezier(0.34, 1.4, 0.64, 1) both; }
+.prism .rv-b.is-in + .rv-b.is-in { animation-delay: 650ms; }
+.prism .rv-b.is-out { align-self: flex-end; background: var(--color-accent-primary); color: #fff; border-bottom-right-radius: 6px; transform-origin: 100% 100%; animation: rv-in 480ms cubic-bezier(0.34, 1.4, 0.64, 1) 420ms both; }
+.prism .rv-read { align-self: flex-end; margin: 0 4px; font: 500 11px var(--font-ui); color: var(--color-text-tertiary); animation: b-fade 200ms ease 900ms both; }
+.prism .rv-link { width: 248px; max-width: 78%; padding: 0; overflow: hidden; border: 0; cursor: pointer; text-align: left; display: flex; flex-direction: column; border-radius: 19px; border-bottom-left-radius: 6px;
+  box-shadow: 0 10px 24px -16px rgba(40, 30, 110, .5); transition: transform var(--spring-live); }
+.prism .rv-link:active { transform: scale(.97); }
+.prism .rv-link-ph { display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; height: 132px; }
+.prism .rv-link-ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.prism .rv-link-ph img:first-child { grid-row: span 2; }
+.prism .rv-link-t { display: flex; flex-direction: column; gap: 1px; padding: 9px 13px 11px; }
+.prism .rv-link-t b { font: 600 14px/18px var(--font-ui); } .prism .rv-link-t small { font: 400 12.5px/16px var(--font-ui); color: var(--color-text-secondary); }
+.prism .rv.is-msg .rv-link::after { content: ''; position: absolute; }
+.prism .rv-compose { flex: none; margin: 0 12px calc(30px + 8px); height: 36px; border-radius: 18px; border: 1px solid var(--color-border-subtle); display: flex; align-items: center; padding: 0 14px; font: 400 15px var(--font-ui); color: var(--color-text-tertiary); }
+@keyframes rv-in { from { opacity: 0; transform: scale(.6) translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* Web poll sheet: slides up over Messages, down on the way out */
+.prism .rv-web { position: absolute; z-index: 5; inset: 0; top: 10px; border-radius: 22px 22px 0 0; overflow: hidden; background: var(--color-bg-canvas); display: flex; flex-direction: column;
+  box-shadow: 0 -10px 40px -10px rgba(20, 16, 50, .35); transform: translateY(105%); transition: transform 560ms cubic-bezier(0.32, 0.72, 0, 1); }
+.prism .rv.is-web .rv-web, .prism .rv.is-done .rv-web { transform: none; }
+.prism .rv-sbar { flex: none; display: grid; grid-template-columns: 64px 1fr 64px; align-items: center; padding: calc(var(--layout-safe-top) - 14px) 10px 8px; }
+.prism .rv-done { height: 36px; border: 0; background: none; font: 600 16px var(--font-ui); color: var(--color-accent-text); cursor: pointer; text-align: left; padding: 0 6px; }
+.prism .rv-url { justify-self: center; display: inline-flex; align-items: center; gap: 5px; height: 32px; padding: 0 14px; border-radius: 16px; font: 500 13px var(--font-ui); color: var(--color-text-secondary); background: var(--color-glass-fill); border: 1px solid var(--color-glass-stroke); }
+.prism .rv-body { flex: 1; overflow-y: auto; padding: 6px 18px 150px; display: flex; flex-direction: column; }
+.prism .rv-brand { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; } .prism .rv-brand b { font: 600 15px var(--font-ui); } .prism .rv-brand span { font: var(--type-ui-footnote); color: var(--color-text-secondary); }
+.prism .rv-h1 { margin: 0; font: 400 40px/44px var(--font-display); letter-spacing: -.4px; }
+.prism .rv-sub { margin: 4px 0 12px; font: var(--type-ui-subhead); color: var(--color-text-secondary); }
+.prism .rv-hide { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; margin: 0 0 14px; border-radius: 14px; font: 600 12.5px var(--font-ui);
+  color: var(--color-accent-text); background: color-mix(in srgb, var(--color-accent-subtle) 70%, transparent); transition: background 300ms ease, color 300ms ease; }
+.prism .rv-hide.is-off { color: var(--color-text-secondary); background: var(--color-bg-sunken); }
+.prism .rv-tiles { display: flex; flex-direction: column; gap: 10px; }
+.prism .rv-tile { position: relative; height: 112px; border: 0; padding: 0; border-radius: 22px; overflow: hidden; cursor: pointer; text-align: left; color: #fff; background: #222;
+  box-shadow: 0 14px 28px -20px rgba(20, 16, 50, .7); animation: rv-tile 520ms cubic-bezier(0.34, 1.2, 0.64, 1) both; animation-delay: calc(240ms + var(--i) * 70ms);
+  transition: transform var(--spring-live), opacity 300ms ease, box-shadow 300ms ease; }
+.prism .rv-tile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.prism .rv-tile::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(14, 12, 28, .74), rgba(14, 12, 28, .15) 75%); }
+.prism .rv-tile:active { transform: scale(.97); }
+.prism .rv-tile-t { position: absolute; z-index: 2; left: 16px; right: 60px; bottom: 14px; display: flex; flex-direction: column; }
+.prism .rv-tile-t b { font: 400 24px/28px var(--font-display); text-shadow: 0 1px 12px rgba(0,0,0,.3); } .prism .rv-tile-t small { font: var(--type-ui-footnote); color: rgba(255,255,255,.86); }
+.prism .rv-check { position: absolute; z-index: 3; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; color: #fff;
+  border: 1.5px solid rgba(255,255,255,.75); background: rgba(20,16,40,.25); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); transition: background var(--spring-ui), border-color var(--spring-ui); }
+.prism .rv-check svg { opacity: 0; transform: scale(.3); transition: opacity 160ms ease, transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+.prism .rv-tile.is-on { box-shadow: 0 0 0 3px var(--color-accent-primary), 0 18px 34px -18px rgba(110, 91, 255, .7); }
+.prism .rv-tile.is-on .rv-check { background: var(--color-accent-primary); border-color: transparent; }
+.prism .rv-tile.is-on .rv-check svg { opacity: 1; transform: none; }
+.prism .rv-tile.is-dim { opacity: .82; cursor: default; }
+.prism .rv-bar { position: absolute; z-index: 2; left: 0; right: 0; bottom: 0; height: 4px; background: rgba(255,255,255,.18); }
+.prism .rv-bar i { display: block; height: 100%; width: calc(var(--p) * 100%); background: #fff; transition: width 700ms cubic-bezier(0.34, 1.2, 0.64, 1) 150ms; }
+.prism .rv-tile.is-on .rv-bar i { background: var(--color-accent-primary); box-shadow: 0 0 10px rgba(110, 91, 255, .8); }
+.prism .rv-pct { position: absolute; z-index: 3; right: 16px; bottom: 14px; font: 600 15px var(--font-ui); animation: b-fade 300ms ease 300ms both; }
+.prism .rv-tile.is-on .rv-pct { right: 16px; }
+@keyframes rv-tile { from { opacity: 0; transform: translateY(18px) scale(.97); } to { opacity: 1; transform: none; } }
+
+/* Confirmation: rises from the bottom once the vote lands */
+.prism .rv-ok { position: absolute; z-index: 6; left: 12px; right: 12px; bottom: 30px; padding: 18px 18px 16px; border-radius: 28px; display: grid; grid-template-columns: 44px 1fr; gap: 4px 14px; align-items: center;
+  background: color-mix(in srgb, var(--color-bg-surface) 86%, transparent); -webkit-backdrop-filter: var(--glass-backdrop-thick); backdrop-filter: var(--glass-backdrop-thick);
+  box-shadow: inset 0 1px 0 var(--color-glass-highlight), 0 0 0 1px var(--color-glass-stroke), 0 30px 60px -24px rgba(20, 16, 50, .5);
+  transform: translateY(140%); opacity: 0; transition: transform 560ms cubic-bezier(0.34, 1.25, 0.64, 1), opacity 200ms ease; }
+.prism .rv.is-done .rv-ok { transform: none; opacity: 1; }
+.prism .rv-ok-disc { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; color: #fff; background: var(--color-accent-primary); box-shadow: var(--shadow-accent); }
+.prism .rv-ok b { display: block; font: 400 26px/30px var(--font-display); } .prism .rv-ok small { font: var(--type-ui-subhead); color: var(--color-text-secondary); }
+.prism .rv-ok-btn { grid-column: 1 / -1; margin-top: 12px; height: 50px; border: 0; border-radius: 25px; font: 600 17px var(--font-ui); color: var(--color-text-on-accent, #fff); background: var(--color-accent-primary); box-shadow: var(--shadow-accent); cursor: pointer; }
+.prism .rv-ok-btn:focus-visible, .prism .rv-tile:focus-visible, .prism .rv-link:focus-visible, .prism .rv-done:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 2px; }
+
+/* Reduce Motion: fades only */
+.prism[data-motion="reduce"] .rv-msgs { transform: none !important; transition: filter 200ms linear; }
+.prism[data-motion="reduce"] .rv-web { transform: none; opacity: 0; pointer-events: none; transition: opacity 200ms linear; }
+.prism[data-motion="reduce"] .rv.is-web .rv-web, .prism[data-motion="reduce"] .rv.is-done .rv-web { opacity: 1; pointer-events: auto; }
+.prism[data-motion="reduce"] .rv-ok { transform: none; transition: opacity 200ms linear; }
+.prism[data-motion="reduce"] .rv-b, .prism[data-motion="reduce"] .rv-tile { animation: b-fade 200ms linear both !important; }
+.prism[data-motion="reduce"] .rv-check svg, .prism[data-motion="reduce"] .rv-bar i { transition: opacity 150ms linear; transform: none; }
+.prism .rv-link { height: auto; min-height: 0; background: var(--color-bg-sunken, #E9E9EB); color: var(--color-text-primary); }
+.prism .rv-link-ph { flex: none; height: 132px; width: 100%; }
+.prism .rv-link-t { flex: none; position: relative; }
+.prism .rv-link-ph { grid-template-rows: repeat(2, minmax(0, 1fr)); grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); overflow: hidden; }
+.prism .rv-link-ph img { min-height: 0; min-width: 0; }

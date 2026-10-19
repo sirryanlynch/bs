@@ -72,6 +72,10 @@ export function CurateScreen() {
   const m = curateMode(a);
   const list = st >= 4 ? COMMUNITY.filter(p => (m === 'walk' ? p.walk <= 20 : m === 'drive' ? p.drive <= 40 : true)).slice(0, 6) : [];
   const set = (v: CurateAnswers) => d({ t: 'set', v: { curate: v } });
+  // v5.3 quick-add: + on a pick adds it to the poll; with none picked, the top 3 go in.
+  const [picked, setPicked] = React.useState<string[]>([]);
+  const toggle = (id: string) => setPicked(x => x.includes(id) ? x.filter(y => y !== id) : [...x, id]);
+  const chosen = picked.length ? list.filter(p => picked.includes(p.id)) : list.slice(0, 3);
   /* Back steps back one question and keeps earlier answers; on the first question it exits. */
   const navBack = () => (st === 0 ? back() : set(findBack(a)));
   return (
@@ -79,10 +83,10 @@ export function CurateScreen() {
       <div className="b-cmp-amb" aria-hidden />
       <FindHeader answers={a} onBack={navBack} onSkip={() => set(findSkip(a))} />
       <div className={`b-scroll b-cmp-scroll ${st >= 4 ? 'has-cta' : 'is-q'}`}>
-        {st < 4 ? <FindQuestion answers={a} onAnswer={set} /> : <FindPicks answers={a} list={list} onOpen={id => go(`place/${id}`)} />}
+        {st < 4 ? <FindQuestion answers={a} onAnswer={set} /> : <FindPicks answers={a} list={list} onOpen={id => go(`place/${id}`)} picked={picked} onToggle={toggle} />}
       </div>
-      {st >= 4 && <div className="b-cmp-bottom"><button type="button" className="b-cmp-cta" onClick={() => { d({ t: 'patch', k: 'poll', v: { options: list.slice(0, 3).map(p => ({ label: p.name, from: `${p.type} · ${p.price} · ${distanceText(p, m)}`, photo: p.photos[0] })), category: (['food', 'drinks', 'culture', 'active'] as const)[a.after != null && a.after >= 0 ? a.after : 0], title: '', what: '' } }); go('poll/new'); }}>Start a poll with 3</button>
-        <p className="b-cmp-rule">The top 3 become options. You can change them.</p></div>}
+      {st >= 4 && <div className="b-cmp-bottom"><button type="button" className="b-cmp-cta" onClick={() => { d({ t: 'patch', k: 'poll', v: { options: chosen.map(p => ({ label: p.name, from: `${p.type} · ${p.price} · ${distanceText(p, m)}`, photo: p.photos[0] })), category: (['food', 'drinks', 'culture', 'active'] as const)[a.after != null && a.after >= 0 ? a.after : 0], title: '', what: '' } }); go('poll/new'); }}>{picked.length ? `Start a poll with ${picked.length}` : 'Start a poll with the top 3'}</button>
+        <p className="b-cmp-rule" aria-live="polite">{picked.length ? (picked.length === 1 ? 'Add one more, or start with 1 and add more later.' : `Your ${picked.length} picks become the options.`) : 'Tap + to choose, or start with the top 3.'}</p></div>}
     </div>
   );
 }
@@ -158,7 +162,7 @@ export function PollNewScreen() {
   const title = p.title.trim() || (p.what ? p.what : defaultTitle(day.dow, p.category, p.time));
   const picks: ComposerPick[] = COMMUNITY.map(c => ({ id: c.id, name: c.name, kind: c.kind, photo: c.photos[0], meta: `${c.type} · ${c.price} · ${c.walk ? `${c.walk} min walk` : c.area}` }));
   return (
-    <PollComposer value={{ title: p.title || p.what, category: p.category, day: p.day, time: p.time, closes: p.closes, options: p.options }} days={DAYS} today={p.today} picks={picks} onBack={back}
+    <PollComposer value={{ title: p.title || p.what, category: p.category, day: p.day, time: p.time, closes: p.closes, options: p.options }} days={DAYS} today={p.today} picks={picks} onBack={back} onExplore={() => go('explore/curate')}
       onChange={v => d({ t: 'patch', k: 'poll', v: { ...v, ...(v.title !== undefined ? { what: '' } : {}) } })}
       onSend={() => { d({ t: 'patch', k: 'poll', v: { sent: true, title } }); go('poll/new/sent', true); }} />
   );

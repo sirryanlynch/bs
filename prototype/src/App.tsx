@@ -4,7 +4,7 @@ import { PrismRoot } from '@sb/lib/PrismRoot';
 import { Icon } from '@sb/components/Icon';
 import { AppProvider, useApp, useStore, STEPS, stepIndex, stateAt, CHECKS, StepId, Me, State, Action, STREAM, clockStr, statusTime, simplifyOf, initial, SETTLE_VIEWS, SettleView, isSettleView, settlePreset } from './store';
 import { MoneyScreen, SettleFlow } from './settleflow';
-import { Home, Trip, InviteSheet, Explore } from './screens1';
+import { Home, Trip, InviteSheet, Explore, MenuNavHost } from './screens1';
 import { Create, Push, PollView, Closed, Plan, usePollStream } from './screens2';
 import { Expense, Squared } from './screens3';
 import { RenWeb } from './renweb';
@@ -82,7 +82,9 @@ function tourScript(s: State): [number, Action | Action[] | 'next'][] {
       return [[1300, { t: 'set', patch: { exploreStage: 1 } }], [1300, { t: 'set', patch: { exploreStage: 2 } }], [1300, { t: 'set', patch: { exploreStage: 3 } }], [1300, { t: 'set', patch: { exploreStage: 4 } }], [1400, { t: 'set', patch: { shortlist: ['taberna', 'ramiro', 'park'] } }], [1600, 'next']];
     case 'create': return [[2600, [{ t: 'set', patch: { pollSent: true } }, { t: 'done', key: 'create' }, { t: 'vote', who: 'ari', opt: 1 }, { t: 'go', step: 'push' }]]];
     case 'push': return [[2200, [{ t: 'vote', who: 'nic', opt: 0, via: 'the push' }, { t: 'done', key: 'push' }]], [1400, 'next']];
-    case 'live': return s.me === 'ren' ? [[5200, { t: 'vote', who: 'ren', opt: s.tiePath ? 1 : 0, via: 'the web as a guest' }]] : s.me === 'ari' ? [[1400, { t: 'vote', who: 'ari', opt: 1 }]] : [];
+    // v5.3: in the tour, Ari's poll goes out and the phone turns into Ren's: the link arrives in Messages, Ren votes on the web, then back to Ari.
+    case 'live': return s.me === 'ren' ? (s.votes.ren != null ? [[1800, { t: 'set', patch: { me: 'ari', renStage: undefined } }]] : [[2400, { t: 'set', patch: { renStage: 'web' } }], [2200, { t: 'vote', who: 'ren', opt: s.tiePath ? 1 : 0, via: 'the web as a guest' }], [2600, { t: 'set', patch: { renStage: 'back' } }], [2600, { t: 'set', patch: { me: 'ari', renStage: undefined } }]])
+      : s.me === 'ari' ? (s.votes.ren == null ? [[1400, { t: 'vote', who: 'ari', opt: 1 }], [1800, { t: 'set', patch: { me: 'ren' } }]] : []) : [];
     case 'closed': return s.tie && s.winner == null ? [[2600, { t: 'pick', opt: 0 }]] : [[3000, [{ t: 'set', patch: { planAdded: true } }, { t: 'go', step: 'plan' }, { t: 'toast', msg: 'Taberna added to tonight', tone: 'success' }]]];
     case 'plan': return [[3200, 'next']];
     case 'expense': return [[1600, { t: 'toggleLine', line: 'wine', who: 'ren' }], [800, { t: 'toggleLine', line: 'wine', who: 'nic' }], [2200, { t: 'saveDinner' }], [700, 'next']];
@@ -276,7 +278,7 @@ export function App() {
   );
 
   if (EMBED) return (
-    <PrismRoot theme={theme} motion={motion}><AppProvider s={s} d={d}><BeyondBridge bz={bz}><div className="pt-embed">{frame}</div></BeyondBridge></AppProvider></PrismRoot>
+    <PrismRoot theme={theme} motion={motion}><AppProvider s={s} d={d}><BeyondBridge bz={bz}><MenuNavHost><div className="pt-embed">{frame}</div></MenuNavHost></BeyondBridge></AppProvider></PrismRoot>
   );
 
   const shareUrl = location.href.split('#')[0].replace(/[?&]embed=1/, '') + hashOf(s);
@@ -342,7 +344,7 @@ export function App() {
 
   return (
     <PrismRoot theme={theme} motion={motion}>
-      <AppProvider s={s} d={d}><BeyondBridge bz={bz}>
+      <AppProvider s={s} d={d}><BeyondBridge bz={bz}><MenuNavHost>
         {phone ? (
           <div className={`pt-mobile ${dark ? 'is-dark' : ''}`}>
             <div className="phone-content pt-mobile-screen">{screen}</div>
@@ -365,7 +367,7 @@ export function App() {
         )}
         {help && <div className="pt-help" onClick={() => setHelp(false)}>Shortcuts: arrows, Space, 1 2 3, D, M, R</div>}
         {chooser && <ModeChooser onPick={m => pickMode(m, true)} />}
-      </BeyondBridge></AppProvider>
+      </MenuNavHost></BeyondBridge></AppProvider>
     </PrismRoot>
   );
 }

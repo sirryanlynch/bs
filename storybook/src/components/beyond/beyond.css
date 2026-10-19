@@ -584,3 +584,23 @@
 /* v5 quality pass: no caps labels or mono step counters. Section labels are quiet sentence case. */
 .prism .b-overline, .prism .b-set-group h3, .prism .b-readout dt, .prism .b-recap-stats dt { text-transform: none !important; letter-spacing: -0.08px !important; font: 500 13px/18px var(--font-ui) !important; color: var(--color-text-secondary); }
 .prism .b-stepper-count { font: 500 12px/1 var(--font-ui) !important; letter-spacing: 0 !important; text-transform: none !important; color: var(--color-text-secondary); }
+
+/* v5.3 album: who took it. A small face on each photo; tap it to see only that person's photos. */
+.prism .b-pcell-open { position: absolute; inset: 0; padding: 0; border: 0; background: none; cursor: zoom-in; display: block; }
+.prism .b-pcell-open:focus-visible { outline: 3px solid var(--color-accent-primary); outline-offset: -3px; }
+.prism .b-pcell:hover .b-pcell-open img { transform: scale(1.03); }
+.prism .b-pcell-who { position: absolute; left: 6px; bottom: 6px; width: 24px; height: 24px; padding: 0; border-radius: 50%; overflow: visible; border: 1.5px solid rgba(255,255,255,.9); background: none; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.35); transition: transform var(--spring-live); }
+.prism .b-pcell-who::before { content: ''; position: absolute; inset: -10px; }
+.prism .b-pcell-who img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+.prism .b-pcell.is-big .b-pcell-who { width: 30px; height: 30px; left: 10px; bottom: 10px; }
+.prism .b-pcell-who:active { transform: scale(.88); }
+.prism .b-pcell-who:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.prism .b-album-who { display: flex; align-items: center; gap: 12px; padding: 10px 10px 10px 10px; border-radius: var(--radius-xl); background: var(--color-bg-surface); box-shadow: var(--shadow-card);
+  animation: b-rise 380ms var(--ease-enter) both; }
+.prism .b-album-who > img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; flex: none; box-shadow: 0 0 0 2px var(--color-bg-surface), 0 0 0 3.5px var(--color-accent-primary); }
+.prism .b-album-who span { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.prism .b-album-who b { font: var(--type-ui-headline); } .prism .b-album-who small { font: var(--type-ui-footnote); color: var(--color-text-secondary); }
+.prism .b-album-who-x { flex: none; width: 36px; height: 36px; border-radius: 50%; border: 0; display: grid; place-items: center; cursor: pointer; color: var(--color-text-secondary); background: var(--color-bg-sunken); }
+.prism .b-album-who-x::before { content: ''; position: absolute; width: 44px; height: 44px; }
+.prism[data-motion="reduce"] .b-album-who { animation: b-fade 150ms ease both; }

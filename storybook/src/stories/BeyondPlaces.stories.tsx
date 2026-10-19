@@ -20,6 +20,8 @@ function Contribute() { const [picked, setPicked] = useState([ALBUM[0].src]); co
   return <ContributeForm photos={ALBUM.slice(0, 6).map(a => a.src)} picked={picked} onPick={p => setPicked(x => x.includes(p) ? x.filter(y => y !== p) : [...x, p])} rating={r} onRating={setR} text={t} onText={setT} privacy={pv} onPrivacy={setPv} />; }
 export const Contribute_: St = { name: 'ContributeForm, privacy choice', render: () => <Contribute /> };
 export const Grid: St = { name: 'PhotoGrid, by day', render: () => <PhotoGrid photos={ALBUM} groupBy="day" fresh={[ALBUM[0].id]} /> };
+function ByPeople() { const [who, setWho] = React.useState<string | undefined>(); return <><p style={{ margin: '0 0 8px', font: '13px var(--font-ui)' }}>{who ? `Showing ${who}'s photos. Tap again for all.` : 'Tap a face to filter by who took it.'}</p><PhotoGrid photos={who ? ALBUM.filter(p => p.who === who) : ALBUM} groupBy="day" onPerson={w => setWho(x => x === w ? undefined : w)} /></>; }
+export const GridPeople: St = { name: 'PhotoGrid, who took it (v5.3)', render: () => <ByPeople /> };
 export const GridPlace: St = { name: 'PhotoGrid, by place', render: () => <PhotoGrid photos={ALBUM} groupBy="place" /> };
 function Viewer() { const [i, setI] = useState(1); return <PhotoViewer photos={ALBUM} index={i} onIndex={setI} people={P} />; }
 export const Viewer_: St = { name: 'PhotoViewer', parameters: { screen: 'full', statusLight: true }, render: () => <Viewer /> };

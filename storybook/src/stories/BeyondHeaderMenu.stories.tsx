@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React, { useState } from 'react';
-import { HeaderMenu } from '../components/beyond/headermenu';
+import { HeaderMenu, FlowMenu } from '../components/beyond/headermenu';
 import { AVATAR } from '../assets/solver-assets';
 import { photo } from '../lib/data';
 
@@ -21,3 +21,13 @@ export const WithBack: St = { name: 'With Back and subtitle', render: () => <Dem
 export const OverPhoto: St = { name: 'Over a photo hero', render: () => <Demo hero open /> };
 export const Dark: St = { name: 'Dark', globals: { theme: 'dark' }, render: () => <Demo open /> };
 export const Reduce: St = { name: 'Reduce Motion', globals: { motion: 'reduce' }, render: () => <Demo /> };
+
+/* v5.3 FlowMenu: the same shortcuts on in-flow screens. Back stays on the left. */
+function FlowDemo() {
+  const [last, setLast] = useState('');
+  return <div className="scr" style={{ position: 'relative', height: 260, borderRadius: 24, background: 'var(--color-bg-canvas)' }}>
+    <header className="b-cmp-head"><button type="button" className="b-cmp-round tu-glass" aria-label="Back">‹</button><div className="b-cmp-headt"><b>New poll</b><small>Lisbon Crew · 7 people</small></div><FlowMenu onPick={setLast} /></header>
+    <p style={{ position: 'absolute', left: 20, bottom: 16, margin: 0 }}>{last ? `Picked: ${last}` : 'Tap the menu button'}</p>
+  </div>;
+}
+export const InFlow: St = { name: 'FlowMenu · in-flow screens (v5.3)', render: () => <FlowDemo /> };

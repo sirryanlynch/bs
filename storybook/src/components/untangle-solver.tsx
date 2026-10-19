@@ -130,10 +130,10 @@ function SolverSkin({ frame: f }: { frame: UntangleFrame }) {
     return { x1: x + ux * 22, y1: y + uy * 22, x2: CX - ux * 20, y2: coreY - uy * 20, len: Math.max(1, L - 42) }; };
 
   const panels: [string, React.ReactNode][][] = [
-    [['IOUS', <><tspan>{stats.ious}</tspan><tspan className="p-ut-sub" dx="6">{stats.people} people</tspan></>], ['CROSSINGS', <><tspan>{T.knots.length}</tspan><tspan className="p-ut-sub" dx="6">knots</tspan></>], ['FLOW', <tspan>${stats.flowRaw.toFixed(2)}</tspan>]],
+    [['IOUS', <><tspan>{stats.ious}</tspan>{!f.minimal && <tspan className="p-ut-sub" dx="6">{stats.people} people</tspan>}</>], ['CROSSINGS', <><tspan>{T.knots.length}</tspan>{!f.minimal && <tspan className="p-ut-sub" dx="6">knots</tspan>}</>], ['FLOW', <tspan>${stats.flowRaw.toFixed(2)}</tspan>]],
     [['Σ NET', <><tspan>{Math.abs(stats.sigma).toFixed(2)}</tspan><tspan className="p-ut-ok" dx="5">{Math.abs(stats.sigma) < 0.005 ? '✓' : '!'}</tspan></>], ['OWED', <tspan className="p-ut-owed">+{stats.owed.toFixed(2)}</tspan>], ['OWE', <tspan className="p-ut-owe">−{stats.owed.toFixed(2)}</tspan>]],
-    [['PAYMENTS', <><tspan>{simple.length}</tspan><tspan className="p-ut-sub" dx="6">was {raw.length}</tspan></>], ['FLOW', <tspan>${stats.flowSimple.toFixed(2)}</tspan>],
-      ['SAVED', <><tspan className="p-ut-acc">{stats.saved}%</tspan><tspan className="p-ut-sub" dx="6">{raw.length - simple.length} fewer</tspan></>]],
+    [['PAYMENTS', <><tspan>{simple.length}</tspan>{!f.minimal && <tspan className="p-ut-sub" dx="6">was {raw.length}</tspan>}</>], ['FLOW', <tspan>${stats.flowSimple.toFixed(2)}</tspan>],
+      ['SAVED', <><tspan className="p-ut-acc">{stats.saved}%</tspan>{!f.minimal && <tspan className="p-ut-sub" dx="6">{raw.length - simple.length} fewer</tspan>}</>]],
   ];
   const panelW = [1 - clamp((t - 0.3) / 0.4), clamp((t - 0.3) / 0.4) * (1 - clamp((t - 1.3) / 0.4)), clamp((t - 1.3) / 0.4)];
   const stepNames = ['TANGLED', 'NETTING', 'SOLVED']; const stepX = [16, 125, 236];

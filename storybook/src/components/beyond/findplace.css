@@ -43,3 +43,22 @@
 .prism[data-motion="reduce"] .b-fp-q, .prism[data-motion="reduce"] .b-fp-picks, .prism[data-motion="reduce"] .b-fp-photo, .prism[data-motion="reduce"] .b-fp-glass { animation: b-fade 150ms ease both; }
 .prism[data-motion="reduce"] .b-fp-photo img { transition: none; }
 .prism .b-fp-ph .b-ring-n span { display: none; }
+
+/* v5.3 quick-add: + on each pick adds it to the poll without opening it. The card body still opens the place. */
+.prism .b-fp-head { grid-template-columns: 44px 1fr auto; }
+.prism .b-fp-headr { display: flex; align-items: center; gap: 6px; justify-self: end; }
+.prism .b-fp-picks .b-ot { position: relative; }
+.prism .b-fp-add { position: absolute; z-index: 2; top: 50%; right: 12px; width: 40px; height: 40px; margin-top: -20px; border-radius: 50%; padding: 0; cursor: pointer; display: grid; place-items: center;
+  color: #fff; border: 1px solid rgba(255,255,255,.4); background: rgba(20, 16, 40, .3); -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.35); transition: background var(--spring-ui), border-color var(--spring-ui), transform var(--spring-live); }
+.prism .b-fp-add::before { content: ''; position: absolute; inset: -4px; }
+.prism .b-fp-add:active { transform: scale(.9); }
+.prism .b-fp-add-i { grid-area: 1 / 1; display: grid; place-items: center; transition: opacity 160ms ease, transform var(--spring-live); }
+.prism .b-fp-add-i.is-check { opacity: 0; transform: scale(.4) rotate(-30deg); }
+.prism .b-fp-add.is-on { background: var(--color-accent-primary); border-color: transparent; box-shadow: var(--shadow-accent); }
+.prism .b-fp-add.is-on .is-plus { opacity: 0; transform: scale(.4) rotate(90deg); }
+.prism .b-fp-add.is-on .is-check { opacity: 1; transform: none; }
+.prism .b-fp-add:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.prism .b-fp-picks .b-ot-card.has-photo { padding-right: 64px; }
+.prism .b-fp-picks .b-ot:has(.b-fp-add.is-on) .b-ot-card { box-shadow: inset 0 0 0 2px var(--color-accent-primary); }
+.prism[data-motion="reduce"] .b-fp-add, .prism[data-motion="reduce"] .b-fp-add-i { transition: opacity 150ms linear, background 150ms linear; transform: none !important; }

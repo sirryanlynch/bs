@@ -300,7 +300,7 @@ function Missing({ nic }: { nic?: boolean }) {
 
 /* ---------------- 13 All squared up (hifi-10) ---------------- */
 export function SquaredOverlay({ onAction }: { onAction: () => void }) {
-  const { s, P } = useApp();
+  const { s, P, d } = useApp();
   const plan = [...simplifyOf(s)].sort((x, y) => planRank(x, s.me) - planRank(y, s.me));
   const times = ['10:39 PM', '10:40 PM', '10:41 PM'];
   const rows: SquaredRow[] = plan.map((e, i) => {
@@ -312,5 +312,5 @@ export function SquaredOverlay({ onAction }: { onAction: () => void }) {
   const carry = r2(sum - handed);
   const body = carry > 0.004 ? `${plan.length} payments · ${usd2(handed)} · ${usd2(carry)} rolls over` : `${plan.length} payments · ${usd2(sum)} · everyone at $0.00`;
   const people = [...new Set(plan.flatMap(e => [e.from, e.to]))];
-  return <SquaredSheet rows={rows} people={people} body={body} onAction={onAction} />;
+  return <SquaredSheet rows={rows} people={people} body={body} onAction={onAction} onDismiss={() => { haptic(); d({ t: 'go', step: 'trip' }); }} />;
 }

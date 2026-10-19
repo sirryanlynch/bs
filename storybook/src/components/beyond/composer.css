@@ -124,3 +124,12 @@
 .prism .b-cs-pickt small { font: var(--type-ui-footnote); color: var(--color-text-secondary); }
 .prism .b-cs-addc { width: 32px; height: 32px; border-radius: 50%; flex: none; display: grid; place-items: center; color: var(--color-accent-text); background: var(--color-accent-subtle); }
 .prism .b-cmp-sugg { display: flex; flex-direction: column; gap: 10px; }
+
+/* v5.3: a light Explore entry beside the type-in field */
+.prism .b-cs-addrow { display: flex; gap: 8px; align-items: stretch; }
+.prism .b-cs-addrow .b-cs-type-in { flex: 1; min-width: 0; }
+.prism .b-cs-explore { flex: none; width: 64px; border-radius: 22px; padding: 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+  color: var(--color-accent-text); border: 1px solid var(--color-glass-stroke); background: var(--color-glass-fill); -webkit-backdrop-filter: var(--glass-backdrop-thick); backdrop-filter: var(--glass-backdrop-thick);
+  box-shadow: inset 0 1px 0 var(--color-glass-highlight), 0 8px 18px -14px rgba(60, 50, 110, .45); transition: transform var(--spring-live); }
+.prism .b-cs-explore small { font: 600 10.5px/12px var(--font-ui); }
+.prism .b-cs-explore:active { transform: scale(.94); }

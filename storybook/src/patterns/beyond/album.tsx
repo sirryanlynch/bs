@@ -4,10 +4,15 @@ import { Button, SegmentedControl } from '../../components/core';
 import { PhotoGrid, PhotoViewer, UploadPicker, UploadTagger } from '../../components/beyond/album';
 import { FilterChips } from '../../components/beyond/filterchips';
 import { CAMERA_ROLL, placeType, DAYS } from '../../lib/beyond';
+import { AVATAR } from '../../assets/solver-assets';
+import { BIcon } from '../../components/beyond/icons';
 
 export function AlbumScreen() {
-  const { s, d, go, back } = useFlow(); const a = s.album;
-  const shown = a.photos.filter(p => a.xt === 'all' || placeType(p.place) === a.xt);
+  const { s, d, go, back, P } = useFlow(); const a = s.album;
+  const shown = a.photos.filter(p => (a.xt === 'all' || placeType(p.place) === a.xt) && (!a.who || p.who === a.who));
+  const names = Object.fromEntries(Object.entries(P).map(([k, v]) => [k, (v as any).name]));
+  const who = a.who ? P[a.who] : undefined; const mine = a.who ? a.photos.filter(p => p.who === a.who) : [];
+  const setWho = (w?: string) => d({ t: 'patch', k: 'album', v: { who: w } });
   const counts = { food: 0, drinks: 0, culture: 0, active: 0 } as Record<string, number>; a.photos.forEach(p => counts[placeType(p.place)]++);
   return (
     <div className="b-scr">
@@ -15,7 +20,10 @@ export function AlbumScreen() {
         <Top title="Album" sub={`${a.photos.length} photos · 7 people`} onBack={back} right={<TopBtn icon="upload" label="Add photos" accent onClick={() => go('album/upload')} />} />
         <SegmentedControl options={['By day', 'By place']} value={a.groupBy === 'day' ? 'By day' : 'By place'} onChange={v => d({ t: 'patch', k: 'album', v: { groupBy: v === 'By day' ? 'day' : 'place' } })} />
         <FilterChips value={a.xt} surface="album" counts={counts} onChange={t => d({ t: 'patch', k: 'album', v: { xt: t } })} />
-        <div key={a.groupBy + a.xt} className="b-fadein"><PhotoGrid photos={shown} groupBy={a.groupBy} fresh={a.fresh} onOpen={id => { d({ t: 'patch', k: 'album', v: { viewer: a.photos.findIndex(p => p.id === id) } }); go('album/viewer'); }} /></div>
+        {who && <div className="b-album-who" role="status">
+          <img src={AVATAR[a.who!]} alt="" /><span><b>{a.who === 'ari' ? 'Your photos' : `${(who as any).name}'s photos`}</b><small className="tu-num">{mine.length} {mine.length === 1 ? 'photo' : 'photos'} · {new Set(mine.map(p => p.place)).size} places</small></span>
+          <button type="button" className="b-album-who-x" onClick={() => setWho(undefined)} aria-label="Show everyone's photos"><BIcon name="close" size={16} /></button></div>}
+        <div key={a.groupBy + a.xt + (a.who ?? '')} className="b-fadein"><PhotoGrid photos={shown} groupBy={a.groupBy} fresh={a.fresh} names={names} onPerson={w => setWho(a.who === w ? undefined : w)} onOpen={id => { d({ t: 'patch', k: 'album', v: { viewer: a.photos.findIndex(p => p.id === id) } }); go('album/viewer'); }} /></div>
       </div>
     </div>
   );

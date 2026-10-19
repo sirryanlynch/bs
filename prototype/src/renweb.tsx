@@ -5,6 +5,8 @@ import { PollOption } from '@sb/components/poll';
 import { usd } from '@sb/lib/data';
 import { useApp, optIds, optName, optDetail, PLACE_NAMES, tally, simplifyOf, haptic } from './store';
 import { EXPLORE_PLACES } from './screens1';
+import { RenVote } from './renvote';
+import './renvote.css';
 
 /** Ren has no app. Everything Ren sees lives at one guest link in mobile Safari, and it follows the trip live. */
 export function RenWeb() {
@@ -15,6 +17,8 @@ export function RenWeb() {
   const owe = s.dinnerSaved ? plan.find(e => e.from === 'ren') : undefined;
   const owed = owe ? s.paid[`${owe.from}>${owe.to}`] : undefined;
   let body: React.ReactNode;
+  // v5.3: the vote is its own inbound and outbound flow, from the Messages link to the confirmation and back.
+  if (s.step === 'live' && s.renJoined) return <RenVote />;
   if (!s.renJoined) {
     body = (<>
       <h1 className="pt-web-h1">Join Lisbon Crew</h1>

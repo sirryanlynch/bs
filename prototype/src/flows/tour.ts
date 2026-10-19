@@ -16,6 +16,8 @@ export function coreTarget(step: string, a: any, s: any): Target | null {
     case 'join': return { sel: '.pt-qr' };
     case 'set':
       if (x.patch?.exploreFeed === false) return { sel: '.b-findhero' };
+      if (x.patch?.renStage === 'web') return { sel: '.rv-link' };
+      if (x.patch?.renStage === 'back') return { sel: '.rv-ok-btn' };
       if (x.patch?.exploreStage) return { sel: '.b-fp-photo, .b-fp-glass', nth: [0, 1, 0, 1][x.patch.exploreStage - 1] ?? 0 };
       if (x.patch?.shortlist) return { sel: '.pt-place' };
       if (x.patch?.pollSent) return { sel: 'button', text: 'Send to' };
@@ -24,7 +26,7 @@ export function coreTarget(step: string, a: any, s: any): Target | null {
       if (x.patch?.recap) return { sel: 'button', text: 'recap' };
       if (x.patch?.shared) return { sel: 'button', text: 'Share' };
       return null;
-    case 'vote': return x.who === 'nic' ? { sel: '.pt-notifbtn' } : x.who === 'ari' ? { sel: 'button', aria: /^Vote|Ramiro/ } : null;
+    case 'vote': return x.who === 'nic' ? { sel: '.pt-notifbtn' } : x.who === 'ari' ? { sel: 'button', aria: /^Vote|Ramiro/ } : x.who === 'ren' ? { sel: '.rv-tile', nth: x.opt ?? 0 } : null;
     case 'toggleLine': return { sel: '.pt-whobtn', aria: new RegExp(`^${x.who === 'ren' ? 'Ren' : 'Nic'}\\b.*${x.line}`, 'i') };
     case 'saveDinner': return { sel: 'button', text: 'Save expense' };
     case 'view': return x.v === 'cash' ? { sel: 'button', text: 'Cash' } : null;
@@ -55,6 +57,8 @@ export const CHAPTER: TourStep[] = [
   { tap: { sel: '.b-fp-glass', nth: 1 }, wait: 1100 },
   { tap: { sel: '.b-fp-photo' }, wait: 1100 },
   { tap: { sel: '.b-fp-glass', nth: 1 }, wait: 1600, say: 'Six picks, sorted by how often crews like yours booked.' },
+  { tap: { sel: '.b-fp-add', nth: 0 }, wait: 900, say: 'Tap + to put a pick in the poll without opening it.' },
+  { tap: { sel: '.b-fp-add', nth: 2 }, wait: 1400, say: 'The button keeps count: Start a poll with 2.' },
   { hash: '#/beyond/place/taberna', wait: 1500, say: 'The place card: photos, ratings, been-here count.' },
   { scroll: 520, wait: 1200 },
   { hash: '#/beyond/explore', wait: 1300, say: 'Back on the feed: places other crews booked and photographed.' },
@@ -71,6 +75,8 @@ export const CHAPTER: TourStep[] = [
   { hash: '#/beyond/expense/scan', wait: 4400, say: 'Add expense: scan the lunch receipt, then check the lines.' },
   { tap: { sel: '.b-bottom button', text: 'Assign items' }, wait: 1300, optional: true, say: 'Assign lines to people. Skip the wine if you did not drink it.' },
   { hash: '#/beyond/album', wait: 1300, say: 'The shared album, by day or by place.' },
+  { tap: { sel: '.b-pcell-who', nth: 1 }, wait: 1600, say: 'Every photo shows who took it. Tap a face to see only their photos.' },
+  { tap: { sel: '.b-album-who-x' }, wait: 800 },
   { scroll: 320, wait: 600 },
   { tap: { sel: '.b-pcell' }, wait: 1600, say: 'Who took it, when and where.' },
   { hash: '#/beyond/invite', wait: 1400, say: 'Invite by link or QR code.' },

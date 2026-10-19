@@ -1,7 +1,7 @@
 import { FindHeader, FindQuestion, findBack, findSkip } from '@sb/components/beyond/findplace';
 import { curateStage, CurateAnswers, ExploreFeed } from '@sb/components/beyond/explore';
 import { COMMUNITY } from '@sb/lib/beyond';
-import { HeaderMenu } from '@sb/components/beyond/headermenu';
+import { HeaderMenu, FlowMenu, MenuNav } from '@sb/components/beyond/headermenu';
 import { AVATAR } from '@sb/assets/solver-assets';
 import React, { useRef, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
@@ -45,12 +45,19 @@ export function CoreHeader(props: { title?: string; sub?: string; onBack?: () =>
     onAvatar={() => { haptic(); bz.go('profile'); }} onPick={id => { haptic(); bz.go(to[id]); }} />;
 }
 
+/** v5.3: gives every in-flow menu button the same destinations as the header menu. */
+export function MenuNavHost({ children }: { children: React.ReactNode }) {
+  const bz = useBridge();
+  const to: Record<string, string> = { notifications: 'activity', album: 'album', expense: 'expense/scan', invite: 'invite', settings: 'profile' };
+  return <MenuNav.Provider value={id => { haptic(); bz.go(to[id]); }}>{children}</MenuNav.Provider>;
+}
+
 export function TopBar({ back, title, sub, right, onBack }: { back?: string; title?: string; sub?: string; right?: React.ReactNode; onBack?: () => void }) {
   return (
     <div className="pt-top">
       {back ? <button type="button" className="pt-back" onClick={() => { haptic(); onBack?.(); }} aria-label={`Back to ${back}`}><Icon name="chevronLeft" size={20} /></button> : <span className="pt-top-sp" />}
       {title && <div className="pt-top-title"><b>{title}</b>{sub && <small>{sub}</small>}</div>}
-      <div className="pt-top-right">{right ?? <span className="pt-top-sp" />}</div>
+      <div className="pt-top-right">{right ?? (back ? <FlowMenu /> : <span className="pt-top-sp" />)}</div>
     </div>
   );
 }

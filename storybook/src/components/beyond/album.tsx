@@ -5,9 +5,11 @@ import { Avatar } from '../core';
 import { Toggle } from '../core';
 import type { Person } from '../../lib/data';
 import { AlbumPhoto, DAYS } from '../../lib/beyond';
+import { AVATAR } from '../../assets/solver-assets';
 
 /* ---------------- PhotoGrid ---------------- */
-export function PhotoGrid({ photos, groupBy = 'day', onOpen, fresh = [] }: { photos: AlbumPhoto[]; groupBy?: 'day' | 'place'; onOpen?: (id: string) => void; fresh?: string[] }) {
+/** v5.3: each photo carries a small face for who took it. Tapping the face shows only that person's photos. */
+export function PhotoGrid({ photos, groupBy = 'day', onOpen, fresh = [], onPerson, names = {} }: { photos: AlbumPhoto[]; groupBy?: 'day' | 'place'; onOpen?: (id: string) => void; fresh?: string[]; onPerson?: (who: string) => void; names?: Record<string, string> }) {
   const groups: [string, string, AlbumPhoto[]][] = [];
   if (groupBy === 'day') [...DAYS].reverse().forEach(d => { const ps = photos.filter(p => p.day === d.id); if (ps.length) groups.push([d.id, d.label, ps]); });
   else Array.from(new Set(photos.map(p => p.place))).forEach(pl => groups.push([pl, pl, photos.filter(p => p.place === pl)]));
@@ -15,13 +17,15 @@ export function PhotoGrid({ photos, groupBy = 'day', onOpen, fresh = [] }: { pho
     <div className="b-pgrid">
       {groups.map(([k, label, ps]) => (
         <section key={k} aria-label={label}>
-          <h3 className="b-pgrid-head"><span>{label}</span><small className="tu-num">{ps.length} {ps.length === 1 ? 'photo' : 'photos'}{groupBy === 'day' ? ` · ${Array.from(new Set(ps.map(p => p.place))).length} places` : ''}</small></h3>
+          <h3 className="b-pgrid-head"><span>{label}</span><small className="tu-num">{ps.length} {ps.length === 1 ? 'photo' : 'photos'}{groupBy === 'day' ? (n => ` · ${n} ${n === 1 ? 'place' : 'places'}`)(new Set(ps.map(p => p.place)).size) : ''}</small></h3>
           <div className="b-pgrid-cells">
             {ps.map((p, i) => (
-              <button key={p.id} type="button" className={`b-pcell ${i === 0 && ps.length > 2 ? 'is-big' : ''} ${fresh.includes(p.id) ? 'is-fresh' : ''}`} onClick={() => onOpen?.(p.id)} aria-label={`Photo at ${p.place}, ${p.time}`}>
-                <img src={p.src} alt="" loading="lazy" />
+              <div key={p.id} className={`b-pcell ${i === 0 && ps.length > 2 ? 'is-big' : ''} ${fresh.includes(p.id) ? 'is-fresh' : ''}`} style={{ ['--i' as any]: i }}>
+                <button type="button" className="b-pcell-open" onClick={() => onOpen?.(p.id)} aria-label={`Photo at ${p.place}, ${p.time}${names[p.who] ? `, by ${names[p.who]}` : ''}`}>
+                  <img src={p.src} alt="" loading="lazy" /></button>
                 {p.publicShared && <span className="b-pcell-flag tu-glass"><BIcon name="globeX" size={12} /></span>}
-              </button>
+                {onPerson && AVATAR[p.who] && <button type="button" className="b-pcell-who" onClick={() => onPerson(p.who)} aria-label={`Show ${names[p.who] ?? p.who}'s photos`}><img src={AVATAR[p.who]} alt="" /></button>}
+              </div>
             ))}
           </div>
         </section>

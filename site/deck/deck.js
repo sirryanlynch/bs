@@ -141,7 +141,7 @@
   $$('iframe').forEach(function (f) { f.addEventListener('pointerenter', function () { cursor.classList.add('out'); }); });
 
   /* ---------- shared device ---------- */
-  var device = $('#device'), proto = $('#protoFrame'), protoHash = '', addHash = '/push';
+  var device = $('#device'), proto = $('#protoFrame'), protoHash = '', addHash = '/poll/new/dinner';
   function slotRect(slot) {
     var x = 0, y = 0, el = slot, s = slot.closest('.slide');
     while (el && el !== s) { x += el.offsetLeft; y += el.offsetTop; el = el.offsetParent; }
@@ -458,14 +458,15 @@
     cBtn.addEventListener('click', play);
     cBtn.addEventListener('animationend', function (e) { if (e.target === cBtn && (e.animationName === 'btnRing' || e.animationName === 'btnFade')) cBtn.classList.remove('btn-in'); });
     function arrive() { play(); later(function () { cBtn.classList.remove('btn-wait'); cBtn.classList.add('btn-in'); }, RM() ? 0 : 850); }
-    enter[4] = function () { reset(); cBtn.classList.remove('btn-in'); cBtn.classList.add('btn-wait'); later(arrive, RM() ? 0 : 1200); };
+    /* v5.3: the success moment lives in slide 6's Motion tile as the Moment demo. */
+    enter[5] = function () { reset(); cBtn.classList.remove('btn-in'); cBtn.classList.add('btn-wait'); later(arrive, RM() ? 0 : 900); };
   })();
 
   /* ---------- 6 · storybook ---------- */
   var sb = $('#sbFrame');
   function sbUrl(path) {
     if (mobileMQ.matches) { var p = path.split('/'); return 'storybook/iframe.html?id=' + p[1] + '&viewMode=' + (p[0] === 'docs' ? 'docs' : 'story'); }
-    return 'storybook/index.html?path=/' + path;
+    return 'storybook/index.html?path=/' + path + '&panel=false';
   }
   $$('.sb-tabs button').forEach(function (t, _, all) { t.addEventListener('click', function () { all.forEach(function (x) { x.setAttribute('aria-selected', x === t); }); sb.src = sbUrl(t.dataset.sb); }); });
   function preload(i) { if (i >= 4 && !sb.src) sb.src = sbUrl('docs/introduction--docs'); }
@@ -489,11 +490,11 @@
     });
     function render() {
       var n = st.v.reduce(function (a, b) { return a + b; }, 0), max = Math.max.apply(null, st.v), lead = st.v.filter(function (x) { return x === max; }).length === 1;
-      var hide = card.dataset.mode === 'hidden' && st.mine === null && !st.closed;
+      var hide = st.mine === null && !st.closed;
       card.dataset.hide = hide ? '1' : '0';
       $('#pcSub').textContent = st.closed ? 'Closed at 7:30 PM · ' + n + ' of 7 voted' : n + ' of 7 voted · closes 7:30 PM';
       $('.pc-as').textContent = st.closed ? (st.v[0] === 5 ? 'Taberna wins with 5 of 7. Booked for 8:30 PM.' : 'Taberna still wins. In the story, Ren and João both pick it: 5 of 7, 71%.')
-        : hide ? 'You are Ren on a web link. Counts stay hidden until you vote.' : st.mine === null ? 'You are Ren on a web link. Tap a place to vote.' : 'Your vote is in. Tap it again to change your mind.';
+        : hide ? 'Tap a place to vote. Counts show once you do.' : 'Your vote is in. Tap it again to change your mind.';
       els.forEach(function (b, i) {
         var p = n ? st.v[i] / n : 0, tag = $('.tag', b);
         b.style.setProperty('--p', p.toFixed(3));
@@ -513,11 +514,9 @@
       st.v[0]++; st.closed = true; render();
     });
     $('#resetPoll').addEventListener('click', reset);
-    $$('.pc-head [data-mode]').forEach(function (t, _, all) { t.addEventListener('click', function () {
-      all.forEach(function (x) { x.setAttribute('aria-checked', x === t); }); card.dataset.mode = t.dataset.mode; reset();
-    }); });
     $('#pollRM').addEventListener('change', function (e) { card.classList.toggle('is-rm', e.target.checked); });
-    enter[8] = function () {
+    enter[7] = function () {
+      stage(1);
       $('#pollRM').checked = RM(); card.classList.toggle('is-rm', RM());
       st = { v: [0, 0, 0], mine: null, closed: false }; render();
       later(function () { reset(); }, RM() ? 0 : 700);
@@ -542,7 +541,7 @@
     $$('.sp-views').forEach(function (g) { var bs = $$('button', g); bs.forEach(function (b) { b.addEventListener('click', function () {
       bs.forEach(function (x) { x.setAttribute('aria-pressed', x === b); }); show(b.dataset.hash);
     }); }); });
-    stage(2);
+    stage(1);
   })();
 
   /* ---------- 8 · untangle (v4 "Instrument", Figma set 121:4174) ---------- */
@@ -638,9 +637,9 @@
       nodes[id] = { g: g, ar: ar, l0: l0, l1: l1, v: v };
     });
     // Mono instrument panel, one per step.
-    var PANELS = [[['IOUS', '6', '7 people'], ['CROSSINGS', String(knots.length), ''], ['FLOW', '$190.60', '']],
+    var PANELS = [[['IOUS', '6', ''], ['CROSSINGS', String(knots.length), ''], ['FLOW', '$190.60', '']],
       [['Σ NET', '0.00 ✓', ''], ['OWED', '+106.10', '', 'owed'], ['OWE', '−106.10', '', 'owe']],
-      [['PAYMENTS', '3', 'was 6'], ['FLOW', '$124.50', ''], ['SAVED', '50%', '3 fewer', 'acc']]];
+      [['PAYMENTS', '3', ''], ['FLOW', '$124.50', ''], ['SAVED', '50%', '', 'acc']]];
     mk('rect', { x: 16, y: 206, width: 330, height: 50, rx: 12, class: 'g-pbox' }, gP);
     [1, 2].forEach(function (k) { mk('line', { x1: 16 + k * 110, x2: 16 + k * 110, y1: 214, y2: 248, class: 'g-pdiv' }, gP); });
     var pg = PANELS.map(function (cells) { var g = mk('g', { class: 'g-pset' }, gP);
@@ -674,17 +673,16 @@
         later(function () { e.tag.style.opacity = 1; e.hd.style.opacity = 1; }, 560 + i * 80);
       });
     }
-    btns.forEach(function (b, i) { b.addEventListener('click', function () { clearTimers(); show(i, true); }); });
-    function replay() {
-      clearTimers(); show(0, true);
-      later(function () { show(1, true); }, RM() ? 1200 : 1500);
-      later(function () { show(2, true); }, RM() ? 2400 : 3000);
-    }
-    $('#replay').addEventListener('click', replay);
+    var nextB = $('#gNext'), restart = $('#gRestart');
+    function sync() { nextB.hidden = view === 2; restart.hidden = view !== 2; }
+    function step(k) { clearTimers(); show(k, true); sync(); }
+    btns.forEach(function (b, i) { b.addEventListener('click', function () { step(i); }); });
+    nextB.addEventListener('click', function () { step(Math.min(2, view + 1)); if (view === 2) restart.focus(); });
+    restart.addEventListener('click', function () { step(0); nextB.focus(); });
     var seen = false;
-    enter[9] = function () { seen = false; show(0, false); if (!mobileMQ.matches) { seen = true; later(replay, 0); } };
-    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting && cur === 9 && !seen) { seen = true; replay(); } }); }, { threshold: .5 }).observe($('.graph'));
-    show(2, false);
+    enter[8] = function () { seen = false; show(0, false); sync(); if (!mobileMQ.matches) { seen = true; later(function () { show(0, true); }, 0); } };
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting && cur === 8 && !seen) { seen = true; show(0, true); } }); }, { threshold: .5 }).observe($('.graph'));
+    show(0, false); sync();
   })();
 
   /* slide_view, outbound_click and jtbd_drawer_open go through analytics/ga.js. sync.js writes the measurement id. */

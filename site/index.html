@@ -151,7 +151,7 @@
 
 <!-- 5 · Why Prism -------------------------------------------------------- -->
 <section class="slide s5" data-title="Why Prism" data-field="5" aria-label="Slide 5 of 10: Why Prism">
-  <div class="in grid-5">
+  <div class="in in-wide grid-5">
     <div class="boards">
       <button type="button" class="board-stage zoomable" data-r aria-label="Enlarge the mood board">
         <img class="on" src="deck/img/board_prism.jpg" alt="Prism mood board: pearl-white glass, one iris accent, a pastel spectrum reserved for big moments" data-board="prism" width="1600" height="900">
@@ -174,11 +174,7 @@
         <li data-r><b>One accent: Iris carries every action.</b><a class="trace" href="#3">From job 3: money shouldn't make it awkward</a></li>
         <li data-r><b>The spectrum is saved for big moments.</b><a class="trace" href="#3">From job 4: feel like the trip was celebrated</a></li>
       </ul>
-      <div class="moment tu-surface" data-r>
-        <div class="glow-wrap" aria-hidden="true"><i class="glow" data-token="spectrum glow · 1 per screen"></i><span class="disc"><svg viewBox="0 0 24 24"><path class="chk" d="M6 12.5l4 4 8-9"/></svg></span></div>
-        <div><p class="moment-t">All squared up.</p><p class="moment-s">3 payments · $124.50 · everyone at $0.00</p><button class="btn btn-ghost btn-s mag" type="button" id="celebrateBtn" data-cursor="Play">Play the moment</button></div>
-      </div>
-      <p class="tokens-line" data-r><code data-token="--color-accent-primary">Iris #6E5BFF</code><code>Instrument Serif</code><code>--spring-moment</code></p>
+      <p class="tokens-line" data-r><code data-token="--color-accent-primary">Iris #6E5BFF</code><code>Instrument Serif</code><code>Spectrum · big moments only</code></p>
     </div>
   </div>
 </section>
@@ -221,6 +217,10 @@
           <li><b>Live</b><span class="tu-num">450 ms, slight overshoot</span><i class="m-live" aria-hidden="true"></i></li>
           <li><b>Moment</b><span class="tu-num">550 ms, for wins only</span><i class="m-moment" aria-hidden="true"></i></li>
         </ul>
+        <div class="moment is-tile" data-token="Moment · 550 ms spring · spectrum glow">
+          <div class="glow-wrap" aria-hidden="true"><i class="glow"></i><span class="disc"><svg viewBox="0 0 24 24"><path class="chk" d="M6 12.5l4 4 8-9"/></svg></span></div>
+          <div><p class="moment-t">All squared up.</p><p class="moment-s tu-num">3 payments · $124.50</p><button class="btn btn-ghost btn-s mag" type="button" id="celebrateBtn" data-cursor="Play">Play the moment</button></div>
+        </div>
         <p class="ds-meta">Reduce Motion swaps every spring for a short fade.</p>
       </div>
       <div class="ds-tile ds-layers tu-surface" data-r>
@@ -283,39 +283,36 @@
       <h2 class="title title-s" data-r>Feel the decision: create, vote, land on the plan.</h2>
     </header>
     <div class="s7-stages" role="tablist" aria-label="The dinner poll, step by step" data-r>
-      <button role="tab" id="st1" aria-controls="sp1" aria-selected="false" data-stage="1"><i>1</i><b>Create the poll</b><span>One sentence, options from Explore</span></button>
-      <button role="tab" id="st2" aria-controls="sp2" aria-selected="true" data-stage="2"><i>2</i><b>Receive and vote</b><span>From the Lock Screen, the app or the web</span></button>
+      <button role="tab" id="st1" aria-controls="sp1" aria-selected="true" data-stage="1"><i>1</i><b>Create the poll</b><span>One sentence, options from Explore</span></button>
+      <button role="tab" id="st2" aria-controls="sp2" aria-selected="false" data-stage="2"><i>2</i><b>Receive and vote</b><span>From the Lock Screen, the app or the web</span></button>
       <button role="tab" id="st3" aria-controls="sp3" aria-selected="false" data-stage="3"><i>3</i><b>Results land on the plan</b><span>Closes 7:30 PM, booked for 8:30 PM</span></button>
       <span class="s7-line" aria-hidden="true"><span></span></span>
     </div>
     <div class="grid-7">
       <div class="s7-panels">
-        <div class="s7-panel" role="tabpanel" id="sp1" aria-labelledby="st1" hidden>
+        <div class="s7-panel" role="tabpanel" id="sp1" aria-labelledby="st1">
           <p class="sp-lead">Ari writes the poll as one sentence: what, when, and when it closes. The three options are Explore picks, with photos.</p>
           <div class="sp-views" role="group" aria-label="Show on the phone">
             <button type="button" aria-pressed="true" data-hash="/poll/new/dinner"><b>The composer</b><span>Saturday dinner, closes 7:30 PM</span></button>
             <button type="button" aria-pressed="false" data-hash="/beyond/explore/curate"><b>Picks from Explore</b><span>Four quick questions, six picks</span></button>
           </div>
         </div>
-        <div class="s7-panel" role="tabpanel" id="sp2" aria-labelledby="st2">
+        <div class="s7-panel" role="tabpanel" id="sp2" aria-labelledby="st2" hidden>
           <div class="sp-views is-row" role="group" aria-label="Show on the phone">
             <button type="button" aria-pressed="true" data-hash="/push"><b>Lock Screen</b><span>One tap votes</span></button>
             <button type="button" aria-pressed="false" data-hash="/live"><b>In the app</b><span>Live bars</span></button>
             <button type="button" aria-pressed="false" data-hash="/live?as=ren"><b>Ren on the web</b><span>No install</span></button>
           </div>
-          <div class="pollcard tu-surface" id="poll" data-mode="visible" data-token="PollOption · fill --color-accent-subtle · --spring-live">
+          <div class="pollcard tu-surface" id="poll" data-mode="hidden" data-token="PollOption · fill --color-accent-subtle · --spring-live">
         <div class="pc-head">
           <div><h3>Saturday dinner</h3><p class="tu-num" id="pcSub">5 of 7 voted · closes 7:30 PM</p></div>
-          <div class="seg seg-s" role="radiogroup" aria-label="Live counts">
-            <button role="radio" aria-checked="true" data-mode="visible">Counts visible</button>
-            <button role="radio" aria-checked="false" data-mode="hidden">Hidden until you vote</button>
-          </div>
+          <span class="pc-hidden"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 10s2.8-5 7.5-5 7.5 5 7.5 5-2.8 5-7.5 5-7.5-5-7.5-5z"/><path d="M3 3l14 14"/></svg>Hidden until you vote</span>
         </div>
         <p class="pc-as">Tap a place to vote and watch the bars move.</p>
         <div class="opts" id="opts"></div>
         <div class="pc-foot"><button class="btn btn-primary mag" type="button" id="closePoll" data-cursor="Close" data-token="--color-accent-primary · --shadow-accent">Close at 7:30 PM</button><button class="btn btn-ghost" type="button" id="resetPoll">Reset</button><label class="rm"><input type="checkbox" id="pollRM"> Reduce Motion</label></div>
       </div>
-          <p class="evidence" id="pollWhy">In one online experiment, showing 80% support instead of 20% moved individual support by about 8 points. The prototype shows live counts because the brief asks for a leader. Hiding them until you vote is the option the research supports. <a href="https://doi.org/10.1177/2053168014547667" target="_blank" rel="noopener">Rothschild &amp; Malhotra, 2014</a></p>
+          <p class="evidence" id="pollWhy">Counts stay hidden until you vote. Seeing a leader early sways people: in one experiment, showing 80% support instead of 20% moved support by about 8 points. <a href="https://doi.org/10.1177/2053168014547667" target="_blank" rel="noopener">Rothschild &amp; Malhotra, 2014</a></p>
         </div>
         <div class="s7-panel" role="tabpanel" id="sp3" aria-labelledby="st3" hidden>
           <p class="sp-lead">At 7:30 PM the poll closes. Taberna da Rua das Flores wins 5 of 7 and goes straight onto Saturday's plan: 8:30 PM, table for 7.</p>
@@ -328,7 +325,7 @@
       </div>
       <div class="s7-phone">
         <div class="slot" data-device="push" aria-hidden="true"></div>
-        <a class="link-out" href="prototype/#/push" id="addOpen" target="_blank" rel="noopener">Open this step full screen</a>
+        <a class="link-out" href="prototype/#/poll/new/dinner" id="addOpen" target="_blank" rel="noopener">Open this step full screen</a>
       </div>
     </div>
   </div>
@@ -343,15 +340,16 @@
           <title id="gTitle">Who owes whom</title><desc id="gDesc">Six IOUs totaling 190 dollars 60 resolve into three payments totaling 124 dollars 50: Ari pays Nic 42.10, Ren pays Ari 18.40, Mara pays João 64.00. Sofia and Tomás net to zero.</desc>
           <defs></defs>
           <g id="tech" aria-hidden="true"></g>
-          <text id="gCounter" class="g-counter" x="16" y="19">03 SOLVED</text><g id="edges"></g><g id="nodes"></g><g id="panel" aria-hidden="true"></g>
+          <text id="gCounter" class="g-counter" x="16" y="19">01 TANGLED</text><g id="edges"></g><g id="nodes"></g><g id="panel" aria-hidden="true"></g>
         </svg>
         <div class="g-ctl">
           <ol class="stepper" role="radiogroup" aria-label="Untangle step">
-            <li><button role="radio" aria-checked="false" data-view="0"><i>1</i>Tangled</button></li>
+            <li><button role="radio" aria-checked="true" data-view="0"><i>1</i>Tangled</button></li>
             <li><button role="radio" aria-checked="false" data-view="1"><i>2</i>Netting</button></li>
-            <li><button role="radio" aria-checked="true" data-view="2"><i>3</i>Solved</button></li>
+            <li><button role="radio" aria-checked="false" data-view="2"><i>3</i>Solved</button></li>
           </ol>
-          <button class="btn btn-ghost btn-s mag" type="button" id="replay" data-cursor="Replay"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10a6 6 0 1 0 2-4.5M4 3v3.5h3.5"/></svg>Replay</button>
+          <button class="btn btn-primary btn-s mag" type="button" id="gNext" data-cursor="Next">Next<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8 5l5 5-5 5"/></svg></button>
+          <button class="g-restart" type="button" id="gRestart" hidden>Start over</button>
         </div>
         <div class="readout tu-num sr-only" aria-live="polite"><p id="ro1"></p><p id="ro2"></p></div>
         </div>
@@ -360,19 +358,16 @@
     <div class="money-copy">
       <p class="eyebrow" data-r>09 · Execution · Settle up<a class="tie" href="#8">From slide 8: then the bill</a></p>
       <h2 class="title" data-r>Six IOUs, three payments.</h2>
-      <p class="sub" data-r>Sofia and Tomás net to zero, so their money passes straight through. Nobody's balance changes.</p>
+      <p class="sub" data-r>Sofia and Tomás net to zero, so they drop out.</p>
       <div class="bill tu-surface" data-r>
-        <p class="k">Dinner at Taberna da Rua das Flores · Ari paid</p>
+        <p class="k">Taberna · Ari paid</p>
         <p class="bill-total tu-num">$248.70</p>
         <dl class="tu-num">
-          <div><dt>Vinho Verde (bottle), split 5 ways</dt><dd>$38.00 ÷ 5 = $7.60</dd></div>
-          <div><dt>Everything else, split 7 ways</dt><dd>$210.70 ÷ 7 = $30.10</dd></div>
-          <div><dt>Ren and Nic</dt><dd>$30.10 each</dd></div>
-          <div><dt>Everyone else</dt><dd>$37.70 each</dd></div>
-          <div class="net"><dt>Ari, across the trip</dt><dd><span class="owe">owes $23.70</span></dd></div>
+          <div><dt>Wine · 5 ways</dt><dd>$7.60</dd></div>
+          <div><dt>Food · 7 ways</dt><dd>$30.10</dd></div>
+          <div class="net"><dt>Ari, trip total</dt><dd><span class="owe">owes $23.70</span></dd></div>
         </dl>
       </div>
-      <p class="money-note" data-r>The graph plays every time balances change. Cash counts only once Nic confirms he got it.</p>
     </div>
   </div>
 </section>
