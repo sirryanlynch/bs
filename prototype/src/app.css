@@ -380,3 +380,4 @@ html.is-embed, html.is-embed body, html.is-embed .prism, html.is-embed .pt-embed
 #emb-cur.is-press { scale: .85; }
 #emb-cur.is-press::after { animation: embRip 420ms ease-out; }
 @keyframes embRip { from { transform: scale(.3); opacity: .9; } to { transform: scale(2.2); opacity: 0; } }
+.prism .pt-feed { padding-bottom: 120px !important; }

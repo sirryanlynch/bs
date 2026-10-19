@@ -26,7 +26,7 @@ export const crewOf = (renJoined: boolean) => ['ari', 'mara', 'nic', 'joao', 'so
 export function Tabs({ active }: { active: string }) {
   const { s, d } = useApp();
   const { go } = useBridge();
-  const map: Record<string, StepId[]> = { trips: ['home'], plan: ['trip'], money: ['money'] };
+  const map: Record<string, StepId[]> = { trips: ['home'], plan: ['trip'], money: ['money'], explore: ['explore'] };
   return (
     <GlobalTabs level={active === 'trips' ? 'home' : 'trip'} active={active} onCreate={k => { haptic(); go(CREATE_ROUTES[k]); }}
       onTab={id => {
@@ -279,6 +279,7 @@ export function Explore() {
           ))}
         </div>
       </div>
+      <Tabs active="explore" />
     </div>
   );
   if (st < QN) return (
