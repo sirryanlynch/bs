@@ -110,7 +110,7 @@ export function Trip() {
     <div className="scr">
       <CoreHeader light onBack={() => d({ t: 'go', step: 'home' })} backLabel="Back to Trips" />
       <div className="scr-scroll">
-        <div className="scr-hero pt-hero">
+        <div className="scr-hero pt-hero pt-hero-card">
           <img src={photo.roofs} alt="" />
           <div className="scr-hero-text"><p>Oct 12 to 17 · last night</p><h1>Lisbon Crew</h1></div>
         </div>

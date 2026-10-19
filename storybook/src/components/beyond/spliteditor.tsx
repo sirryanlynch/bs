@@ -37,50 +37,48 @@ export function SplitEditor({ title, sub, total, lines, people, audience, mode, 
   const lo = Math.min(...vals), hi = Math.max(...vals);
   const toggleAud = (id: string) => { const on = audience.includes(id); if (on && audience.length <= 1) return; onAudience(on ? audience.filter(x => x !== id) : [...audience, id]); };
   const exceptions = lines.filter(l => audience.some(id => !l.who.includes(id))).length;
+  const sheet = open ? lines.find(l => l.id === open) : undefined;
+  // v5.4.3 redesign: compact header, one face row, the mode toggle in the Items header, fixed-height rows, a bottom sheet per line.
   return (
-    <div className="b-se">
-      <section className="b-se-hero" aria-label={`${title}, ${money(total)}`}>
-        <p className="b-se-k">{title}</p>
-        <p className="b-se-total tu-num">{money(total)}</p>
-        <p className="b-se-per tu-num">{mode === 'even' || hi - lo < 0.01 ? <><Amt v={hi} /> each</> : <><Amt v={lo} /> to <Amt v={hi} /> each</>}{sub ? ` · ${sub}` : ''}</p>
-        <span className="b-se-stack"><Stack ps={there} size={28} max={7} /><small className="tu-num">{there.length} of {people.length} there</small></span>
-      </section>
-      <div className="b-se-seg" role="radiogroup" aria-label="How to split">
-        {(['even', 'item'] as SplitMode[]).map(m => <button key={m} type="button" role="radio" aria-checked={mode === m} className={mode === m ? 'is-on' : ''} onClick={() => onMode(m)}>{m === 'even' ? 'Even split' : 'By item'}</button>)}
-        <span className="b-se-seg-lens" style={{ ['--x' as any]: mode === 'even' ? 0 : 1 }} aria-hidden />
-      </div>
-      <section className="b-se-aud">
-        <p className="b-se-h">Who was there <small>{mode === 'even' ? 'Applies to the whole bill' : 'Every line starts with these people'}</small></p>
+    <div className="b-se is-v3">
+      <header className="b-se-head" aria-label={`${title}, ${money(total)}`}>
+        <p className="b-se-k">{title}{sub ? ` · ${sub}` : ''}</p>
+        <p className="b-se-sum"><b className="tu-num">{money(total)}</b><span className="tu-num">{mode === 'even' || hi - lo < 0.01 ? <><Amt v={hi} /> each</> : <><Amt v={lo} />–<Amt v={hi} /> each</>}</span></p>
+      </header>
+      <section className="b-se-aud" aria-label="Who was there">
+        <p className="b-se-h">Who was there <small className="tu-num">{there.length} of {people.length}</small></p>
         <div className="b-se-faces">{people.map(p => { const on = audience.includes(p.id); return (
           <button key={p.id} type="button" className={`b-se-face ${on ? 'is-on' : ''}`} aria-pressed={on} aria-label={`${p.name} ${on ? 'was there' : 'was not there'}`} onClick={() => toggleAud(p.id)}>
-            <span className="b-se-fav"><Face p={p} size={44} /></span><span>{p.you ? 'You' : p.name}</span></button>); })}</div>
+            <span className="b-se-fav"><Face p={p} size={40} /></span><span>{p.you ? 'You' : p.name}</span></button>); })}</div>
       </section>
-      {mode === 'item' ? (
-        <section className="b-se-lines" aria-label="Items">
-          <p className="b-se-h">Items <small>{exceptions ? `${exceptions} ${exceptions === 1 ? 'line has' : 'lines have'} exceptions` : 'Tap faces on a line to change it'}</small></p>
-          {lines.map((l, i) => { const w = l.who.filter(x => audience.includes(x)); const ex = w.length < audience.length; const isOpen = open === l.id; return (
-            <div key={l.id} className={`b-se-line ${ex ? 'is-ex' : ''} ${isOpen ? 'is-open' : ''}`} style={{ ['--i' as any]: i }}>
-              <div className="b-se-row">
-                <span className="b-se-lt"><b>{l.qty && l.qty > 1 ? <span className="tu-num">{l.qty}× </span> : null}{l.label}</b><small className="tu-num">{ex ? `${w.length} of ${audience.length}` : 'Everyone'} · {money(l.price / Math.max(1, w.length))} each{l.hint ? ` · ${l.hint}` : ''}</small></span>
-                <button type="button" className="b-se-who" aria-expanded={isOpen} aria-label={`${l.label}: ${w.length} people. Change who had it`} onClick={() => setOpen(isOpen ? undefined : l.id)}>
-                  <Stack ps={w.map(id => P[id])} size={24} max={4} /></button>
-                <b className="b-se-price tu-num">{money(l.price)}</b>
-              </div>
-              {isOpen && <div className="b-se-pick">{there.map(p => { const on = l.who.includes(p.id); return (
-                <button key={p.id} type="button" className={`b-se-chip ${on ? 'is-on' : ''}`} aria-pressed={on} onClick={() => { if (on && w.length <= 1) return; onLine(l.id, on ? l.who.filter(x => x !== p.id) : [...l.who, p.id]); }}>
-                  <Face p={p} size={28} />{p.you ? 'You' : p.name}</button>); })}</div>}
-            </div>); })}
-        </section>
-      ) : (
-        <section className="b-se-lines is-even" aria-label="Items">
-          <p className="b-se-h">On the bill <small>{lines.length} items, split {there.length} ways</small></p>
-          {lines.map((l, i) => <div key={l.id} className="b-se-line is-quiet" style={{ ['--i' as any]: i }}><div className="b-se-row"><span className="b-se-lt"><b>{l.label}</b></span><b className="b-se-price tu-num">{money(l.price)}</b></div></div>)}
-        </section>
-      )}
-      <section className="b-se-totals" aria-label="Each person pays" aria-live="polite">
-        <p className="b-se-h">Each person pays</p>
-        <div className="b-se-strip">{there.map(p => <span key={p.id} className="b-se-pp"><Face p={p} size={36} /><small>{p.you ? 'You' : p.name}</small><b><Amt v={sh[p.id] ?? 0} /></b></span>)}</div>
+      <section className="b-se-lines" aria-label="Items">
+        <div className="b-se-ih"><p className="b-se-h">Items <small>{mode === 'item' && exceptions ? `${exceptions} with exceptions` : `${lines.length} on the bill`}</small></p>
+          <div className="b-se-seg is-sm" role="radiogroup" aria-label="How to split">
+            {(['even', 'item'] as SplitMode[]).map(m => <button key={m} type="button" role="radio" aria-checked={mode === m} className={mode === m ? 'is-on' : ''} onClick={() => onMode(m)}>{m === 'even' ? 'Even' : 'By item'}</button>)}
+          </div></div>
+        {lines.map(l => { const w = l.who.filter(x => audience.includes(x)); const ex = w.length < audience.length; const Row = mode === 'item' ? 'button' : 'div'; return (
+          <Row key={l.id} {...(mode === 'item' ? { type: 'button', onClick: () => setOpen(l.id), 'aria-label': `${l.label}, ${money(l.price)}, ${w.length} people. Change who had it` } : {})} className={`b-se-row2 ${mode === 'item' ? 'b-se-who' : ''} ${ex && mode === 'item' ? 'is-ex' : ''}`}>
+            <span className="b-se-lt"><b>{l.qty && l.qty > 1 ? <span className="tu-num">{l.qty}× </span> : null}{l.label}</b>
+              {mode === 'item' && <small className="tu-num">{ex ? `${w.length} of ${audience.length}` : 'Everyone'} · {money(l.price / Math.max(1, w.length))} each</small>}</span>
+            {mode === 'item' && <span className="b-se-rf"><Stack ps={w.map(id => P[id])} size={22} max={3} />{ex && <i className="b-se-exm" aria-hidden>−{audience.length - w.length}</i>}</span>}
+            <b className="b-se-price tu-num">{money(l.price)}</b>
+          </Row>); })}
       </section>
+      {mode === 'item' && <section className="b-se-totals" aria-label="Each person pays" aria-live="polite">
+        <div className="b-se-strip">{there.map(p => <span key={p.id} className="b-se-pp"><Face p={p} size={28} /><b><Amt v={sh[p.id] ?? 0} /></b></span>)}</div>
+      </section>}
+      {sheet && (() => { const w = sheet.who.filter(x => audience.includes(x)); return (
+        <div className="b-se-sheetwrap" role="dialog" aria-modal="true" aria-label={`Who had ${sheet.label}`}>
+          <div className="b-se-scrim" onClick={() => setOpen(undefined)} />
+          <div className="b-se-sheet">
+            <span className="b-se-grab" aria-hidden />
+            <p className="b-se-st"><b>{sheet.label}</b><span className="tu-num">{money(sheet.price)} · {money(sheet.price / Math.max(1, w.length))} each</span></p>
+            <div className="b-se-pick">{there.map(p => { const on = sheet.who.includes(p.id); return (
+              <button key={p.id} type="button" className={`b-se-chip ${on ? 'is-on' : ''}`} aria-pressed={on} onClick={() => { if (on && w.length <= 1) return; onLine(sheet.id, on ? sheet.who.filter(x => x !== p.id) : [...sheet.who, p.id]); }}>
+                <Face p={p} size={40} /><span>{p.you ? 'You' : p.name}</span></button>); })}</div>
+            <button type="button" className="b-se-done" onClick={() => setOpen(undefined)}>Done</button>
+          </div>
+        </div>); })()}
     </div>
   );
 }

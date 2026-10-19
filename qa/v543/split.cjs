@@ -1,0 +1,13 @@
+const { chromium } = require('/workspace/tripup/qa/v3/node_modules/playwright-core'); const O = '/workspace/tripup/qa/v543/';
+(async () => { const b = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--no-sandbox'] });
+  const p = await b.newPage({ viewport: { width: 402, height: 874 }, deviceScaleFactor: 2 }); const errs = []; p.on('pageerror', e => errs.push(e.message));
+  await p.goto('http://localhost:8080/prototype/?mode=self&v=' + Date.now() + '#/expense'); await p.waitForTimeout(2000);
+  await p.locator('button', { hasText: 'Split the items' }).first().click({ timeout: 15000 }); await p.waitForTimeout(1200);
+  const top = async () => p.evaluate(() => { const e = document.querySelector('.b-se-lines .b-se-row2'); return e ? Math.round(e.getBoundingClientRect().top / innerHeight * 100) : -1; });
+  console.log('even items start %', await top()); await p.screenshot({ path: O + 'split-even.png' });
+  await p.locator('.b-se-seg button', { hasText: 'By item' }).first().click(); await p.waitForTimeout(800);
+  await p.locator('.b-se-who[aria-label*="Vinho"]').first().click(); await p.waitForTimeout(600);
+  for (const n of ['Ren', 'Nic']) await p.locator('.b-se-sheet .b-se-chip', { hasText: n }).first().click();
+  await p.waitForTimeout(500); await p.screenshot({ path: O + 'split-sheet.png' }); await p.locator('.b-se-done').click(); await p.waitForTimeout(600);
+  console.log('item items start %', await top(), 'save sticky', await p.locator('button:has-text("Save expense")').isVisible()); await p.screenshot({ path: O + 'split-item.png' });
+  console.log('errors', JSON.stringify(errs)); await b.close(); })();

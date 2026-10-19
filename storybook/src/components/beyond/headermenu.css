@@ -44,3 +44,8 @@
 /* v5.4: the capsule fits its items (two now) instead of spanning the bar */
 .prism .b-hm-menu { left: auto; width: calc(var(--n, 3) * 50px + 56px); justify-content: flex-start; }
 .prism .b-hm.is-open .b-hm-item { transition-delay: calc((var(--n, 3) - var(--i)) * 40ms + 40ms); }
+/* v5.4.3: the same white elevated header card everywhere (no peach variant over photos); open state dims the screen. */
+.prism .b-hm.is-light .b-hm-bar { background: color-mix(in srgb, var(--color-bg-surface) 88%, transparent); }
+.prism .b-hm.is-light .b-hm-title h1, .prism .b-hm.is-light .b-hm-title small { color: inherit; }
+.prism .b-hm.is-open .b-hm-bar { background: rgba(255,255,255,.96); box-shadow: inset 0 1px 0 #fff, 0 0 0 1px rgba(28,26,41,.08), 0 18px 36px -18px rgba(60,50,110,.38), 0 0 0 200vmax rgba(14,10,34,.36); }
+.prism .b-hm.is-open .b-hm-item { color: #1C1A29; }

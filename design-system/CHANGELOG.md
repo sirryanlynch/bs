@@ -2,6 +2,17 @@
 
 `tokens.json` is the source of truth. `tokens.css` and the Figma variables are generated from it by `build_tokens.py`. Anyone building on `tokens.*` (for example the Storybook in `/workspace/tripup/storybook/`) should check here before they rebuild.
 
+## v5.4.3 (Oct 19, 2026)
+
+- **Slide 1:** the live phone is replaced by a static showcase of six real screens (Trip home, live poll, Find a place, the plan, By item split, Money). Staggered glass cards, feathered edges, a gentle drift that stops under Reduce Motion. Nothing is clickable.
+- **Top nav:** the v5.4.2 white elevated header card is restored exactly (avatar or Back, the serif title, then the layers icon for Up next and the grid icon with the Iris dot). One component on Home, Plan, Explore, Photos and Money; the peach variant over the trip photo is gone. When it's open, the screen dims behind it. The Up next scrim no longer blocks taps.
+- **Trip home hero:** an inset rounded card with elevation, no longer full width.
+- **Toasts** sit low, above the bottom action, so they no longer cover the You / Whole trip switch.
+- **Who had what, redesigned:** a compact header (place, date, total, per-person range), one "Who was there" face row that sets the default for every line, and Even / By item as a small toggle in the Items header. Rows are fixed height (name, price, a small face stack with a −n exceptions marker). Tap a row to edit its people in a bottom sheet; no accordions. Even split hides per-item people. Items start at about 41% of the screen, and Save expense stays pinned. Lisbon numbers unchanged.
+- **Case study unlinked:** removed from slide 10 (Figma and Storybook now sit in two columns, no gap) and from the prototype footer. The /case-study/ files stay in place.
+- **WCAG:** the + menu, the open top nav and Up next cards are near-opaque frosted (94% white, strong blur) over a 36% dark scrim. Tap the scrim to dismiss. Titles and subtitles meet 4.5:1.
+- Slide 10's dimmed overlay re-checked; it's clean.
+
 ## v5.4.2 (Oct 19, 2026)
 
 - **Deck:** top-bar Reduce motion toggle removed (the OS setting still gives a crossfade). Any autoplaying embed stops the moment you click or tap into it. Phone glass no longer clips at the device corners (slide 10 and every deck phone).

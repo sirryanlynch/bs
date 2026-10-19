@@ -154,7 +154,8 @@
       var r = slotRect(slot), sc = r.w / 422;
       device.style.transform = 'translate3d(' + r.x + 'px,' + r.y + 'px,0) scale(' + sc + ')';
       device.classList.add('on');
-      var want = slot.dataset.device === 'push' ? hold(addHash) : '/' + slot.dataset.device;
+      var dev = slot.dataset.device, want = dev === 'push' ? hold(addHash) : dev === 'home' ? hold('/home') : '/' + dev;
+      device.classList.toggle('is-static', dev === 'home'); /* v5.4.3: slide 1 hero is a still frame, not clickable */
       setProto(want);
     } else device.classList.remove('on');
     if (instant) { void device.offsetWidth; device.classList.remove('no-anim'); }

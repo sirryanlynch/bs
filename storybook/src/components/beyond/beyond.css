@@ -609,3 +609,17 @@
 .prism .p-tabset.is-swap .p-tabbar { animation: p-tabset-in 360ms cubic-bezier(0.32, 0.72, 0, 1) both; }
 @keyframes p-tabset-in { from { opacity: 0; transform: translateY(6px) scale(.97); filter: blur(3px); } }
 .prism[data-motion="reduce"] .p-tabset.is-swap .p-tabbar { animation: b-fade 150ms linear both; }
+/* v5.4.3 WCAG: menus are near-opaque frosted over a dimming scrim, so content behind never bleeds through. Text at least 4.5:1. */
+.prism .b-cmenu-layer > .b-scrim { background: rgba(14, 10, 34, .36) !important; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.prism .b-cmenu, .prism .b-hm.is-pillnav.is-open .b-hm-pill, .prism .b-un-card {
+  background: rgba(255, 255, 255, .94) !important; -webkit-backdrop-filter: blur(30px) saturate(1.6); backdrop-filter: blur(30px) saturate(1.6); }
+.prism .b-cmenu .b-listrow-text b, .prism .b-un-card b { color: #1C1A29; }
+.prism .b-cmenu .b-listrow-text small, .prism .b-un-card small { color: #55526A; }
+.prism .b-hm.is-pillnav.is-open .b-hm-pill { box-shadow: inset 0 1px 0 #fff, 0 0 0 1px rgba(28,26,41,.08), 0 12px 28px -14px rgba(60,50,110,.4), 0 0 0 200vmax rgba(14, 10, 34, .36); }
+.prism .b-hm.is-pillnav.is-open .b-hm-item { color: #1C1A29; }
+.prism .b-un-drop.is-on::before { content: ''; position: fixed; inset: -200vmax; background: rgba(14, 10, 34, .36); z-index: -1; }
+.prism .b-un-drop.is-on { z-index: 1; }
+.theme-dark .prism .b-cmenu, .prism.theme-dark .b-cmenu, .prism.theme-dark .b-un-card, .prism.theme-dark .b-hm.is-pillnav.is-open .b-hm-pill { background: rgba(28, 26, 41, .95) !important; }
+.prism.theme-dark .b-cmenu .b-listrow-text b, .prism.theme-dark .b-un-card b { color: #F4F3FA; }
+.prism.theme-dark .b-cmenu .b-listrow-text small, .prism.theme-dark .b-un-card small { color: #B9B6CC; }
+.prism .b-un-drop.is-on::before { pointer-events: none; } /* v5.4.3: the scrim is visual only; tap-outside still closes via the document listener */

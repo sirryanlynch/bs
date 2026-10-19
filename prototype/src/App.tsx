@@ -383,7 +383,7 @@ export function App() {
       ); })}</ol></nav>
       <BeyondPanel bz={bz} playing={tour && chapter} onPlay={() => { if (tour && chapter) setTour(false); else { setChapter(true); setTour(true); if (mode !== 'tour') { setMode('tour'); trackMode('tour'); } } }} />
       {phone && <BackToDeck cls="is-panel" />}
-      <p className="pt-foot"><a href={DECK_HREF}>Deck</a><a href="../case-study/">Case study</a><a href="../storybook/">Storybook</a><a href="https://www.figma.com/design/z4TesJNPe6UfvgwmWtIA4y/TripUp-Working" target="_blank" rel="noreferrer">Figma</a></p>
+      <p className="pt-foot"><a href={DECK_HREF}>Deck</a><a href="../storybook/">Storybook</a><a href="https://www.figma.com/design/z4TesJNPe6UfvgwmWtIA4y/TripUp-Working" target="_blank" rel="noreferrer">Figma</a></p>
     </aside>
   );
 
