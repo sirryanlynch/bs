@@ -74,6 +74,7 @@ The deck, the case study, the prototype, and Storybook (manager and preview) loa
 Events:
 
 - `slide_view` on the deck, with the slide number and title
+- `jtbd_drawer_open` when the deck opens the jobs drawer
 - `page_view` for each prototype step, using the hash route (`#/live` and the rest)
 - `guided_tour_start` and `guided_tour_complete`
 - `step_jump` from the step list, next, or previous
@@ -82,7 +83,7 @@ Events:
 - `theme_toggle` and `reduce_motion_toggle` in the prototype and in Storybook
 - `tie_break` when the tie-break path is switched
 - `poll_vote`, `expense_added`, and `settle_complete`
-- `outbound_click` for links to the Figma file, the prototype, and Storybook
+- `outbound_click` for new-tab links on the deck and case study, and for Figma, prototype, and Storybook links in the prototype
 - `scroll_depth` on the case study at 25, 50, 75, and 100 percent
 
 Consent mode starts denied for analytics and ads. `analytics_storage` is granted only when a measurement id is set and Do Not Track is off. `anonymize_ip` is on. A cookie banner is unnecessary: with Do Not Track on, gtag.js never loads.

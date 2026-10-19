@@ -67,7 +67,7 @@
   --prim-alpha-rose-20: rgba(240, 112, 135, 0.20);
   --prim-alpha-black-50: rgba(0, 0, 0, 0.50);
 
-  /* ---------- Semantic colour · light ---------- */
+  /* ---------- Semantic color · light ---------- */
   --color-bg-canvas: var(--prim-pearl-100);
   --color-bg-surface: var(--prim-pearl-0);
   --color-bg-surface-raised: var(--prim-pearl-25);

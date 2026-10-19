@@ -6,7 +6,7 @@
 <title>TripUp · A design take-home by Ryan Lynch</title>
 <meta name="description" content="TripUp: one evening in Lisbon, from picking dinner to settling the bill. Research, decisions and a working prototype by Ryan Lynch.">
 <meta name="theme-color" content="#EEEDF2">
-<!-- GA4: analytics/sync.js writes the measurement id into content. Empty keeps the shared loader off. -->
+<!-- GA4 hook: put a measurement ID in content to turn analytics on. Empty means no tracking and no network calls. -->
 <meta name="ga-measurement-id" content="G-T7WTSRRSGT">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 28 28%27%3E%3Crect width=%2728%27 height=%2728%27 rx=%278%27 fill=%27%236E5BFF%27/%3E%3Crect x=%277%27 y=%278%27 width=%2714%27 height=%273%27 rx=%271.5%27 fill=%27white%27/%3E%3Crect x=%277%27 y=%2712.5%27 width=%279%27 height=%273%27 rx=%271.5%27 fill=%27white%27/%3E%3Crect x=%277%27 y=%2717%27 width=%2711.5%27 height=%273%27 rx=%271.5%27 fill=%27white%27/%3E%3C/svg%3E">
 <link rel="preload" href="deck/fonts/InstrumentSerif-Regular.woff2" as="font" type="font/woff2" crossorigin>
@@ -28,7 +28,6 @@
   <div class="bar-tools glass">
     <button class="tool" id="tokensBtn" type="button" aria-pressed="false" title="Show the design tokens behind each element (T)"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 5 3 10l4 5M13 5l4 5-4 5"/></svg><span>Tokens</span></button>
     <button class="tool" id="motionBtn" type="button" aria-pressed="false" title="Preview Reduce Motion (R)"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M10 3.5v13"/></svg><span>Reduce motion</span></button>
-    <button class="tool" id="soundBtn" type="button" aria-pressed="false" title="Ambient sound, off by default (S)"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 8h3l4-3v10l-4-3H4z"/><path class="w" d="M14 7.5a3.5 3.5 0 0 1 0 5"/></svg><span>Sound off</span></button>
     <button class="tool" id="gridBtn" type="button" aria-haspopup="dialog" title="All slides (O)"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="5.5" height="5.5" rx="1.5"/><rect x="11.5" y="3" width="5.5" height="5.5" rx="1.5"/><rect x="3" y="11.5" width="5.5" height="5.5" rx="1.5"/><rect x="11.5" y="11.5" width="5.5" height="5.5" rx="1.5"/></svg><span class="count tu-num" aria-live="polite"><b id="cur">01</b> / 09</span></button>
   </div>
 </header>
@@ -46,15 +45,15 @@
       <p class="lede" data-r>Seven friends, one dinner, one bill. TripUp takes the group from “where do we eat?” to everyone squared up.</p>
       <ol class="scenario" data-r aria-label="The scenario">
         <li><span><b>Ari adds Ren</b> to the Lisbon Crew trip.</span></li>
-        <li><span><b>Ari polls</b> three restaurants. Votes close at 19:30.</span></li>
-        <li><span>The <b>winner goes into</b> the itinerary, booked for 20:30.</span></li>
+        <li><span><b>Ari polls</b> three restaurants. Votes close at 7:30 PM.</span></li>
+        <li><span>The <b>winner goes into</b> the itinerary, booked for 8:30 PM.</span></li>
         <li><span>Ari <b>logs dinner</b>. Ren and Nic are off the wine.</span></li>
         <li><span><b>Debts simplify</b> from six IOUs to three payments.</span></li>
         <li><span>Everyone <b>settles and confirms</b>.</span></li>
       </ol>
       <div class="crew" data-r>
         <div class="avs" aria-hidden="true"><i style="--c:var(--color-celebration-lilac)">A</i><i style="--c:var(--color-celebration-sky)">M</i><i style="--c:var(--color-celebration-apricot)">N</i><i style="--c:var(--color-celebration-mint)">J</i><i style="--c:var(--color-celebration-blush)">S</i><i style="--c:var(--prim-iris-100)">T</i><i class="new" style="--c:#fff">R</i></div>
-        <p><b>Lisbon Crew</b> · 12 to 17 Oct<br><span>Ari, Mara, Nic, João, Sofia, Tomás and Ren Matsuda</span></p>
+        <p><b>Lisbon Crew</b> · Oct 12 to 17<br><span>Ari, Mara, Nic, João, Sofia, Tomás and Ren Matsuda</span></p>
       </div>
     </div>
     <div class="slot" data-device="home" aria-hidden="true"></div>
@@ -98,12 +97,13 @@
       <p class="eyebrow" data-r>03 · Research · Jobs to be done</p>
       <h2 class="title" data-r>The jobs behind one dinner.</h2>
       <p class="sub" data-r>Functional, emotional and social. Each tension points at a decision later in the deck. Hover a person to see the jobs they feel most.</p>
+      <button class="btn btn-ghost btn-s mag jt-open" type="button" id="jtbdBtn" data-r data-cursor="Open" aria-haspopup="dialog" aria-controls="jtbd">Beyond tonight<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10M11 6l4 4-4 4"/></svg></button>
     </header>
     <div class="jobs">
-      <article class="job tu-surface" data-r data-job="1" data-token=".tu-surface · --radius-xl"><p class="k">Functional</p><h3>“Get seven of us to one table tonight.”</h3><p class="tension">The thread grows, nobody commits, and the good tables go.</p><a class="trace" href="#7">Answered on slide 7: a poll that closes at 19:30</a></article>
-      <article class="job tu-surface" data-r data-job="2"><p class="k">Emotional</p><h3>“Help us decide without me being the bossy one.”</h3><p class="tension">Ari wants it settled and doesn't want to own the choice.</p><a class="trace" href="#7">Answered on slide 7: the group votes, picks stay private</a></article>
-      <article class="job tu-surface" data-r data-job="3"><p class="k">Emotional</p><h3>“Don't let money make the last night awkward.”</h3><p class="tension">Nic skipped the wine and shouldn't pay for it. Nobody wants to chase anyone.</p><a class="trace" href="#8">Answered on slide 8: line items and a visible untangle</a></article>
-      <article class="job tu-surface" data-r data-job="4"><p class="k">Social</p><h3>“Feel like the trip was celebrated.”</h3><p class="tension">Settling up feels like admin at the end of something good.</p><a class="trace" href="#5">Answered on slide 5: color saved for that moment</a></article>
+      <article class="job tu-surface" data-r data-job="1" data-token=".tu-surface · --radius-xl"><p class="k">Functional</p><h3>“Get seven of us to one table tonight.”</h3><p class="tension">The thread grows, nobody commits, and the good tables go.</p></article>
+      <article class="job tu-surface" data-r data-job="2"><p class="k">Emotional</p><h3>“Help us decide without me being the bossy one.”</h3><p class="tension">Ari wants it settled and doesn't want to own the choice.</p></article>
+      <article class="job tu-surface" data-r data-job="3"><p class="k">Emotional</p><h3>“Don't let money make the last night awkward.”</h3><p class="tension">Nic skipped the wine and shouldn't pay for it. Nobody wants to chase anyone.</p></article>
+      <article class="job tu-surface" data-r data-job="4"><p class="k">Social</p><h3>“Feel like the trip was celebrated.”</h3><p class="tension">Settling up feels like admin at the end of something good.</p></article>
     </div>
     <div class="personas">
       <p class="label" data-r>Proto-personas from desk research and my FigJam notes. Quotes are illustrative, written by me.</p>
@@ -216,7 +216,7 @@
       <h2 class="title title-s" data-r>Feel the decision.</h2>
       <div class="pollcard tu-surface" data-r id="poll" data-mode="visible" data-token="PollOption · fill --color-accent-subtle · --spring-live">
         <div class="pc-head">
-          <div><h3>Dinner tonight?</h3><p class="tu-num" id="pcSub">5 of 7 voted · closes 19:30</p></div>
+          <div><h3>Dinner tonight?</h3><p class="tu-num" id="pcSub">5 of 7 voted · closes 7:30 PM</p></div>
           <div class="seg seg-s" role="radiogroup" aria-label="Live counts">
             <button role="radio" aria-checked="true" data-mode="visible">Counts visible</button>
             <button role="radio" aria-checked="false" data-mode="hidden">Hidden until you vote</button>
@@ -224,7 +224,7 @@
         </div>
         <p class="pc-as">You are Ren, voting from a web link. Tap a place.</p>
         <div class="opts" id="opts"></div>
-        <div class="pc-foot"><button class="btn btn-primary mag" type="button" id="closePoll" data-cursor="Close" data-token="--color-accent-primary · --shadow-accent">Close at 19:30</button><button class="btn btn-ghost" type="button" id="resetPoll">Reset</button><label class="rm"><input type="checkbox" id="pollRM"> Reduce Motion</label></div>
+        <div class="pc-foot"><button class="btn btn-primary mag" type="button" id="closePoll" data-cursor="Close" data-token="--color-accent-primary · --shadow-accent">Close at 7:30 PM</button><button class="btn btn-ghost" type="button" id="resetPoll">Reset</button><label class="rm"><input type="checkbox" id="pollRM"> Reduce Motion</label></div>
       </div>
       <p class="evidence" data-r id="pollWhy">In one online experiment, showing 80% support instead of 20% moved individual support by about 8 points. The prototype shows live counts because the brief asks for a leader. Hiding them until you vote is the option the research supports. <a href="https://doi.org/10.1177/2053168014547667" target="_blank" rel="noopener">Rothschild &amp; Malhotra, 2014</a></p>
       <div class="states" data-r aria-label="Button states">
@@ -253,10 +253,11 @@
   <div class="in grid-8">
     <div class="graph-col">
       <div class="graph tu-surface" data-r data-token="DebtUntangle · --color-status-owe / owed · font.mono">
-        <svg id="graph" viewBox="20 34 322 186" role="img" aria-labelledby="gTitle gDesc">
-          <title id="gTitle">Who owes whom</title><desc id="gDesc">Six IOUs totaling 190 euros 60 resolve into three payments totaling 124 euros 50: Ari pays Nic 42.10, Ren pays Ari 18.40, Mara pays João 64.00. Sofia and Tomás net to zero.</desc>
-          <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 1 9 5 0 9z" fill="currentColor"/></marker></defs>
-          <text id="gCounter" class="g-counter" x="332" y="50" text-anchor="end">6 IOUs</text><g id="edges"></g><g id="nodes"></g>
+        <svg id="graph" viewBox="0 0 362 268" role="img" aria-labelledby="gTitle gDesc">
+          <title id="gTitle">Who owes whom</title><desc id="gDesc">Six IOUs totaling 190 dollars 60 resolve into three payments totaling 124 dollars 50: Ari pays Nic 42.10, Ren pays Ari 18.40, Mara pays João 64.00. Sofia and Tomás net to zero.</desc>
+          <defs></defs>
+          <g id="tech" aria-hidden="true"></g>
+          <text id="gCounter" class="g-counter" x="16" y="19">03 SOLVED</text><g id="edges"></g><g id="nodes"></g><g id="panel" aria-hidden="true"></g>
         </svg>
         <div class="g-ctl">
           <ol class="stepper" role="radiogroup" aria-label="Untangle step">
@@ -266,8 +267,17 @@
           </ol>
           <button class="btn btn-ghost btn-s mag" type="button" id="replay" data-cursor="Replay"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10a6 6 0 1 0 2-4.5M4 3v3.5h3.5"/></svg>Replay</button>
         </div>
-        <div class="readout tu-num" aria-live="polite"><p id="ro1"></p><p id="ro2"></p></div>
+        <div class="readout tu-num sr-only" aria-live="polite"><p id="ro1"></p><p id="ro2"></p></div>
         </div>
+      <figure class="cashrow" data-r aria-label="The cash path, from the built prototype">
+        <ol>
+          <li><a href="prototype/#/settle/cash" target="_blank" rel="noopener"><img src="deck/img/cash-1-count.jpg" alt="Cash for Nic: hand over $42.00, rounded from $42.10, $0.10 carried" width="140" height="304" loading="lazy"><span><b>1</b>Count and round</span></a></li>
+          <li><a href="prototype/#/settle/pending" target="_blank" rel="noopener"><img src="deck/img/cash-2-pending.jpg" alt="Marked as paid, with a 5 second undo" width="140" height="304" loading="lazy"><span><b>2</b>Slide, then undo window</span></a></li>
+          <li><a href="prototype/#/settle/confirm?as=nic" target="_blank" rel="noopener"><img src="deck/img/cash-3-confirm.jpg" alt="Nic's phone: Did Ari pay you? Yes, I got $42.00" width="140" height="304" loading="lazy"><span><b>3</b>Nic confirms</span></a></li>
+          <li><a href="prototype/#/settle/confirmed" target="_blank" rel="noopener"><img src="deck/img/cash-4-confirmed.jpg" alt="Money screen: Nic confirmed $42.00, 1 of 3 settled" width="140" height="304" loading="lazy"><span><b>4</b>1 of 3 settled</span></a></li>
+        </ol>
+        <figcaption>Cash path in the prototype. Balances move only when Nic confirms.</figcaption>
+      </figure>
     </div>
     <div class="money-copy">
       <p class="eyebrow" data-r>08 · Decision · Money</p>
@@ -275,13 +285,13 @@
       <p class="sub" data-r>Sofia and Tomás net to zero, so their money passes straight through. Nobody's balance changes.</p>
       <div class="bill tu-surface" data-r>
         <p class="k">Dinner at Taberna da Rua das Flores · Ari paid</p>
-        <p class="bill-total tu-num">€248.70</p>
+        <p class="bill-total tu-num">$248.70</p>
         <dl class="tu-num">
-          <div><dt>Vinho Verde, split 5 ways</dt><dd>€38.00 ÷ 5 = €7.60</dd></div>
-          <div><dt>Everything else, split 7 ways</dt><dd>€210.70 ÷ 7 = €30.10</dd></div>
-          <div><dt>Ren and Nic</dt><dd>€30.10 each</dd></div>
-          <div><dt>Everyone else</dt><dd>€37.70 each</dd></div>
-          <div class="net"><dt>Ari, across the trip</dt><dd><span class="owe">owes €23.70</span></dd></div>
+          <div><dt>Vinho Verde, split 5 ways</dt><dd>$38.00 ÷ 5 = $7.60</dd></div>
+          <div><dt>Everything else, split 7 ways</dt><dd>$210.70 ÷ 7 = $30.10</dd></div>
+          <div><dt>Ren and Nic</dt><dd>$30.10 each</dd></div>
+          <div><dt>Everyone else</dt><dd>$37.70 each</dd></div>
+          <div class="net"><dt>Ari, across the trip</dt><dd><span class="owe">owes $23.70</span></dd></div>
         </dl>
       </div>
       <blockquote class="quote" data-r>Splitwise keeps simplify off by default because it "can cause confusion when people aren't expecting it." So TripUp shows the untangling every time.
@@ -297,11 +307,11 @@
       <p class="eyebrow" data-r>09 · The product</p>
       <h2 class="display" data-r>See it <em>on screen.</em></h2>
       <p class="lede" data-r>Thirteen steps, all clickable, with a guided tour. Play as Ari, Nic or Ren.</p>
-      <a class="btn btn-hero mag" data-r href="./prototype/" data-cursor="Open" data-token="--color-accent-primary · --shadow-accent">Open the prototype<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10M11 6l4 4-4 4"/></svg></a>
+      <a class="btn btn-hero mag" data-r href="./prototype/" target="_blank" rel="noopener" data-cursor="Open" data-token="--color-accent-primary · --shadow-accent">Open the prototype<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10M11 6l4 4-4 4"/></svg></a>
       <nav class="more" aria-label="More" data-r>
-        <a class="mag" href="https://www.figma.com/design/z4TesJNPe6UfvgwmWtIA4y/TripUp-Working" target="_blank" rel="noopener"><b>Figma</b><span>Hi-fi screens and edge cases</span></a>
-        <a class="mag" href="./storybook/"><b>Storybook</b><span>Prism tokens and components</span></a>
-        <a class="mag" href="./case-study/"><b>Case study</b><span>Decisions, metrics, before and after</span></a>
+        <a href="https://www.figma.com/design/z4TesJNPe6UfvgwmWtIA4y/TripUp-Working" target="_blank" rel="noopener" data-cursor-quiet><b>Figma</b><span>Hi-fi screens and edge cases</span></a>
+        <a href="./storybook/" target="_blank" rel="noopener" data-cursor-quiet><b>Storybook</b><span>Prism tokens and components</span></a>
+        <a href="./case-study/" target="_blank" rel="noopener" data-cursor-quiet><b>Case study</b><span>Research, decisions and metrics</span></a>
       </nav>
       <p class="next-note" data-r>Next, proposed and not run: test whether people understand the untangling, and whether guests act without installing.</p>
     </div>
@@ -322,7 +332,7 @@
   <ol class="progress" id="progress"></ol>
   <button class="nav-btn mag" id="next" type="button" aria-label="Next slide" data-cursor="Next"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m8 5 5 5-5 5"/></svg></button>
 </nav>
-<p class="hint" id="hint">Arrow keys, scroll or swipe · <kbd>O</kbd> for all slides · <kbd>T</kbd> for tokens</p>
+<p class="hint" id="hint">Arrow keys or swipe · <kbd>O</kbd> for all slides · <kbd>T</kbd> for tokens</p>
 
 <div class="overview" id="overview" role="dialog" aria-modal="true" aria-label="All slides" hidden>
   <div class="ov-in"><div class="ov-head"><h2>All slides</h2><button class="btn btn-ghost" type="button" id="ovClose">Close <kbd>Esc</kbd></button></div><ol class="ov-grid" id="ovGrid"></ol></div>
@@ -336,8 +346,63 @@
   </div>
 </div>
 
+<div class="drawer jtbd" id="jtbd" role="dialog" aria-modal="true" aria-labelledby="jtTitle" hidden>
+  <div class="jt-in glass">
+    <div class="ov-head jt-head">
+      <div><p class="eyebrow">03 · Research · Jobs across the trip</p><h2 id="jtTitle">Beyond tonight</h2></div>
+      <button class="btn btn-ghost" type="button" data-jt-close>Close <kbd>Esc</kbd></button>
+    </div>
+    <p class="jt-lede">The same crew has jobs before, during and after the trip. The prototype shows one slice: the last evening in Lisbon.</p>
+    <div class="jt-line" aria-hidden="true"><span>Before</span><span>During</span><span>After</span><i class="jt-slice"><b>The Lisbon evening</b></i></div>
+    <div class="jt-cols" data-scrollable>
+      <section class="jt-phase jt-phase-before" aria-labelledby="jtP0">
+        <h3 id="jtP0"><i class="tu-num">01</i>Before the trip</h3><p class="jt-blurb">Plans, money and logistics before anyone packs.</p>
+        <details class="jt-job"><summary><span class="jt-t">Agree on where and when</span><span class="jt-tag is-road">Roadmap</span></summary>
+          <dl><div><dt>Functional</dt><dd>Lock dates and a place the whole crew can make.</dd></div><div><dt>Emotional</dt><dd>Feel heard without having to argue for it.</dd></div><div><dt>Social</dt><dd>Keep the plan from belonging to whoever posts most.</dd></div><div class="jt-ten"><dt>Tension</dt><dd>A 40-message thread where the loudest option wins by default.</dd></div></dl>
+        </details>
+        <details class="jt-job"><summary><span class="jt-t">Set a shared budget</span><span class="jt-tag is-road">Roadmap</span></summary>
+          <dl><div><dt>Functional</dt><dd>Agree on a rough spend per person before anyone books.</dd></div><div><dt>Emotional</dt><dd>Say what I can afford without feeling judged.</dd></div><div><dt>Social</dt><dd>Keep friends with different budgets on the same trip.</dd></div><div class="jt-ten"><dt>Tension</dt><dd>Nobody wants to be the one who names a number.</dd></div></dl>
+        </details>
+        <details class="jt-job"><summary><span class="jt-t">Pool the logistics</span><span class="jt-tag is-road">Roadmap</span></summary>
+          <dl><div><dt>Functional</dt><dd>Keep stays, flights and documents in one place.</dd></div><div><dt>Emotional</dt><dd>Trust that nothing important is buried in a chat.</dd></div><div><dt>Social</dt><dd>Share the admin so one person isn't the travel agent.</dd></div><div class="jt-ten"><dt>Tension</dt><dd>Confirmations scattered across inboxes and screenshots.</dd></div></dl>
+        </details>
+      </section>
+      <section class="jt-phase jt-phase-during" aria-labelledby="jtP1">
+        <h3 id="jtP1"><i class="tu-num">02</i>During</h3><p class="jt-blurb">Decisions and spending, live, with the whole crew.</p>
+        <details class="jt-job is-proto"><summary><span class="jt-t">Decide fast as a group</span><span class="jt-tag is-proto">In the prototype</span></summary>
+          <dl><div><dt>Functional</dt><dd>Pick one dinner spot before the good tables go.</dd></div><div><dt>Emotional</dt><dd>Make the call without being the bossy one.</dd></div><div><dt>Social</dt><dd>Everyone sees their vote count.</dd></div><div class="jt-ten"><dt>Tension</dt><dd>The thread stalls, nobody commits, and the evening drifts.</dd></div></dl>
+        </details>
+        <details class="jt-job is-proto"><summary><span class="jt-t">Keep everyone in the loop</span><span class="jt-tag is-proto">In the prototype</span></summary>
+          <dl><div><dt>Functional</dt><dd>Bring a late joiner in from a web link, with no install.</dd></div><div><dt>Emotional</dt><dd>Ren feels included from the first tap, even on the last night.</dd></div><div><dt>Social</dt><dd>Nobody has to ask what the plan is.</dd></div><div class="jt-ten"><dt>Tension</dt><dd>A late joiner faces days of chat to scroll back through.</dd></div></dl>
+        </details>
+        <details class="jt-job is-proto"><summary><span class="jt-t">Log spend and split it fairly</span><span class="jt-tag is-proto">In the prototype</span></summary>
+          <dl><div><dt>Functional</dt><dd>Record the bill once, with line items, as it happens.</dd></div><div><dt>Emotional</dt><dd>Log it in seconds and get back to the table.</dd></div><div><dt>Social</dt><dd>Ren and Nic skipped the wine, so they don't pay for it.</dd></div><div class="jt-ten"><dt>Tension</dt><dd>Even splits feel unfair, and asking for an exception feels petty.</dd></div></dl>
+        </details>
+      </section>
+      <section class="jt-phase jt-phase-after" aria-labelledby="jtP2">
+        <h3 id="jtP2"><i class="tu-num">03</i>After</h3><p class="jt-blurb">Closing out the money, then keeping the trip alive.</p>
+        <details class="jt-job is-proto"><summary><span class="jt-t">Settle up without awkwardness</span><span class="jt-tag is-proto">In the prototype</span></summary>
+          <dl><div><dt>Functional</dt><dd>Turn six IOUs into the fewest payments.</dd></div><div><dt>Emotional</dt><dd>Close the trip with nothing hanging over anyone.</dd></div><div><dt>Social</dt><dd>Nobody has to chase a friend for money.</dd></div><div class="jt-ten"><dt>Tension</dt><dd>Reminders feel like nagging, so debts linger for weeks.</dd></div></dl>
+        </details>
+        <details class="jt-job"><summary><span class="jt-t">Relive and share the trip</span><span class="jt-tag is-road">Roadmap</span></summary>
+          <dl><div><dt>Functional</dt><dd>Collect the places, photos and moments in one recap.</dd></div><div><dt>Emotional</dt><dd>Hold on to the good part once the money is done.</dd></div><div><dt>Social</dt><dd>Share something the whole crew is glad to look back on.</dd></div><div class="jt-ten"><dt>Tension</dt><dd>The trip ends on a balance sheet instead of a memory.</dd></div></dl>
+          <p class="jt-extra">First step in the prototype: the All squared up moment.</p>
+        </details>
+        <details class="jt-job"><summary><span class="jt-t">Start the next one</span><span class="jt-tag is-road">Roadmap</span></summary>
+          <dl><div><dt>Functional</dt><dd>Spin up a new trip with the same crew in one step.</dd></div><div><dt>Emotional</dt><dd>Keep the momentum while everyone still feels close.</dd></div><div><dt>Social</dt><dd>The crew stays a crew between trips.</dd></div><div class="jt-ten"><dt>Tension</dt><dd>Every new trip starts from an empty chat.</dd></div></dl>
+        </details>
+      </section>
+    </div>
+    <div class="jt-foot">
+      <p class="legend"><span><i class="jt-dot is-proto"></i>In the prototype</span><span><i class="jt-dot is-road"></i>Roadmap</span><span class="jt-howto">Open a card for its functional, emotional and social job.</span></p>
+      <p class="honest">Jobs outside the Lisbon evening are hypotheses from desk research, to validate with real groups.</p>
+    </div>
+  </div>
+</div>
+
 <div class="cursor" aria-hidden="true"><i class="c-dot"></i><i class="c-ring"><span></span></i></div>
 <script src="analytics/config.js"></script>
+<script>window.TRIPUP_GA_OWN_OUTBOUND = true;</script>
 <script src="analytics/ga.js"></script>
 <script src="deck/data.js"></script>
 <script src="deck/deck.js"></script>

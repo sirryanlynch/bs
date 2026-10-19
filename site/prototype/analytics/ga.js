@@ -32,7 +32,9 @@
   w.tripupTrack = function () {};
 
   function bindBehaviors() {
-    d.addEventListener("click", function (event) {
+    if (w.TRIPUP_GA_OWN_OUTBOUND) {
+      /* This page sends its own outbound_click (deck and case study). */
+    } else d.addEventListener("click", function (event) {
       var node = event.target;
       if (!node || !node.closest) return;
       var anchor = node.closest("a");

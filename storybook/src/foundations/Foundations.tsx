@@ -4,6 +4,7 @@ import { PrismRoot, useReducedMotion, usePrism } from '../lib/PrismRoot';
 import { photo } from '../lib/data';
 import { Icon, iconNames, Render3D } from '../components/Icon';
 import { Button, Toggle } from '../components/core';
+import { MotionTokenDemos, MotionPatterns, HapticsTable } from './MotionDemos';
 
 const T: any = tokens;
 const sem = T.color.semantic as Record<string, any>;
@@ -30,7 +31,7 @@ function ModeColumn({ mode }: { mode: 'light' | 'dark' }) {
 export function ColorRoles() {
   return (
     <div className="doc">
-      <p className="doc-lead">38 semantic colours alias 66 primitives. Components only read semantic tokens, so the dark mode swap is a single attribute on the root. Iris is the only acting colour.</p>
+      <p className="doc-lead">38 semantic colors alias 66 primitives. Components only read semantic tokens, so the dark mode swap is a single attribute on the root. Iris is the only acting color.</p>
       <div className="doc-grid">
         {Object.entries(roles).filter(([k]) => !k.startsWith('_')).map(([k, v]) => (
           <div className="doc-swatch" key={k}>
@@ -56,7 +57,7 @@ export function ColorRoles() {
 
 export function TypeScale() {
   const type = T.type as Record<string, any>;
-  const sample = (k: string) => k.startsWith('display/xl') ? 'Lisbon' : k.startsWith('display/l') ? '€248.70' : k.startsWith('display/m') ? 'Taberna da Rua das Flores' : k.includes('celebrate') ? 'All squared up' : k.includes('amount') ? '€42.10' : k.includes('title') ? 'Dinner on Friday?' : 'Mara paid for the Alfama flat, split seven ways.';
+  const sample = (k: string) => k.startsWith('display/xl') ? 'Lisbon' : k.startsWith('display/l') ? '$248.70' : k.startsWith('display/m') ? 'Taberna da Rua das Flores' : k.includes('celebrate') ? 'All squared up' : k.includes('amount') ? '$42.10' : k.includes('title') ? 'Dinner on Friday?' : 'Mara paid for the Alfama flat, split seven ways.';
   return (
     <div className="doc">
       <p className="doc-lead">SF Pro carries the interface. Instrument Serif is the display face, used for trip names, big amounts and celebration lines only. On the web the UI face falls back to Inter.</p>
@@ -131,46 +132,19 @@ export function Elevation() {
   );
 }
 
-function MotionCard({ name, curve, dur, note }: { name: string; curve: string; dur: number; note: string }) {
-  const reduce = useReducedMotion();
-  const [go, setGo] = useState(false);
-  const transition = reduce ? 'left 0ms, opacity 240ms' : `left ${dur}ms ${curve}`;
-  return (
-    <div className="doc-motion-card">
-      <b style={{ font: 'var(--type-ui-headline)' }}>{name}</b>
-      <code>{curve} · {dur}ms</code>
-      <div className={`doc-motion-track ${go ? 'is-go' : ''}`} onClick={() => setGo(!go)}><span className="doc-motion-dot" style={{ transition }} /></div>
-      <span style={{ font: 'var(--type-ui-footnote)', color: 'var(--color-text-secondary)' }}>{note}</span>
-      <Button label={go ? 'Back' : 'Play'} size="small" variant="secondary" onClick={() => setGo(!go)} />
-    </div>
-  );
-}
 export function Motion() {
   const reduce = useReducedMotion();
   const m = T.motion;
   return (
     <div className="doc">
-      <p className="doc-lead">Springs for anything you touch, easing curves for things the system does. Use the Motion toolbar control to preview Reduce Motion: movement collapses to fades and celebrations drop their particles. Now: <b>{reduce ? 'Reduce Motion' : 'Rich motion'}</b>.</p>
-      <div className="doc-motion">
-        <MotionCard name="spring.ui" curve="cubic-bezier(0.32, 0.72, 0, 1)" dur={350} note="Sheets, presses, toggles. response 0.35, damping 0.85" />
-        <MotionCard name="spring.live" curve="cubic-bezier(0.34, 1.32, 0.64, 1)" dur={450} note="Poll fills, tab lens, segmented thumb. Slight overshoot." />
-        <MotionCard name="spring.moment" curve="cubic-bezier(0.34, 1.56, 0.64, 1)" dur={550} note="Celebration entrances only." />
-        <MotionCard name="ease.standard" curve="cubic-bezier(0.2, 0, 0, 1)" dur={240} note="Colour, opacity, layout shifts." />
-        <MotionCard name="ease.enter" curve="cubic-bezier(0.05, 0.7, 0.1, 1)" dur={400} note="Elements arriving on screen." />
-        <MotionCard name="duration.merge" curve="cubic-bezier(0.32, 0.72, 0, 1)" dur={700} note="Debt simplify: 6 IOUs into 3 payments." />
-      </div>
+      <p className="doc-lead">Springs for anything you touch, easing curves for things the system does. Each card plays the token on a real TripUp component. Cards follow the Motion toolbar control; flip one to Rich or Reduced to compare. Now: <b>{reduce ? 'Reduce Motion' : 'Rich motion'}</b>.</p>
+      <MotionTokenDemos />
       <h2>Patterns, rich and reduced</h2>
-      <div className="doc-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))' }}>
-        {Object.entries(m.patterns).map(([k, v]: any) => (
-          <div className="doc-card" key={k}><b style={{ font: 'var(--type-ui-headline)' }}>{k}</b>
-            <p style={{ font: 'var(--type-ui-footnote)', marginTop: 8 }}><b>Rich</b> {v.rich}</p>
-            <p style={{ font: 'var(--type-ui-footnote)', color: 'var(--color-text-secondary)', marginTop: 4 }}><b>Reduced</b> {v.reduced}</p></div>
-        ))}
-      </div>
+      <MotionPatterns patterns={m.patterns} />
       <h2>Rules</h2>
       <ul style={{ font: 'var(--type-ui-subhead)', color: 'var(--color-text-secondary)', margin: 0 }}>{m.rules.map((r: string) => <li key={r}>{r}</li>)}</ul>
       <h2>Haptics</h2>
-      <div className="doc-grid">{Object.entries(m.haptics).map(([k, v]: any) => <div className="doc-card" key={k}><b>{k}</b><div style={{ font: 'var(--type-ui-footnote)', color: 'var(--color-text-secondary)' }}>{v}</div></div>)}</div>
+      <HapticsTable haptics={m.haptics} />
     </div>
   );
 }

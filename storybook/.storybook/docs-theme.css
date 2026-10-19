@@ -1,0 +1,16 @@
+/* Docs theming driven by the toolbar globals. preview.tsx sets data-theme, data-motion and
+   data-transparency on the preview document root; tokens.css already maps :root[data-theme="dark"]. */
+html, body { background: var(--color-bg-canvas); color: var(--color-text-primary); }
+html { transition: background-color .24s ease; }
+
+/* Reduce Transparency and Reduce Motion apply to the whole document, docs pages included. */
+:root:root[data-transparency="reduce"] { --color-glass-fill: var(--color-bg-surface-raised); --color-glass-fill-thick: var(--color-bg-surface-raised); --glass-backdrop: none; --glass-backdrop-thick: none; }
+:root:root[data-transparency="reduce"] .tu-glass, :root:root[data-transparency="reduce"] .tu-glass-thick { -webkit-backdrop-filter: none; backdrop-filter: none; }
+:root:root[data-motion="reduce"] { --duration-merge: 240ms; --duration-moment-max: 0ms; --spring-ui: ease 240ms; --spring-live: ease 200ms; --spring-moment: ease 240ms; }
+:root[data-motion="reduce"] .sbdocs *, :root[data-motion="reduce"] .sbdocs *::before, :root[data-motion="reduce"] .sbdocs *::after { animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+
+/* MDX blocks that sit outside a PrismRoot: always use ink tokens so text never inherits a light
+   color-scheme default on a light card (the old Do / Don't bug). */
+.sbdocs .doc-do, .sbdocs .doc-dont, .doc-do, .doc-dont { color: var(--color-text-primary); background: var(--color-bg-surface); }
+.doc-do b, .doc-dont b { color: var(--color-text-primary); font-weight: 650; }
+.doc-do ::selection, .doc-dont ::selection { background: var(--color-accent-subtle); color: var(--color-text-primary); }
