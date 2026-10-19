@@ -2,6 +2,20 @@
 
 `tokens.json` is the source of truth. `tokens.css` and the Figma variables are generated from it by `build_tokens.py`. Anyone building on `tokens.*` (for example the Storybook in `/workspace/tripup/storybook/`) should check here before they rebuild.
 
+## v5.4.7 (Oct 19, 2026)
+
+- **Trip home header:** the layers (Up next) button is back. It's the same circular icon button as on Home, with the same color and contrast; it had been rendered white-on-white. Its count badge shows when items are pending. The Lisbon Crew hero now sits 12px below the header, like Home. Plan, Explore, Photos and Money checked. Nothing else changed.
+
+## v5.4.7 (Oct 19, 2026)
+
+- **Trip home header:** the Up next (layers) button is restored, the same as on Home. The hero sits 12px below the header.
+- **Start a poll** on the Dinner card opens Find a place, not the invite sheet.
+- **Find a place picks:** "Start a poll with N" opens the composer, and Send goes to Poll sent.
+- **Price point:** the $ / $$ / $$$ / Any labels are smaller (26px).
+- **Find a place:** the master header card on every step, with the step dots and Skip under it.
+- **Guided tour:** no on-screen cursor, ripple or Scroll hints; it still acts and advances.
+- **Deck embeds:** a small pointer glides to each tap and presses; it hides once you tap in.
+
 ## v5.4.6 (Oct 19, 2026)
 
 - **Slide 1 polish:** all 8 screens recaptured the same way, each with the status bar and Dynamic Island. The top fade is stronger, so no card sits under the Tokens and 01/10 pill. The side fade is removed and the grid fades only at the top and bottom, so the cards stay crisp. The Lisbon photo keeps its own fade into the text. Nothing else changed.

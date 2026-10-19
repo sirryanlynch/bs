@@ -89,7 +89,7 @@ export function CurateScreen() {
       <div className={`b-scroll b-cmp-scroll ${st >= 4 ? 'has-cta' : 'is-q'}`}>
         {st < 4 ? <FindQuestion answers={a} onAnswer={set} prev={prev} /> : <FindPicks answers={a} list={list} onOpen={id => go(`place/${id}`)} picked={picked} onToggle={toggle} onEdit={edit} />}
       </div>
-      {st >= 4 && <div className="b-cmp-bottom"><button type="button" className="b-cmp-cta" onClick={() => { d({ t: 'patch', k: 'poll', v: { options: chosen.map(p => ({ label: p.name, from: `${p.type} · ${p.price} · ${distanceText(p, m)}`, photo: p.photos[0] })), category: (['food', 'drinks', 'culture', 'active'] as const)[a.after != null && a.after >= 0 ? a.after : 0], title: '', what: '' } }); go('explore/curate'); }}>{picked.length ? `Start a poll with ${picked.length}` : 'Start a poll with the top 3'}</button>
+      {st >= 4 && <div className="b-cmp-bottom"><button type="button" className="b-cmp-cta" onClick={() => { d({ t: 'patch', k: 'poll', v: { options: chosen.map(p => ({ label: p.name, from: `${p.type} · ${p.price} · ${distanceText(p, m)}`, photo: p.photos[0] })), category: (['food', 'drinks', 'culture', 'active'] as const)[a.after != null && a.after >= 0 ? a.after : 0], title: '', what: '' } }); go('poll/new'); }}>{picked.length ? `Start a poll with ${picked.length}` : 'Start a poll with the top 3'}</button>
         <p className="b-cmp-rule" aria-live="polite">{picked.length ? (picked.length === 1 ? 'Add one more, or start with 1 and add more later.' : `Your ${picked.length} picks become the options.`) : 'Tap + to choose, or start with the top 3.'}</p></div>}
     </div>
   );

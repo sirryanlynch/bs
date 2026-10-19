@@ -253,7 +253,7 @@ export function App() {
         if (tookRef.current || !FLOW.some(h => location.hash.split('?')[0] === h)) return;
         if (sel === '__loop') { const q = location.hash.includes('hold=1') ? '?hold=1' : ''; location.hash = '#/beyond/explore' + q; window.setTimeout(() => { location.hash = FLOW[0] + q; }, 60); return; }
         const [q, n] = sel.split(' >> '); const el = document.querySelectorAll<HTMLElement>(`.pt-screen-inner ${q}, .phone-screen ${q}`)[+(n ?? 0)] ?? document.querySelectorAll<HTMLElement>(q)[+(n ?? 0)];
-        el?.click(); }, at)); }); };
+        if (el) embedTap(el, () => !tookRef.current); }, at)); }); };
     run(); const on = () => { if (location.hash.split('?')[0] === FLOW[0]) window.setTimeout(run, 50); else if (!FLOW.includes(location.hash.split('?')[0])) { timers.forEach(clearTimeout); timers = []; } };
     window.addEventListener('hashchange', on); return () => { window.removeEventListener('hashchange', on); timers.forEach(clearTimeout); };
   }, [motion]);
@@ -417,3 +417,14 @@ export function App() {
   );
 }
 void initial; void STREAM;
+
+/* v5.4.7: deck embeds show a small pointer that glides to each tap target, presses, then taps. It hides once the user taps in. */
+function embedTap(el: HTMLElement, ok: () => boolean) {
+  let c = document.getElementById('emb-cur');
+  if (!c) { c = document.createElement('div'); c.id = 'emb-cur'; c.setAttribute('aria-hidden', 'true'); document.body.appendChild(c);
+    window.addEventListener('pointerdown', e => { if (e.isTrusted) document.getElementById('emb-cur')?.classList.add('is-gone'); }, true); }
+  if (c.classList.contains('is-gone')) { el.click(); return; }
+  const r = el.getBoundingClientRect(); c.classList.add('is-on'); c.classList.remove('is-press');
+  c.style.transform = `translate(${r.left + r.width / 2 - 4}px, ${r.top + r.height / 2 - 2}px)`;
+  window.setTimeout(() => { if (!ok()) return; c!.classList.add('is-press'); window.setTimeout(() => { if (ok()) el.click(); c!.classList.remove('is-press'); }, 160); }, 560);
+}

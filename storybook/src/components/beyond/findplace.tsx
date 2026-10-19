@@ -1,3 +1,4 @@
+import { HeaderMenu } from './headermenu';
 import React from 'react';
 import './beyond.css';
 import './composer.css';
@@ -41,11 +42,10 @@ export function FindDots({ at, total = 4 }: { at: number; total?: number }) {
 export function FindHeader({ answers, onBack, onSkip }: { answers: CurateAnswers; onBack?: () => void; onSkip?: () => void }) {
   const st = findStage(answers);
   return (
-    <header className="b-cmp-head b-fp-head">
-      <button type="button" className="b-cmp-round tu-glass" onClick={onBack} aria-label="Back"><BIcon name="chevronLeft" size={20} /></button>
-      <div className="b-cmp-headt"><b>Find a place</b><small>For 7 · tonight</small>{st < 4 && <FindDots at={st} />}</div>
-      {st < 4 && onSkip ? <button type="button" className="b-fp-skip" onClick={onSkip}>Skip</button> : <span className="b-cmp-sp" />}
-    </header>
+    <>{/* v5.4.7: the master header card on every Find a place step */}
+      <HeaderMenu title="Find a place" sub="For 7 · tonight" onBack={onBack} backLabel="Back" actions={[]} />
+      {st < 4 && <div className="b-fp-subrow"><FindDots at={st} />{onSkip && <button type="button" className="b-fp-skip" onClick={onSkip}>Skip</button>}</div>}
+    </>
   );
 }
 

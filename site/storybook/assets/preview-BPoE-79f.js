@@ -1,4 +1,4 @@
-import{j as l}from"./jsx-runtime-BYYWji4R.js";import{r as J}from"./index-ClcD9ViR.js";import{e as Ce}from"./index-DoeViExJ.js";import{P as Se}from"./PrismRoot-DCukcACG.js";import"./_commonjsHelpers-Cpj98o6Y.js";import"./iframe-SEMsV7Dk.js";import"./index-Brl4xq4Y.js";import"./index-Bhelpi4i.js";const Be=`:root {
+import{j as l}from"./jsx-runtime-BYYWji4R.js";import{r as J}from"./index-ClcD9ViR.js";import{e as Ce}from"./index-DH1Icdy_.js";import{P as Se}from"./PrismRoot-DCukcACG.js";import"./_commonjsHelpers-Cpj98o6Y.js";import"./iframe-D88VAbD8.js";import"./index-Brl4xq4Y.js";import"./index-Bhelpi4i.js";const Be=`:root {
   /* ---------- Primitives ---------- */
   --prim-pearl-0: #FFFFFF;
   --prim-pearl-25: #FBFAFD;

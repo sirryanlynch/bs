@@ -365,3 +365,18 @@ html.is-embed, html.is-embed body, html.is-embed .prism, html.is-embed .pt-embed
 .prism .p-undo { bottom: var(--toast-b) !important; }
 .prism .p-undo ~ .pt-itoast, .phone-screen:has(.p-undo) .pt-itoast { bottom: calc(var(--toast-b) + 60px); }
 .pt-itoast { left: 0 !important; right: 0 !important; margin: 0 auto; width: fit-content; transform: none !important; }
+/* v5.4.7: hero sits just below the header, like Home */
+.prism .scr-hero.pt-hero.pt-hero-card { margin-top: 12px; }
+.prism .scr-hero.pt-hero.pt-hero-card { margin-top: 60px; }
+.prism .pt-explore { padding-top: calc(var(--layout-safe-top) + 64px); }
+
+/* v5.4.7: the guided tour shows no on-screen hints (no cursor dot, ripple or Scroll label); it still acts and advances. */
+.fl-cursor, .fl-cursor-ring, .fl-cursor-say, .fl-press { display: none !important; }
+#emb-cur { position: fixed; z-index: 9999; left: 0; top: 0; width: 22px; height: 22px; pointer-events: none; opacity: 0; transition: transform 520ms cubic-bezier(.3,.8,.3,1), opacity 200ms ease;
+  background: no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 2.5v16.2l4.3-4 2.9 6.6 2.6-1.1-2.9-6.5H18L5 2.5z' fill='%23fff' stroke='%231C1A29' stroke-width='1.4' stroke-linejoin='round'/%3E%3C/svg%3E"); filter: drop-shadow(0 3px 6px rgba(20,14,50,.35)); }
+#emb-cur.is-on { opacity: 1; }
+#emb-cur.is-gone { display: none; }
+#emb-cur::after { content: ''; position: absolute; left: -9px; top: -9px; width: 22px; height: 22px; border-radius: 50%; background: rgba(110,91,255,.35); transform: scale(0); opacity: 0; }
+#emb-cur.is-press { scale: .85; }
+#emb-cur.is-press::after { animation: embRip 420ms ease-out; }
+@keyframes embRip { from { transform: scale(.3); opacity: .9; } to { transform: scale(2.2); opacity: 0; } }

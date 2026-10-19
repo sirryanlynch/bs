@@ -76,3 +76,7 @@
 .prism .b-fp-next:active { transform: scale(.98); }
 @keyframes b-fp-next-in { from { opacity: 0; transform: translateY(8px); } }
 .prism[data-motion="reduce"] .b-fp-next { animation: b-fade 150ms linear both; }
+.prism .b-fp-glass.is-sq > b { font-size: 26px !important; line-height: 30px !important; } /* v5.4.7: price labels ~35% smaller */
+.prism .b-fp-subrow { position: absolute; z-index: 30; left: 20px; right: 20px; top: calc(var(--layout-safe-top) + 56px); height: 36px; display: flex; align-items: center; justify-content: space-between; pointer-events: auto; }
+.prism .b-fp-subrow .b-fp-skip { height: 36px; }
+.prism .b-cmp-scroll.is-q, .prism .b-cmp-scroll.has-cta { padding-top: calc(var(--layout-safe-top) + 96px) !important; }

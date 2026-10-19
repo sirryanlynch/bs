@@ -105,10 +105,10 @@ export function Home() {
 export function Trip() {
   const { s, d, P } = useApp();
   const crew = crewOf(s.renJoined).map(id => P[id]);
-  const start = () => { haptic(); d({ t: 'go', step: s.renJoined ? 'explore' : 'invite' }); };
+  const start = () => { haptic(); d({ t: 'set', patch: { exploreFeed: false } }); d({ t: 'go', step: 'explore' }); }; // v5.4.7: Start a poll opens Find a place
   return (
     <div className="scr">
-      <CoreHeader light onBack={() => d({ t: 'go', step: 'home' })} backLabel="Back to Trips" />
+      <CoreHeader onBack={() => d({ t: "go", step: "home" })} backLabel="Back to Trips" />
       <div className="scr-scroll">
         <div className="scr-hero pt-hero pt-hero-card">
           <img src={photo.roofs} alt="" />
@@ -291,7 +291,7 @@ export function Explore() {
   return (
     <div className="scr">
       <div className={`scr-scroll pt-explore ${st >= QN ? 'has-cta' : ''}`}>
-        <TopBar back={st > 0 ? 'previous step' : 'Lisbon Crew'} title="Find a place" sub={st < QN ? 'For 7 · tonight' : 'Pick 3'}
+        <CoreHeader backLabel={st > 0 ? 'Back to previous step' : 'Back to Lisbon Crew'} title="Find a place" sub={st < QN ? 'For 7 · tonight' : 'Pick 3'}
           onBack={() => { if (st === 0) return d({ t: 'go', step: 'trip' }); const to = st >= QN ? 2 : st >= 2 ? 1 : 0; pickLabel.length = to; d({ t: 'set', patch: { exploreStage: to, shortlist: [] } }); }} />
         {/* v5.4.1: the answers as chips, in question order. Tap one to go back to that question; later ones come prefilled with Next. */}
         {st >= QN && <p className="b-fp-trail pt-trail">{findTrail(A).map(t => <button key={t.st} type="button" className="b-fp-chip" aria-label={`Change: ${t.label}`}
