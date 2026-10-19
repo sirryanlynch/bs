@@ -17,13 +17,11 @@ python3 -m http.server 8080 -d site
 
 ## Rebuild
 
-From the `tripup/` folder run `./build-site.sh`. It builds Storybook and the prototype and copies both into this folder.
+From the repo root run `./build-site.sh`. It builds Storybook and the prototype and copies both into this folder.
 
 ## Publish to GitHub Pages
 
-1. Copy the contents of this folder to the root of the repo (or to `docs/`).
-2. Keep the `.nojekyll` file so folders that start with an underscore are served.
-3. In the repo settings, set Pages to deploy from that branch and folder.
+Pushes to `main` run `.github/workflows/pages.yml`. The workflow rebuilds this folder from source and deploys it. `.nojekyll` stays in place so files whose names start with an underscore are served.
 
 ## Prototype URLs
 
