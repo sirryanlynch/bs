@@ -1,12 +1,21 @@
-# TripUp case study site
+# TripUp site
 
-Everything here is static and uses relative paths, so it works from a GitHub Pages project URL such as `https://<user>.github.io/<repo>/`.
+Everything here is static and uses relative paths, so it works from a GitHub Pages project URL such as `https://sirryanlynch.github.io/bs/`.
 
 | Path | What it is |
 |---|---|
-| `/` | Case study landing page (`index.html`, no build step) |
+| `/` | The deck: 9 slides, research first, then decisions, then the product (`index.html` + `deck/`) |
+| `/case-study/` | Long-form case study |
 | `/prototype/` | Interactive prototype (React + Vite build) |
 | `/storybook/` | Prism design system (Storybook static build) |
+
+## Deck
+
+- Keys: arrows, Space, Page Up/Down, Home/End, 1 to 9. `O` or `G` shows all slides, `T` labels the design tokens, `R` previews Reduce Motion, `S` toggles ambient sound (off by default).
+- Each slide has a hash (`#1` to `#9`). Scroll, swipe or click empty space to move.
+- The iPhone on slides 1, 7 and 9 is one live embed of `prototype/?embed=1` that moves between slides.
+- Content and sources for the interactive parts live in `deck/data.js`. Overview thumbnails are in `deck/thumbs/` (regenerate with `qa/deck.cjs`).
+- GA4: `analytics/sync.js` writes the measurement id into the `ga-measurement-id` meta tag. The default is `G-T7WTSRRSGT`. Each slide change sends a `slide_view` event through the shared loader, which stays off when Do Not Track is on.
 
 ## Run locally
 
@@ -17,11 +26,11 @@ python3 -m http.server 8080 -d site
 
 ## Rebuild
 
-From the repo root run `./build-site.sh`. It builds Storybook and the prototype and copies both into this folder.
+From the repo root run `./build-site.sh`. It rebuilds the prototype and Storybook from source and leaves the deck and case study in place. `./build-site.sh --deck-only` refreshes deck assets when `moodboards/photos` and `exports/` are in the checkout.
 
 ## Publish to GitHub Pages
 
-Pushes to `main` run `.github/workflows/pages.yml`. The workflow rebuilds this folder from source and deploys it. `.nojekyll` stays in place so files whose names start with an underscore are served.
+Pushes to `main` run `.github/workflows/pages.yml`. The workflow builds Storybook and the prototype, assembles this folder, and deploys it with GitHub Pages. Keep the `.nojekyll` file so folders that start with an underscore are served. Pages source is GitHub Actions.
 
 ## Prototype URLs
 

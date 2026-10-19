@@ -1,13 +1,8 @@
-{
-  "name": "tripup-prototype",
-  "private": true,
-  "type": "module",
+{ "name": "tripup-prototype", "private": true, "type": "module",
   "scripts": {
     "predev": "node ../analytics/sync.js",
     "prebuild": "node ../analytics/sync.js",
     "dev": "vite --port 5174",
     "build": "vite build",
     "preview": "vite preview --port 4174"
-  }
-}
-
+  } }

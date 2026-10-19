@@ -46,8 +46,8 @@ function CelebrateMark({ kind }: { kind: 'squared' | 'pollWon' | 'milestone' }) 
   if (kind === 'pollWon') return (
     <svg className="p-cmark is-poll" viewBox="0 0 120 120" width="112" height="112" aria-hidden>
       <circle cx="60" cy="60" r="54" className="p-cmark-disc" />
-      {[[34, 46], [54, 70], [74, 28]].map(([x, h], i) => <rect key={i} x={x} y={88 - h} width="14" height={h} rx="7" className={`p-cmark-bar ${i === 1 ? 'is-win' : ''}`} style={{ animationDelay: `${120 + i * 90}ms` }} />)}
-      <path d="M50 30 l7 7 l13 -14" className="p-cmark-check" />
+      {[[34, 30], [53, 48], [72, 20]].map(([x, h], i) => <rect key={i} x={x} y={90 - h} width="14" height={h} rx="7" className={`p-cmark-bar ${i === 1 ? 'is-win' : ''}`} style={{ animationDelay: `${120 + i * 90}ms` }} />)}
+      <path d="M52 26 l6 6 l12 -13" className="p-cmark-check" />
     </svg>
   );
   return (

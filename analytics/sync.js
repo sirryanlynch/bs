@@ -1,16 +1,19 @@
 #!/usr/bin/env node
 /* Copy analytics/config.js and analytics/ga.js into the places the site, prototype, and Storybook serve.
-   GA_MEASUREMENT_ID rewrites the id in those copies. The source file stays empty. */
+   GA_MEASUREMENT_ID rewrites the id in those copies when it is a valid G- id.
+   When the variable is unset, the public default is used.
+   The same id is written into the deck's ga-measurement-id meta tag. */
 const fs = require("fs");
 const path = require("path");
 
 const root = path.resolve(__dirname, "..");
+const DEFAULT_ID = "G-T7WTSRRSGT";
 const raw = String(process.env.GA_MEASUREMENT_ID || "").trim();
 const valid = /^G-[A-Z0-9]+$/i.test(raw);
 if (raw && !valid) {
-  console.warn("GA_MEASUREMENT_ID is not a GA4 id (expected G- plus letters and numbers). Analytics stays off.");
+  console.warn("GA_MEASUREMENT_ID is not a GA4 id (expected G- plus letters and numbers). Using " + DEFAULT_ID + ".");
 }
-const id = valid ? raw : "";
+const id = valid ? raw : DEFAULT_ID;
 
 const config = fs
   .readFileSync(path.join(root, "analytics", "config.js"), "utf8")
@@ -24,5 +27,16 @@ for (const rel of ["storybook/public/analytics", "prototype/public/analytics", "
   fs.writeFileSync(path.join(dir, "ga.js"), ga);
 }
 
-if (id) console.log("Analytics enabled for " + id);
-else console.log("Analytics copies written with an empty measurement id.");
+const deckPath = path.join(root, "site", "index.html");
+if (fs.existsSync(deckPath)) {
+  const html = fs.readFileSync(deckPath, "utf8");
+  const meta = /(<meta\s+name=["']ga-measurement-id["']\s+content=["'])[^"']*(["'])/i;
+  if (!meta.test(html)) {
+    console.warn("site/index.html has no ga-measurement-id meta tag. The deck will not receive " + id + ".");
+  } else {
+    const next = html.replace(meta, function (_m, open, close) { return open + id + close; });
+    if (next !== html) fs.writeFileSync(deckPath, next);
+  }
+}
+
+console.log("Analytics enabled for " + id);

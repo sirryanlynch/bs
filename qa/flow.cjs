@@ -1,0 +1,45 @@
+const { chromium } = require('playwright-core');
+const BASE = process.env.BASE || 'http://localhost:8090/site/prototype/';
+(async () => {
+  const b = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--no-sandbox'] });
+  const errs = []; const log = [];
+  const c = await b.newContext({ viewport: { width: 1440, height: 960 } }); const p = await c.newPage();
+  p.on('console', m => m.type() === 'error' && errs.push(m.text())); p.on('pageerror', e => errs.push('PAGEERR ' + e.message));
+  const ph = p.locator('.phone-screen');
+  const click = async (sel, name) => { const l = typeof name === 'string' ? ph.getByRole(sel, { name, exact: false }).first() : ph.locator(sel).first(); await l.click({ timeout: 8000 }); await p.waitForTimeout(500); };
+  const step = async () => (await p.evaluate(() => location.hash));
+  const checks = async () => p.locator('.pt-checklist li.is-ok').count();
+  const tie = process.argv[2] === 'tie';
+  await p.goto(BASE); await p.waitForTimeout(800);
+  if (tie) { await p.getByLabel('Tie-break path').check(); await p.waitForTimeout(300); }
+  await click('.pt-cardbtn'); log.push(await step());
+  await click('button', 'Invite people'); await click('button', 'Simulate Ren scanning'); await click('button', 'Done'); log.push(await step());
+  await click('button', 'Start a poll'); log.push(await step());
+  await click('button', 'Dinner'); await click('button', 'Under 10 min'); await click('button', '€ to €€');
+  for (const n of ['Taberna da Rua', 'Cervejaria Ramiro', 'Park Rooftop']) await click('button', n);
+  await click('button', 'Start a poll with these 3'); log.push(await step());
+  await click('button', 'Send poll'); log.push(await step());
+  await click('button', 'Ari started a poll'); await click('button', 'Taberna da Rua das Flores'); await p.waitForTimeout(1200); log.push(await step());
+  await p.waitForFunction(() => location.hash.includes('closed'), null, { timeout: 20000 }); log.push(await step());
+  await p.screenshot({ path: `shots/f-closed-${tie ? 'tie' : 'win'}.png` });
+  if (tie) { await click('button', 'Pick Taberna'); await p.waitForTimeout(900); }
+  await click('button', "See tonight's plan"); log.push(await step());
+  await click('button', 'How we got here'); await p.waitForTimeout(500); await p.screenshot({ path: `shots/f-how-${tie ? 'tie' : 'win'}.png` });
+  await click('button', 'Close'); await click('button', 'Add the dinner bill'); log.push(await step());
+  await click('button', 'Ren shares Vinho'); await click('button', 'Nic shares Vinho');
+  const summary = await ph.locator('.scr-pershare').textContent(); log.push(summary);
+  await click('button', 'Save expense'); await p.waitForTimeout(800); log.push(await step());
+  log.push(await ph.locator('.scr-balance-amt').textContent());
+  await click('button', 'Simplify'); await p.waitForTimeout(1500); log.push(await ph.locator('.scr-section-head h2').first().textContent());
+  await p.screenshot({ path: `shots/f-simplified.png` });
+  await click('button', 'Pay Nic'); log.push(await step());
+  if (tie) await click('radio', 'Cash');
+  await click('button', tie ? 'Mark €42.10 as paid' : 'Pay €42.10 with MB WAY');
+  await p.waitForFunction(() => location.hash.includes('squared'), null, { timeout: 15000 }); await p.waitForTimeout(1200); log.push(await step());
+  await p.screenshot({ path: `shots/f-squared.png` });
+  await click('button', 'Share the recap'); await click('button', 'Share with the crew'); await p.waitForTimeout(500);
+  await p.screenshot({ path: `shots/f-recap.png` });
+  log.push('checks ' + await checks());
+  console.log(log.join('\n')); console.log('ERRORS', JSON.stringify(errs));
+  await b.close();
+})().catch(e => { console.error('FAIL', e.message); process.exit(1); });

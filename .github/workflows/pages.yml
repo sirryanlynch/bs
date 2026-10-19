@@ -49,7 +49,7 @@ jobs:
         id: source
         continue-on-error: true
         env:
-          GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID }}
+          GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID != '' && vars.GA_MEASUREMENT_ID || 'G-T7WTSRRSGT' }}
         run: ./build-site.sh
 
       - name: Keep the committed site if the source build failed

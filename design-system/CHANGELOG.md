@@ -1,6 +1,13 @@
 # Prism design system changelog
 
-`tokens.json` is the source of truth. `tokens.css` and the Figma variables are generated from it by `build_tokens.py`. Anyone building on `tokens.*` (for example the Storybook in `storybook/`) should check here before they rebuild.
+`tokens.json` is the source of truth. `tokens.css` and the Figma variables are generated from it by `build_tokens.py`. Anyone building on `tokens.*` (for example the Storybook in `/workspace/tripup/storybook/`) should check here before they rebuild.
+
+## 2026-10-18 (PDT): celebration and settle-up rework
+
+- **CelebrationOverlay** is now calm pearl glass. The 3D party render, confetti and gradient title are gone. A crafted mark plays instead: seven threads let go, the ring closes, a check draws in. The celebration spectrum appears once, as light sweeping the card edge (1.4 s), then rests as a faint rim. Hierarchy: mono eyebrow, Instrument Serif title in ink, callout line, stats, one primary action. Reduce Motion shows the settled state.
+- **Rule change:** the spectrum is never used as text color. `tu-celebrate-text` is no longer used by any component.
+- **New: DebtUntangle** replaces DebtSimplify on the Money screen. Six IOUs start as crossing threads; the solve nets balances, matches debtors to creditors and redraws three payments, with a step counter, mono readouts (transfers 6 to 3, money moved 190.60 to 124.50, every net unchanged), Untangle, Replay and a scrubber. Reduce Motion jumps to the result and the scrubber steps by stage.
+- Icons: `replay` (ArrowCounterClockwise) and `play` (Play) added.
 
 ## 2026-10-16 (PDT): v2 icon set and touch targets
 
@@ -73,3 +80,19 @@ The library on the Figma page "AI Enabled" (`108:3229`) grew from 18 to 40 compo
 ## 2026-10-16 · Claims audit (no token changes)
 - No research with groups has been run. Section 13, slide 11 and slide 3 now frame baselines and targets as proposed and untested; the diary study is labelled "not run yet".
 - Persona and journey-map quotes, ages and scores labelled illustrative. Bandwagon figure corrected to Rothschild and Malhotra (2014), about 8 points; Splitwise confusion claim now quotes the Splitwise help center. Journey map numbers aligned to the story (€248.70, 60%).
+
+## 2026-10-18 · Settle-up and celebration redesign
+Token changes (tokens.json):
+- Added `font.mono` = JetBrains Mono, web fallback `ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace`. Figma text styles `Prism/mono/readout` (Medium 11/14) and `Prism/mono/tag` (Medium 10/12). Needed for the algorithm readouts; SF Mono is not available in Figma.
+- `celebration.forms`: removed "3D confetti renders", added "spectrum light" (one blurred angular glow behind the check). `celebration.never`: added 3D renders/clip-art/confetti and gradient text on the squared-up title.
+No colour, spacing or radius values changed.
+
+Components (Figma):
+- Debt Simplification 121:4174 now has State=Tangled (121:4135), State=Netting (197:8975, new), State=Solved (121:4153). Old Before/After renamed, so every instance followed. 362×268.
+- Confirmation / All squared up 104:3446 rebuilt: glass sheet, drawn check on a disc, one spectrum glow, serif title in text/primary, mono receipt. Removed the rainbow sheen and the 3D popper.
+- Celebration Overlay 121:4318: rainbow sheen removed, scrim with background blur 12, sheet centred.
+Screens: new Hi-fi 09a Tangled (201:9341) and 09b Netting (201:9484); 09/09 dark shifted right. Section 12 and deck slide 04 rebuilt as 3 equal pairs; deck slide 08 now shows Tangled, Netting, Solved.
+- The IOUs in the Tangled state now come from the prototype ledger (pairwise output): Ari→Tomás 42.10, Tomás→Nic 42.10, Ren→Ari 18.40, Mara→João 40.00, Mara→Sofia 24.00, Sofia→João 24.00 (€190.60). The node ring was reordered so the 3 solved payments don't cross.
+- Settle-up Row reasons now follow the ledger: "Tejo boat tour, via Tomás", "Dinner share minus Fado tickets", "Flat deposit, via Sofia".
+- Poll Builder and Invite Sheet: the Grabber frame was 100px tall and is now hug (13). Spacer now fills, so the primary action clears the home indicator.
+- E07 address shortened. AI Enabled section gaps are back to 240.

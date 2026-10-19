@@ -83,6 +83,7 @@ export function PollView() {
   const t = tally(s.votes); const n = Object.keys(s.votes).length; const max = Math.max(...t);
   const leaders = t.filter(x => x === max).length;
   const waiting = crew.filter(id => s.votes[id] == null);
+  const others = waiting.filter(id => id !== s.me); // you never remind yourself
   const closed = !!s.pollClosed && s.winner != null;
   const mine = s.votes[s.me];
   return (
@@ -100,9 +101,9 @@ export function PollView() {
         <div className="pt-voters" aria-label="Who has voted">
           {crew.map(id => <span key={id} className={`pt-voter ${s.votes[id] == null ? 'is-wait' : ''}`}><Avatar person={P[id]} size={28} ring="none" /><small>{nm(id)}</small></span>)}
         </div>
-        {!closed && waiting.length > 0 && (
-          <button type="button" className="pt-textbtn" onClick={() => d({ t: 'toast', msg: `Reminded ${waiting.map(id => P[id].name).join(' and ')}` })}>
-            <Icon name="bell" size={20} />Remind {waiting.length === 1 ? nm(waiting[0]) : `${waiting.length} people`}
+        {!closed && others.length > 0 && (
+          <button type="button" className="pt-textbtn" onClick={() => d({ t: 'toast', msg: `Reminded ${new Intl.ListFormat('en').format(others.map(id => P[id].name))}` })}>
+            <Icon name="bell" size={20} />Remind {others.length === 1 ? nm(others[0]) : `${others.length} people`}
           </button>
         )}
       </div>

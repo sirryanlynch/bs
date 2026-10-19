@@ -40,9 +40,10 @@ function solvedLayout(ids: string[], simple: Edge[], net: Record<string, number>
  * The solve nets everyone's balance, matches debtors to creditors and redraws the money as three straight payments.
  * Scrub it, replay it, or with Reduce Motion step through it.
  */
-export function DebtUntangle({ raw = rawDebts, simple = simplifiedDebts, people = P, solved = false, onSolved, compact, startButton = true }:
+export function DebtUntangle({ raw = rawDebts, simple = simplifiedDebts, people = P, solved = false, onSolved, compact, startButton = true, controls = true }:
   { raw?: Edge[]; simple?: Edge[]; people?: Record<string, Person>; solved?: boolean; onSolved?: () => void; compact?: boolean;
-    /** Off when the screen already has its own primary CTA to start the solve; Replay still appears once solved. */ startButton?: boolean }) {
+    /** Off when the screen already has its own primary CTA to start the solve; Replay still appears once solved. */ startButton?: boolean;
+    /** Off for static overviews: hides Untangle, Replay and the scrubber. */ controls?: boolean }) {
   const reduce = useReducedMotion();
   const [t, setT] = useState(solved ? 3 : 0);
   const [playing, setPlaying] = useState(false);
@@ -91,7 +92,8 @@ export function DebtUntangle({ raw = rawDebts, simple = simplifiedDebts, people 
     const cx = lerp(CX + off[0], mx + off[0] * 0.35, kMove), cy = lerp(CY + off[1], my + off[1] * 0.35, kMove);
     const zeroLink = isZero(e.from) || isZero(e.to);
     const op = (1 - kFade) * (zeroLink ? lerp(1, 0.35, ease((t - 1) * 1.5)) : 1);
-    const lx = 0.25 * x1 + 0.5 * cx + 0.25 * x2, ly = 0.25 * y1 + 0.5 * cy + 0.25 * y2;
+    const u = [0.3, 0.7, 0.42, 0.6, 0.36, 0.66][i % 6]; // spread labels along each curve so they do not stack in the middle
+    const lx = (1 - u) * (1 - u) * x1 + 2 * u * (1 - u) * cx + u * u * x2, ly = (1 - u) * (1 - u) * y1 + 2 * u * (1 - u) * cy + u * u * y2;
     return (
       <g key={`r${i}`} className="p-untangle-thread" style={{ opacity: op }}>
         <path d={`M${x1} ${y1} Q${cx} ${cy} ${x2} ${y2}`} />
@@ -151,14 +153,14 @@ export function DebtUntangle({ raw = rawDebts, simple = simplifiedDebts, people 
         <div><span>every net</span><b className={t >= 2.999 && netsHold ? 'is-ok' : ''}>{t >= 2.999 ? (netsHold ? 'unchanged' : 'changed') : 'checking'}</b></div>
       </div>
       {!compact && <ol className="p-untangle-steps">{steps.map((s, i) => <li key={i} className={s.done ? 'is-done' : ''}><span aria-hidden>{s.done ? <Icon name="check" size={12} /> : i + 1}</span>{s.label}</li>)}</ol>}
-      <div className="p-untangle-ctrl">
+      {controls && <div className="p-untangle-ctrl">
         {(startButton || t >= 2.999) && <button type="button" className="p-untangle-btn" onClick={() => play(t >= 2.999 ? 0 : t)} disabled={playing} aria-label={t >= 2.999 ? 'Replay the untangle' : 'Untangle'}>
           <Icon name={t >= 2.999 ? 'replay' : 'play'} size={16} fill={t < 2.999} />{t >= 2.999 ? 'Replay' : 'Untangle'}
         </button>}
         <input type="range" min={0} max={300} step={reduce ? 100 : 1} value={Math.round(t * 100)} aria-label="Scrub the solve"
           aria-valuetext={phase === 3 ? 'Solved' : STEPS[phase]}
           onChange={e => { cancelAnimationFrame(raf.current); setPlaying(false); const v = +e.target.value / 100; setT(v); if (v >= 2.999) finish(); }} />
-      </div>
+      </div>}
     </div>
   );
 }

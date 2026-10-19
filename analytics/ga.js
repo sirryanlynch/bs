@@ -22,7 +22,10 @@
     var url;
     try { url = new URL(anchor.href, w.location.href); } catch (e) { return ""; }
     if (url.hostname === "figma.com" || url.hostname === "www.figma.com") return "figma";
-    if (url.origin === w.location.origin && /\/storybook\/?$/.test(url.pathname)) return "storybook";
+    if (url.origin !== w.location.origin) return "";
+    var path = url.pathname.replace(/\/+$/, "");
+    if (/\/storybook$/.test(path)) return "storybook";
+    if (/\/prototype$/.test(path)) return "prototype";
     return "";
   }
 

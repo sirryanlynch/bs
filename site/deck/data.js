@@ -1,0 +1,81 @@
+/* Deck content that drives the interactive pieces. Every external claim carries a source number from SOURCES. */
+window.DECK = {
+  SOURCES: [
+    ['Splitwise help center: "My dashboard balances are different than my group balances!" (simplify is off by default)', 'https://feedback.splitwise.com/knowledgebase/articles/746853-my-dashboard-balances-are-different-than-my-group'],
+    ['Splitwise help: What is Simplify Debts?', 'https://kb.splitwise.com/balances-and-expenses/what-is-simplify-debts'],
+    ['Splitwise help: Can I add a friend without their email or phone?', 'https://kb.splitwise.com/getting-started/can-i-add-a-friend-without-adding-their-email-address-or-phone-number'],
+    ['Tricount: the web application is not available anymore', 'https://tricount.com/en/create-tricount'],
+    ['Tricount help: manage tricounts and expenses (join from a link in the app)', 'https://help.tricount.com/articles/how-can-i-manage-my-tricounts-and-expenses'],
+    ['Tricount: use case page that says people can add expenses from the browser', 'https://tricount.com/en-in/expense-tracker-use-cases/gaming-communities'],
+    ['Settle Up tips: debt minimization', 'https://settleup.io/tips'],
+    ['Wanderlog help: Add friends to plan together', 'https://help.wanderlog.com/hc/en-us/articles/4625495771163-Add-friends-to-plan-together'],
+    ['Wanderlog: features page (collaboration, budgeting and splitting)', 'https://wanderlog.com/trip-planner-ai'],
+    ['r/wanderlog, replies from the Wanderlog team on settling debts and even splits (secondary)', 'https://www.reddit.com/r/wanderlog/comments/1f57293/tracking_payments/'],
+    ['TripIt help: Trip sharing in the TripIt app', 'https://help.tripit.com/en/support/solutions/articles/103000063347-trip-sharing-in-the-tripit-app'],
+    ['WhatsApp blog: New updates to Polls', 'https://blog.whatsapp.com/new-updates-to-polls-and-sharing-with-captions-on-whatsapp'],
+    ['Android Police: WhatsApp polls have no time limit (secondary)', 'https://www.androidpolice.com/how-to-create-whatsapp-polls/'],
+    ['Apple Support: Poll people in Messages on iPhone', 'https://support.apple.com/guide/iphone/poll-people-in-a-conversation-iphde1787df4/ios'],
+    ["Apple Support: What's new in iOS 26 (Apple Cash in group conversations)", 'https://support.apple.com/guide/iphone/whats-new-in-ios-26-iphfed2c4091/ios'],
+    ['Google Docs Editors Help: Anonymous or unknown people in a file', 'https://support.google.com/docs/answer/2494888?hl=en'],
+    ['Apple Human Interface Guidelines: Materials (Liquid Glass)', 'https://developer.apple.com/design/human-interface-guidelines/materials'],
+    ['Rothschild, D. and Malhotra, N. (2014). Are public opinion polls self-fulfilling prophecies? Research & Politics.', 'https://doi.org/10.1177/2053168014547667']
+  ],
+  /* y = built in, p = partly, n = not found in its docs, u = unclear */
+  MATRIX: [
+    { app: 'Splitwise', kind: 'Splitter',
+      cells: [['n', 'No itinerary or planning feature found in its help center.'], ['n', 'No polls or voting found.'], ['y', 'Tracks group expenses and balances.', [2]], ['y', 'Simplify debts cuts the number of payments. It is off by default.', [1, 2]], ['p', 'You can add friends by email or phone before they join, and Splitwise wants everyone to log in to see balances.', [3]]],
+      gap: 'Money only. The decision happens somewhere else, so the bill starts from nothing.',
+      ans: 'The poll and the bill live on one trip. The winning restaurant flows straight into the split.', go: 8 },
+    { app: 'Tricount / Settle Up', kind: 'Splitter',
+      cells: [['n', 'No planning found in either.'], ['n', 'No polls found in either.'], ['y', 'Both track shared expenses.', [4, 7]], ['y', 'Settle Up minimizes transactions and lets you turn that off.', [7]], ['u', 'Unclear. Tricount says its web app is gone and links open the app, while one Tricount page says friends can add from the browser.', [4, 5, 6]]],
+      gap: 'No plan and no vote, and a guest without the app may be stuck.',
+      ans: 'Ren votes and pays from a web link, no install.', go: 7 },
+    { app: 'Wanderlog', kind: 'Planner',
+      cells: [['y', 'Shared itinerary with view or edit rights for tripmates.', [8, 9]], ['n', 'No poll or vote found on its help or features pages.', [8, 9]], ['y', 'Budgeting, expense tracking and splitting for group trips.', [9]], ['p', 'A debt summary and a way to record payments. Even splits only, per the Wanderlog team.', [10]], ['u', 'Invites go by email or message. Whether a guest needs an account is not stated.', [8]]],
+      gap: 'Whoever edits last decides, and nothing records how the group got there.',
+      ans: 'A poll with a deadline, then "how we got here" on the plan item.', go: 7 },
+    { app: 'TripIt', kind: 'Planner',
+      cells: [['y', 'Itineraries you can share with view or edit rights.', [11]], ['n', 'No group decision feature found.'], ['n', 'No expense splitting found.'], ['n', 'No settle feature found.'], ['p', 'A read-only share by SMS or email, with nothing to vote on or pay.', [11]]],
+      gap: "Built around one traveler's logistics. Group choices happen outside it.",
+      ans: 'Group decisions land in the shared plan for everyone.', go: 4 },
+    { app: 'WhatsApp / iMessage', kind: 'Group chat',
+      cells: [['p', 'Plans live in the thread itself.'], ['y', 'Native polls. WhatsApp offers single-vote polls. iMessage allows up to 12 options.', [12, 14]], ['n', 'No expense tracking found.'], ['p', 'iMessage group chats can send money with Apple Cash. No split math found.', [15]], ['p', 'Everyone needs the app already. iMessage polls need iOS 26; others only see that a poll was sent.', [14]]],
+      gap: 'WhatsApp polls have no time limit, so a decision can stay open while the chat moves on.', gapSrc: [13],
+      ans: 'Polls close at 19:30, or when everyone votes, and the winner goes straight into tonight\'s plan.', go: 7 },
+    { app: 'Google Docs / Sheets', kind: 'DIY',
+      cells: [['y', 'A shared doc works as a plan.'], ['p', 'By hand, in a table.'], ['p', 'By hand, with formulas.'], ['n', 'No settle flow. The math is yours.'], ['y', 'People with the link can open it without signing in. They show up as anonymous animals.', [16]]],
+      gap: 'Flexible, until someone has to be the spreadsheet person.',
+      ans: 'TripUp does the math and shows its work.', go: 8 }
+  ],
+  STAGES: [
+    { name: 'Spark', time: 'Early evening', y: 0.60, photo: 'Bento Justin', shot: 'hifi-04-create-poll', alt: 'New poll screen with three Lisbon restaurants',
+      pain: 'Where do we eat? The thread fills up and nobody commits.', job: 'Get seven of us to one table tonight.',
+      moment: 'Ari adds Ren, then starts a poll with three places. Each card shows the same facts: vibe, price and walk.' },
+    { name: 'Decide', time: 'Until 19:30', y: 0.34, photo: 'Joan Costa', shot: 'hifi-05-vote-from-push', alt: 'Lock Screen notification with vote buttons',
+      pain: 'Ari doesn\'t want to be the bossy one. Ren isn\'t on the app.', job: 'Help us decide without me being the bossy one.',
+      moment: 'Everyone votes from the notification. Ren votes from a web link. Picks stay private until the close.' },
+    { name: 'Book', time: '19:30', y: 0.78, photo: 'Efe Ersoy', shot: 'hifi-07-poll-closed', alt: 'Poll closed with Taberna da Rua das Flores as the winner',
+      pain: 'Did anyone actually book?', job: 'Get seven of us to one table tonight.',
+      moment: 'Taberna da Rua das Flores wins with 5 of 7 votes, 71%. It lands in tonight\'s plan, booked for 20:30.' },
+    { name: 'Dine and log', time: '20:30', y: 0.46, photo: 'Doğu Tuncer', shot: 'hifi-08-wine-split', alt: 'Itemized dinner bill with the wine split five ways',
+      pain: 'Ari paid €248.70. Ren and Nic skipped the wine.', job: 'Don\'t let money make the last night awkward.',
+      moment: 'Itemize the bill and take Ren and Nic off the €38 wine in one tap.' },
+    { name: 'Settle', time: 'After dinner', y: 0.88, photo: 'Kampus Production', shot: 'hifi-10-squared-up', alt: 'All squared up confirmation',
+      pain: 'Six IOUs, and nobody wants to chase anyone.', job: 'Feel like the trip was celebrated.',
+      moment: 'Three payments instead of six. Then everyone sees All squared up.' }
+  ],
+  PEOPLE: { ari: 'Ari', mara: 'Mara', nic: 'Nic', joao: 'João', sofia: 'Sofia', tomas: 'Tomás', ren: 'Ren' },
+  /* Computed from prototype/src/ledger.ts, including the dinner. */
+  /* Node centres and states from prototype/SPEC-settle-v3.md (Figma set 121:4174). */
+  NODES: { ari: [181, 64], sofia: [278, 85], nic: [302, 132], mara: [235, 170], tomas: [127, 170], joao: [60, 132], ren: [84, 85] },
+  NETS: { ari: -23.70, ren: -18.40, mara: -64.00, nic: 42.10, joao: 64.00, sofia: 0, tomas: 0 },
+  READOUT: [['in   6 IOUs · 7 people · €190.60', 'next sum each person: paid minus owed'], ['net  +106.10 owed · −106.10 owe', '2 creditors · 3 debtors · 2 at zero'], ['out  3 payments · €124.50', 'saved 3 payments · €66.10 less moved']],
+  COUNTER: ['6 IOUs', 'Σ 0.00', '6 → 3'],
+  TANGLED: [['ari', 'tomas', 42.10], ['tomas', 'nic', 42.10], ['ren', 'ari', 18.40], ['mara', 'joao', 40.00], ['mara', 'sofia', 24.00], ['sofia', 'joao', 24.00]],
+  SIMPLE: [['ari', 'nic', 42.10], ['ren', 'ari', 18.40], ['mara', 'joao', 64.00]],
+  BOARDS: {
+    prism: 'Chosen. Calm by default, with color as light on the moments worth celebrating. Since this board, the celebration has calmed to a single glow.',
+    golden: 'Warm and photo-led. Glass over busy photos makes text harder to read, and money screens need to be easy to read.',
+    night: 'Confident nightlife energy. Too loud for a calm moment about who owes whom.'
+  }
+};

@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TripUp case study · Ryan Lynch</title>
+<meta name="description" content="TripUp: a group trip app for deciding dinner and settling the bill. Case study, working prototype and design system by Ryan Lynch.">
+<meta name="theme-color" content="#F4F3F8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 28 28%27%3E%3Crect width=%2728%27 height=%2728%27 rx=%278%27 fill=%27%236E5BFF%27/%3E%3Crect x=%277%27 y=%278%27 width=%2714%27 height=%273%27 rx=%271.5%27 fill=%27white%27/%3E%3Crect x=%277%27 y=%2712.5%27 width=%279%27 height=%273%27 rx=%271.5%27 fill=%27white%27/%3E%3Crect x=%277%27 y=%2717%27 width=%2711.5%27 height=%273%27 rx=%271.5%27 fill=%27white%27/%3E%3C/svg%3E">
+<link rel="preload" href="../assets/InstrumentSerif-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face { font-family: 'Instrument Serif'; src: url('../assets/InstrumentSerif-Regular.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Instrument Serif'; font-style: italic; src: url('../assets/InstrumentSerif-Italic.woff2') format('woff2'); font-display: swap; }
+:root {
+  --iris: #6E5BFF; --iris-ink: #4B3BD6; --iris-soft: #EEEBFF;
+  --ink: #15141A; --ink-2: #55535F; --ink-3: #6B6975; --line: rgba(20,18,40,.09);
+  --canvas: #F4F3F8; --surface: #FFFFFF; --owe: #B42A47; --owed: #17744C;
+  --blush: #FFB7C5; --apricot: #FFD3A8; --mint: #B9F0D6; --sky: #B8DCFF; --lilac: #D9CCFF;
+  --ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --display: 'Instrument Serif', 'New York', Georgia, serif;
+  --r: 28px; --shadow: 0 1px 2px rgba(20,18,40,.05), 0 18px 40px -24px rgba(40,30,110,.25);
+}
+@media (prefers-color-scheme: dark) {
+  :root { --ink: #F3F2F7; --ink-2: #B9B7C4; --ink-3: #8D8B98; --line: rgba(255,255,255,.1); --canvas: #121216; --surface: #1C1C22; --iris-soft: #2A2547; --iris-ink: #B2A8FF; --owe: #FF7A93; --owed: #5FD9A0; }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before { animation: none !important; transition: none !important; } }
+body { margin: 0; background: var(--canvas); color: var(--ink); font: 17px/1.55 var(--ui); -webkit-font-smoothing: antialiased; }
+a { color: var(--iris-ink); }
+img { max-width: 100%; display: block; }
+.wrap { width: min(1160px, 100% - 48px); margin: 0 auto; }
+.skip { position: absolute; left: -999px; } .skip:focus { left: 16px; top: 16px; z-index: 10; background: var(--surface); padding: 8px 12px; border-radius: 10px; }
+:focus-visible { outline: 3px solid var(--iris); outline-offset: 3px; border-radius: 6px; }
+
+/* nav */
+.top { position: sticky; top: 0; z-index: 5; backdrop-filter: saturate(1.6) blur(18px); -webkit-backdrop-filter: saturate(1.6) blur(18px); background: color-mix(in srgb, var(--canvas) 72%, transparent); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; gap: 24px; height: 60px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 650; color: var(--ink); text-decoration: none; }
+.brand svg { flex: none; }
+.top nav { display: flex; align-items: center; gap: 20px; margin-left: auto; font-size: 14px; }
+.top nav a { color: var(--ink-2); text-decoration: none; } .top nav a:hover { color: var(--ink); }
+@media (max-width: 860px) { .top nav a:not(.cta) { display: none; } }
+.cta, .btn { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; border-radius: 22px; background: var(--iris); color: #fff !important; font-weight: 600; font-size: 15px; text-decoration: none; box-shadow: 0 10px 24px -12px rgba(110,91,255,.8); }
+.top .cta { height: 36px; padding: 0 16px; font-size: 14px; }
+.btn.ghost { background: var(--surface); color: var(--ink) !important; box-shadow: var(--shadow); border: 1px solid var(--line); }
+
+/* hero */
+.hero { position: relative; overflow: hidden; padding: 64px 0 40px; }
+.hero::before { content: ''; position: absolute; inset: -20% -10% auto auto; width: 760px; height: 760px; background: radial-gradient(closest-side, rgba(110,91,255,.18), transparent 70%); pointer-events: none; }
+.hero .wrap { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: center; position: relative; }
+.eyebrow { font-size: 13px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; color: var(--iris-ink); margin: 0 0 14px; }
+h1, h2, h3 { margin: 0; font-weight: 400; }
+.hero h1 { font: 400 clamp(52px, 7vw, 92px)/.98 var(--display); letter-spacing: -1.5px; }
+.hero h1 em { font-style: italic; color: var(--iris); }
+.lede { font-size: 20px; color: var(--ink-2); max-width: 560px; margin: 22px 0 28px; }
+.actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.meta { display: grid; grid-template-columns: repeat(3, auto); gap: 6px 28px; margin-top: 34px; font-size: 14px; color: var(--ink-2); justify-content: start; }
+.meta b { display: block; color: var(--ink); font-weight: 600; }
+.device { justify-self: center; width: 362px; height: 767px; position: relative; border-radius: 44px; background: #ECEAF4; overflow: hidden; }
+@media (prefers-color-scheme: dark) { .device { background: #1C1C22; } }
+.device-stage { justify-self: center; padding: 18px; border-radius: 56px; background: #ECEAF4; box-shadow: inset 0 0 0 1px var(--line); }
+@media (prefers-color-scheme: dark) { .device-stage { background: #1C1C22; } }
+.device iframe { position: absolute; top: 0; left: 0; width: 442px; height: 936px; border: 0; transform: scale(.82); transform-origin: 0 0; background: transparent; }
+.device .poster { position: absolute; left: 24px; top: 26px; width: 314px; border-radius: 46px; height: auto; }
+.device-cap { text-align: center; font-size: 13px; color: var(--ink-3); margin-top: 10px; }
+@media (max-width: 440px) { .device-stage { padding: 6px; border-radius: 48px; } .device { width: 318px; height: 674px; } .device iframe { transform: scale(.72); } .device .poster { width: 276px; left: 21px; top: 23px; border-radius: 40px; } .hero { padding-top: 36px; } }
+@media (max-width: 900px) { .hero .wrap { grid-template-columns: 1fr; } .device { margin-top: 10px; } .meta { grid-template-columns: repeat(2, auto); } }
+
+/* sections */
+section.block { padding: 88px 0; border-top: 1px solid var(--line); }
+.sec-head { display: grid; grid-template-columns: 280px 1fr; gap: 40px; margin-bottom: 40px; }
+.sec-head .num { font: 600 13px var(--ui); letter-spacing: .08em; text-transform: uppercase; color: var(--iris-ink); }
+h2 { font: 400 clamp(38px, 4.6vw, 58px)/1.02 var(--display); letter-spacing: -.8px; }
+.sec-head p { color: var(--ink-2); font-size: 19px; margin: 14px 0 0; max-width: 720px; }
+@media (max-width: 860px) { .sec-head { grid-template-columns: 1fr; gap: 10px; } }
+.grid { display: grid; gap: 16px; }
+.g2 { grid-template-columns: repeat(2, 1fr); } .g3 { grid-template-columns: repeat(3, 1fr); } .g4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 960px) { .g3, .g4 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 620px) { .g2, .g3, .g4 { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 24px; box-shadow: var(--shadow); }
+.card h3 { font: 650 18px/1.3 var(--ui); margin-bottom: 8px; }
+.card p { margin: 0; color: var(--ink-2); font-size: 15.5px; }
+.card .tag { display: inline-block; font-size: 12px; font-weight: 650; padding: 3px 10px; border-radius: 10px; background: var(--iris-soft); color: var(--iris-ink); margin-bottom: 12px; }
+.card .src { font-size: 13px; color: var(--ink-3); margin-top: 12px; display: block; }
+.note { display: flex; gap: 12px; align-items: flex-start; padding: 16px 20px; border-radius: 18px; background: var(--iris-soft); color: var(--ink); font-size: 15.5px; margin-bottom: 28px; }
+.note b { color: var(--iris-ink); }
+.brief { display: grid; grid-template-columns: 1.2fr .8fr; gap: 16px; }
+@media (max-width: 860px) { .brief { grid-template-columns: 1fr; } }
+.steps { counter-reset: s; list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 34px 1fr; gap: 10px; align-items: baseline; font-size: 16px; }
+.steps li::before { content: counter(s); font: 600 13px var(--ui); color: var(--iris-ink); background: var(--iris-soft); border-radius: 10px; text-align: center; padding: 2px 0; }
+.stat { display: block; font: 400 54px/1.1 var(--display); color: var(--ink); margin-bottom: 6px; }
+.stats .card { padding: 20px 24px; }
+@media (max-width: 860px) { .stats { grid-template-columns: repeat(3, 1fr); gap: 10px; } .stats .card { padding: 16px 14px; } .stats .stat { font-size: 38px; } .stats p { font-size: 13.5px; line-height: 1.35; } }
+.list { margin: 4px 0 0; padding-left: 18px; color: var(--ink-2); font-size: 15.5px; display: grid; gap: 6px; }
+.big-quote { font: italic 400 clamp(28px, 3.2vw, 40px)/1.15 var(--display); margin: 0; }
+.persona .who { display: flex; gap: 14px; align-items: center; margin-bottom: 14px; }
+.av { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; font: 650 20px var(--ui); color: #2a2240; flex: none; }
+.persona ul { margin: 12px 0 0; padding-left: 18px; color: var(--ink-2); font-size: 15px; }
+.persona q { display: block; font: italic 400 22px/1.25 var(--display); color: var(--ink); margin-top: 14px; }
+.persona .ill { font-size: 12px; color: var(--ink-3); margin-top: 6px; display: block; }
+table { width: 100%; border-collapse: collapse; font-size: 15.5px; }
+th, td { text-align: left; padding: 14px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; font-weight: 650; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+td:first-child { font-weight: 600; width: 26%; }
+.pill { display: inline-block; font-size: 12px; font-weight: 650; padding: 3px 10px; border-radius: 10px; white-space: nowrap; }
+.p-follow { background: rgba(31,138,91,.12); color: var(--owed); } .p-improve { background: var(--iris-soft); color: var(--iris-ink); } .p-diverge { background: rgba(194,48,79,.1); color: var(--owe); }
+.tablewrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 6px 12px; box-shadow: var(--shadow); }
+.ba { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.ba figure { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 24px 20px 20px; box-shadow: var(--shadow); }
+.cmp-stage { position: relative; width: 100%; max-width: 330px; margin: 0 auto; aspect-ratio: 402 / 874; border-radius: 48px; overflow: hidden; box-shadow: 0 0 0 1px var(--line), 0 24px 48px -28px rgba(20,18,40,.45); background: #ECEAF4; isolation: isolate; }
+.cmp-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border: 0; border-radius: 0; }
+.cmp-before { clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+.cmp-handle { position: absolute; top: 0; bottom: 0; left: var(--pos); width: 2px; margin-left: -1px; background: #fff; box-shadow: 0 0 0 1px rgba(20,18,40,.18); pointer-events: none; }
+.cmp-handle::after { content: ""; position: absolute; top: 50%; left: 50%; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%; background: #fff; box-shadow: 0 6px 18px -6px rgba(20,18,40,.5);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236E5BFF' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 7l-5 5 5 5M15 7l5 5-5 5'/%3E%3C/svg%3E"); background-size: 22px; background-position: center; background-repeat: no-repeat; }
+.cmp-tag { position: absolute; bottom: 16px; z-index: 2; font-size: 12px; font-weight: 650; letter-spacing: .04em; padding: 4px 10px; border-radius: 10px; background: rgba(21,20,26,.72); color: #fff; pointer-events: none; }
+.cmp-tag.is-l { left: 16px; } .cmp-tag.is-r { right: 16px; }
+.cmp-stage input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; z-index: 3; -webkit-appearance: none; appearance: none; touch-action: pan-y; }
+.cmp-stage:has(input:focus-visible) { outline: 3px solid var(--iris); outline-offset: 4px; }
+.ba figcaption { margin-top: 16px; color: var(--ink-2); font-size: 15px; text-align: center; max-width: 380px; margin-inline: auto; }
+@media (max-width: 860px) { .ba { grid-template-columns: 1fr; } }
+.ds { display: grid; grid-template-columns: .9fr 1.1fr; gap: 24px; align-items: start; }
+.ds img { border-radius: var(--r); border: 1px solid var(--line); box-shadow: var(--shadow); }
+.ds ul { list-style: none; padding: 0; margin: 0 0 24px; display: grid; gap: 12px; }
+.ds li { padding: 14px 18px; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); font-size: 15.5px; color: var(--ink-2); }
+.ds li b { color: var(--ink); display: block; }
+@media (max-width: 860px) { .ds { grid-template-columns: 1fr; } }
+.spectrum { height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--blush), var(--apricot), var(--mint), var(--sky), var(--lilac)); margin: 14px 0 0; }
+.flow { display: flex; gap: 10px; overflow-x: auto; padding: 4px 2px 14px; scroll-snap-type: x mandatory; }
+.flow a { flex: none; scroll-snap-align: start; width: 150px; text-decoration: none; color: var(--ink); font-size: 13.5px; }
+.flow img { width: 150px; height: auto; border-radius: 20px; border: 1px solid var(--line); margin-bottom: 8px; transition: transform .25s; }
+.flow a:hover img { transform: translateY(-3px); }
+.flow span { color: var(--ink-3); font-weight: 600; margin-right: 4px; }
+.links { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.links a { display: block; padding: 26px; border-radius: var(--r); background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); text-decoration: none; color: var(--ink); }
+.links a b { font: 400 30px/1.1 var(--display); display: block; margin-bottom: 6px; }
+.links a span { color: var(--ink-2); font-size: 15px; }
+@media (max-width: 760px) { .links { grid-template-columns: 1fr; } }
+footer { padding: 40px 0 60px; color: var(--ink-3); font-size: 14px; border-top: 1px solid var(--line); }
+.math { font: 500 14px ui-monospace, Menlo, monospace; color: var(--ink-2); background: var(--canvas); border-radius: 12px; padding: 12px 14px; margin-top: 12px; line-height: 1.7; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><defs><linearGradient id="am" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8B7BFF"/><stop offset="1" stop-color="#5A45F0"/></linearGradient></defs><rect width="28" height="28" rx="8" fill="url(#am)"/><rect x="7" y="8" width="14" height="3" rx="1.5" fill="#fff"/><rect x="7" y="12.5" width="9" height="3" rx="1.5" fill="#fff"/><rect x="7" y="17" width="11.5" height="3" rx="1.5" fill="#fff"/></svg>TripUp</a>
+    <nav aria-label="Sections">
+      <a href="../">Deck</a><a href="#brief">Brief</a><a href="#research">Research</a><a href="#decisions">Decisions</a><a href="#system">System</a><a href="#metrics">Metrics</a>
+      <a class="cta" href="../prototype/">Open prototype</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Design take-home · Ryan Lynch · Oct 2026</p>
+      <h1>Pick dinner. Split it. <em>Square up.</em></h1>
+      <p class="lede">A group trip app for the two arguments every trip has: where to eat and who owes what. One scenario, seven friends, one night in Lisbon.</p>
+      <div class="actions">
+        <a class="btn" href="../prototype/">Open the prototype</a>
+        <a class="btn ghost" href="https://www.figma.com/design/z4TesJNPe6UfvgwmWtIA4y/TripUp-Working" target="_blank" rel="noopener">Figma</a>
+        <a class="btn ghost" href="../storybook/">Storybook</a>
+      </div>
+      <div class="meta">
+        <div><b>Role</b>UX, UI, prototype</div>
+        <div><b>Platform</b>iOS 26</div>
+        <div><b>Tools</b>Figma, React, Storybook</div>
+      </div>
+    </div>
+    <div>
+      <div class="device-stage"><div class="device">
+        <img class="poster" src="../assets/app-live.jpg" alt="" width="330" height="717">
+        <iframe src="../prototype/?embed=1" title="TripUp prototype playing the guided tour" loading="lazy"></iframe>
+      </div></div>
+      <p class="device-cap">Live prototype, guided tour</p>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="brief">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">01 · Brief</span>
+      <div><h2>Trips run on a group chat and a running tab.</h2>
+      <p>Decisions get buried. Money gets awkward. The brief: one scenario, end to end.</p></div></div>
+    <div class="brief">
+      <div class="card">
+        <h3>The scenario</h3>
+        <ol class="steps">
+          <li>Ren joins the Lisbon trip on its last night.</li>
+          <li>Ari starts a dinner poll with three places.</li>
+          <li>Everyone votes from the push. Taberna wins.</li>
+          <li>Ari pays €248.70. Ren and Nic skip the wine.</li>
+          <li>Six IOUs simplify to three payments. Square.</li>
+        </ol>
+      </div>
+      <div class="grid stats">
+        <div class="card"><span class="stat">≤ 2</span><p>taps to vote</p></div>
+        <div class="card"><span class="stat">≤ 10</span><p>screens on the main path</p></div>
+        <div class="card"><span class="stat">3</span><p>payments instead of 6</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="research">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">02 · Research</span>
+      <div><h2>What the market solved, and what it left open.</h2>
+      <p>Eight apps, the iOS 26 guidelines, and published research on group voting.</p></div></div>
+    <div class="note"><b>Scope</b><span>Desk research only. I ran no interviews or usability tests. The validation plan is under Metrics.</span></div>
+    <div class="grid g3">
+      <div class="card"><span class="tag">Splitwise</span><h3>Simplify debts works, but stays hidden</h3><p>It is off by default because it "can cause confusion when people aren't expecting it." So I show the before, the after and why.</p><a class="src" href="https://feedback.splitwise.com/knowledgebase/articles/746853-my-dashboard-balances-are-different-than-my-group" target="_blank" rel="noopener">Splitwise help center</a></div>
+      <div class="card"><span class="tag">WhatsApp polls</span><h3>The baseline to beat</h3><p>Fast, but no deadline, no context, and the result sinks under the next 40 messages.</p></div>
+      <div class="card"><span class="tag">Wanderlog</span><h3>Great plan, no vote</h3><p>The last edit wins, with no record of how the group decided.</p></div>
+      <div class="card"><span class="tag">Troupe</span><h3>Voting-first is unclaimed</h3><p>JetBlue's suggest-vote-plan app has been delisted.</p></div>
+      <div class="card"><span class="tag">Partiful</span><h3>Guests act from a link</h3><p>No download to RSVP. The right path for Ren.</p></div>
+      <div class="card"><span class="tag">Bandwagon effect</span><h3>Visible tallies move votes</h3><p>Showing 80% vs 20% support raised individual support by about 8 points. I show the leader and keep picks private.</p><a class="src" href="https://doi.org/10.1177/2053168014547667" target="_blank" rel="noopener">Rothschild &amp; Malhotra, 2014</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="personas">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">03 · Proto-personas</span>
+      <div><h2>Three reasons to drop off.</h2>
+      <p>Assumptions from desk research, not interviews. The quotes are illustrative and written by me.</p></div></div>
+    <div class="grid g3">
+      <div class="card persona"><div class="who"><span class="av" style="background:var(--lilac)">A</span><div><h3>Ari, starts things</h3><p>Paid, owed by six</p></div></div>
+        <q>I'll start the poll. I just don't want to pick for everyone.</q><span class="ill">Illustrative quote</span></div>
+      <div class="card persona"><div class="who"><span class="av" style="background:var(--mint)">R</span><div><h3>Ren, the newcomer</h3><p>No app, no account</p></div></div>
+        <q>Send me a link. I'm not installing anything for one dinner.</q><span class="ill">Illustrative quote</span></div>
+      <div class="card persona"><div class="who"><span class="av" style="background:var(--apricot)">N</span><div><h3>Nic, the skeptic</h3><p>Prefers cash, skipped the wine</p></div></div>
+        <q>Show me the line items, or I'm paying you in cash.</q><span class="ill">Illustrative quote</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="decisions">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">04 · Decisions</span>
+      <div><h2>Followed, improved, or diverged.</h2></div></div>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Decision</th><th>Call</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Vote from the Lock Screen</td><td><span class="pill p-improve">Improved</span></td><td>One tap from the push. A Live Activity shows the leader and the close.</td></tr>
+        <tr><td>Guest link and QR</td><td><span class="pill p-follow">Followed</span></td><td>Ren votes and pays on the web, no account.</td></tr>
+        <tr><td>Deadline and tie rule</td><td><span class="pill p-improve">Improved</span></td><td>Closes at 19:30 or when all vote. On a tie, the starter picks.</td></tr>
+        <tr><td>Leader shown, picks private</td><td><span class="pill p-diverge">Diverged</span></td><td>Names next to options add pressure, so picks stay private.</td></tr>
+        <tr><td>Split by line item</td><td><span class="pill p-follow">Followed</span></td><td>One tap takes Ren and Nic off the €38 wine.</td></tr>
+        <tr><td>Simplify on, and explained</td><td><span class="pill p-diverge">Diverged</span></td><td>The graph animates six arrows into three, so the change is never a surprise.</td></tr>
+        <tr><td>Glass on controls only</td><td><span class="pill p-follow">Followed</span></td><td>Per iOS 26. Content stays on solid surfaces for contrast.</td></tr>
+        <tr><td>Cut chat, mascot, AR, voice</td><td><span class="pill p-diverge">Diverged</span></td><td>None were on the brief's path.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<section class="block" id="flow">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">05 · Flow</span>
+      <div><h2>Thirteen steps, all clickable.</h2>
+      <p>Each frame opens the prototype at that step. Balances are computed live.</p></div></div>
+    <div class="flow">
+      <a href="../prototype/#/home"><img src="../assets/app-home.jpg" alt="Trips home" loading="lazy" width="150" height="326"><span>01</span>Trips</a>
+      <a href="../prototype/#/trip"><img src="../assets/app-trip.jpg" alt="Lisbon Crew trip view" loading="lazy" width="150" height="326"><span>02</span>Lisbon Crew</a>
+      <a href="../prototype/#/push"><img src="../assets/app-push.jpg" alt="Lock screen push" loading="lazy" width="150" height="326"><span>06</span>Push</a>
+      <a href="../prototype/#/live"><img src="../assets/app-live.jpg" alt="Live poll" loading="lazy" width="150" height="326"><span>07</span>Live poll</a>
+      <a href="../prototype/#/plan"><img src="../assets/app-plan.jpg" alt="Winner in tonight's plan" loading="lazy" width="150" height="326"><span>09</span>Tonight</a>
+      <a href="../prototype/#/expense"><img src="../assets/app-expense.jpg" alt="Split dinner" loading="lazy" width="150" height="326"><span>10</span>Split</a>
+      <a href="../prototype/#/money"><img src="../assets/app-money.jpg" alt="Balances untangled into three payments" loading="lazy" width="150" height="326"><span>11</span>Balances</a>
+      <a href="../prototype/#/squared"><img src="../assets/app-squared.jpg" alt="All squared up" loading="lazy" width="150" height="326"><span>13</span>Squared</a>
+    </div>
+    <div class="grid g2" style="margin-top:20px">
+      <div class="card"><h3>Why Ren and Nic pay €30.10</h3><p>Wine splits five ways, the rest seven.</p>
+        <div class="math">€210.70 ÷ 7 = €30.10<br>€38.00 ÷ 5 = €7.60<br>Drinkers: €37.70</div></div>
+      <div class="card"><h3>Why six IOUs become three</h3><p>Sofia and Tomás net to zero, so money passes through them.</p>
+        <div class="math">Ari → Nic €42.10<br>Ren → Ari €18.40<br>Mara → João €64.00<br>€124.50 moves instead of €190.60</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="system">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">06 · Design system</span>
+      <div><h2>Prism: one accent, quiet glass.</h2>
+      <p>Tokens, then Storybook components, then screens. The prototype runs the same components.</p></div></div>
+    <div class="ds">
+      <div>
+        <ul>
+          <li><b>One accent</b>Iris #6E5BFF. Owe and owed always pair color with a word.</li>
+          <li><b>Spectrum for milestones only</b>Poll win, Explore done, all square.<div class="spectrum" aria-hidden="true"></div></li>
+          <li><b>One icon set</b>Phosphor, regular at 20 and 24, filled for the active tab.</li>
+          <li><b>Light, dark, Reduce Motion</b>All from the same semantic tokens.</li>
+        </ul>
+        <a class="btn" href="../storybook/">Open Storybook</a>
+      </div>
+      <div style="display:grid;gap:16px"><img src="../assets/ds-components.jpg" alt="Prism core components: buttons, poll options, trip cards, balances, settle sheet" loading="lazy" width="1600" height="1100"><img src="../assets/ds-foundations.jpg" alt="Prism foundations: color roles, celebration spectrum and type scale" loading="lazy" width="1600" height="1040"></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="before-after">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">07 · Before and after</span>
+      <div><h2>Right mood, wrong structure.</h2><p>My early concept frames against the final prototype, cropped to the same 402 by 874 frame. Drag across each phone to compare.</p></div></div>
+    <div class="ba">
+      <figure class="cmp" style="--pos:50%">
+        <div class="cmp-stage">
+          <img src="../assets/ba-poll-after.jpg" alt="Final: live dinner poll with three Lisbon restaurants, vote percentages, the leader and a 19:30 close time" loading="lazy" width="603" height="1311">
+          <img class="cmp-before" src="../assets/ba-poll-before.jpg" alt="Early concept: a dinner poll with three identical placeholder pizza cards" loading="lazy" width="603" height="1311">
+          <span class="cmp-tag is-l" aria-hidden="true">Concept</span><span class="cmp-tag is-r" aria-hidden="true">Final</span>
+          <span class="cmp-handle" aria-hidden="true"></span>
+          <input type="range" min="0" max="100" value="50" aria-label="Compare the concept and final dinner poll">
+        </div>
+        <figcaption>Three identical cards became real places with a live leader, who has voted and when it closes.</figcaption>
+      </figure>
+      <figure class="cmp" style="--pos:50%">
+        <div class="cmp-stage">
+          <img src="../assets/ba-money-after.jpg" alt="Final: balance as a sentence, six IOUs untangled into three payments with every net unchanged" loading="lazy" width="603" height="1311">
+          <img class="cmp-before" src="../assets/ba-money-before.jpg" alt="Early concept: bubbles sized by amount with no direction between people" loading="lazy" width="603" height="1311">
+          <span class="cmp-tag is-l" aria-hidden="true">Concept</span><span class="cmp-tag is-r" aria-hidden="true">Final</span>
+          <span class="cmp-handle" aria-hidden="true"></span>
+          <input type="range" min="0" max="100" value="50" aria-label="Compare the concept and final money screen">
+        </div>
+        <figcaption>Bubbles sized by amount hid who owes whom. Now your balance reads as a sentence and six IOUs untangle into three payments.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+<script>
+document.querySelectorAll('.cmp').forEach(function (f) {
+  var r = f.querySelector('input');
+  var set = function () { f.style.setProperty('--pos', r.value + '%'); };
+  r.addEventListener('input', set); set();
+});
+</script>
+
+<section class="block" id="metrics">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">08 · Metrics</span>
+      <div><h2>How I'd know it works.</h2>
+      <p>Proposed hypotheses with no baselines yet. Next step: a two-week diary study with six groups, proposed and not run.</p></div></div>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Metric</th><th>Proposed target</th></tr></thead>
+      <tbody>
+        <tr><td>Poll sent to decision</td><td>Under 30 minutes</td></tr>
+        <tr><td>Votes from the notification</td><td>More than half</td></tr>
+        <tr><td>Polls where everyone votes</td><td>70% or more</td></tr>
+        <tr><td>Guests who act without installing</td><td>80%</td></tr>
+        <tr><td>Trips settled within 48 hours</td><td>60%</td></tr>
+        <tr><td>Guardrail: notification opt-outs</td><td>Under 5% per trip</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<section class="block" id="a11y">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">09 · Accessibility and next</span>
+      <div><h2>Built in, with gaps named.</h2></div></div>
+    <div class="grid g2">
+      <div class="card"><h3>In the build</h3><ul class="list"><li>44 pt targets, visible focus, keyboard control</li><li>Reduce Motion and Reduce Transparency</li><li>Balances never rely on color alone</li><li>Storybook a11y checks on every story</li></ul></div>
+      <div class="card"><h3>Next</h3><ul class="list"><li>Run the diary study</li><li>Test whether people understand simplify</li><li>Build the Lock Screen vote in Swift</li><li>Dynamic Type and a VoiceOver pass on device</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="links">
+  <div class="wrap">
+    <div class="links">
+      <a href="../prototype/"><b>Prototype</b><span>Full journey with a guided tour.</span></a>
+      <a href="https://www.figma.com/design/z4TesJNPe6UfvgwmWtIA4y/TripUp-Working" target="_blank" rel="noopener"><b>Figma</b><span>Hi-fi screens and edge cases.</span></a>
+      <a href="../storybook/"><b>Storybook</b><span>Prism tokens and components.</span></a>
+    </div>
+  </div>
+</section>
+</main>
+<footer><div class="wrap">Designed and built by Ryan Lynch, 2026. Photos of Lisbon from Pexels. Research sources are linked where they appear.</div></footer>
+<script src="../analytics/config.js"></script>
+<script>window.TRIPUP_GA_SCROLL = true;</script>
+<script src="../analytics/ga.js"></script>
+</body>
+</html>

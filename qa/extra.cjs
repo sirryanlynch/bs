@@ -1,0 +1,23 @@
+const { chromium } = require('playwright-core');
+const B = 'http://localhost:8090/site/prototype/';
+(async () => {
+  const b = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--no-sandbox'] });
+  const errs = [];
+  const p = await (await b.newContext({ viewport: { width: 1440, height: 960 } })).newPage();
+  p.on('console', m => m.type() === 'error' && errs.push(m.text())); p.on('pageerror', e => errs.push(e.message));
+  await p.goto(B + '#/live'); await p.waitForTimeout(800);
+  await p.getByRole('radio', { name: 'Side by side' }).click(); await p.waitForTimeout(1500); await p.screenshot({ path: 'shots/x-compare-side.png' });
+  await p.getByRole('radio', { name: 'Overlay' }).click(); await p.goto(B + '#/money'); await p.waitForTimeout(1500); await p.screenshot({ path: 'shots/x-compare-overlay.png' });
+  await p.getByRole('radio', { name: 'Off' }).click();
+  await p.keyboard.press('d'); await p.goto(B + '#/expense'); await p.waitForTimeout(1500); await p.screenshot({ path: 'shots/x-dark-expense.png' });
+  await p.goto(B + '#/closed'); await p.waitForTimeout(1500); await p.screenshot({ path: 'shots/x-dark-closed.png' });
+  await p.keyboard.press('d');
+  await p.goto(B + '#/live?as=ren'); await p.waitForTimeout(1500); await p.screenshot({ path: 'shots/x-ren-live.png' });
+  await p.goto(B + '#/money?as=ren'); await p.waitForTimeout(1500); await p.screenshot({ path: 'shots/x-ren-money.png' });
+  await p.goto(B + '#/money?as=nic'); await p.waitForTimeout(1800); await p.screenshot({ path: 'shots/x-nic-money.png' });
+  await p.goto(B + '#/closed?tie=1'); await p.waitForTimeout(1800); await p.screenshot({ path: 'shots/x-tie.png' });
+  await p.goto(B + '#/plan'); await p.waitForTimeout(800); await p.getByRole('button', { name: 'How we got here' }).click(); await p.waitForTimeout(1000); await p.screenshot({ path: 'shots/x-how.png' });
+  await p.goto(B + '#/invite'); await p.waitForTimeout(800); await p.locator('.phone-screen').getByRole('radio', { name: 'From TripUp' }).click().catch(async () => { await p.locator('.phone-screen').getByText('From TripUp').click(); }); await p.waitForTimeout(800); await p.screenshot({ path: 'shots/x-invite-tripup.png' });
+  await p.goto(B + '#/settle'); await p.waitForTimeout(800); await p.locator('.phone-screen').getByRole('radio', { name: 'Cash' }).click(); await p.waitForTimeout(600); await p.screenshot({ path: 'shots/x-cash.png' });
+  console.log('ERRORS', JSON.stringify(errs)); await b.close();
+})();

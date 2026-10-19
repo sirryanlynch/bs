@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Builds Storybook and the prototype, then assembles the GitHub Pages folder in site/.
+set -euo pipefail
+cd "$(dirname "$0")"
+(cd storybook && npm run sync-tokens >/dev/null 2>&1 || true; npm run build-storybook)
+(cd prototype && npx vite build)
+rm -rf site/prototype site/storybook
+cp -r prototype/dist site/prototype
+cp -r storybook/storybook-static site/storybook
+touch site/.nojekyll
+echo "site/ is ready. Serve it with: python3 -m http.server 8080 -d site"

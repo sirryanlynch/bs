@@ -17,7 +17,7 @@
   "sections": [
     [
       "108:3230",
-      "01 \u00b7 Mood boards",
+      "01 · Mood boards",
       0,
       0,
       8160,
@@ -25,7 +25,7 @@
     ],
     [
       "108:3233",
-      "02 \u00b7 Design System \u00b7 Prism v1",
+      "02 · Design System · Prism v1",
       0,
       1840,
       14320,
@@ -33,7 +33,7 @@
     ],
     [
       "109:3579",
-      "03 \u00b7 Research",
+      "03 · Research",
       0,
       18760,
       7380,
@@ -41,7 +41,7 @@
     ],
     [
       "110:3836",
-      "04 \u00b7 Personas",
+      "04 · Personas",
       0,
       20735,
       3580,
@@ -49,7 +49,7 @@
     ],
     [
       "111:3584",
-      "05 \u00b7 Journey map",
+      "05 · Journey map",
       3820,
       20735,
       3640,
@@ -57,7 +57,7 @@
     ],
     [
       "112:3584",
-      "06 \u00b7 Feature tree",
+      "06 · Feature tree",
       0,
       22631,
       3740,
@@ -65,7 +65,7 @@
     ],
     [
       "113:3600",
-      "07 \u00b7 Click flow / user flow",
+      "07 · Click flow / user flow",
       3980,
       22631,
       4940,
@@ -73,7 +73,7 @@
     ],
     [
       "114:3600",
-      "08 \u00b7 Wireflow",
+      "08 · Wireflow",
       0,
       25152,
       6780,
@@ -81,7 +81,7 @@
     ],
     [
       "114:3619",
-      "09 \u00b7 Hi-fi",
+      "09 · Hi-fi",
       0,
       27055,
       4016,
@@ -89,7 +89,7 @@
     ],
     [
       "114:3638",
-      "10 \u00b7 Prototype",
+      "10 · Prototype",
       0,
       30081,
       2600,
@@ -282,13 +282,13 @@
   },
   "boards": {
     "Board / Icons": "101:3234",
-    "Board / Colour \u00b7 semantic (Light)": "105:3361",
-    "Board / Colour \u00b7 semantic (Dark)": "105:3518",
-    "Board / Colour \u00b7 primitives": "105:3675",
+    "Board / Colour · semantic (Light)": "105:3361",
+    "Board / Colour · semantic (Dark)": "105:3518",
+    "Board / Colour · primitives": "105:3675",
     "Board / Type": "105:3829",
     "Board / Spacing & radius": "105:3881",
     "Board / Glass, blur & shadow": "105:3947",
-    "Board / Components in Dark \u00b7 Graphite Pearl": "105:3962",
+    "Board / Components in Dark · Graphite Pearl": "105:3962",
     "Reference / Prism design-system sheet (HTML render, 1920w)": "105:4207",
     "Component / Button": "116:3762",
     "Component / Icon Button": "116:3873",
@@ -336,7 +336,7 @@
   "broken": 0,
   "run": "prism-v1",
   "fileKey": "z4TesJNPe6UfvgwmWtIA4y",
-  "updated": "2026-10-16 (PDT)",
+  "updated": "2026-10-18",
   "wireflow": {
     "01": "141:7176",
     "02": "134:4945",
@@ -363,17 +363,17 @@
     "08": "143:7455",
     "10": "136:6452"
   },
-  "scripts": "figma-scripts (prelude4.js + screens.js are the screen builders; kept outside this repo)",
+  "scripts": "/workspace/tripup/figma-scripts (prelude4.js + screens.js are the screen builders)",
   "edgeCases": {
-    "E01 Tie \u00b7 Ari picks": "144:6775",
+    "E01 Tie · Ari picks": "144:6775",
     "E02 Mark paid in cash": "143:6885",
     "E03 Add Ren from TripUp": "143:7010",
     "E04 Ren votes on the web": "141:6559",
-    "E05 Explore \u00b7 step 3 of 5": "141:6630",
-    "E06 Explore \u00b7 6 picks": "141:6691",
+    "E05 Explore · step 3 of 5": "141:6630",
+    "E06 Explore · 6 picks": "141:6691",
     "E07 How we got here": "143:7157",
-    "E08 Empty \u00b7 no trips": "141:6981",
-    "E09 Empty \u00b7 no expenses": "141:7043",
+    "E08 Empty · no trips": "141:6981",
+    "E09 Empty · no expenses": "141:7043",
     "E10 Squared-up recap": "142:7072"
   },
   "notes_2026-10-16_edge": "Section 09 resized to 4016x5210; section 10 moved to y=32505. 743 instances in sections 08+09, 0 broken.",
@@ -424,5 +424,47 @@
     "removed": [
       "114:3657 (old cover)"
     ]
+  },
+  "settle_v3_2026_10_18": {
+    "debtSimplificationSet": "121:4174",
+    "variants": {
+      "Tangled": "121:4135",
+      "Netting": "197:8975",
+      "Solved": "121:4153"
+    },
+    "matrix": "121:4221",
+    "hifi": {
+      "09a Tangled": "201:9341",
+      "09b Netting": "201:9484",
+      "09 light": "137:6808",
+      "09 dark": "137:6901",
+      "labels": [
+        "201:9478",
+        "201:9618"
+      ]
+    },
+    "celebration": {
+      "confirmation": "104:3446",
+      "overlaySet": "121:4318",
+      "rich": "121:4299",
+      "reduceMotion": "121:4309"
+    },
+    "section12": {
+      "pair01": "204:9559",
+      "pair02": "204:9618",
+      "pair03": "204:9696"
+    },
+    "deck": {
+      "slide04": "158:8575",
+      "slide08": "159:8684",
+      "slide08Devices": [
+        "205:11969",
+        "205:11989",
+        "205:12010"
+      ]
+    },
+    "ledgerSource": "prototype/src/ledger.ts pairwise()+simplify(), dinner with Ren and Nic off wine",
+    "spec": "prototype/SPEC-settle-v3.md",
+    "scripts": "figma-scripts/v3/"
   }
 }

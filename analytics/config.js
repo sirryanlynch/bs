@@ -1,5 +1,5 @@
 // TripUp GA4 measurement id.
-// Leave this empty until you have a G- id.
-// Builds and GitHub Actions rewrite the published copies from the
-// GA_MEASUREMENT_ID environment variable. An empty value disables analytics.
+// Published copies use GA_MEASUREMENT_ID when that variable is a G- id.
+// When it is unset, analytics/sync.js writes G-T7WTSRRSGT.
+// An invalid value is ignored and that same default is used.
 window.GA_MEASUREMENT_ID = "";

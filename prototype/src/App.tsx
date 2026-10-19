@@ -307,7 +307,7 @@ export function App() {
       <details className="pt-more pt-checks"><summary>Brief checklist <span className="tu-num">{doneCount} of {CHECKS.length}</span></summary>
         <ul className="pt-checklist">{CHECKS.map(c => { const ok = c.test(s); return <li key={c.key} className={ok ? 'is-ok' : ''}><span aria-hidden>{ok && <Icon name="check" size={14} />}</span>{c.label}</li>; })}</ul>
       </details>
-      <p className="pt-foot"><a href="../">Case study</a><a href="../storybook/">Storybook</a><a href="https://www.figma.com/design/z4TesJNPe6UfvgwmWtIA4y/TripUp-Working" target="_blank" rel="noreferrer">Figma</a></p>
+      <p className="pt-foot"><a href="../">Deck</a><a href="../case-study/">Case study</a><a href="../storybook/">Storybook</a><a href="https://www.figma.com/design/z4TesJNPe6UfvgwmWtIA4y/TripUp-Working" target="_blank" rel="noreferrer">Figma</a></p>
     </aside>
   );
 
