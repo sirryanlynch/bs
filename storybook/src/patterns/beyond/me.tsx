@@ -1,5 +1,5 @@
 import React from 'react';
-import { useFlow, Top } from './kit';
+import { useFlow, FlowTabs, Top } from './kit';
 import { Button } from '../../components/core';
 import { BIcon } from '../../components/beyond/icons';
 import { ActivityItem, NotificationBanner, LockScreen } from '../../components/beyond/activity';
@@ -13,7 +13,7 @@ import '../../components/beyond/elevate.css';
 export function ActivityScreen() {
   const { s, d, go, back, P, host, toast } = useFlow();
   const groups = ['Now', 'Tonight', 'Earlier today', 'Yesterday'] as const;
-  const open = (id: string) => { const a = ACTIVITY.find(x => x.id === id)!; if (a.kind === 'photo') go('album'); else if (a.kind === 'poll') go('polls'); else if (a.kind === 'expense' || a.kind === 'settle') host.exit('money'); else if (a.kind === 'closed' || a.kind === 'vote') host.exit('closed'); else host.exit('trip'); };
+  const open = (id: string) => { const a = ACTIVITY.find(x => x.id === id)!; if (a.kind === 'photo') go('album'); else if (a.kind === 'poll') host.exit('live'); else if (a.kind === 'expense' || a.kind === 'settle') host.exit('money'); else if (a.kind === 'closed' || a.kind === 'vote') host.exit('closed'); else host.exit('trip'); };
   return (
     <div className="b-scr">
       <div className="b-scroll">
@@ -85,8 +85,7 @@ export function ProfileScreen() {
   const { s, d, go, back, P, host } = useFlow(); const st = s.settings;
   return (
     <div className="b-scr">
-      <div className="b-scroll">
-        <Top title="" onBack={back} />
+      <div className="b-scroll has-tabs">
         <ProfileHeader person={P.ari} full="Ari Lindqvist" sub="San Francisco · on TripUp since 2024" cover={photo.alfama} stats={[['trips', '6'], ['crews', '3'], ['places reviewed', '11']]} />
         <section className="b-section"><h2 className="b-overline">Your trips</h2>
           <div className="b-triprail">
@@ -104,6 +103,7 @@ export function ProfileScreen() {
         <button type="button" className="b-quiet b-signout" onClick={() => host.exit('home')}>Sign out</button>
         <p className="b-fine b-center">TripUp 2.4 · Made for crews</p>
       </div>
+      <FlowTabs level="home" active="you" />
     </div>
   );
 }

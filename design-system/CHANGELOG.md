@@ -2,9 +2,32 @@
 
 `tokens.json` is the source of truth. `tokens.css` and the Figma variables are generated from it by `build_tokens.py`. Anyone building on `tokens.*` (for example the Storybook in `/workspace/tripup/storybook/`) should check here before they rebuild.
 
+## v5.4 (Oct 19, 2026)
+
+Navigation restructure. Builds on v5.3.1 (folded in: Back and swipe down only in flows, no in-flow menu, Poll sent exits fixed).
+
+- **Two nav levels.** Home (no trip open): Trips · Explore · You, plus the + with New trip first. Trip (inside Lisbon Crew): Plan · Explore · Photos · Money, plus the +. Back to Trips leaves the trip. The bar crossfades between sets (360 ms, a fade under Reduce Motion).
+- **Home Explore** (`discover`): a photo-led screen for the next trip. Hero, destination rail and trips other crews took. Plan a trip like this opens New trip prefilled.
+- **No Polls tab.** Polls start from the dinner slot, Find a place, the + or a notification. `TripPollCard` on Trip home while a poll is open, then the result. Old `polls` routes redirect, with no dead ends.
+- **Up next** (`actioninbox.tsx`): an Iris pill beside the menu with a count. It lists only things that need you (vote, pay), and each card taps straight into the action. When there is nothing, it shows a quiet glass pill and "You’re all caught up". At home level, cards name their trip.
+- **HeaderMenu:** Notifications and Settings only. Album moved to the Photos tab.
+- **Explore:** the header + is gone. Find a place is the single entry.
+- **Empty states** (`emptystate.tsx`): Trips with no trips, and a new trip's Plan, Photos, Money and Notifications, plus Up next. All are reachable from Create trip, then Open the trip.
+- **PollOption `hidden`:** no 0% before you vote.
+- Storybook: two-level TabBar stories, Up next stories (HeaderMenu and ActionInbox), EmptyState stories, Home Explore and the empty-state flows. Tour: Home Explore step; Find a place replaces the feed's new-poll button.
+
+## v5.3.1 (Oct 19, 2026)
+Top nav, as decided with Ryan. No token changes.
+- `HeaderMenu`: three shortcuts, **Notifications · Album · Settings**. Add expense (the + menu covers it) and Invite (Add people on the trip screen covers it) are gone. A new `menu={false}` drops the button on in-flow screens that use this header (Pay, Cash).
+- `FlowMenu` and `MenuNav` from v5.3 are removed. In-flow screens (New poll, Find a place, Add expense, New trip, settle steps, place cards) have no menu button. You leave them with Back or a swipe down.
+- Swipe down to dismiss (prototype `useSwipeDismiss`): on any screen without a tab bar or header menu, drag down from the header (or anywhere when the page is at the top). The screen follows your finger. Past 110 pt, or with a quick flick, it slides away and runs that screen's own Back, so the swipe and Back always land in the same place. Under Reduce Motion it fades instead. Sheets, dialogs and sideways drags are left alone.
+- Poll sent: Back and Done used to loop back to the same screen because the polls list was cut. Both now leave the flow. "See all polls" is removed.
+- Find a place: a selected pick gets the same Iris ring as a voted poll tile (3 pt Iris outline plus an Iris lift).
+- Deck slide 5: the eyebrow fits on one line at 1280 px and wider ("From slide 3: jobs 3, 4").
+
 ## v5.3 (Oct 19, 2026)
 No token changes. New and changed components:
-- `FlowMenu` (components/beyond/headermenu): a 44 pt glass menu button for in-flow screens, next to Back. Same five items as the top-nav menu. `MenuNav` context routes the picks.
+- `FlowMenu` (components/beyond/headermenu): a 44 pt glass menu button for in-flow screens, next to Back. Same five items as the top-nav menu. `MenuNav` context routes the picks. (Removed in v5.3.1.)
 - `Composer` Add an option sheet: a light glass Explore button beside the field (`onExplore`) opens Find a place.
 - `FindPicks`: rank badges replaced by + buttons (`picked`, `onToggle`). The card body still opens the place. CTA reads "Start a poll with N".
 - `SquaredSheet`: `onDismiss`. Tap the scrim, swipe down past 80 pt or press Escape to close. 44 pt grabber.

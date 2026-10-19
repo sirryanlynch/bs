@@ -90,7 +90,7 @@ export function PollView() {
         {!closed && mine == null && <p className="pt-prompt">Tap a place to vote. Counts show once you do.</p>}
         <div className="pt-poll-opts" aria-live="polite">
           {optIds(s).map((id, i) => (
-            <PollOption key={id} label={PLACE_NAMES[id][0]} detail={optDetail(s, i)} votes={mine == null && !closed ? 0 : t[i]} total={Math.max(n, 1)} photo={photoOf(id)}
+            <PollOption key={id} label={PLACE_NAMES[id][0]} detail={optDetail(s, i)} hidden={mine == null && !closed} votes={mine == null && !closed ? 0 : t[i]} total={Math.max(n, 1)} photo={photoOf(id)}
               state={closed ? (s.winner === i ? 'winner' : mine === i ? 'yourVote' : 'default') : mine === i ? 'yourVote' : mine != null && t[i] === max && max > 0 && leaders === 1 ? 'leading' : 'default'}
               closed={closed} onVote={() => { if (!closed) { haptic(); d({ t: 'vote', who: s.me, opt: i }); } }} />
           ))}
@@ -104,7 +104,7 @@ export function PollView() {
           </button>
         )}
       </div>
-      <Tabs active="polls" />
+      <Tabs active="plan" />
     </div>
   );
 }

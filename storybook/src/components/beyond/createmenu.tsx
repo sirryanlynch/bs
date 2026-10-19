@@ -15,7 +15,8 @@ export const CREATE_ITEMS: { id: CreateKind; title: string; sub: string; icon: B
  * CreateMenu: the global + next to the tab bar opens this from every tab.
  * A glass card anchored over the + with five ways to create. Escape or the scrim closes it; focus moves to the first item.
  */
-export function CreateMenu({ onPick, onClose }: { onPick: (k: CreateKind) => void; onClose: () => void }) {
+export function CreateMenu({ onPick, onClose, first }: { onPick: (k: CreateKind) => void; onClose: () => void; /** v5.4: at home level New trip comes first */ first?: CreateKind }) {
+  const items = first ? [...CREATE_ITEMS.filter(i => i.id === first), ...CREATE_ITEMS.filter(i => i.id !== first)] : CREATE_ITEMS;
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     (ref.current?.querySelector('button') as HTMLElement | null)?.focus();
@@ -26,9 +27,9 @@ export function CreateMenu({ onPick, onClose }: { onPick: (k: CreateKind) => voi
     <div className="b-cmenu-layer">
       <div className="b-scrim is-soft" onClick={onClose} />
       <div className="b-cmenu tu-glass" role="dialog" aria-modal="true" aria-label="Create" ref={ref}>
-        {CREATE_ITEMS.map(it => (
+        {items.map(it => (
           <button key={it.id} type="button" className="b-cmenu-item" onClick={() => onPick(it.id)}>
-            <span className={`b-ico ${it.id === 'poll' ? 'is-accent' : ''}`}><BIcon name={it.icon} size={20} /></span>
+            <span className={`b-ico ${it.id === (first ?? 'poll') ? 'is-accent' : ''}`}><BIcon name={it.icon} size={20} /></span>
             <span className="b-listrow-text"><b>{it.title}</b><small>{it.sub}</small></span>
           </button>
         ))}

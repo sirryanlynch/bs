@@ -1,0 +1,52 @@
+/* v5.4 Up next (action inbox). Iris pill = "needs you"; the bell stays a quiet glass button for updates. */
+.prism .b-un { flex: none; display: flex; align-items: center; transition: opacity 200ms ease, transform var(--spring-ui); }
+.prism .b-un-pill { position: relative; height: 34px; min-width: 52px; padding: 0 11px 0 9px; display: inline-flex; align-items: center; gap: 4px; border: 0; border-radius: 17px; cursor: pointer;
+  background: var(--color-accent-primary); color: #fff; box-shadow: 0 8px 18px -8px rgba(110, 91, 255, .85), inset 0 1px 0 rgba(255,255,255,.28); transition: transform var(--spring-live), box-shadow 200ms ease; }
+.prism .b-un-pill::before { content: ''; position: absolute; inset: -5px -2px; }
+.prism .b-un-pill:active { transform: scale(.94); }
+.prism .b-un-pill svg { display: block; }
+.prism .b-un-n { font: 700 15px/1 var(--font-ui); }
+.prism .b-un-pill.is-open { box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent-primary) 28%, transparent), 0 8px 18px -8px rgba(110, 91, 255, .85); }
+.prism .b-un-pill:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 3px; }
+/* The drop: full header width, under the bar */
+.prism .b-un-drop { position: absolute; left: 0; right: 0; top: 64px; pointer-events: none; }
+.prism .b-un.is-open .b-un-drop, .prism .b-un-drop.is-on { pointer-events: auto; }
+.prism .b-un-panel { padding: 14px 12px 10px; border-radius: 28px; background: color-mix(in srgb, var(--color-bg-surface) 92%, transparent); -webkit-backdrop-filter: var(--glass-backdrop-thick); backdrop-filter: var(--glass-backdrop-thick);
+  box-shadow: inset 0 1px 0 var(--color-glass-highlight), 0 0 0 1px var(--color-glass-stroke), 0 28px 50px -22px rgba(40, 30, 110, .5);
+  transform-origin: calc(100% - 80px) -10px; animation: b-un-in 420ms cubic-bezier(0.34, 1.2, 0.64, 1) both; }
+.prism .b-un-panel.is-inline { animation: none; }
+.prism .b-un-head { position: relative; display: flex; align-items: baseline; gap: 8px; padding: 0 6px 10px; }
+.prism .b-un-head b { font: 400 24px/28px var(--font-display); letter-spacing: -.2px; color: var(--color-text-primary); }
+.prism .b-un-head small { font: var(--type-ui-footnote); color: var(--color-text-secondary); }
+.prism .b-un-x { position: absolute; right: 0; top: -4px; width: 32px; height: 32px; border-radius: 50%; border: 0; display: grid; place-items: center; cursor: pointer; background: var(--color-glass-fill); color: var(--color-text-secondary); }
+.prism .b-un-x::before { content: ''; position: absolute; inset: -6px; }
+.prism .b-un-list { display: flex; flex-direction: column; gap: 8px; }
+.prism .b-un-card { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 10px 10px 10px; border-radius: 20px; text-align: left; cursor: pointer;
+  border: 1px solid var(--color-glass-stroke); background: var(--color-bg-surface); color: var(--color-text-primary); box-shadow: 0 8px 18px -14px rgba(40, 30, 110, .45);
+  animation: b-un-card 360ms cubic-bezier(0.32, 0.72, 0, 1) both; animation-delay: calc(var(--i, 0) * 50ms + 80ms); transition: transform var(--spring-ui); }
+.prism .b-un-card:active { transform: scale(.98); }
+.prism .b-un-card:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 2px; }
+.prism .b-un-lead { position: relative; flex: none; width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--color-accent-primary) 12%, var(--color-bg-surface)); color: var(--color-accent-text); }
+.prism .b-un-lead img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+.prism .b-un-card.is-vote .b-un-lead { border-radius: 14px; background: var(--color-accent-primary); color: #fff; }
+.prism .b-un-badge { position: absolute; right: -3px; bottom: -3px; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; background: var(--color-accent-primary); color: #fff; box-shadow: 0 0 0 2px var(--color-bg-surface); }
+.prism .b-un-t { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.prism .b-un-t b { font: 600 16px/20px var(--font-ui); letter-spacing: -.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.prism .b-un-t small { font: var(--type-ui-footnote); color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.prism .b-un-cta { flex: none; height: 34px; padding: 0 15px; border-radius: 17px; display: grid; place-items: center; font: 600 15px var(--font-ui); background: var(--color-accent-primary); color: #fff; }
+.prism .b-un-foot { margin: 10px 6px 2px; font: var(--type-ui-caption-1); color: var(--color-text-tertiary, var(--color-text-secondary)); }
+@keyframes b-un-in { from { opacity: 0; transform: translateY(-6px) scale(.92); } }
+@keyframes b-un-card { from { opacity: 0; transform: translateY(-6px); } }
+.prism[data-motion="reduce"] .b-un-panel, .prism[data-motion="reduce"] .b-un-card { animation: b-fade 150ms linear both; }
+.prism[data-motion="reduce"] .b-un, .prism[data-motion="reduce"] .b-un-pill { transform: none !important; transition: opacity 150ms linear; }
+/* In the header: hide with the title while the menu capsule is open */
+.prism .b-hm.is-open .b-un { opacity: 0; transform: translateX(-12px); pointer-events: none; }
+
+/* v5.4 zero state: a quiet glass pill, no number */
+.prism .b-un.is-zero .b-un-pill { width: 44px; padding: 0; justify-content: center; background: var(--color-glass-fill, rgba(255,255,255,.6)); color: var(--color-text-secondary); box-shadow: inset 0 0 0 1px var(--color-glass-stroke); }
+.prism .b-un.is-zero .b-un-pill.is-light { color: #fff; background: rgba(255,255,255,.18); }
+.prism .b-un-zero { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; padding: 14px 18px 8px; }
+.prism .b-un-zero-ico { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; margin-bottom: 6px; color: var(--color-accent-text); background: color-mix(in srgb, var(--color-accent-primary) 14%, transparent); }
+.prism .b-un-zero b { font: 400 24px/28px var(--font-display); color: var(--color-text-primary); }
+.prism .b-un-zero small { font: var(--type-ui-footnote); color: var(--color-text-secondary); max-width: 250px; }
+.prism .b-un-pill::after { content: ""; position: absolute; inset: -5px -2px; } /* 44pt hit area */

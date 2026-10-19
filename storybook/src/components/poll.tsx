@@ -7,18 +7,19 @@ import { useReducedMotion } from '../lib/PrismRoot';
 export type PollState = 'default' | 'yourVote' | 'leading' | 'winner';
 export type PollOptionProps = {
   label: string; detail?: string; votes: number; total: number; state?: PollState; voters?: Person[]; photo?: string; closed?: boolean; onVote?: () => void;
+  /** Counts hidden until you vote: no percent, no fill. */ hidden?: boolean;
 };
 
 /** One answer in a poll. The fill width is the vote share and springs on every change. */
-export function PollOption({ label, detail, votes, total, state = 'default', voters = [], photo, closed, onVote }: PollOptionProps) {
-  const pct = total ? Math.round((votes / total) * 100) : 0;
+export function PollOption({ label, detail, votes, total, state = 'default', voters = [], photo, closed, onVote, hidden }: PollOptionProps) {
+  const pct = total && !hidden ? Math.round((votes / total) * 100) : 0;
   const reduce = useReducedMotion();
   const [shown, setShown] = useState(reduce ? pct : 0);
   useEffect(() => { const t = setTimeout(() => setShown(pct), reduce ? 0 : 60); return () => clearTimeout(t); }, [pct, reduce]);
   const mine = state === 'yourVote';
   return (
     <button type="button" className={`p-pollopt is-${state} ${photo ? 'has-photo' : ''}`} onClick={onVote} disabled={closed}
-      aria-pressed={mine} aria-label={`${label}, ${votes} of ${total} votes, ${pct} percent${state === 'winner' ? ', winner' : state === 'leading' ? ', leading' : ''}${mine ? ', your vote' : ''}`}>
+      aria-pressed={mine} aria-label={`${label}${hidden ? ', counts hidden until you vote' : `, ${votes} of ${total} votes, ${pct} percent`}${state === 'winner' ? ', winner' : state === 'leading' ? ', leading' : ''}${mine ? ', your vote' : ''}`}>
       <span className="p-pollopt-fill" style={{ width: `${shown}%` }} aria-hidden />
       {state === 'winner' && <span className="p-pollopt-sheen anim-move" aria-hidden />}
       {photo && <img className="p-pollopt-photo" src={photo} alt="" />}
@@ -32,7 +33,7 @@ export function PollOption({ label, detail, votes, total, state = 'default', vot
       </span>
       <span className="p-pollopt-right">
         {voters.length > 0 && !photo && <AvatarStack people={voters} size={24} max={3} />}
-        <span className="p-pollopt-pct tu-num">{pct}%</span>
+        {!hidden && <span className="p-pollopt-pct tu-num">{pct}%</span>}
         <span className={`p-pollopt-check ${mine || state === 'winner' ? 'is-on' : ''}`} aria-hidden>{(mine || state === 'winner') && <Icon name="check" size={14} />}</span>
       </span>
     </button>

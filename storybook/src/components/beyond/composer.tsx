@@ -1,4 +1,3 @@
-import { FlowMenu } from './headermenu';
 import React, { useEffect, useRef, useState } from 'react';
 import './beyond.css';
 import './composer.css';
@@ -105,7 +104,7 @@ export function PollComposer({ value, onChange, days, today, picks, crew = 7, on
       <header className={`b-cmp-head ${scrolled ? 'is-scrolled' : ''}`}>
         <button type="button" className="b-cmp-round tu-glass" onClick={onBack} aria-label="Back"><BIcon name="chevronLeft" size={20} /></button>
         <div className="b-cmp-headt"><b>New poll</b><small>Lisbon Crew · {crew} people</small></div>
-        <FlowMenu />
+        <span className="b-cmp-sp" />
       </header>
       <div className="b-scroll has-cta b-cmp-scroll" onScroll={e => setScrolled((e.currentTarget as HTMLElement).scrollTop > 8)}>
         <section className="b-cmp-hero" aria-label="Poll">

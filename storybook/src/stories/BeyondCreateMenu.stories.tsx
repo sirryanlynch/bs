@@ -12,7 +12,7 @@ function Demo({ open: o = true }: { open?: boolean }) {
   const [open, setOpen] = useState(o); const [last, setLast] = useState<CreateKind | ''>('');
   return <div style={{ position: 'relative', height: 520 }}>
     <p style={{ padding: 16 }}>{last ? `Picked: ${last}` : 'Tap + to open'}</p>
-    <TabBar active="polls" tabs={TABS} accessory="plus" accessoryLabel="Create" accessoryExpanded={open} onAccessory={() => setOpen(x => !x)} />
+    <TabBar active="plan" tabs={TABS} accessory="plus" accessoryLabel="Create" accessoryExpanded={open} onAccessory={() => setOpen(x => !x)} />
     {open && <CreateMenu onClose={() => setOpen(false)} onPick={k => { setLast(k); setOpen(false); }} />}
   </div>;
 }

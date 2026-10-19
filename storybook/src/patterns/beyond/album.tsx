@@ -1,5 +1,5 @@
 import React from 'react';
-import { useFlow, Top, TopBtn, Sheet } from './kit';
+import { useFlow, TopBtn, Sheet, FlowTabs } from './kit';
 import { Button, SegmentedControl } from '../../components/core';
 import { PhotoGrid, PhotoViewer, UploadPicker, UploadTagger } from '../../components/beyond/album';
 import { FilterChips } from '../../components/beyond/filterchips';
@@ -16,8 +16,12 @@ export function AlbumScreen() {
   const counts = { food: 0, drinks: 0, culture: 0, active: 0 } as Record<string, number>; a.photos.forEach(p => counts[placeType(p.place)]++);
   return (
     <div className="b-scr">
-      <div className="b-scroll">
-        <Top title="Album" sub={`${a.photos.length} photos · 7 people`} onBack={back} right={<TopBtn icon="upload" label="Add photos" accent onClick={() => go('album/upload')} />} />
+      {/* v5.4: Photos is a tab landing (it used to be Album, reached from the header menu). */}
+      <div className="b-scroll has-tabs">
+        <div className="b-head">
+          <div><p className="b-overline tu-num">Lisbon Crew · {a.photos.length} photos · 7 people</p><h1 className="b-title-xl">Photos</h1></div>
+          <div className="b-head-tools"><TopBtn icon="upload" label="Add photos" accent onClick={() => go('album/upload')} /></div>
+        </div>
         <SegmentedControl options={['By day', 'By place']} value={a.groupBy === 'day' ? 'By day' : 'By place'} onChange={v => d({ t: 'patch', k: 'album', v: { groupBy: v === 'By day' ? 'day' : 'place' } })} />
         <FilterChips value={a.xt} surface="album" counts={counts} onChange={t => d({ t: 'patch', k: 'album', v: { xt: t } })} />
         {who && <div className="b-album-who" role="status">
@@ -25,6 +29,7 @@ export function AlbumScreen() {
           <button type="button" className="b-album-who-x" onClick={() => setWho(undefined)} aria-label="Show everyone's photos"><BIcon name="close" size={16} /></button></div>}
         <div key={a.groupBy + a.xt + (a.who ?? '')} className="b-fadein"><PhotoGrid photos={shown} groupBy={a.groupBy} fresh={a.fresh} names={names} onPerson={w => setWho(a.who === w ? undefined : w)} onOpen={id => { d({ t: 'patch', k: 'album', v: { viewer: a.photos.findIndex(p => p.id === id) } }); go('album/viewer'); }} /></div>
       </div>
+      <FlowTabs active="photos" />
     </div>
   );
 }

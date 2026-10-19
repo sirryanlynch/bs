@@ -1,11 +1,24 @@
-# Top nav menu vs tab bar: analysis (v5.3)
+# Top nav menu vs tab bar: analysis (v5.3), decided in v5.3.1
+
+## Decision (Ryan, Oct 19, 2026, shipped in v5.3.1)
+
+- The header menu has three items: **Notifications · Album · Settings**.
+- **Add expense** is gone from the menu. The + menu covers it.
+- **Invite** is gone from the menu. Add people on the trip screen covers it.
+- **Notifications** stays in the menu as it is, with no separate bell.
+- **In-flow screens have no menu button.** That covers New poll, Find a place, Add expense, New trip, Pay, Cash, the settle steps and place cards. You leave them with **Back** or a **swipe down**, and the swipe always goes where Back goes. This reverses v5.3 item 9.
+- Top-level screens keep the menu: Trips, Lisbon Crew, Explore, Tonight, Money, Plan.
+
+The analysis below is the v5.3 input to that decision, kept for the record.
+
+---
 
 For discussion with Ryan. Nothing in the top nav changed in v5.3, except that the same menu button now also shows on in-flow screens (item 9).
 
 ## What exists today
 
 - **Tab bar** (bottom, on tab screens): Trips · Plan · Explore · Polls · Money, plus the global **+**. The + opens: New poll, Add expense, Add photos, Add to plan, New trip.
-- **Header menu** (top right, a round glass button): Notifications · Album · Add expense · Invite · Settings. It shows on top-level screens (Trips, Lisbon Crew, Explore feed, Tonight, Money, Pay, Cash). Since v5.3 it also shows on in-flow screens (Find a place, New poll, Split dinner, New trip, settle steps, place cards, Album) so you can leave a flow at any time.
+- **Header menu** (top right, a round glass button): Notifications · Album · Add expense · Invite · Settings. It shows on top-level screens (Trips, Lisbon Crew, Explore feed, Tonight, Money, Pay, Cash). In v5.3 it also showed on in-flow screens. v5.3.1 removed it there.
 
 ## Item by item
 

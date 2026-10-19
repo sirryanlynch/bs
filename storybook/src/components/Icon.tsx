@@ -4,6 +4,7 @@ import {
   Compass, User, UserPlus, Export, DotsThree, Bell, MapPin, Clock, Receipt, Camera, ForkKnife, Wine, Bed, AirplaneTilt, Tram,
   ArrowRight, Sparkle, QrCode, Link, ChatCircle, Info, Warning, EyeSlash, Shuffle, ArrowsMerge, Trash, PencilSimple, Gear, Lock,
   SunHorizon, MusicNotes, Money, CreditCard, PaperPlaneTilt, Clipboard, NavigationArrow, ArrowUUpLeft, Users, ArrowCounterClockwise, Play, GlobeSimple, Bank, WarningCircle,
+  Images, Stack,
 } from '@phosphor-icons/react';
 import type { Icon as PhIcon, IconWeight } from '@phosphor-icons/react';
 
@@ -14,6 +15,7 @@ import type { Icon as PhIcon, IconWeight } from '@phosphor-icons/react';
  */
 const P = {
   plus: Plus, minus: Minus, check: Check, close: X, chevronRight: CaretRight, chevronLeft: CaretLeft, chevronDown: CaretDown,
+  images: Images, stack: Stack,
   search: MagnifyingGlass, home: House, poll: ChartBarHorizontal, calendar: CalendarBlank, wallet: Wallet, compass: Compass,
   person: User, people: Users, personAdd: UserPlus, share: Export, more: DotsThree, bell: Bell, pin: MapPin, clock: Clock,
   receipt: Receipt, camera: Camera, fork: ForkKnife, wine: Wine, bed: Bed, plane: AirplaneTilt, tram: Tram, arrowRight: ArrowRight,

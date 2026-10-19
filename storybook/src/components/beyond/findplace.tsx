@@ -1,4 +1,3 @@
-import { FlowMenu } from './headermenu';
 import React from 'react';
 import './beyond.css';
 import './composer.css';
@@ -33,7 +32,7 @@ export function FindHeader({ answers, onBack, onSkip }: { answers: CurateAnswers
     <header className="b-cmp-head b-fp-head">
       <button type="button" className="b-cmp-round tu-glass" onClick={onBack} aria-label="Back"><BIcon name="chevronLeft" size={20} /></button>
       <div className="b-cmp-headt"><b>Find a place</b><small>For 7 · tonight</small>{st < 4 && <FindDots at={st} />}</div>
-      <span className="b-fp-headr">{st < 4 && onSkip && <button type="button" className="b-fp-skip" onClick={onSkip}>Skip</button>}<FlowMenu /></span>
+      {st < 4 && onSkip ? <button type="button" className="b-fp-skip" onClick={onSkip}>Skip</button> : <span className="b-cmp-sp" />}
     </header>
   );
 }
@@ -77,7 +76,7 @@ export function FindPicks({ answers, list, onOpen, picked = [], onToggle }: { an
       </div>
       <p className="b-fp-trail">{curateSummary(answers).map(t => <span key={t}>{t}</span>)}</p>
       <ol className="b-ot-list">{list.map((p, i) => (
-        <li key={p.id} className="b-ot" style={{ ['--i' as any]: i }}>
+        <li key={p.id} className={`b-ot${picked.includes(p.id) ? ' is-picked' : ''}`} style={{ ['--i' as any]: i }}>
           <button type="button" className="b-ot-card has-photo b-fp-pick" onClick={() => onOpen(p.id)} aria-label={`${p.name}, open details`}>
             <img src={p.photos[0]} alt="" /><span className="b-ot-text"><b>{p.name}</b><small className="tu-num">{p.type} · {p.price} · {distanceText(p, m)}</small></span></button>
           {(() => { const on = picked.includes(p.id); return (

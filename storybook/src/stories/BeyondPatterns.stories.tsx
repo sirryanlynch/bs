@@ -36,4 +36,13 @@ export const LockScreenActions: St = { name: 'Lock Screen, vote and confirm cash
 export const ReceiptNotRead: St = { name: 'States: receipt not read', render: () => <Flow start="expense/failed" /> };
 export const PollNoVotes: St = { name: 'States: poll with no votes', render: () => <Flow start="poll/novotes" /> };
 export const ExploreOffline: St = { name: 'States: Explore offline', render: () => <Flow start="explore/offline" /> };
-export const CreateMenuStory: St = { name: 'Global + create menu (tap + next to the tab bar)', render: () => <Flow start="polls" /> };
+export const CreateMenuStory: St = { name: 'Global + create menu (tap + next to the tab bar)', render: () => <Flow start="album" /> };
+
+/* v5.4 Home level and empty states */
+export const HomeExplore: St = { name: 'Home level: Explore for your next trip', render: () => <Flow start="discover" /> };
+export const EmptyTrips: St = { name: 'Empty: Trips, no trips yet', render: () => <Flow start="trips/empty" /> };
+export const EmptyPlan: St = { name: 'Empty: new trip, Plan day', render: () => <Flow start="trip/porto" /> };
+export const EmptyPhotos: St = { name: 'Empty: new trip, Photos', render: () => <Flow start="trip/porto/photos" /> };
+export const EmptyMoney: St = { name: 'Empty: new trip, Money', render: () => <Flow start="trip/porto/money" /> };
+export const EmptyNotifications: St = { name: 'Empty: Notifications', render: () => <Flow start="trip/porto/activity" /> };
+export const PhotosTab: St = { name: 'Photos tab (shared album)', render: () => <Flow start="album" /> };

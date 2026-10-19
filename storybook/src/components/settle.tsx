@@ -1,4 +1,3 @@
-import { FlowMenu } from './beyond/headermenu';
 import './settle-elevate.css';
 import { AVATAR } from '../assets/solver-assets';
 import React, { useEffect, useRef, useState } from 'react';
@@ -57,7 +56,6 @@ export function GlassHeader({ back, title, subtitle, onBack }: { back?: string; 
   return (
     <header className="p-gh">
       {back && <button type="button" className="p-gh-back" onClick={onBack} aria-label={`Back to ${back}`}><Icon name="chevronLeft" size={20} stroke={2.2} /><span aria-hidden>{back}</span></button>}
-      <span className="p-gh-menu"><FlowMenu /></span>
       <h1 className="p-gh-title">{title}</h1>
       {subtitle && <p className="p-gh-sub">{subtitle}</p>}
     </header>

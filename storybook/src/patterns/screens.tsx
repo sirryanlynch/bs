@@ -100,7 +100,7 @@ export function LivePollScreen() {
           </ListGroup>
         </section>
       </div>
-      <TabBar active="polls" />
+      <TabBar active="plan" />
     </div>
   );
 }

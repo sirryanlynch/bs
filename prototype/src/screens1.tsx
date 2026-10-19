@@ -1,7 +1,7 @@
 import { FindHeader, FindQuestion, findBack, findSkip } from '@sb/components/beyond/findplace';
 import { curateStage, CurateAnswers, ExploreFeed } from '@sb/components/beyond/explore';
 import { COMMUNITY } from '@sb/lib/beyond';
-import { HeaderMenu, FlowMenu, MenuNav } from '@sb/components/beyond/headermenu';
+import { HeaderMenu } from '@sb/components/beyond/headermenu';
 import { AVATAR } from '@sb/assets/solver-assets';
 import React, { useRef, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
@@ -11,7 +11,8 @@ import { TripCard, ItineraryItem, ItinItem } from '@sb/components/trip';
 import { TabBar } from '@sb/components/nav';
 import { BottomSheet } from '@sb/components/overlays';
 import { photo, places } from '@sb/lib/data';
-import { useApp, liveNets, optName, StepId, haptic } from './store';
+import { useApp, liveNets, optName, StepId, haptic, myEdge, dueOf, keyOf, State } from './store';
+import type { ActionItem } from '@sb/components/beyond/actioninbox';
 import { TABS, GlobalTabs, CREATE_ROUTES } from '@sb/patterns/beyond/kit';
 import { FUTURE_TRIPS, DESTINATIONS } from '@sb/lib/beyond';
 import { fmtRange } from '@sb/components/beyond/create';
@@ -25,31 +26,37 @@ export const crewOf = (renJoined: boolean) => ['ari', 'mara', 'nic', 'joao', 'so
 export function Tabs({ active }: { active: string }) {
   const { s, d } = useApp();
   const { go } = useBridge();
-  const map: Record<string, StepId[]> = { trips: ['home'], plan: ['plan', 'trip'], polls: ['closed', 'live'], money: ['money'] };
+  const map: Record<string, StepId[]> = { trips: ['home'], plan: ['trip'], money: ['money'] };
   return (
-    <GlobalTabs active={active} onCreate={k => { haptic(); go(CREATE_ROUTES[k]); }}
+    <GlobalTabs level={active === 'trips' ? 'home' : 'trip'} active={active} onCreate={k => { haptic(); go(CREATE_ROUTES[k]); }}
       onTab={id => {
         haptic();
-        // Explore is its own tab. Polls opens the live dinner poll while it runs, otherwise the list of every poll.
+        if (id === 'discover') return go('discover');
+        if (id === 'you') return go('profile');
+        // Explore and Photos are their own tabs. Polls have no tab (v5.4): they live on Trip home, in + and in Up next.
         if (id === 'explore') return go('explore');
-        if (id === 'polls' && !(s.pollSent && !s.pollClosed)) return go('polls');
+        if (id === 'photos') return go('album');
         const t = map[id].find(x => s.done[x]); if (t) d({ t: 'go', step: t }); else d({ t: 'toast', msg: id === 'money' ? 'Money opens after dinner' : 'Nothing here yet' }); }} />
   );
 }
 
 /** One-row inset glass header for top-level screens. The menu opens flows in the Full JTBD analysis. */
-export function CoreHeader(props: { title?: string; sub?: string; onBack?: () => void; backLabel?: string; avatar?: boolean; light?: boolean }) {
-  const bz = useBridge();
-  const to: Record<string, string> = { notifications: 'activity', album: 'album', expense: 'expense/scan', invite: 'invite', settings: 'profile' };
-  return <HeaderMenu title={props.title} sub={props.sub} onBack={props.onBack} backLabel={props.backLabel} light={props.light} avatar={props.avatar ? AVATAR.ari : undefined}
-    onAvatar={() => { haptic(); bz.go('profile'); }} onPick={id => { haptic(); bz.go(to[id]); }} />;
+/** v5.4 Up next: only things that need you right now. Everything informational stays behind the bell. */
+export function upNextOf(s: State): ActionItem[] {
+  const out: ActionItem[] = [];
+  if (s.pollSent && !s.pollClosed && s.votes[s.me] == null) out.push({ id: 'vote', kind: 'vote', title: 'Vote: Dinner tonight', meta: 'Closes 7:30 PM · 3 places', cta: 'Vote' });
+  if (s.me === 'ari' && s.dinnerSaved && s.simplified && !s.paid[keyOf(s)]) { const e = myEdge(s); const due = dueOf(s);
+    if (due > 0) out.push({ id: 'pay', kind: 'pay', title: `Pay ${e.to[0].toUpperCase() + e.to.slice(1)} $${due.toFixed(2)}`, meta: 'Settles your share', cta: 'Pay', avatar: AVATAR[e.to] }); }
+  // At home level the inbox spans trips, so each card names its trip.
+  return s.step === 'home' ? out.map(a => ({ ...a, meta: `Lisbon Crew · ${a.meta}` })) : out;
 }
-
-/** v5.3: gives every in-flow menu button the same destinations as the header menu. */
-export function MenuNavHost({ children }: { children: React.ReactNode }) {
-  const bz = useBridge();
-  const to: Record<string, string> = { notifications: 'activity', album: 'album', expense: 'expense/scan', invite: 'invite', settings: 'profile' };
-  return <MenuNav.Provider value={id => { haptic(); bz.go(to[id]); }}>{children}</MenuNav.Provider>;
+export function CoreHeader(props: { title?: string; sub?: string; onBack?: () => void; backLabel?: string; avatar?: boolean; light?: boolean; menu?: boolean }) {
+  const bz = useBridge(); const { s, d } = useApp();
+  const actions = upNextOf(s);
+  const act = (id: string) => { haptic(); if (id === 'vote') d({ t: 'go', step: 'live' }); else if (id === 'pay') d({ t: 'view', v: 'choose' }); };
+  const to: Record<string, string> = { notifications: 'activity', settings: 'profile' };
+  return <HeaderMenu title={props.title} sub={props.sub} onBack={props.onBack} backLabel={props.backLabel} light={props.light} menu={props.menu} actions={actions} onAction={act} avatar={props.avatar ? AVATAR.ari : undefined}
+    onAvatar={() => { haptic(); bz.go('profile'); }} onPick={id => { haptic(); bz.go(to[id]); }} />;
 }
 
 export function TopBar({ back, title, sub, right, onBack }: { back?: string; title?: string; sub?: string; right?: React.ReactNode; onBack?: () => void }) {
@@ -57,7 +64,7 @@ export function TopBar({ back, title, sub, right, onBack }: { back?: string; tit
     <div className="pt-top">
       {back ? <button type="button" className="pt-back" onClick={() => { haptic(); onBack?.(); }} aria-label={`Back to ${back}`}><Icon name="chevronLeft" size={20} /></button> : <span className="pt-top-sp" />}
       {title && <div className="pt-top-title"><b>{title}</b>{sub && <small>{sub}</small>}</div>}
-      <div className="pt-top-right">{right ?? (back ? <FlowMenu /> : <span className="pt-top-sp" />)}</div>
+      <div className="pt-top-right">{right ?? <span className="pt-top-sp" />}</div>
     </div>
   );
 }
@@ -109,6 +116,7 @@ export function Trip() {
           <span>{crew.length} people</span>
           <button type="button" className="pt-addbtn" onClick={() => { haptic(); d({ t: 'go', step: 'invite' }); }} aria-label="Add people"><Icon name="personAdd" size={20} /></button>
         </div>
+        {s.pollSent && !s.dinnerSaved && <TripPollCard />}
         <section className="scr-section">
           <h2 className="pt-h2">Tonight</h2>
           <ol className="pt-itin">
@@ -121,7 +129,7 @@ export function Trip() {
                   <span className="p-itin-time tu-num">8:30 PM</span>
                   <span className="p-itin-rail" aria-hidden><span className="p-itin-node"><Icon name="fork" size={14} /></span><span className="p-itin-line" /></span>
                   <div className="p-itin-card pt-gapcard">
-                    <div><h4>Dinner</h4><p>Not decided</p></div>
+                    <div><h4>Dinner</h4><p>{s.pollSent ? (s.pollClosed ? "Poll closed" : "Poll open") : "Not decided"}</p></div>
                     {s.pollSent ? <Button label="See poll" size="small" variant="secondary" onClick={() => d({ t: 'go', step: s.pollClosed ? 'closed' : 'live' })} />
                       : <Button label="Start a poll" size="small" onClick={start} />}
                   </div>
@@ -134,6 +142,25 @@ export function Trip() {
       <Tabs active="plan" />
     </div>
   );
+}
+
+/** v5.4: the open poll on Trip home (Polls have no tab). Live: closes when, how many voted, Vote. Closed: the result. */
+function TripPollCard() {
+  const { s, d } = useApp();
+  const n = Object.keys(s.votes).length, total = crewOf(s.renJoined).length, mine = s.votes[s.me] != null;
+  const open = () => { haptic(); d({ t: 'go', step: s.pollClosed ? 'closed' : 'live' }); };
+  if (s.pollClosed) return (
+    <button type="button" className="pt-pollcard is-closed" onClick={open} aria-label={s.tie ? 'Dinner poll tied, pick the winner' : `Dinner poll closed, ${optName(s, s.winner)} won`}>
+      <span className="pt-pollcard-ico" aria-hidden><Icon name="check" size={20} /></span>
+      <span className="pt-pollcard-t"><small>Dinner poll · closed</small><b>{s.tie ? 'It’s a tie. You pick.' : `${optName(s, s.winner, true)} won`}</b><em className="tu-num">{n} of {total} voted{s.tie ? '' : ' · 8:30 PM'}</em></span>
+      <span className="pt-pollcard-cta">{s.tie ? 'Pick' : 'See result'}</span>
+    </button>);
+  return (
+    <button type="button" className="pt-pollcard" onClick={open} aria-label={`Dinner tonight poll, closes 7:30 PM, ${n} of ${total} voted. ${mine ? 'See poll' : 'Vote'}`}>
+      <span className="pt-pollcard-ico" aria-hidden><Icon name="poll" size={20} /><i className="pt-pollcard-live" /></span>
+      <span className="pt-pollcard-t"><small>Open poll</small><b>Dinner tonight</b><em className="tu-num">Closes 7:30 PM · {n} of {total} voted</em></span>
+      <span className="pt-pollcard-cta">{mine ? 'See poll' : 'Vote'}</span>
+    </button>);
 }
 
 /* ---------------- 03 Invite sheet ---------------- */

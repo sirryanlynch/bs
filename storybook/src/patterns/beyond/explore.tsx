@@ -30,8 +30,8 @@ export function ExploreFeedScreen() {
     <div className="b-scr">
       <div className="b-scroll has-tabs">
         <div className="b-head">
+          {/* v5.4: no + here. Find a place is the one entry on Explore; the floating + keeps New poll everywhere. */}
           <div><p className="b-overline">Lisbon · from TripUp travelers</p><h1 className="b-title-xl">Explore</h1></div>
-          <div className="b-head-tools"><TopBtn icon="add" label="Start a poll" accent onClick={() => go('poll/new')} /></div>
         </div>
         <button type="button" className="b-findhero" onClick={() => go('explore/curate')}>
           <img src={photo.roofs} alt="" />
@@ -168,7 +168,7 @@ export function PollNewScreen() {
   );
 }
 export function PollSentScreen() {
-  const { s, go, P } = useFlow(); const p = s.poll; const day = DAYS.find(x => x.id === p.day)!;
+  const { s, go, P, host } = useFlow(); const p = s.poll; const day = DAYS.find(x => x.id === p.day)!;
   const dow = day.label.split(',')[0];
   const title = p.title || (p.what ? `${p.what}, ${dow} at ${p.time}?` : defaultTitle(dow, p.category, p.time));
   const lead = COMMUNITY.find(c => c.name === p.options[0]?.label);
@@ -177,7 +177,7 @@ export function PollSentScreen() {
   return (
     <div className="b-scr">
       <div className="b-scroll has-cta">
-        <Top title="Poll sent" onBack={() => go('polls')} />
+        <Top title="Poll sent" onBack={() => host.exit()} />
         <section className="b-sent anim-rise" aria-label={`Poll sent: ${title}`}>
           <div className="b-sent-photo">{cover && <img src={cover} alt="" />}<span className="b-sent-chip"><BIcon name="check" size={14} />Sent to {crew.length} people</span></div>
           <div className="b-sent-body">
@@ -194,7 +194,8 @@ export function PollSentScreen() {
         </section>
         <NextSteps steps={['Crew votes from the notification', `Closes ${p.closes}`, `Winner lands on ${dow}`]} />
       </div>
-      <div className="b-bottom"><Button label="See all polls" variant="secondary" fullWidth onClick={() => go('polls')} /><Button label="Done" fullWidth onClick={() => go('polls')} /></div>
+      {/* v5.3.1: the polls list was cut, so Back and Done both leave the flow (they used to loop back to this screen). */}
+      <div className="b-bottom"><Button label="Done" fullWidth onClick={() => host.exit()} /></div>
     </div>
   );
 }

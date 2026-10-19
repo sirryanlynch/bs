@@ -1099,8 +1099,6 @@ button.p-row:active { background: var(--color-track-default); }
 .prism .p-sheet-body { min-height: 0; }
 
 /* v5.3: the shortcuts menu on settle steps (glass header card) */
-.prism .p-gh-menu { position: absolute; z-index: 3; top: 9px; right: 10px; }
-.prism .p-gh { overflow: visible; }
 /* v5.3: All squared up dismisses on scrim tap or swipe down, back to Trip home */
 .prism .p-sq.is-dismissable .p-sq-scrim { cursor: pointer; }
 .prism .p-sq.is-dismissable .p-sq-card { touch-action: none; transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1); }

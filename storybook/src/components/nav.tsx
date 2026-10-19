@@ -27,8 +27,9 @@ export function NavBar({ title, large = true, back, subtitle, actions = [], disp
 
 export const defaultTabs: { id: string; label: string; icon: IconName }[] = [
   { id: 'trips', label: 'Trips', icon: 'home' },
-  { id: 'polls', label: 'Polls', icon: 'poll' },
   { id: 'plan', label: 'Plan', icon: 'calendar' },
+  { id: 'explore', label: 'Explore', icon: 'compass' },
+  { id: 'photos', label: 'Photos', icon: 'images' },
   { id: 'money', label: 'Money', icon: 'wallet' },
 ];
 

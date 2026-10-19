@@ -1,5 +1,5 @@
-import { FlowMenu } from '../../components/beyond/headermenu';
 import { CreateMenu, CreateKind } from '../../components/beyond/createmenu';
+import { tabMemory } from '../../lib/motion';
 import React, { createContext, useContext, useEffect, useMemo, useReducer, useState } from 'react';
 import '../../components/beyond/beyond.css';
 import './screens.css';
@@ -114,33 +114,44 @@ export function FlowProvider({ s, d, host, children }: { s: FlowState; d: React.
 export function useFlowStore(start: string) { return useReducer(flowReducer, start, r => presetFor(r)); }
 
 /* ---------- Shared chrome ---------- */
-export const TABS = [
-  { id: 'trips', label: 'Trips', icon: 'home' as const }, { id: 'plan', label: 'Plan', icon: 'calendar' as const },
-  { id: 'explore', label: 'Explore', icon: 'compass' as const }, { id: 'polls', label: 'Polls', icon: 'poll' as const }, { id: 'money', label: 'Money', icon: 'wallet' as const },
+/** v5.4 two nav levels. Trip level (inside a trip): Plan, Explore, Photos, Money. You leave the trip with Back to Trips. */
+export const TABS_TRIP = [
+  { id: 'plan', label: 'Plan', icon: 'calendar' as const }, { id: 'explore', label: 'Explore', icon: 'compass' as const },
+  { id: 'photos', label: 'Photos', icon: 'images' as const }, { id: 'money', label: 'Money', icon: 'wallet' as const },
 ];
+/** Home level (no trip open): Trips, Explore (ideas for the next trip), You. */
+export const TABS_HOME = [
+  { id: 'trips', label: 'Trips', icon: 'home' as const }, { id: 'discover', label: 'Explore', icon: 'compass' as const }, { id: 'you', label: 'You', icon: 'person' as const },
+];
+export const TABS = TABS_TRIP;
+export type NavLevel = 'home' | 'trip';
+let lastLevel: NavLevel | null = null;
 /** Where each item in the global create menu lands. */
 export const CREATE_ROUTES: Record<CreateKind, string> = { poll: 'poll/new', expense: 'expense/scan', photos: 'album', plan: 'plan/add', trip: 'create/where' };
 /** The 5-tab bar plus the global + (create menu) that sits next to it on every tab. */
-export function GlobalTabs({ active, onTab, onCreate }: { active: string; onTab: (id: string) => void; onCreate: (k: CreateKind) => void }) {
+export function GlobalTabs({ active, onTab, onCreate, level = 'trip' }: { active: string; onTab: (id: string) => void; onCreate: (k: CreateKind) => void; level?: NavLevel }) {
   const [open, setOpen] = useState(false);
-  return <>
-    <TabBar active={active} accessory="plus" accessoryLabel="Create" accessoryExpanded={open} onAccessory={() => setOpen(o => !o)} tabs={TABS} onChange={onTab} />
-    {open && <CreateMenu onClose={() => setOpen(false)} onPick={k => { setOpen(false); onCreate(k); }} />}
-  </>;
+  // Crossfade the bar when the level changes (pushing into a trip, or Back to Trips); the lens starts fresh.
+  const [swap] = useState(() => { const x = lastLevel !== null && lastLevel !== level; if (x) tabMemory.i = -1; lastLevel = level; return x; });
+  return <div className={`p-tabset is-${level} ${swap ? 'is-swap' : ''}`}>
+    <TabBar active={active} accessory="plus" accessoryLabel="Create" accessoryExpanded={open} onAccessory={() => setOpen(o => !o)} tabs={level === 'home' ? TABS_HOME : TABS_TRIP} onChange={onTab} />
+    {open && <CreateMenu first={level === 'home' ? 'trip' : undefined} onClose={() => setOpen(false)} onPick={k => { setOpen(false); onCreate(k); }} />}
+  </div>;
 }
-export function FlowTabs({ active }: { active: string }) {
+export function FlowTabs({ active, level = 'trip' }: { active: string; level?: NavLevel }) {
   const { go, host } = useFlow();
-  return <GlobalTabs active={active} onCreate={k => go(CREATE_ROUTES[k])} onTab={id => {
-    if (id === 'explore') go('explore'); else if (id === 'polls') go('polls'); else if (id === 'plan') go('plan/day'); else host.exit(id === 'trips' ? 'home' : 'money');
+  return <GlobalTabs level={level} active={active} onCreate={k => go(CREATE_ROUTES[k])} onTab={id => {
+    if (id === 'explore') go('explore'); else if (id === 'photos') go('album'); else if (id === 'discover') go('discover'); else if (id === 'you') go('profile');
+    else host.exit(id === 'trips' ? 'home' : id === 'plan' ? 'trip' : 'money');
   }} />;
 }
-export function Top({ title, sub, right, onBack, back = true, light, menu = true }: { title?: string; sub?: string; right?: React.ReactNode; onBack?: () => void; back?: boolean; light?: boolean; menu?: boolean }) {
+export function Top({ title, sub, right, onBack, back = true, light }: { title?: string; sub?: string; right?: React.ReactNode; onBack?: () => void; back?: boolean; light?: boolean }) {
   const f = useFlow();
   return (
     <div className={`b-top ${light ? 'is-light' : ''}`}>
       {back ? <button type="button" className="b-top-btn" onClick={onBack ?? f.back} aria-label="Back"><BIcon name="chevronLeft" size={20} /></button> : <span className="b-top-sp" />}
       <div className="b-top-title">{title && <b>{title}</b>}{sub && <small>{sub}</small>}</div>
-      <div className="b-top-right">{right}{menu ? <FlowMenu light={light} /> : !right && <span className="b-top-sp" />}</div>
+      <div className="b-top-right">{right ?? <span className="b-top-sp" />}</div>
     </div>
   );
 }

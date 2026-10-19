@@ -11,6 +11,7 @@ import * as E from './expense';
 import * as SO from './social';
 import * as ME from './me';
 import * as ST from './states';
+import * as HM from './home';
 
 /** Every screen in the Full JTBD analysis, with its flow, the status bar time, and whether the status bar sits on a photo. */
 export type RouteMeta = { route: string; flow: string; label: string; time: string; light?: boolean };
@@ -29,8 +30,8 @@ const FLOW_DEFS: { id: string; title: string; start: string; routes: RouteMeta[]
   { id: 'polls', title: 'Polls and composer', start: 'poll/new', routes: [
     { route: 'polls', flow: 'polls', label: 'All polls', time: '9:41 PM' }, { route: 'poll/new', flow: 'polls', label: 'New poll: scuba', time: '9:10 PM' },
     { route: 'poll/new/sent', flow: 'polls', label: 'Poll sent', time: '9:11 PM' }, { route: 'poll/new/dinner', flow: 'polls', label: 'New poll: Saturday dinner', time: '6:58 PM' }] },
-  { id: 'album', title: 'Shared album', start: 'album', routes: [
-    { route: 'album', flow: 'album', label: 'Grid', time: '10:02 PM' }, { route: 'album/upload', flow: 'album', label: 'Pick photos', time: '10:03 PM' },
+  { id: 'album', title: 'Photos (shared album)', start: 'album', routes: [
+    { route: 'album', flow: 'album', label: 'Photos tab', time: '10:02 PM' }, { route: 'album/upload', flow: 'album', label: 'Pick photos', time: '10:03 PM' },
     { route: 'album/tag', flow: 'album', label: 'Tag and share', time: '10:03 PM' }, { route: 'album/viewer', flow: 'album', label: 'Viewer', time: '10:04 PM', light: true }] },
   { id: 'plan', title: 'Day plan', start: 'plan/day', routes: [
     { route: 'plan/day', flow: 'plan', label: 'Saturday', time: '7:31 PM' }, { route: 'plan/add', flow: 'plan', label: 'Add item', time: '7:32 PM' },
@@ -49,6 +50,10 @@ const FLOW_DEFS: { id: string; title: string; start: string; routes: RouteMeta[]
   { id: 'activity', title: 'Activity and notifications', start: 'activity', routes: [
     { route: 'activity', flow: 'activity', label: 'Feed', time: '10:41 PM' }, { route: 'activity/lock', flow: 'activity', label: 'Lock Screen', time: '', light: true },
     { route: 'activity/settings', flow: 'activity', label: 'Settings', time: '10:42 PM' }] },
+  { id: 'home', title: 'Home level and empty states', start: 'discover', routes: [
+    { route: 'discover', flow: 'home', label: 'Explore (next trip)', time: '9:12 AM' }, { route: 'trips/empty', flow: 'home', label: 'Trips, no trips yet', time: '9:12 AM' },
+    { route: 'trip/porto', flow: 'home', label: 'New trip, empty Plan', time: '9:14 AM' }, { route: 'trip/porto/photos', flow: 'home', label: 'New trip, empty Photos', time: '9:14 AM' },
+    { route: 'trip/porto/money', flow: 'home', label: 'New trip, empty Money', time: '9:15 AM' }, { route: 'trip/porto/activity', flow: 'home', label: 'New trip, no updates', time: '9:15 AM' }] },
   { id: 'profile', title: 'Profile and settings', start: 'profile', routes: [
     { route: 'profile', flow: 'profile', label: 'Profile', time: '10:44 PM' }, { route: 'profile/payments', flow: 'profile', label: 'Payments', time: '10:44 PM' },
     { route: 'profile/appearance', flow: 'profile', label: 'Appearance', time: '10:45 PM' }, { route: 'profile/privacy', flow: 'profile', label: 'Privacy', time: '10:45 PM' }] },
@@ -57,7 +62,7 @@ const FLOW_DEFS: { id: string; title: string; start: string; routes: RouteMeta[]
     { route: 'explore/offline', flow: 'states', label: 'Explore offline', time: '5:40 PM' }] },
 ];
 /** Story order for Part 2, Full JTBD analysis: each flow once, never revisited. The step list, Next and Back, and the guided tour all follow it. */
-export const FLOW_ORDER = ['create', 'explore', 'polls', 'plan', 'expense', 'album', 'invite', 'activity', 'recap', 'profile'];
+export const FLOW_ORDER = ['home', 'create', 'explore', 'polls', 'plan', 'expense', 'album', 'invite', 'activity', 'recap', 'profile'];
 /** Happy path only: 2 to 4 screens per use case. Place card rides inside Explore (feed, find a place, place card, add to poll). */
 const KEEP: Record<string, string[]> = {
   create: ['create/where', 'create/when', 'create/crew', 'create/done'],
@@ -70,6 +75,7 @@ const KEEP: Record<string, string[]> = {
   activity: ['activity'],
   recap: ['recap', 'recap/card'],
   profile: ['profile'],
+  home: ['discover', 'trips/empty', 'trip/porto', 'trip/porto/photos', 'trip/porto/money', 'trip/porto/activity'],
 };
 const ROUTE_DEFS = FLOW_DEFS.flatMap(f => f.routes);
 export const FLOWS = FLOW_ORDER.map(id => { const f = FLOW_DEFS.find(x => x.id === id)!; const routes = KEEP[id].map(r => ({ ...ROUTE_DEFS.find(x => x.route === r)!, flow: id })); return { ...f, title: id === 'polls' ? 'New poll' : id === 'activity' ? 'Notifications' : f.title, start: routes[0].route, routes }; });
@@ -95,6 +101,9 @@ export function BeyondScreen() {
     case 'invite': el = <SO.InviteScreen />; break; case 'guest': case 'guest/voted': el = <SO.GuestScreen />; break; case 'guest/install': el = <SO.InstallScreen />; break; case 'guest/welcome': el = <SO.WelcomeScreen />; break;
     case 'recap': el = <SO.RecapScreen />; break; case 'recap/places': el = <SO.RecapPlacesScreen />; break; case 'recap/card': el = <SO.RecapCardScreen />; break;
     case 'activity': el = <ME.ActivityScreen />; break; case 'activity/lock': el = <ME.LockScreenScreen />; break; case 'activity/settings': el = <ME.NotifSettingsScreen />; break;
+    case 'discover': el = <HM.DiscoverScreen />; break; case 'trips/empty': el = <HM.TripsEmptyScreen />; break;
+    case 'trip/porto': el = <HM.NewTripPlanScreen />; break; case 'trip/porto/photos': el = <HM.NewTripPhotosScreen />; break;
+    case 'trip/porto/money': el = <HM.NewTripMoneyScreen />; break; case 'trip/porto/activity': el = <HM.NewTripActivityScreen />; break;
     case 'profile': el = <ME.ProfileScreen />; break; case 'profile/payments': el = <ME.PaymentsScreen />; break; case 'profile/appearance': el = <ME.AppearanceScreen />; break; case 'profile/privacy': el = <ME.PrivacyScreen />; break;
     case 'expense/failed': el = <ST.ReceiptFailedScreen />; break; case 'poll/novotes': el = <ST.PollNoVotesScreen />; break; case 'explore/offline': el = <ST.ExploreOfflineScreen />; break;
     default: el = <X.ExploreFeedScreen />;

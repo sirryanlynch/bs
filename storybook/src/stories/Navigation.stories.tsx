@@ -23,8 +23,8 @@ export const Nav: StoryObj<typeof NavBar> = {
 export const Tabs: StoryObj<typeof TabBar> = {
   name: 'TabBar (glass)',
   parameters: { screen: 'full', statusLight: true },
-  args: { active: 'polls', accessory: 'plus', floating: true },
-  argTypes: { active: { control: 'inline-radio', options: ['trips', 'polls', 'plan', 'money'] }, accessory: { control: 'inline-radio', options: ['plus', 'search', 'none'] } },
+  args: { active: 'plan', accessory: 'plus', floating: true },
+  argTypes: { active: { control: 'inline-radio', options: ['plan', 'explore', 'photos', 'money'] }, accessory: { control: 'inline-radio', options: ['plus', 'search', 'none'] } },
   render: (a) => (
     <div className="scr">
       <img src={photo.tram} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -33,3 +33,8 @@ export const Tabs: StoryObj<typeof TabBar> = {
     </div>
   ),
 };
+
+/* v5.4 two levels: Home (no trip open) and Trip (inside a trip). The bar crossfades when you push into a trip. */
+import { TABS_HOME, TABS_TRIP } from '../patterns/beyond/kit';
+export const HomeLevel: StoryObj = { name: 'Tab bar, Home level: Trips · Explore · You', render: () => <TabBar active="trips" tabs={TABS_HOME as any} accessory="plus" accessoryLabel="Create" /> };
+export const TripLevel: StoryObj = { name: 'Tab bar, Trip level: Plan · Explore · Photos · Money', render: () => <TabBar active="plan" tabs={TABS_TRIP as any} accessory="plus" accessoryLabel="Create" /> };

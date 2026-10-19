@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useSwipeDismiss } from './swipedismiss';
 import { QRCodeSVG } from 'qrcode.react';
 import { PrismRoot } from '@sb/lib/PrismRoot';
 import { Icon } from '@sb/components/Icon';
 import { AppProvider, useApp, useStore, STEPS, stepIndex, stateAt, CHECKS, StepId, Me, State, Action, STREAM, clockStr, statusTime, simplifyOf, initial, SETTLE_VIEWS, SettleView, isSettleView, settlePreset } from './store';
 import { MoneyScreen, SettleFlow } from './settleflow';
-import { Home, Trip, InviteSheet, Explore, MenuNavHost } from './screens1';
+import { Home, Trip, InviteSheet, Explore } from './screens1';
 import { Create, Push, PollView, Closed, Plan, usePollStream } from './screens2';
 import { Expense, Squared } from './screens3';
 import { RenWeb } from './renweb';
@@ -235,6 +236,10 @@ export function App() {
     window.addEventListener('keydown', onKey); return () => window.removeEventListener('keydown', onKey);
   });
 
+  // v5.3.1: in-flow screens dismiss with a swipe down (same destination as Back)
+  const swipeRoot = useRef<HTMLDivElement>(null);
+  useSwipeDismiss(swipeRoot, motion === 'reduce');
+
   // Touch ripple so taps read on desktop, and a little press feedback everywhere
   const [ripples, setRipples] = useState<{ x: number; y: number; id: number }[]>([]);
   const onDown = (e: React.PointerEvent) => {
@@ -254,7 +259,7 @@ export function App() {
   const coreCls = bz.active ? '' : navClass(coreId.replace(/-ari-false-$/, ''));
   const coreGhost = useNavGhost(bz.active ? 'beyond' : coreId, coreCls);
   const screen = (
-    <div className="pt-screen-inner" onPointerDown={onDown}>
+    <div className="pt-screen-inner" onPointerDown={onDown} ref={swipeRoot}>
       {bz.active ? <div className="pt-anim mo-none" key="beyond"><BeyondLayer bz={bz} /></div>
         : <div className={`pt-anim ${coreCls}`} key={coreId} ref={coreGhost}><PhoneScreen s={s} /></div>}
       {s.toast && <div className={`pt-itoast ${s.toast.tone === 'success' ? 'is-success' : ''}`} key={s.toast.id} role="status"><Icon name={s.toast.tone === 'success' ? 'check' : 'info'} size={20} /><span>{s.toast.msg}</span></div>}
@@ -278,7 +283,7 @@ export function App() {
   );
 
   if (EMBED) return (
-    <PrismRoot theme={theme} motion={motion}><AppProvider s={s} d={d}><BeyondBridge bz={bz}><MenuNavHost><div className="pt-embed">{frame}</div></MenuNavHost></BeyondBridge></AppProvider></PrismRoot>
+    <PrismRoot theme={theme} motion={motion}><AppProvider s={s} d={d}><BeyondBridge bz={bz}><div className="pt-embed">{frame}</div></BeyondBridge></AppProvider></PrismRoot>
   );
 
   const shareUrl = location.href.split('#')[0].replace(/[?&]embed=1/, '') + hashOf(s);
@@ -344,7 +349,7 @@ export function App() {
 
   return (
     <PrismRoot theme={theme} motion={motion}>
-      <AppProvider s={s} d={d}><BeyondBridge bz={bz}><MenuNavHost>
+      <AppProvider s={s} d={d}><BeyondBridge bz={bz}>
         {phone ? (
           <div className={`pt-mobile ${dark ? 'is-dark' : ''}`}>
             <div className="phone-content pt-mobile-screen">{screen}</div>
@@ -367,7 +372,7 @@ export function App() {
         )}
         {help && <div className="pt-help" onClick={() => setHelp(false)}>Shortcuts: arrows, Space, 1 2 3, D, M, R</div>}
         {chooser && <ModeChooser onPick={m => pickMode(m, true)} />}
-      </MenuNavHost></BeyondBridge></AppProvider>
+      </BeyondBridge></AppProvider>
     </PrismRoot>
   );
 }

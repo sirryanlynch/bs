@@ -17,7 +17,7 @@ const daysUntil = (y: number, m: number, dd: number) => Math.round((Date.UTC(y, 
 /** One layout for the five steps: nav (Cancel on step 1, Back after), the Stepper (Skip on optional steps), one main button. */
 function Shell({ step, title, lead, children, cta, ctaDisabled, onCta, onSkip }: { step: number; title: string; lead?: string; children: React.ReactNode; cta: string; ctaDisabled?: boolean; onCta: () => void; onSkip?: () => void }) {
   const { host, go } = useFlow();
-  const cancel = <button type="button" className="b-textbtn" onClick={() => host.exit('home')}>Cancel</button>;
+  const cancel = <button type="button" className="b-textbtn" data-flow-back onClick={() => host.exit('home')}>Cancel</button>;
   return (
     <div className="b-scr">
       <div className="b-scroll has-cta">
@@ -127,6 +127,7 @@ export function CreateDone() {
         <section className="b-section">
           <h2 className="b-h2">Start planning</h2>
           <div className="b-list">
+            <button type="button" className="b-listrow" data-open-trip onClick={() => go('trip/porto')}><span className="b-ico is-accent"><BIcon name="arrowRight" size={20} /></span><span className="b-listrow-text"><b>Open the trip</b><small>Plan, Photos and Money start empty</small></span></button>
             <button type="button" className="b-listrow" onClick={() => go('poll/new')}><span className="b-ico is-accent"><BIcon name="poll" size={20} /></span><span className="b-listrow-text"><b>Start a poll for Friday dinner</b><small>Any day, time and activity</small></span><BIcon name="chevronRight" size={20} className="b-muted" /></button>
             <button type="button" className="b-listrow" onClick={() => go('explore')}><span className="b-ico is-accent"><BIcon name="explore" size={20} /></span><span className="b-listrow-text"><b>Explore {ds.name}</b><small>Places other crews booked and reviewed</small></span><BIcon name="chevronRight" size={20} className="b-muted" /></button>
             <button type="button" className="b-listrow" onClick={() => go('invite')}><span className="b-ico is-accent"><BIcon name="qr" size={20} /></span><span className="b-listrow-text"><b>Invite more people</b><small>Link, QR code or contacts</small></span><BIcon name="chevronRight" size={20} className="b-muted" /></button>
