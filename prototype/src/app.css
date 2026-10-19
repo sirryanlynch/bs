@@ -323,3 +323,32 @@ html.is-embed, html.is-embed body, html.is-embed .prism, html.is-embed .pt-embed
 @keyframes pt-pc-pulse { 50% { transform: scale(.6); opacity: .6; } }
 .prism[data-motion="reduce"] .pt-pollcard { animation: b-fade 150ms ease both; }
 .prism[data-motion="reduce"] .pt-pollcard-live::after { animation: none; }
+
+/* v5.4.2 deck cue: the open-poll card glows once, then the tap lands */
+.prism .pt-pollcard.is-cue { animation: pt-cue 1.3s cubic-bezier(0.32, 0.72, 0, 1) 400ms 2 both; }
+@keyframes pt-cue { 0%, 100% { box-shadow: 0 0 0 0 rgba(110, 91, 255, 0); transform: none; } 45% { box-shadow: 0 0 0 4px rgba(110, 91, 255, .55), 0 18px 30px -16px rgba(110, 91, 255, .8); transform: scale(1.015); } }
+.prism[data-motion="reduce"] .pt-pollcard.is-cue { animation: none; box-shadow: 0 0 0 3px rgba(110, 91, 255, .55); }
+
+/* v5.4.2 quiet Add the bill on the dinner card */
+.prism .pt-wincard-act { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; min-height: 36px; padding: 0 14px 0 10px; border-radius: 18px; border: 0; cursor: pointer;
+  font: 600 14px var(--font-ui); color: var(--color-accent-text); background: color-mix(in srgb, var(--color-accent-primary) 12%, transparent); }
+.prism .pt-wincard-act:active { transform: scale(.96); }
+
+/* v5.4.2 Money: You / Whole trip */
+.prism .pt-mseg { position: relative; display: grid; grid-template-columns: 1fr 1fr; height: 40px; margin: 4px 16px 14px; padding: 3px; border-radius: 20px; background: var(--color-glass-fill, rgba(120,110,170,.12)); box-shadow: inset 0 0 0 1px var(--color-glass-stroke); }
+.prism .pt-mseg button { position: relative; z-index: 1; border: 0; background: none; cursor: pointer; font: 600 15px var(--font-ui); color: var(--color-text-secondary); }
+.prism .pt-mseg button.is-on { color: var(--color-text-primary); }
+.prism .pt-mseg-lens { position: absolute; top: 3px; bottom: 3px; left: 3px; width: calc(50% - 3px); border-radius: 17px; background: var(--color-bg-surface); box-shadow: 0 4px 12px -6px rgba(30,20,80,.35); transform: translateX(calc(var(--x) * 100%)); transition: transform 420ms cubic-bezier(0.32, 0.72, 0, 1); }
+.prism[data-motion="reduce"] .pt-mseg-lens { transition: none; }
+.prism .pt-mylist { list-style: none; margin: 8px 16px 0; padding: 6px; border-radius: 24px; background: var(--color-bg-surface); box-shadow: 0 0 0 1px var(--color-glass-stroke); }
+.prism .pt-myrow { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 6px 8px; }
+.prism .pt-myrow + .pt-myrow { border-top: 1px solid var(--color-separator, rgba(0,0,0,.06)); }
+.prism .pt-myrow-av { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; background: var(--color-glass-fill); }
+.prism .pt-myrow-t { flex: 1; display: flex; flex-direction: column; }
+.prism .pt-myrow-t b { font: 600 16px var(--font-ui); color: var(--color-text-primary); }
+.prism .pt-myrow-t small { font: 600 15px var(--font-ui); color: var(--color-text-secondary); }
+.prism .pt-myrow-btn { min-width: 92px; height: 40px; padding: 0 16px; border-radius: 20px; border: 0; cursor: pointer; font: 600 15px var(--font-ui); color: var(--color-accent-text); background: color-mix(in srgb, var(--color-accent-primary) 13%, transparent); }
+.prism .pt-myrow-btn.is-pay { color: #fff; background: var(--color-accent-primary); }
+.prism .pt-myrow-btn.is-done { color: var(--color-text-secondary); background: var(--color-glass-fill); }
+.prism .pt-minfo { display: inline-flex; align-items: center; gap: 8px; margin: 10px 16px 0; min-height: 44px; padding: 0 6px; border: 0; background: none; cursor: pointer; font: 600 14px var(--font-ui); color: var(--color-text-secondary); }
+.prism .pt-minfo span { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font: italic 700 13px Georgia, serif; color: var(--color-accent-text); box-shadow: inset 0 0 0 1.5px currentColor; }

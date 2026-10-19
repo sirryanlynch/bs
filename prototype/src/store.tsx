@@ -35,6 +35,10 @@ export const optDetail = (s: { shortlist: string[] }, i: number) => PLACE_NAMES[
 export type State = {
   step: StepId;
   me: Me;
+  moneyView?: 'you' | 'trip'; requested?: Record<string, boolean>; // v5.4.2 Money: You / Whole trip, Request payment
+  receiptOk?: boolean; splitMode?: 'even' | 'item'; splitOpen?: string; // v5.4.2 Even split / By item
+ // v5.4.2: receipt photo step before the split
+  cue?: boolean; // v5.4.2: deck slide 8 opens on Trip home with the open-poll card highlighted
   renStage?: 'web' | 'back'; // v5.3: the guided tour drives Ren's link vote
   renJoined: boolean; renVia?: 'qr' | 'tripup';
   exploreStage: number; shortlist: string[]; exploreFeed?: boolean; // v5.1: the Explore feed shows before the questions

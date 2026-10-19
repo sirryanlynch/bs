@@ -27,7 +27,6 @@
   </a>
   <div class="bar-tools glass">
     <button class="tool" id="tokensBtn" type="button" aria-pressed="false" title="Show the design tokens behind each element (T)"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 5 3 10l4 5M13 5l4 5-4 5"/></svg><span>Tokens</span></button>
-    <button class="tool" id="motionBtn" type="button" aria-pressed="false" title="Preview Reduce Motion (R)"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M10 3.5v13"/></svg><span>Reduce motion</span></button>
     <button class="tool" id="gridBtn" type="button" aria-haspopup="dialog" title="All slides (O)"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="5.5" height="5.5" rx="1.5"/><rect x="11.5" y="3" width="5.5" height="5.5" rx="1.5"/><rect x="3" y="11.5" width="5.5" height="5.5" rx="1.5"/><rect x="11.5" y="11.5" width="5.5" height="5.5" rx="1.5"/></svg><span class="count tu-num" aria-live="polite"><b id="cur">01</b> / 10</span></button>
   </div>
 </header>
@@ -290,23 +289,19 @@
     </div>
     <div class="grid-7">
       <div class="s7-panels">
-        <div class="s7-panel" role="tabpanel" id="sp1" aria-labelledby="st1">
-          <p class="sp-lead">Ari writes the poll as one sentence: what, when, and when it closes. The three options are Explore picks, with photos.</p>
-          <div class="sp-views" role="group" aria-label="Show on the phone">
-            <button type="button" aria-pressed="true" data-hash="/poll/new/dinner"><b>The composer</b><span>Saturday dinner, closes 7:30 PM</span></button>
-            <button type="button" aria-pressed="false" data-hash="/beyond/explore/curate"><b>Picks from Explore</b><span>Four quick questions, six picks</span></button>
-          </div>
+        <div class="s7-panel" role="tabpanel" id="sp1" aria-labelledby="st1" data-hash="/beyond/explore/curate">
+          <p class="sp-lead">Ari finds a place for tonight: four quick questions, six picks. The picks become the poll, and it goes out to the crew.</p>
+          <ol class="sp-steps"><li>Find a place</li><li>6 picks</li><li>Start a poll</li><li>Poll sent</li></ol>
         </div>
         <div class="s7-panel" role="tabpanel" id="sp2" aria-labelledby="st2" hidden>
           <div class="sp-views is-row" role="group" aria-label="Show on the phone">
             <button type="button" aria-pressed="true" data-hash="/push"><b>Lock Screen</b><span>One tap votes</span></button>
-            <button type="button" aria-pressed="false" data-hash="/live"><b>In the app</b><span>Live bars</span></button>
+            <button type="button" aria-pressed="false" data-hash="/live?open=trip"><b>In the app</b><span>From Trip home</span></button>
             <button type="button" aria-pressed="false" data-hash="/live?as=ren"><b>Ren on the web</b><span>No install</span></button>
           </div>
           <div class="pollcard tu-surface" id="poll" data-mode="hidden" data-token="PollOption · fill --color-accent-subtle · --spring-live">
         <div class="pc-head">
           <div><h3>Saturday dinner</h3><p class="tu-num" id="pcSub">5 of 7 voted · closes 7:30 PM</p></div>
-          <span class="pc-hidden"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 10s2.8-5 7.5-5 7.5 5 7.5 5-2.8 5-7.5 5-7.5-5-7.5-5z"/><path d="M3 3l14 14"/></svg>Hidden until you vote</span>
         </div>
         <p class="pc-as">Tap a place to vote and watch the bars move.</p>
         <div class="opts" id="opts"></div>
@@ -314,18 +309,15 @@
       </div>
           <p class="evidence" id="pollWhy">Counts stay hidden until you vote. Seeing a leader early sways people: in one experiment, showing 80% support instead of 20% moved support by about 8 points. <a href="https://doi.org/10.1177/2053168014547667" target="_blank" rel="noopener">Rothschild &amp; Malhotra, 2014</a></p>
         </div>
-        <div class="s7-panel" role="tabpanel" id="sp3" aria-labelledby="st3" hidden>
+        <div class="s7-panel" role="tabpanel" id="sp3" aria-labelledby="st3" data-hash="/closed?flow=1" hidden>
           <p class="sp-lead">At 7:30 PM the poll closes. Taberna da Rua das Flores wins 5 of 7 and goes straight onto Saturday's plan: 8:30 PM, table for 7.</p>
           <div class="sp-result tu-surface"><span class="sp-badge">Won with 71%</span><b>Taberna da Rua das Flores</b><span class="tu-num">Sat, Oct 17 · 8:30 PM · table for 7</span><small>Picked by poll, 5 of 7</small></div>
-          <div class="sp-views" role="group" aria-label="Show on the phone">
-            <button type="button" aria-pressed="true" data-hash="/plan"><b>On the plan</b><span>Sat, Oct 17</span></button>
-            <button type="button" aria-pressed="false" data-hash="/closed"><b>Poll closed</b><span>5 of 7 for Taberna</span></button>
-          </div>
+          <ol class="sp-steps"><li>Poll closes, 7:30 PM</li><li>Taberna wins</li><li>Lands on the plan</li></ol>
         </div>
       </div>
       <div class="s7-phone">
         <div class="slot" data-device="push" aria-hidden="true"></div>
-        <a class="link-out" href="prototype/#/poll/new/dinner" id="addOpen" target="_blank" rel="noopener">Open this step full screen</a>
+        <a class="link-out" href="prototype/#/beyond/explore/curate" id="addOpen" target="_blank" rel="noopener">Open this step full screen</a>
       </div>
     </div>
   </div>

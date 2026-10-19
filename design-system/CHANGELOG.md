@@ -2,6 +2,20 @@
 
 `tokens.json` is the source of truth. `tokens.css` and the Figma variables are generated from it by `build_tokens.py`. Anyone building on `tokens.*` (for example the Storybook in `/workspace/tripup/storybook/`) should check here before they rebuild.
 
+## v5.4.2 (Oct 19, 2026)
+
+- **Deck:** top-bar Reduce motion toggle removed (the OS setting still gives a crossfade). Any autoplaying embed stops the moment you click or tap into it. Phone glass no longer clips at the device corners (slide 10 and every deck phone).
+- **Slide 8:** Stage 1 is one Explore demo (Find a place, picks, Start a poll, Poll sent) with no composer toggle. The "Hidden until you vote" badge is gone everywhere; the behavior stays. Stage 2 "In the app" opens at Trip home with the open-poll card highlighted, taps into the vote, and loops. Stage 3 is one flow (poll closes, Taberna wins, lands on the plan) with no toggle. "See tonight" is now "See the plan".
+- **New poll starts from Find a place** everywhere (+ menu, Dinner card, Explore). The composer comes last, with your picks.
+- **Plan:** the big "Add the dinner bill" CTA is gone. Add the bill from a quiet action on the Dinner card.
+- **Add expense:** receipt photo first, then itemization.
+- **Who had what:** Even split or By item. Pick "Who was there" once. By item starts from that group, so you only edit the exceptions. Receipt hero, glass rows with tappable photo stacks, live per-person totals. Lisbon numbers kept ($248.70; Ren and Nic off the wine). Storybook: Beyond/SplitEditor.
+- **Money:** You / Whole trip switch, one count per view. The IOU sentence and table sit behind "How TripUp got here".
+- **Netting engine:** an animation layer (Σ, √, ± amounts, collapsing arrows, one quip, about 2.5 s) that lands on Solved, 3 payments. In the prototype, slide 9 and the Storybook DebtUntangle. Reduce Motion crossfades.
+- **Request payment:** a Request button on lines where someone owes you ("Request sent to Ren"), in Up next and in settle.
+- **Waiting for Nic:** no longer a dead end. Done returns to Money, plus a quiet "Nudge Nic". Back and swipe-down work, and the path to Nic confirming stays in the tour. The meta line reads "Cash · marked 10:39 PM". Added to the every-screen-has-exit check.
+- Tour, Storybook, thumbnails and QA updated for all of the above.
+
 ## v5.4.1 (Oct 19, 2026)
 
 - **Find a place, new order:** what kind (Food, Drinks, Culture, Activity, the same set as the Explore chips), then Price point, then how you're getting there, then how long. Counts narrow from the first answer.

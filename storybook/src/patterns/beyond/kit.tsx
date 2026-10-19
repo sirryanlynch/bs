@@ -127,7 +127,7 @@ export const TABS = TABS_TRIP;
 export type NavLevel = 'home' | 'trip';
 let lastLevel: NavLevel | null = null;
 /** Where each item in the global create menu lands. */
-export const CREATE_ROUTES: Record<CreateKind, string> = { poll: 'poll/new', expense: 'expense/scan', photos: 'album', plan: 'plan/add', trip: 'create/where' };
+export const CREATE_ROUTES: Record<CreateKind, string> = { poll: 'explore/curate', expense: 'expense/scan', photos: 'album', plan: 'plan/add', trip: 'create/where' };
 /** The 5-tab bar plus the global + (create menu) that sits next to it on every tab. */
 export function GlobalTabs({ active, onTab, onCreate, level = 'trip' }: { active: string; onTab: (id: string) => void; onCreate: (k: CreateKind) => void; level?: NavLevel }) {
   const [open, setOpen] = useState(false);

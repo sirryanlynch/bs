@@ -1,3 +1,4 @@
+import { SplitEditor, applyEven, applyAudience, type SplitLine } from '../../components/beyond/spliteditor';
 import { Stepper } from '../../components/beyond/stepper';
 import React, { useEffect, useState } from 'react';
 import { useFlow, Top, crewPeople, LINES_ALL } from './kit';
@@ -67,15 +68,22 @@ function useExp() {
   return { ...f, e, ppl, wineOff, patch, amts: amountsOf(e) };
 }
 export function AssignScreen() {
-  const { e, ppl, wineOff, patch, amts, go, back } = useExp();
+  const { e, ppl, patch, go, back } = useExp();
+  // v5.4.2: Even split / By item with one audience; only exceptions get edited.
+  const all = ppl.map(p => p.id);
+  const lines: SplitLine[] = RECEIPT.map(l => ({ id: l.id, label: `${l.item}${l.en ? ` (${l.en})` : ''}`, qty: l.qty, price: l.price, who: e.assign[l.id] ?? all }));
+  const audience = all.filter(id => !e.excluded.includes(id));
+  const mode = e.mode === 'even' ? 'even' : 'item';
+  const put = (ls: SplitLine[], extra: any = {}) => patch({ assign: Object.fromEntries(ls.map(l => [l.id, l.who])), ...extra });
   return (
     <div className="b-scr">
       <div className="b-scroll has-cta">
-        <Top title="Who had what" sub="Tap people on each line" onBack={back} />
-        <ExpSteps at={1} onSkip={() => { patch({ mode: 'even' }); go('expense/split'); }} />
-        <LineItemAssigner lines={RECEIPT} assign={e.assign} people={ppl} open={e.open} onOpen={id => patch({ open: id })}
-          onToggle={(line, who) => { const w = e.assign[line] ?? []; patch({ assign: { ...e.assign, [line]: w.includes(who) ? w.filter(x => x !== who) : [...w, who] }, mode: 'item' }); }} />
-        {wineOff && <p className="b-note"><BIcon name="wine" size={20} />Ren and Nic skipped the wine, so they pay {money(amts.ren ?? 0)} each with the tip.</p>}
+        <Top title="Who had what" sub={`${RECEIPT_PLACE} · Lunch`} onBack={back} />
+        <SplitEditor title={`Lunch at ${RECEIPT_PLACE} · Wed, Oct 14`} sub="tip included" total={RECEIPT_TOTAL * 1.1} lines={lines} people={ppl} audience={audience} mode={mode}
+          open={e.open} onOpen={v => patch({ open: v ?? '' })}
+          onMode={m => m === 'even' ? put(applyEven(lines, audience), { mode: 'even' }) : patch({ mode: 'item' })}
+          onAudience={ids => put(mode === 'even' ? applyEven(lines, ids) : applyAudience(lines, audience, ids), { excluded: all.filter(x => !ids.includes(x)) })}
+          onLine={(id, who) => patch({ assign: { ...e.assign, [id]: who }, mode: 'item' })} />
       </div>
       <div className="b-bottom"><Button label="Save expense" fullWidth onClick={() => { patch({ saved: true }); go('expense/done'); }} /></div>
     </div>

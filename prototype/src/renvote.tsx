@@ -73,7 +73,7 @@ export function RenVote() {
           <div className="rv-brand"><AppMark size={24} /><b>TripUp</b><span>Guest · Ren</span></div>
           <h1 className="rv-h1">Saturday dinner</h1>
           <p className="rv-sub tu-num">Ari asked · closes 7:30 PM</p>
-          <p className={`rv-hide ${pick != null ? 'is-off' : ''}`}><Icon name="eyeSlash" size={14} />{pick != null ? `${n} of 7 voted` : 'Counts hidden until you vote'}</p>
+          {/* v5.4.2: no badge; counts still stay hidden until you vote */}{pick != null && <p className="rv-hide is-off">{`${n} of 7 voted`}</p>}
           <div className="rv-tiles">{ids.map((id, i) => {
             const on = pick === i; const pct = n ? Math.round((t[i] / n) * 100) : 0;
             return (

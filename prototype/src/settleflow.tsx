@@ -1,6 +1,6 @@
 import { CoreHeader } from './screens1';
 import React, { useEffect, useRef, useState } from 'react';
-import { Button } from '@sb/components/core';
+import { Button, Avatar } from '@sb/components/core';
 import { DebtUntangle, UntanglePhase } from '@sb/components/untangle';
 import '@sb/components/untangle-solver';
 import { BottomSheet, SquaredSheet, SquaredRow } from '@sb/components/overlays';
@@ -33,30 +33,43 @@ export function MoneyScreen() {
 
   if (progressed) return <MoneyProgress />;
 
-  const mineRaw = raw.filter(e => e.from === s.me || e.to === s.me);
-  const tangledCap = `${mineRaw.length} IOUs: ${mineRaw.map(e => (e.from === s.me ? `you owe ${P[e.to].name} ${usd2(e.amt)}` : `${P[e.from].name} owes you ${usd2(e.amt)}`)).join('. ')}.`;
+  // v5.4.2: You / Whole trip. One count per view, never both. The IOU detail sits behind the info button.
+  const view = s.moneyView ?? 'trip';
+  const [info, setInfo] = useState(false);
   const mine = plan.filter(e => e.from === s.me || e.to === s.me).sort((a, b) => planRank(a, s.me) - planRank(b, s.me));
-  const solvedCap = mine.length ? `${mine.map(e => (e.from === s.me ? `You pay ${P[e.to].name} ${usd2(e.amt)}` : `${P[e.from].name} pays you ${usd2(e.amt)}`)).join('. ')}.` : 'You are square.';
-  const caption = phase === 0 ? tangledCap : phase === 1 ? 'Every IOU becomes one net balance per person.' : solvedCap;
   const myOut = plan.find(e => e.from === s.me);
   const myIn = plan.find(e => e.to === s.me);
+  const ask = (e: { from: string; to: string; amt: number }) => { haptic(10); d({ t: 'set', patch: { requested: { ...(s.requested ?? {}), [`${e.from}>${e.to}`]: true } } }); d({ t: 'toast', msg: `Request sent to ${P[e.from].name}`, tone: 'success' }); };
   void nm; void later;
   return (
     <div className="scr pt-v3">
       <div className="p-sscroll pt-money has-hm">
-        <MoneyBalance net={net} caption={caption} />
-        <div className="pt-graph4"><DebtUntangle raw={raw} simple={plan} people={P} solved={s.simplified} controls="inline" startButton={false} skin="solver" onPhase={setPhase}
-          onSolved={() => { haptic(16); if (!s.simplified) d({ t: 'set', patch: { simplified: true } }); d({ t: 'done', key: 'simplify' }); }} /></div>
-        {phase === 0 && <IouLog raw={raw} people={P} me={s.me} />}
-        {phase === 1 && <NetLog nets={nets(raw)} people={P} me={s.me} />}
-        {phase === 2 && <PairRows plan={plan} people={P} me={s.me} onRow={e => { if (e.from === 'ari' && s.me === 'ari') { haptic(); d({ t: 'view', v: 'choose' }); } }} />}
+        <div className="pt-mseg" role="radiogroup" aria-label="Show money for">
+          {(['you', 'trip'] as const).map(v => <button key={v} type="button" role="radio" aria-checked={view === v} className={view === v ? 'is-on' : ''} onClick={() => { haptic(); d({ t: 'set', patch: { moneyView: v } }); }}>{v === 'you' ? 'You' : 'Whole trip'}</button>)}
+          <span className="pt-mseg-lens" style={{ ['--x' as any]: view === 'you' ? 0 : 1 }} aria-hidden />
+        </div>
+        {view === 'you' ? (<>
+          <MoneyBalance net={net} caption={mine.length ? `${mine.length} ${mine.length === 1 ? 'payment' : 'payments'} to settle` : 'You are square.'} />
+          <ul className="pt-mylist anim-rise">{mine.map(e => { const out = e.from === s.me; const k = `${e.from}>${e.to}`; const other = P[out ? e.to : e.from]; const req = s.requested?.[k]; return (
+            <li key={k} className="pt-myrow">
+              <Avatar person={other} size={44} ring="none" />
+              <span className="pt-myrow-t"><b>{out ? `You owe ${other.name}` : `${other.name} owes you`}</b><small className="tu-num">{usd2(e.amt)}</small></span>
+              {out ? <button type="button" className="pt-myrow-btn is-pay" onClick={() => { haptic(); d({ t: 'view', v: 'choose' }); }}>Pay</button>
+                : <button type="button" className={`pt-myrow-btn ${req ? 'is-done' : ''}`} disabled={req} onClick={() => ask(e)}>{req ? 'Requested' : 'Request'}</button>}
+            </li>); })}</ul>
+        </>) : (<>
+          <div className="pt-graph4"><DebtUntangle raw={raw} simple={plan} people={P} solved={s.simplified} controls="inline" startButton={false} skin="solver" onPhase={setPhase}
+            onSolved={() => { haptic(16); if (!s.simplified) d({ t: 'set', patch: { simplified: true } }); d({ t: 'done', key: 'simplify' }); }} /></div>
+          <button type="button" className="pt-minfo" aria-expanded={info} onClick={() => setInfo(x => !x)}><span aria-hidden>i</span>{info ? 'Hide the details' : 'How TripUp got here'}</button>
+          {info && <div className="anim-rise">{phase === 0 ? <IouLog raw={raw} people={P} me={s.me} /> : phase === 1 ? <NetLog nets={nets(raw)} people={P} me={s.me} /> : <PairRows plan={plan} people={P} me={s.me} onRow={e => { if (e.from === 'ari' && s.me === 'ari') { haptic(); d({ t: 'view', v: 'choose' }); } }} />}</div>}
+        </>)}
       </div>
-      <CoreHeader onBack={() => { haptic(); d({ t: 'go', step: 'trip' }); }} backLabel="Back to Lisbon Crew" title="Money" sub={`Whole trip · ${Object.keys(nets(raw)).length} people`} />
+      <CoreHeader onBack={() => { haptic(); d({ t: 'go', step: 'trip' }); }} backLabel="Back to Lisbon Crew" title="Money" sub={view === 'you' ? 'Your balance' : `Whole trip · ${Object.keys(nets(raw)).length} people`} />
       <div className="p-sbottom">
-        {phase === 0 && !s.simplified ? <Button label={`Simplify ${raw.length} IOUs`} fullWidth onClick={() => { haptic(16); d({ t: 'set', patch: { simplified: true } }); }} />
-          : phase < 2 ? <Button label="Finding the fewest payments" disabled fullWidth />
+        {view === 'trip' && phase === 0 && !s.simplified ? <Button label={`Simplify ${raw.length} IOUs`} fullWidth onClick={() => { haptic(16); d({ t: 'set', patch: { simplified: true } }); }} />
+          : view === 'trip' && phase < 2 ? <Button label="Finding the fewest payments" disabled fullWidth />
           : myOut ? <Button label={`Pay ${P[myOut.to].name} ${usd2(myOut.amt)}`} fullWidth onClick={() => { haptic(); d({ t: 'view', v: 'choose' }); }} />
-          : myIn ? <Button label={`Ask ${P[myIn.from].name} for ${usd2(myIn.amt)}`} fullWidth onClick={() => d({ t: 'toast', msg: `Reminder sent to ${P[myIn.from].name}`, tone: 'success' })} />
+          : myIn ? <Button label={s.requested?.[`${myIn.from}>${myIn.to}`] ? `Requested from ${P[myIn.from].name}` : `Request ${usd2(myIn.amt)} from ${P[myIn.from].name}`} disabled={!!s.requested?.[`${myIn.from}>${myIn.to}`]} fullWidth onClick={() => ask(myIn)} />
           : <Button label="Back to the trip" variant="secondary" fullWidth onClick={() => d({ t: 'go', step: 'trip' })} />}
       </div>
     </div>
@@ -95,17 +108,20 @@ function MoneyProgress() {
   ].join(' ') || 'Waiting for the last payment.';
   const askRen = () => {
     const e = openIn[0]; if (!e) return; haptic(10);
-    d({ t: 'toast', msg: `Asked ${P[e.from].name} for ${usd2(e.amt)}`, tone: 'neutral' });
+    d({ t: 'toast', msg: `Request sent to ${P[e.from].name}`, tone: 'neutral' });
     later(1300, () => { haptic(10); d({ t: 'pay', key: `${e.from}>${e.to}`, how: 'app' }); d({ t: 'toast', msg: `${P[e.from].name} paid you ${usd2(e.amt)}`, tone: 'success' }); });
     plan.filter(x => x.from !== s.me && x.to !== s.me && !flag(x)).forEach((x, i) => later(2500 + i * 1000, () => { haptic(10); d({ t: 'pay', key: `${x.from}>${x.to}`, how: 'cash' }); d({ t: 'toast', msg: `${P[x.to].name} confirmed ${P[x.from].name}'s cash`, tone: 'success' }); }));
   };
   const cta = myOpen ? <Button label={`Pay ${P[myEdge(s).to].name} ${usd2(dueOf(s))}`} fullWidth onClick={() => d({ t: 'view', v: 'choose' })} />
-    : openIn.length ? <Button label={`Ask ${P[openIn[0].from].name} for ${usd2(openIn[0].amt)}`} fullWidth onClick={askRen} />
+    : openIn.length ? <Button label={`Request ${usd2(openIn[0].amt)} from ${P[openIn[0].from].name}`} fullWidth onClick={askRen} />
     : done === plan.length ? null
-    : <Button label={stl && stl.status !== 'confirmed' ? `Waiting for ${P[stl.to].name}` : 'Waiting for the last payment'} disabled fullWidth />;
+    : stl && stl.status !== 'confirmed' ? <>{/* v5.4.2: no dead end while Nic confirms. Done leaves, Nudge is quiet. */}
+        <Button label="Done" fullWidth onClick={() => { haptic(); d({ t: 'go', step: 'trip' }); }} />
+        <Button label={`Nudge ${P[stl.to].name}`} variant="plain" fullWidth onClick={() => { haptic(10); d({ t: 'toast', msg: `Nudged ${P[stl.to].name} to confirm`, tone: 'neutral' }); }} /></>
+    : <Button label="Done" fullWidth onClick={() => { haptic(); d({ t: 'go', step: 'trip' }); }} />;
   const success = stl && stl.status === 'confirmed'
     ? <PaymentSuccess title={stl.method === 'cash' ? `${P[stl.to].name} confirmed ${usd2(stl.paid)}` : `Paid ${P[stl.to].name} ${usd2(stl.paid)}`} meta={`${stl.method === 'cash' ? 'cash' : METHODS.find(m => m.id === stl.method)!.title} · ${stl.confirmedAt} · ${stl.id}`} />
-    : stl ? <section className="p-scard p-success is-wait" role="status"><span className="p-success-disc is-wait" aria-hidden><span className="p-spinner p-spinner-sm" /></span><div><p className="p-success-title">{stl.status === 'disputed' ? `${P[stl.to].name} counted ${usd2(stl.dispute!.counted)}` : `Waiting for ${P[stl.to].name} to confirm`}</p><p className="p-success-meta">{stl.method} · marked {stl.markedAt} · {stl.id}</p></div></section>
+    : stl ? <section className="p-scard p-success is-wait" role="status"><span className="p-success-disc is-wait" aria-hidden><span className="p-spinner p-spinner-sm" /></span><div><p className="p-success-title">{stl.status === 'disputed' ? `${P[stl.to].name} counted ${usd2(stl.dispute!.counted)}` : `Waiting for ${P[stl.to].name} to confirm`}</p><p className="p-success-meta">{stl.method === 'cash' ? 'Cash' : METHODS.find(m => m.id === stl.method)?.title ?? 'Payment'} · marked {hm(stl.markedAt ?? '10:39 PM')}</p></div></section>
     : null;
   return (
     <div className="scr pt-v3">
@@ -202,7 +218,10 @@ function Pending() {
     <div className="p-sscroll"><PendingMark s={stl} to={to} body={body} /></div>
     <GlassHeader back="Money" onBack={toMoney(d)} title={stl.method === 'cash' ? `Cash for ${to.name}` : `Pay ${to.name}`} subtitle={`Waiting for ${to.name}`} />
     {live && <UndoToast amount={stl.paid} startAt={performance.now() - (Date.now() - s.undoAt!)} onUndo={() => { haptic(12); d({ t: 'undo' }); d({ t: 'toast', msg: `Undone. ${to.name}'s request was withdrawn.`, tone: 'neutral' }); }} onExpire={() => d({ t: 'set', patch: { undoAt: undefined } })} />}
-    <div className="p-sbottom"><Button label="Back to balances" variant="plain" fullWidth onClick={toMoney(d)} /></div>
+    <div className="p-sbottom">{/* v5.4.2: not a dead end. Done goes back to Money; Nudge is quiet. */}
+      <Button label="Done" fullWidth onClick={toMoney(d)} />
+      <Button label={`Nudge ${to.name}`} variant="plain" fullWidth onClick={() => { haptic(10); d({ t: 'toast', msg: `Nudged ${to.name} to confirm`, tone: 'neutral' }); }} />
+    </div>
   </>);
 }
 

@@ -127,7 +127,7 @@ kbd { font: 600 11px/1 var(--mono); padding: 3px 6px; border-radius: 6px; backgr
 .device { position: fixed; z-index: 5; left: 0; top: 0; width: 422px; height: 894px; transform-origin: 0 0; will-change: transform, opacity; pointer-events: none; opacity: 0; transition: transform 1.05s var(--ease-out), opacity .6s var(--ease); filter: drop-shadow(0 40px 50px rgba(40,30,110,.22)); }
 .device.on { opacity: 1; pointer-events: auto; }
 .device.no-anim { transition: none; }
-.device-clip { position: absolute; inset: 0; border-radius: 72px; overflow: hidden; background: #0E0E12; }
+.device-clip { position: absolute; inset: 0; border-radius: 72px; overflow: hidden; background: #0E0E12; clip-path: inset(0 round 72px); isolation: isolate; }
 .device iframe { position: absolute; left: -10px; top: -21px; width: 442px; height: 936px; border: 0; background: transparent; }
 
 /* ---------- 2 matrix ---------- */
@@ -803,8 +803,6 @@ html.theme-dark .more a, [data-theme="dark"] .more a { background: rgba(40,38,56
 .ds-chiprow { flex-wrap: wrap; gap: 6px; max-width: 100%; }
 .ds-chips { overflow: hidden; }
 /* 8 · one mode: hidden until you vote */
-.pc-hidden { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; font-size: 12.5px; font-weight: 600; color: var(--color-accent-primary, #6E5BFF); background: rgba(110,91,255,.1); white-space: nowrap; }
-.pc-hidden svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
 /* 9 · Next walks Tangled → Netting → Solved; Start over is a quiet text link */
 #gNext { gap: 4px; padding-right: 10px; }
 #gNext svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
@@ -817,3 +815,16 @@ html.theme-dark .more a, [data-theme="dark"] .more a { background: rgba(40,38,56
 .grid-5 .eyebrow .tie { font-size: inherit; }
 .grid-5 .eyebrow .tie { margin-left: 9px; padding-left: 9px; }
 @media (max-width: 1180px) { .grid-5 .eyebrow { white-space: normal; } }
+
+.sp-steps { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0; padding: 0; list-style: none; counter-reset: sps; }
+.sp-steps li { counter-increment: sps; display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 6px; border-radius: 18px; font-size: 14px; font-weight: 600; color: var(--ink); background: var(--color-bg-surface, #fff); box-shadow: 0 0 0 1px rgba(30,20,80,.08); }
+.sp-steps li::before { content: counter(sps); display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; font-size: 12px; color: #fff; background: var(--color-accent-primary, #6E5BFF); }
+/* v5.4.2 Netting engine layer (slide 9) */
+.ut-engine { position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; border-radius: inherit; animation: ut-eng 2.4s ease both; }
+.ut-gl { position: absolute; left: var(--x); top: var(--y); font: 500 15px/1 ui-monospace, 'JetBrains Mono', monospace; color: var(--color-accent-primary, #6E5BFF); white-space: nowrap; opacity: 0; animation: ut-fly 1.7s cubic-bezier(0.32, 0.72, 0, 1) var(--d) both; }
+.ut-gl.is-amt { font-weight: 600; color: var(--ink-2, #555); }
+.ut-quip { position: absolute; left: 0; right: 0; bottom: 70px; text-align: center; font: italic 400 19px var(--font-display, Georgia, serif); color: var(--ink, #111); animation: ut-quip 2.3s ease both; }
+@keyframes ut-eng { 0% { background: transparent; } 20%, 80% { background: rgba(255,255,255,.5); } 100% { background: transparent; } }
+@keyframes ut-fly { 0% { opacity: 0; transform: translate(0, 18px) rotate(var(--r)) scale(.8); } 30% { opacity: .9; } 70% { opacity: .8; transform: translate(0, -6px) rotate(0) scale(1); } 100% { opacity: 0; left: 50%; top: 40%; transform: translate(-50%, -50%) scale(.2); } }
+@keyframes ut-quip { 0%, 25% { opacity: 0; transform: translateY(6px); } 40%, 85% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+.ut-engine.is-reduce { animation: ut-eng 1.6s linear both; } .ut-engine.is-reduce .ut-quip { animation: none; opacity: 1; }

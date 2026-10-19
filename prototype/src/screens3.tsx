@@ -1,3 +1,7 @@
+import { SplitEditor, applyEven, applyAudience, type SplitLine } from '@sb/components/beyond/spliteditor';
+import { ReceiptScanner } from '@sb/components/beyond/expense';
+import type { RLine } from '@sb/lib/beyond';
+import { useReducedMotion } from '@sb/lib/PrismRoot';
 import React, { useEffect, useRef, useState } from 'react';
 import { Icon } from '@sb/components/Icon';
 import { Avatar, AvatarStack, Button, useCountUp } from '@sb/components/core';
@@ -11,49 +15,44 @@ import { TopBar, Tabs, crewOf } from './screens1';
 import { MoneyScreen, SquaredOverlay } from './settleflow';
 
 /* ---------------- 10 Split dinner ---------------- */
+/* v5.4.2: the receipt photo comes first, then the itemized split. */
+function ReceiptStep() {
+  const { s, d } = useApp(); const reduce = useReducedMotion();
+  const [phase, setPhase] = useState<'aim' | 'scanning' | 'done'>('aim');
+  useEffect(() => { const a = setTimeout(() => setPhase('scanning'), reduce ? 300 : 700); const b = setTimeout(() => setPhase('done'), reduce ? 700 : 2200); return () => { clearTimeout(a); clearTimeout(b); }; }, []);
+  const lines: RLine[] = s.lines.map(l => ({ id: l.id, item: l.item, en: '', cat: '', print: l.item.toUpperCase(), qty: l.qty, price: l.price, conf: 0.96 }));
+  return (
+    <div className="b-scr b-scr-dark">
+      <div className="b-scroll has-cta">
+        <TopBar back="Tonight" onBack={() => d({ t: 'go', step: 'plan' })} title="Dinner bill" sub="Taberna da Rua das Flores" />
+        <ReceiptScanner phase={phase} lines={lines} total={248.7} place="Taberna da Rua das Flores" stamp="R. das Flores 103, Lisboa · Oct 17, 2026 · 10:42 PM" />
+        <p className="b-help b-center">{phase === 'done' ? `All ${lines.length} lines read. Next, who had what.` : 'Hold the receipt inside the frame.'}</p>
+      </div>
+      <div className="b-bottom"><Button label={phase === 'done' ? 'Split the items' : 'Reading…'} disabled={phase !== 'done'} fullWidth onClick={() => { haptic(); d({ t: 'set', patch: { receiptOk: true } }); }} /></div>
+    </div>
+  );
+}
 export function Expense() {
-  const { s, d, P, nm } = useApp();
-  const crew = crewOf(true);
-  const shares = linesToSharesExport(s.lines);
-  const groups = new Map<number, string[]>();
-  crew.forEach(id => groups.set(shares[id] ?? 0, [...(groups.get(shares[id] ?? 0) ?? []), id]));
-  const sorted = [...groups.entries()].sort((a, b) => a[1].length - b[1].length);
-  const order = (ids: string[]) => [...ids].sort((a, b) => (a === 'ren' ? -1 : b === 'ren' ? 1 : 0));
-  const summary = sorted.length === 1 ? [`Everyone pays ${usd(sorted[0][0])}`]
-    : [...sorted.slice(0, -1).map(([v, ids]) => `${order(ids).map(id => nm(id)).join(' and ')}: ${usd(v)}${ids.length > 1 ? ' each' : ''}`), `Everyone else: ${usd(sorted[sorted.length - 1][0])}`];
-  const ok = wineOff(s);
-  const feat = s.lines.find(l => /vinho|wine/i.test(l.item))?.id ?? 'wine';
+  const { s: s0 } = useApp();
+  if (!s0.receiptOk) return <ReceiptStep />;
+  return <ExpenseItems />;
+}
+function ExpenseItems() {
+  const { s, d, P } = useApp();
+  const crew = crewOf(true); const people = crew.map(id => P[id]);
+  const lines: SplitLine[] = s.lines.map(l => ({ id: l.id, label: l.item, qty: l.qty, price: l.price, who: l.who }));
+  const audience = crew.filter(id => s.lines.some(l => l.who.includes(id)));
+  const mode = s.splitMode ?? 'even';
+  const put = (ls: SplitLine[]) => d({ t: 'set', patch: { lines: s.lines.map(l => ({ ...l, who: ls.find(x => x.id === l.id)!.who })) } });
   return (
     <div className="scr">
       <div className="scr-scroll has-cta">
-        <TopBar back="Tonight" onBack={() => d({ t: 'go', step: 'plan' })} title="Split dinner" sub={`Paid by ${nm('ari', false)} · $248.70`} />
-        {/* v5.1: the bill is the hero and shows the live result; the one decision (who had the wine) is its own card; the rest is one quiet list. */}
-        <section className="pt-billhero" aria-label="Dinner at Taberna, $248.70">
-          <div className="pt-billhero-ph"><img src={photo.taberna} alt="" /><span className="pt-billhero-chip tu-num">Sat, Oct 17 · 8:30 PM · {crew.length} people</span></div>
-          <div className="pt-billhero-body">
-            <p className="pt-billhero-k">Dinner at Taberna</p>
-            <p className="pt-billhero-amt tu-num">$248.70</p>
-            <div className="pt-summary" role="status">{summary.map(x => <span key={x} className="tu-num">{x}</span>)}</div>
-          </div>
-        </section>
-        {s.lines.filter(l => l.id === feat).map(l => (
-          <section key={l.id} className={`pt-featline ${ok ? 'is-ok' : ''}`}>
-            <div className="pt-featline-head"><span className="pt-featline-ico" aria-hidden><Icon name="wine" size={20} /></span>
-              <span><b>Who had the wine?</b><small className="tu-num">{l.qty > 1 ? `${l.qty}× ` : ''}{l.item.split(',')[0]} · {usd(l.price)}</small></span></div>
-            <div className="pt-who pt-who-faces">{crew.map(id => {
-              const on = l.who.includes(id);
-              return <button key={id} type="button" className={`pt-whobtn ${on ? 'is-on' : ''}`} aria-pressed={on} aria-label={`${P[id].name} ${on ? 'shares' : 'skips'} ${l.item}`} onClick={() => { haptic(); d({ t: 'toggleLine', line: l.id, who: id }); }}>
-                <span className="pt-whoface"><Face person={P[id]} size={40} />{!on && <span className="pt-whooff" aria-hidden><Icon name="close" size={12} /></span>}</span><span>{nm(id)}</span></button>;
-            })}</div>
-            <p className="pt-featline-note">{ok ? 'Ren and Nic are off the wine.' : 'Ren and Nic skipped the wine. Tap them off.'}</p>
-          </section>
-        ))}
-        <section className="pt-restlines" aria-label="Shared by everyone">
-          <p className="pt-restlines-k">Shared by everyone</p>
-          {s.lines.filter(l => l.id !== feat).map(l => (
-            <div key={l.id} className="pt-restline"><span>{l.qty > 1 && <span className="tu-num">{l.qty}× </span>}{l.item}</span><b className="tu-num">{usd(l.price)}</b></div>
-          ))}
-        </section>
+        <TopBar back="Receipt" onBack={() => d({ t: 'set', patch: { receiptOk: false } })} title="Who had what" sub="Paid by you · Taberna da Rua das Flores" />
+        <SplitEditor title="Dinner at Taberna · Sat, Oct 17" total={248.7} lines={lines} people={people} audience={audience} mode={mode}
+          open={s.splitOpen} onOpen={v => d({ t: 'set', patch: { splitOpen: v } })}
+          onMode={m => { haptic(); d({ t: 'set', patch: { splitMode: m } }); if (m === 'even') put(applyEven(lines, audience)); }}
+          onAudience={ids => { haptic(); put(mode === 'even' ? applyEven(lines, ids) : applyAudience(lines, audience, ids)); }}
+          onLine={(id, who) => { haptic(); d({ t: 'set', patch: { lines: s.lines.map(l => l.id === id ? { ...l, who } : l) } }); }} />
       </div>
       <div className="scr-bottombar">
         <Button label="Save expense" fullWidth onClick={() => { haptic(18); d({ t: 'saveDinner' }); setTimeout(() => d({ t: 'go', step: 'money' }), 500); }} />

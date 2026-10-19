@@ -18,7 +18,7 @@ export function PlanDayScreen() {
     <div className="b-scr">
       <div className="b-scroll has-tabs">
         <div className="b-head"><div><p className="b-overline tu-num">{day.dow}, Oct {day.n} · Day {DAYS.indexOf(day) + 1} of {DAYS.length}</p><h1 className="b-title-xl">Plan</h1></div>
-          <div className="b-head-tools"><TopBtn icon="poll" label="Start a poll" onClick={() => go('poll/new')} /><TopBtn icon="add" label="Add to the day" accent onClick={() => { d({ t: 'patch', k: 'plan', v: { addPart: 'afternoon' } }); go('plan/add'); }} /></div></div>
+          <div className="b-head-tools"><TopBtn icon="poll" label="Start a poll" onClick={() => go('explore/curate')} /><TopBtn icon="add" label="Add to the day" accent onClick={() => { d({ t: 'patch', k: 'plan', v: { addPart: 'afternoon' } }); go('plan/add'); }} /></div></div>
         <DayTabs days={DAYS} value={pl.day} today="oct17" onChange={id => d({ t: 'patch', k: 'plan', v: { day: id, landed: undefined } })} />
         <FilterChips value={xt} surface="itinerary" counts={counts} showCounts onChange={t => d({ t: 'patch', k: 'plan', v: { xt: t } })} />
         {items.length ? (

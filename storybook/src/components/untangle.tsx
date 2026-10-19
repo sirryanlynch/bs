@@ -19,7 +19,7 @@ const BENDS: Record<string, number> = {
   'ari>tomas': 0.12, 'ren>ari': 0.25, 'mara>joao': 0.15, 'mara>sofia': 0.10, 'sofia>joao': 0.10, 'tomas>nic': 0.28,
 };
 const BENDS_SOLVED: Record<string, number> = { 'ari>nic': 0.42, 'ren>ari': 0.85, 'mara>joao': 0.40 };
-const STEP_MS = 600, HOLD_MS = 900, RM_MS = 200;
+const STEP_MS = 600, HOLD_MS = 1800, RM_MS = 200; // v5.4.2: Netting holds ~2.4 s for the engine layer
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const lerp = (a: number, b: number, k: number) => a + (b - a) * k;
@@ -287,6 +287,7 @@ export function DebtUntangle({ raw = rawDebts, simple = simplifiedDebts, people 
   return (
     <div className={`p-ut ${ctl === 'full' ? 'has-ctl' : ''} is-skin-${Skin ? skin : 'instrument'}`}>
       <div className="p-ut-card">
+        {phase === 1 && <NetEngine key="eng" reduce={reduce} amounts={ids.map(id => net[id] ?? 0)} />}
         {Skin && frame ? <Skin frame={frame} /> : <svg viewBox={`0 0 ${W} ${H}`} width="100%" className="p-ut-svg" role="img" aria-label={summary}>
           <defs>
             <radialGradient id={`dg${uid}`} cx="50%" cy="50%" r="50%"><stop offset="0" className="p-ut-dg0" /><stop offset="0.6" className="p-ut-dg1" /><stop offset="1" className="p-ut-dg2" /></radialGradient>
@@ -407,6 +408,22 @@ export function DebtUntangle({ raw = rawDebts, simple = simplifiedDebts, people 
         </div>
       )}
       <p className="sr-only" aria-live="polite">{summary}</p>
+    </div>
+  );
+}
+
+/* v5.4.2 Netting: the engine at work. Abstract math flies past, arrows collapse into the center, a dry one-liner lands. Not exact; it reads as effort. */
+const GLYPHS = ['Σ', '√', '±', '∑ nets = 0', '→', '÷ 7', '≈', 'Δ', '+', '−', 'min(Σ)', '∫'];
+const QUIPS = ['Doing the math so nobody has to.', 'Carrying the one. Several ones.', 'Six IOUs walk into a bar…'];
+function NetEngine({ reduce, amounts }: { reduce: boolean; amounts: number[] }) {
+  const [q] = React.useState(() => QUIPS[Math.floor(Math.random() * QUIPS.length)]);
+  const bits = [...GLYPHS, ...amounts.filter(a => Math.abs(a) > 0.004).slice(0, 6).map(a => `${a < 0 ? '−' : '+'}$${Math.abs(a).toFixed(2)}`)];
+  return (
+    <div className={`p-ut-engine ${reduce ? 'is-reduce' : ''}`} aria-hidden>
+      {!reduce && bits.map((b, i) => <span key={i} className={`p-ut-gl ${b.startsWith('+') || b.startsWith('−$') ? 'is-amt' : ''}`}
+        style={{ ['--x' as any]: `${(i * 37) % 100}%`, ['--y' as any]: `${(i * 53 + 11) % 90}%`, ['--d' as any]: `${(i % 6) * 110}ms`, ['--r' as any]: `${(i % 2 ? 1 : -1) * (8 + (i * 7) % 18)}deg` }}>{b}</span>)}
+      {!reduce && <span className="p-ut-core" />}
+      <span className="p-ut-quip">{q}</span>
     </div>
   );
 }

@@ -88,7 +88,7 @@ function NewTripChrome({ tab, children }: { tab: 'plan' | 'photos' | 'money' | '
 export function NewTripPlanScreen() {
   const { go } = useFlow();
   return <NewTripChrome tab="plan"><EmptyState render="itinerary" title="Nothing planned yet" body="Add the first thing for Thursday, Feb 12, or let the crew vote on dinner."
-    action="Start a poll" onAction={() => go('poll/new')} secondary="Add to plan" onSecondary={() => go('plan/add')} /></NewTripChrome>;
+    action="Start a poll" onAction={() => go('explore/curate')} secondary="Add to plan" onSecondary={() => go('plan/add')} /></NewTripChrome>;
 }
 export function NewTripPhotosScreen() {
   const { go } = useFlow();

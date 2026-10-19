@@ -237,13 +237,8 @@ export function PendingMark({ s, to = P.nic, title = 'Marked as paid', body, tim
         <h2 className="p-pend-title">{title}</h2>
         <p className="p-pend-body">{body ?? <>{to.name} gets a request to confirm {usd2(s.paid)} in cash. Your balance moves when he does.</>}</p>
       </div>
-      {timeline && <Readout title="TIMELINE" pill={<span className="p-readout-pill">{confirmed ? 'CONFIRMED' : 'PENDING'}</span>} cols={3}
-        rows={[
-          [<><span className="p-tl-t">{s.markedAt ?? '10:39:04 PM'}</span>you marked {s.method === 'cash' ? 'cash' : s.method}</>, <>{usd2(s.paid)} ✓</>, 'strong'],
-          [<><span className="p-tl-t">{s.markedAt ?? '10:39:04 PM'}</span>request sent to {to.name}</>, <span className="p-ok">✓</span>],
-          [<><span className="p-tl-t">{s.confirmedAt ?? '--:--:--'}</span>{to.name} confirms</>, confirmed ? <span className="p-ok">✓</span> : 'pending', confirmed ? undefined : 'muted'],
-        ]} />}
-      <p className="p-sumchip tu-num">due {num(s.due)} · paid {num(s.paid)}{s.carry ? ` · carried ${num(s.carry)}` : ''}{s.partial ? ` · open ${num(s.due - s.paid)}` : ''}</p>
+      {/* v5.4.2: plain status, no mono timestamps or ids */}
+      {timeline && <p className="p-pend-plain tu-num">{s.method === 'cash' ? 'Cash' : 'Payment'} · marked {(s.markedAt ?? '10:39 PM').replace(/^(\d{1,2}:\d\d):\d\d/, '$1')}{confirmed ? ` · ${to.name} confirmed` : ` · ${to.name} confirms next`}</p>}
     </>
   );
 }

@@ -6,7 +6,7 @@ export function coreTarget(step: string, a: any, s: any): Target | null {
     if (step === 'home') return { sel: '.pt-cardbtn' };
     if (step === 'invite') return { sel: '.pt-sheet-cta button' };
     if (step === 'explore') return { sel: '.scr-bottombar button' };
-    if (step === 'plan') return { sel: 'button', text: 'Add the dinner bill' };
+    if (step === 'plan') return { sel: '.pt-wincard-act' };
     if (step === 'money') return { sel: 'button', text: 'Settle up' };
     return null;
   }
@@ -19,6 +19,9 @@ export function coreTarget(step: string, a: any, s: any): Target | null {
       if (x.patch?.renStage === 'web') return { sel: '.rv-link' };
       if (x.patch?.renStage === 'back') return { sel: '.rv-ok-btn' };
       if (x.patch?.exploreStage) return { sel: '.b-fp-photo, .b-fp-glass', nth: [0, 1, 0, 1][x.patch.exploreStage - 1] ?? 0 };
+      if (x.patch?.splitMode === 'item') return { sel: '.b-se-seg button', text: 'By item' };
+      if (x.patch?.splitOpen) return { sel: '.b-se-who', aria: /vinho|wine/i };
+      if (x.patch?.receiptOk) return { sel: 'button', text: 'Split the items' };
       if (x.patch?.shortlist) return { sel: '.pt-place' };
       if (x.patch?.pollSent) return { sel: 'button', text: 'Send to' };
       if (x.patch?.simplified) return { sel: 'button', text: 'Simplify' };
@@ -27,7 +30,7 @@ export function coreTarget(step: string, a: any, s: any): Target | null {
       if (x.patch?.shared) return { sel: 'button', text: 'Share' };
       return null;
     case 'vote': return x.who === 'nic' ? { sel: '.pt-notifbtn' } : x.who === 'ari' ? { sel: 'button', aria: /^Vote|Ramiro/ } : x.who === 'ren' ? { sel: '.rv-tile', nth: x.opt ?? 0 } : null;
-    case 'toggleLine': return { sel: '.pt-whobtn', aria: new RegExp(`^${x.who === 'ren' ? 'Ren' : 'Nic'}\\b.*${x.line}`, 'i') };
+    case 'toggleLine': return { sel: '.b-se-chip', text: x.who === 'ren' ? 'Ren' : 'Nic' };
     case 'saveDinner': return { sel: 'button', text: 'Save expense' };
     case 'view': return x.v === 'cash' ? { sel: 'button', text: 'Cash' } : null;
     case 'mark': return { sel: 'button', text: 'Mark' };
@@ -67,9 +70,9 @@ export const CHAPTER: TourStep[] = [
   { hash: '#/beyond/explore', wait: 1300, say: 'Back on the feed: places other crews booked and photographed.' },
   { scroll: 300, wait: 600 },
   { scroll: -300, wait: 500 },
-  { tap: { sel: '.b-findhero' }, wait: 1500, say: 'Find a place is the one way in from Explore. The + keeps New poll everywhere else.' },
-  { tap: { sel: '.b-cmp-cta', text: 'Start a poll' }, wait: 1500, optional: true },
-  { hash: '#/poll/new', wait: 1500, say: 'The picks become the poll. Seeded title: Saturday dinner.' },
+  { tap: { sel: '.b-findhero' }, wait: 1500, say: 'Find a place is the way into every new poll, from Explore or the +.' },
+  { tap: { sel: '.b-fp-add', nth: 0 }, wait: 700, optional: true },
+  { tap: { sel: '.b-cmp-cta', text: 'Start a poll' }, wait: 1500, say: 'New poll always starts here. The composer comes last, holding your picks.' },
   { tap: { sel: '.b-tok', nth: 1 }, wait: 1500, say: 'The poll reads as one sentence. Tap any token to change it.' },
   { tap: { sel: '.b-cs-x' }, wait: 600 },
   { tap: { sel: '.b-cs-pick' }, wait: 1200, optional: true, say: 'Add a second pick from Explore with one tap.' },

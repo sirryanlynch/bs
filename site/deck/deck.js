@@ -141,7 +141,7 @@
   $$('iframe').forEach(function (f) { f.addEventListener('pointerenter', function () { cursor.classList.add('out'); }); });
 
   /* ---------- shared device ---------- */
-  var device = $('#device'), proto = $('#protoFrame'), protoHash = '', addHash = '/poll/new/dinner';
+  var device = $('#device'), proto = $('#protoFrame'), protoHash = '', addHash = '/beyond/explore/curate';
   function slotRect(slot) {
     var x = 0, y = 0, el = slot, s = slot.closest('.slide');
     while (el && el !== s) { x += el.offsetLeft; y += el.offsetTop; el = el.offsetParent; }
@@ -241,7 +241,6 @@
     else if (k === 'End') { e.preventDefault(); go(N - 1); }
     else if (k === 'o' || k === 'g') openOverview();
     else if (k === 't') toggleTokens();
-    else if (k === 'r') toggleMotion();
     else if (/^[1-9]$/.test(k)) go(parseInt(k, 10) - 1);
   });
 
@@ -275,9 +274,9 @@
   var tokensBtn = $('#tokensBtn'), motionBtn = $('#motionBtn');
   function toggleTokens() { var on = body.classList.toggle('show-tokens'); tokensBtn.setAttribute('aria-pressed', on); }
   tokensBtn.addEventListener('click', toggleTokens);
-  function syncMotion() { motionBtn.setAttribute('aria-pressed', RM()); }
+  function syncMotion() { if (motionBtn) motionBtn.setAttribute('aria-pressed', RM()); }
   function toggleMotion() { root.dataset.motion = RM() ? 'full' : 'reduce'; syncMotion(); if (enter[cur]) enter[cur](); }
-  motionBtn.addEventListener('click', toggleMotion);
+  if (motionBtn) motionBtn.addEventListener('click', toggleMotion);
   sysRM.addEventListener && sysRM.addEventListener('change', function () { root.dataset.motion = sysRM.matches ? 'reduce' : 'full'; syncMotion(); });
   syncMotion();
 
@@ -529,7 +528,7 @@
       stages.forEach(function (t, i) { var on = i === n - 1; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; t.classList.toggle('is-done', i < n - 1); if (on && focus) t.focus(); });
       panels.forEach(function (p, i) { p.hidden = i !== n - 1; });
       line.style.transform = 'scaleX(' + ((n - 1) / 2) + ')';
-      var v = $('.sp-views [aria-pressed=true]', panels[n - 1]); if (v) show(v.dataset.hash);
+      var v = $('.sp-views [aria-pressed=true]', panels[n - 1]); if (v) show(v.dataset.hash); else if (panels[n - 1].dataset.hash) show(panels[n - 1].dataset.hash);
     }
     stages.forEach(function (t, i) {
       t.addEventListener('click', function () { stage(i + 1); });
@@ -648,6 +647,17 @@
     var view = 2, btns = $$('.stepper button');
     function show(k, animate) {
       view = k; svg.dataset.step = k;
+      // v5.4.2 Netting: the engine layer (math flying by, arrows collapsing, one dry line), then it lands on Solved.
+      var host = svg.parentNode, oldE = host.querySelector('.ut-engine'); if (oldE) oldE.remove();
+      if (k === 1 && animate) {
+        var en = document.createElement('div'); en.className = 'ut-engine' + (RM() ? ' is-reduce' : ''); en.setAttribute('aria-hidden', 'true');
+        var G = ['Σ', '√', '±', 'Σ nets = 0', '→', '÷ 7', '≈', 'Δ', '+', '−', 'min(Σ)', '∫', '+$106.10', '−$44.27', '+$23.83', '−$2.17'];
+        if (!RM()) G.forEach(function (g, i) { var sp = document.createElement('span'); sp.className = 'ut-gl' + (/\$/.test(g) ? ' is-amt' : ''); sp.textContent = g;
+          sp.style.cssText = '--x:' + ((i * 37) % 100) + '%;--y:' + ((i * 53 + 11) % 80) + '%;--d:' + ((i % 6) * 110) + 'ms;--r:' + ((i % 2 ? 1 : -1) * (8 + (i * 7) % 18)) + 'deg'; en.appendChild(sp); });
+        var q = document.createElement('span'); q.className = 'ut-quip'; q.textContent = ['Doing the math so nobody has to.', 'Carrying the one. Several ones.'][Math.random() < .5 ? 0 : 1]; en.appendChild(q);
+        if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+        host.appendChild(en); later(function () { if (view === 1) show(2, true); }, RM() ? 1600 : 2500);
+      }
       btns.forEach(function (b, i) { b.setAttribute('aria-checked', i === k); });
       counter.textContent = ['01 TANGLED', '02 NETTING', '03 SOLVED'][k];
       $('#ro1').textContent = D.READOUT[k][0]; $('#ro2').textContent = D.READOUT[k][1];

@@ -141,7 +141,7 @@ export function Closed() {
       <PollView />
       {!s.planAdded && <CelebrationOverlay kind="pollWon" eyebrow="Poll closed · 7:30 PM" title={`${optName(s, w, true)} wins`}
         subtitle={s.pollClosed === 'pick' ? `Ari broke the tie. Booked for 8:30 PM.` : `${t[w]} of ${n} votes, ${pct}%. Booked for 8:30 PM.`}
-        actionLabel="See tonight" onAction={toPlan} />}
+        actionLabel="See the plan" onAction={toPlan} />}
     </div>
   );
 }
@@ -168,14 +168,13 @@ export function Plan() {
                 <h4>{optName(s, w)}</h4>
                 <p>Table for 7</p>
                 <p className="pt-wincard-note tu-num">Picked by poll, {t[w]} of {n}</p>
+                {/* v5.4.2: the bill is added from the dinner card itself, a quiet action, not a page CTA */}
+                <button type="button" className="pt-wincard-act" onClick={() => { haptic(); d({ t: 'go', step: 'expense' }); }}><Icon name="receipt" size={16} />Add the bill</button>
               </div>
             </div>
           </li>
           <ItinBlock it={{ time: '11:00 PM', title: 'Fado at Tasca do Chico', icon: 'music', kind: 'plan' }} last />
         </ol>
-      </div>
-      <div className="scr-bottombar pt-above-tabs">
-        <Button label="Add the dinner bill" icon="receipt" fullWidth onClick={() => { haptic(); d({ t: 'go', step: 'expense' }); }} />
       </div>
       <Tabs active="plan" />
     </div>

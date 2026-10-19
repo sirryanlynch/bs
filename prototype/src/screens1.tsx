@@ -11,7 +11,7 @@ import { TripCard, ItineraryItem, ItinItem } from '@sb/components/trip';
 import { TabBar } from '@sb/components/nav';
 import { BottomSheet } from '@sb/components/overlays';
 import { photo, places } from '@sb/lib/data';
-import { useApp, liveNets, optName, StepId, haptic, myEdge, dueOf, keyOf, State } from './store';
+import { useApp, liveNets, optName, StepId, haptic, myEdge, dueOf, keyOf, State, simplifyOf } from './store';
 import type { ActionItem } from '@sb/components/beyond/actioninbox';
 import { TABS, GlobalTabs, CREATE_ROUTES } from '@sb/patterns/beyond/kit';
 import { FUTURE_TRIPS, DESTINATIONS } from '@sb/lib/beyond';
@@ -47,13 +47,16 @@ export function upNextOf(s: State): ActionItem[] {
   if (s.pollSent && !s.pollClosed && s.votes[s.me] == null) out.push({ id: 'vote', kind: 'vote', title: 'Vote: Dinner tonight', meta: 'Closes 7:30 PM · 3 places', cta: 'Vote' });
   if (s.me === 'ari' && s.dinnerSaved && s.simplified && !s.paid[keyOf(s)]) { const e = myEdge(s); const due = dueOf(s);
     if (due > 0) out.push({ id: 'pay', kind: 'pay', title: `Pay ${e.to[0].toUpperCase() + e.to.slice(1)} $${due.toFixed(2)}`, meta: 'Settles your share', cta: 'Pay', avatar: AVATAR[e.to] }); }
+  // v5.4.2 Request payment: once untangled, money owed to you is one tap to ask for.
+  if (s.dinnerSaved && s.simplified) simplifyOf(s).filter(e => e.to === s.me && !s.paid[`${e.from}>${e.to}`] && !s.requested?.[`${e.from}>${e.to}`]).slice(0, 1).forEach(e =>
+    out.push({ id: `req:${e.from}`, kind: 'pay', title: `${e.from[0].toUpperCase() + e.from.slice(1)} owes you $${e.amt.toFixed(2)}`, meta: 'Ask with one tap', cta: 'Request', avatar: AVATAR[e.from] }));
   // At home level the inbox spans trips, so each card names its trip.
   return s.step === 'home' ? out.map(a => ({ ...a, meta: `Lisbon Crew · ${a.meta}` })) : out;
 }
 export function CoreHeader(props: { title?: string; sub?: string; onBack?: () => void; backLabel?: string; avatar?: boolean; light?: boolean; menu?: boolean }) {
   const bz = useBridge(); const { s, d } = useApp();
   const actions = upNextOf(s);
-  const act = (id: string) => { haptic(); if (id === 'vote') d({ t: 'go', step: 'live' }); else if (id === 'pay') d({ t: 'view', v: 'choose' }); };
+  const act = (id: string) => { haptic(); if (id === 'vote') d({ t: 'go', step: 'live' }); else if (id === 'pay') d({ t: 'view', v: 'choose' }); else if (id.startsWith('req:')) { const who = id.slice(4); const e = simplifyOf(s).find(x => x.from === who && x.to === s.me); if (e) { d({ t: 'set', patch: { requested: { ...(s.requested ?? {}), [`${e.from}>${e.to}`]: true } } }); d({ t: 'toast', msg: `Request sent to ${who[0].toUpperCase() + who.slice(1)}`, tone: 'success' }); } } };
   const to: Record<string, string> = { notifications: 'activity', settings: 'profile' };
   return <HeaderMenu title={props.title} sub={props.sub} onBack={props.onBack} backLabel={props.backLabel} light={props.light} menu={props.menu} actions={actions} onAction={act} avatar={props.avatar ? AVATAR.ari : undefined}
     onAvatar={() => { haptic(); bz.go('profile'); }} onPick={id => { haptic(); bz.go(to[id]); }} />;
@@ -156,7 +159,7 @@ function TripPollCard() {
       <span className="pt-pollcard-cta">{s.tie ? 'Pick' : 'See result'}</span>
     </button>);
   return (
-    <button type="button" className="pt-pollcard" onClick={open} aria-label={`Dinner tonight poll, closes 7:30 PM, ${n} of ${total} voted. ${mine ? 'See poll' : 'Vote'}`}>
+    <button type="button" className={`pt-pollcard${s.cue ? ' is-cue' : ''}`} onClick={open} aria-label={`Dinner tonight poll, closes 7:30 PM, ${n} of ${total} voted. ${mine ? 'See poll' : 'Vote'}`}>
       <span className="pt-pollcard-ico" aria-hidden><Icon name="poll" size={20} /><i className="pt-pollcard-live" /></span>
       <span className="pt-pollcard-t"><small>Open poll</small><b>Dinner tonight</b><em className="tu-num">Closes 7:30 PM · {n} of {total} voted</em></span>
       <span className="pt-pollcard-cta">{mine ? 'See poll' : 'Vote'}</span>

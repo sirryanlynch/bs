@@ -34,14 +34,14 @@ const DECK_HREF = (location.pathname.includes('/prototype/') ? '../' : 'https://
 const BackToDeck = ({ cls = '' }: { cls?: string }) => EMBED ? null : <a className={`fl-back ${cls}`} href={DECK_HREF}><Icon name="chevronLeft" size={16} />Back to deck</a>;
 const isPhone = () => window.matchMedia('(max-width: 560px)').matches;
 
-function parseHash(): { step?: StepId; view?: SettleView; me?: Me; tie?: boolean } {
+function parseHash(): { step?: StepId; view?: SettleView; me?: Me; tie?: boolean; open?: string } {
   const [p, q] = location.hash.replace(/^#\/?/, '').split('?');
   const [seg, sub] = (p ?? '').split('/');
   const sp = new URLSearchParams(q ?? '');
   const step = STEPS.find(x => x.id === seg)?.id;
   const me = (['ari', 'nic', 'ren'].includes(sp.get('as') ?? '') ? sp.get('as') : undefined) as Me | undefined;
   const view = step === 'settle' ? (isSettleView(sub) ? sub : me === 'nic' ? 'confirm' : 'choose') : undefined;
-  return { step, view, me, tie: sp.get('tie') === '1' };
+  return { step, view, me, tie: sp.get('tie') === '1', open: sp.get('open') ?? undefined };
 }
 const hashOf = (s: State) => {
   const q = [s.me !== 'ari' ? `as=${s.me}` : '', s.tiePath ? 'tie=1' : ''].filter(Boolean).join('&');
@@ -88,7 +88,8 @@ function tourScript(s: State): [number, Action | Action[] | 'next'][] {
       : s.me === 'ari' ? (s.votes.ren == null ? [[1400, { t: 'vote', who: 'ari', opt: 1 }], [1800, { t: 'set', patch: { me: 'ren' } }]] : []) : [];
     case 'closed': return s.tie && s.winner == null ? [[2600, { t: 'pick', opt: 0 }]] : [[3000, [{ t: 'set', patch: { planAdded: true } }, { t: 'go', step: 'plan' }, { t: 'toast', msg: 'Taberna added to tonight', tone: 'success' }]]];
     case 'plan': return [[3200, 'next']];
-    case 'expense': return [[1600, { t: 'toggleLine', line: 'wine', who: 'ren' }], [800, { t: 'toggleLine', line: 'wine', who: 'nic' }], [2200, { t: 'saveDinner' }], [700, 'next']];
+    case 'expense': if (!s.receiptOk) return [[3200, { t: 'set', patch: { receiptOk: true } }]];
+      return [[1600, { t: 'set', patch: { splitMode: 'item' } }], [1300, { t: 'set', patch: { splitOpen: 'wine' } }], [1100, { t: 'toggleLine', line: 'wine', who: 'ren' }], [800, { t: 'toggleLine', line: 'wine', who: 'nic' }], [2200, { t: 'saveDinner' }], [700, 'next']];
     case 'money': return [[1400, { t: 'set', patch: { simplified: true } }], [4600, { t: 'done', key: 'simplify' }], [2000, 'next']];
     case 'settle': {
       const v = s.settleView;
@@ -150,6 +151,13 @@ export function App() {
     let first = true;
     const apply = () => {
       const h = parseHash(); const c = sRef.current;
+      // v5.4.2: #/live?open=trip starts one screen earlier, on Trip home with the open-poll card highlighted.
+      if (h.step === 'live' && h.open === 'trip') {
+        if (!first && c.step !== 'trip') track('step_jump', { from: c.step, to: 'trip', method: 'list' });
+        d({ t: 'load', s: { ...stateAt('live', { ...c, me: 'ari' } as State), me: 'ari', step: 'trip', cue: true } as State });
+        first = false;
+        return;
+      }
       if (h.step && (h.step !== c.step || (h.me ?? 'ari') !== c.me || (h.view && h.view !== c.settleView))) {
         if (!first && h.step !== c.step) track('step_jump', { from: c.step, to: h.step, method: 'list' });
         jump(h.step, { me: h.view ? 'ari' : h.me ?? 'ari', tiePath: h.tie }, h.view);
@@ -158,7 +166,7 @@ export function App() {
     };
     apply(); window.addEventListener('hashchange', apply); return () => window.removeEventListener('hashchange', apply);
   }, []);
-  const deepLink = useRef(parseHash().step);
+  const deepLink = useRef(parseHash().open === 'trip' ? 'trip' as StepId : parseHash().step);
   useEffect(() => {
     if (bz.active) return;
     if (deepLink.current && s.step !== deepLink.current) return;
@@ -217,6 +225,38 @@ export function App() {
       }, at)); });
     return () => timers.forEach(clearTimeout);
   }, [tour, tourKey, chapter, bz.active]);
+
+  // v5.4.2: any deck autoplay stops the moment someone taps into the embed; they drive from there.
+  const [took, setTook] = useState(false); const tookRef = useRef(false); tookRef.current = took;
+  useEffect(() => { if (!EMBED) return; const on = (e: Event) => { if ((e as any).isTrusted) { setTook(true); setTour(false); } };
+    document.addEventListener('pointerdown', on, true); document.addEventListener('keydown', on, true);
+    const re = () => { if (/hold=1/.test(location.hash)) { setTook(false); setTour(true); } }; window.addEventListener('hashchange', re);
+    return () => { document.removeEventListener('pointerdown', on, true); document.removeEventListener('keydown', on, true); window.removeEventListener('hashchange', re); }; }, []);
+  // v5.4.2 deck slide 8, stage 3: poll closes, the winner shows, then it lands on the plan; loops.
+  useEffect(() => { if (!(EMBED && !took && /flow=1/.test(location.hash))) return;
+    if (s.step === 'closed' && !s.planAdded) { const t = window.setTimeout(() => { d({ t: 'set', patch: { planAdded: true } }); d({ t: 'go', step: 'plan' }); }, 3600); return () => clearTimeout(t); }
+    if (s.step === 'plan') { const t = window.setTimeout(() => d({ t: 'load', s: { ...stateAt('closed', { ...sRef.current, me: 'ari' } as State), me: 'ari', step: 'closed', planAdded: false } as State }), 5200); return () => clearTimeout(t); }
+  }, [s.step, s.planAdded, took]);
+  // v5.4.2 deck slide 8, stage 2: Trip home with the open-poll card highlighted, then the tap into the vote.
+  useEffect(() => { if (took || !(s.cue && s.step === 'trip' && s.pollSent)) return; const t = window.setTimeout(() => { d({ t: 'set', patch: { cue: false } }); d({ t: 'go', step: 'live' }); }, motion === 'reduce' ? 3200 : 2800); return () => clearTimeout(t); }, [s.cue, s.step, took]);
+  useEffect(() => { if (took || !(EMBED && s.step === 'live' && !s.cue && /open=trip/.test(location.hash))) return;
+    const t = window.setTimeout(() => d({ t: 'load', s: { ...stateAt('live', { ...sRef.current, me: 'ari' } as State), me: 'ari', step: 'trip', cue: true } as State }), 6500); return () => clearTimeout(t); }, [s.step, s.cue, took]);
+  // v5.4.2 deck slide 8, stage 1: Find a place plays itself (questions, picks, Start a poll, Send, Poll sent), then loops.
+  useEffect(() => {
+    if (!EMBED) return;
+    const FLOW = ['#/beyond/explore/curate', '#/poll/new', '#/poll/new/sent'];
+    const STEPS_: [number, string][] = [[2400, '.b-fp-photo'], [1600, '.b-fp-glass >> 1'], [1600, '.b-fp-photo'], [1600, '.b-fp-glass >> 1'], [2200, '.b-fp-add'], [900, '.b-fp-add >> 2'],
+      [1300, '.b-cmp-cta'], [2600, '.b-cmp-cta'], [4200, '__loop']];
+    let timers: number[] = [];
+    const run = () => { timers.forEach(clearTimeout); timers = []; if (location.hash.split('?')[0] !== FLOW[0]) return; let at = 0;
+      STEPS_.forEach(([ms, sel]) => { at += motion === 'reduce' ? ms * 1.2 : ms; timers.push(window.setTimeout(() => {
+        if (tookRef.current || !FLOW.some(h => location.hash.split('?')[0] === h)) return;
+        if (sel === '__loop') { const q = location.hash.includes('hold=1') ? '?hold=1' : ''; location.hash = '#/beyond/explore' + q; window.setTimeout(() => { location.hash = FLOW[0] + q; }, 60); return; }
+        const [q, n] = sel.split(' >> '); const el = document.querySelectorAll<HTMLElement>(`.pt-screen-inner ${q}, .phone-screen ${q}`)[+(n ?? 0)] ?? document.querySelectorAll<HTMLElement>(q)[+(n ?? 0)];
+        el?.click(); }, at)); }); };
+    run(); const on = () => { if (location.hash.split('?')[0] === FLOW[0]) window.setTimeout(run, 50); else if (!FLOW.includes(location.hash.split('?')[0])) { timers.forEach(clearTimeout); timers = []; } };
+    window.addEventListener('hashchange', on); return () => { window.removeEventListener('hashchange', on); timers.forEach(clearTimeout); };
+  }, [motion]);
 
   // Keyboard shortcuts
   useEffect(() => {
