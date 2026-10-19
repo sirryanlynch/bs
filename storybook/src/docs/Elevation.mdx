@@ -1,0 +1,15 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as F from '../foundations/Foundations.stories';
+
+<Meta title="Foundations/Elevation" />
+
+# Elevation
+
+Four levels, iris tinted in light mode, deeper and neutral in dark.
+
+<Canvas of={F.Elevation} sourceState="none" />
+
+<div className="doc-dodont">
+  <div className="doc-do"><b>Do</b>Use shadow/accent on the primary button only.</div>
+  <div className="doc-dont"><b>Don't</b>Add coloured glows to cards, chips or avatars.</div>
+</div>

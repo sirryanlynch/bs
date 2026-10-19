@@ -1,0 +1,15 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as F from '../foundations/Foundations.stories';
+
+<Meta title="Foundations/Spacing & Radius" />
+
+# Spacing and radius
+
+4 pt grid, 20 pt screen margin, concentric corners.
+
+<Canvas of={F.SpacingRadius} sourceState="none" />
+
+<div className="doc-dodont">
+  <div className="doc-do"><b>Do</b>Keep hit targets at 44 pt minimum even when the visible pill is smaller.</div>
+  <div className="doc-dont"><b>Don't</b>Nest a 20 pt radius inside a 20 pt radius with padding. Subtract the padding.</div>
+</div>

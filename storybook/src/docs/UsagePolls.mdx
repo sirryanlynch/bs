@@ -1,0 +1,26 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as P from '../stories/Polls.stories';
+
+<Meta title="Components/Polls/Usage" />
+
+# Polls: usage
+
+A poll answers one question for the group. Options carry a place photo when they come from the Saved list.
+
+<Canvas of={P.LiveAnimatedFill} />
+
+## States
+
+| State | Visual | When |
+|---|---|---|
+| Default | Grey fill to share | Any open option |
+| Your vote | Iris stroke and iris fill, filled check | The option you picked |
+| Leading | Iris fill and a Leading tag | Strictly most votes, poll open |
+| Winner | Spectrum border and fill, one sheen | Poll closed. The only spectrum element on the screen |
+
+<div className="doc-dodont">
+  <div className="doc-do"><b>Do</b>Let people change their vote until the poll closes. Show Change vote, never a confirm dialog.</div>
+  <div className="doc-dont"><b>Don't</b>Mark a leader on a tie. Two options at 2 votes are both default.</div>
+  <div className="doc-do"><b>Do</b>Show who voted unless the poll is anonymous.</div>
+  <div className="doc-dont"><b>Don't</b>Show the winner treatment before the poll closes, even at 6 of 7 votes.</div>
+</div>

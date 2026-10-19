@@ -1,0 +1,12 @@
+import type { Meta, StoryObj } from '@storybook/react';
+import * as F from './Foundations';
+const meta: Meta = { title: 'Foundations/Live demos', parameters: { frame: 'none', layout: 'fullscreen' } };
+export default meta;
+type S = StoryObj;
+export const Color: S = { render: () => <F.ColorRoles /> };
+export const Typography: S = { render: () => <F.TypeScale /> };
+export const SpacingRadius: S = { name: 'Spacing & Radius', render: () => <F.SpacingRadius /> };
+export const Glass: S = { render: () => <F.GlassLayers /> };
+export const Elevation: S = { render: () => <F.Elevation /> };
+export const Motion: S = { render: () => <F.Motion /> };
+export const Iconography: S = { name: 'Iconography & Imagery', render: () => <F.Iconography /> };

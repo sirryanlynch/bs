@@ -1,0 +1,20 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as N from '../stories/Navigation.stories';
+import * as A from '../stories/Actions.stories';
+
+<Meta title="Components/Navigation/Usage" />
+
+# Navigation and actions: usage
+
+<Canvas of={N.Tabs} />
+
+The tab bar floats above the home indicator with a detached accessory button. The lens behind the active tab springs between positions.
+
+<Canvas of={A.ButtonVariants} />
+
+<div className="doc-dodont">
+  <div className="doc-do"><b>Do</b>Keep four tabs: Trips, Polls, Plan, Money. Put creation in the accessory button.</div>
+  <div className="doc-dont"><b>Don't</b>Put two primary buttons side by side. Pair primary with secondary.</div>
+  <div className="doc-do"><b>Do</b>Write button labels as a verb with an object: Send to group, Pay €42.10 with MB WAY.</div>
+  <div className="doc-dont"><b>Don't</b>Use OK, Submit or Continue when the action has a name.</div>
+</div>

@@ -1,0 +1,20 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as F from '../foundations/Foundations.stories';
+
+<Meta title="Foundations/Iconography & Imagery" />
+
+# Iconography and imagery
+
+One icon set for UI (Phosphor, regular and fill), 3D renders for milestones, real photos for places.
+
+<Canvas of={F.Iconography} sourceState="none" />
+
+<div className="doc-dodont">
+  <div className="doc-do"><b>Do</b>Use a 3D render once per screen, at 120 pt or larger.</div>
+  <div className="doc-dont"><b>Don't</b>Shrink renders into list rows or buttons. Use the line icon there.</div>
+</div>
+
+<div className="doc-dodont">
+  <div className="doc-do"><b>Do</b>Use 24 pt in bars and 20 pt inline. Fill only the selected tab or option.</div>
+  <div className="doc-dont"><b>Don't</b>Mix in another icon set or tune strokes by hand. Use the weight instead.</div>
+</div>

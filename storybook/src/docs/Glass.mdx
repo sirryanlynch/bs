@@ -1,0 +1,17 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as F from '../foundations/Foundations.stories';
+
+<Meta title="Foundations/Glass" />
+
+# Glass layers
+
+Try the Glass control in the toolbar to preview Reduce Transparency.
+
+<Canvas of={F.Glass} sourceState="none" />
+
+<div className="doc-dodont">
+  <div className="doc-do"><b>Do</b>Put glass on things that float: tab bar, nav buttons over photos, sheets, toasts.</div>
+  <div className="doc-dont"><b>Don't</b>Make content cards glass. Body text over a moving photo fails contrast.</div>
+  <div className="doc-do"><b>Do</b>Give every glass element its 1 pt stroke so it holds an edge on white.</div>
+  <div className="doc-dont"><b>Don't</b>Stack glass on glass. A sheet over the tab bar hides the tab bar.</div>
+</div>
