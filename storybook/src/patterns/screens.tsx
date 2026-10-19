@@ -3,6 +3,7 @@ import { NavBar, TabBar } from '../components/nav';
 import { TripCard, PlaceCard, Timeline, MemberPicker, InviteContent, ExploreRing } from '../components/trip';
 import { PollCard, PollBuilder } from '../components/poll';
 import { DebtUntangle } from '../components/untangle';
+import '../components/untangle-solver';
 import { ExpenseRow, DebtSimplify, PaymentRow, SettleContent } from '../components/money';
 import { Avatar, AvatarStack, BalanceChip, Button, IconButton, ListGroup, ListRow, SegmentedControl, FilterChip, TextField, useCountUp } from '../components/core';
 import { Banner, Toast, LiveActivity } from '../components/feedback';

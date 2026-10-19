@@ -148,9 +148,9 @@ export type UntangleFrame = {
 export const UNTANGLE_SKINS: Record<string, React.ComponentType<{ frame: UntangleFrame }>> = {};
 export function registerUntangleSkin(name: string, C: React.ComponentType<{ frame: UntangleFrame }>) { UNTANGLE_SKINS[name] = C; }
 
-export function DebtUntangle({ raw = rawDebts, simple = simplifiedDebts, people = P, solved = false, onSolved, onPhase, controls = 'full', startButton = true, compact, skin = 'instrument' }:
+export function DebtUntangle({ raw = rawDebts, simple = simplifiedDebts, people = P, solved = false, onSolved, onPhase, controls = 'full', startButton = true, compact, skin = 'solver' }:
   { raw?: Edge[]; simple?: Edge[]; people?: Record<string, Person>; solved?: boolean; onSolved?: () => void; onPhase?: (p: UntanglePhase) => void;
-    /** Visual layer: 'instrument' (v4, built in) or any registered skin. Unknown names fall back to instrument. */ skin?: string;
+    /** Visual layer: 'solver' (v5.1, default once untangle-solver is imported) or 'instrument' (legacy v4, built in). Unknown names fall back to instrument. */ skin?: string;
     /** full: Untangle or Replay button, scrubber and the nets check under the card. inline: a replay control and scrubbable stepper inside the card. none: static. */
     controls?: 'full' | 'inline' | 'none' | boolean;
     /** Off when the screen already has its own primary CTA; Replay still appears once solved. */ startButton?: boolean; compact?: boolean }) {

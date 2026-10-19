@@ -6,7 +6,7 @@ CTA height and radius, icon-in-container centering (more than 1 px off is a bug)
 gaps off the 4 px grid, text clipping and overflow, tap targets under 44 px, collisions with the status bar, home indicator
 and tab bar, and chip row alignment. Screens are saved next to `report.json`.
 
-Before: `qa/v5/spacing/` · After: `qa/v5/spacing-after/` · Pairs: `qa/v5/spacing-audit/*.jpg` · Contact sheet: `qa/v5/contact-sheet.jpg`
+Before: `qa/v5/spacing/` · After: `qa/v5/spacing-after/` · Pairs: `qa/v5/spacing-audit/*.png` · Contact sheet: `qa/v5/contact-sheet.png`
 
 ## Automated findings
 
@@ -26,9 +26,9 @@ Before: `qa/v5/spacing/` · After: `qa/v5/spacing-after/` · Pairs: `qa/v5/spaci
 
 | Screen | Problem | Fix |
 |---|---|---|
-| Core 5, New poll | Old form: flat white rows on gray, a Closes row, a toggle row | Same sentence composer as beyond tonight (tokens for type, when, closes; photo option tiles; Add option; one Send to crew). Seeded with the 3 Explore picks, default title Saturday dinner. See `spacing-audit/core_create.jpg` |
-| Core 4, Find a place | Text rows ending in counts, mono step counter | One question per screen with the big photo and glass tiles from Find a place; progress dots in the header; auto-advance. See `spacing-audit/core_explore.jpg` |
-| Core 13, All squared up | Dense mono ledger, mono eyebrow, crowded bottom | Check with glow, title, one line `3 payments · $124.50 · everyone at $0.00`, face stack, Share the recap, quiet See payments that opens the list. See `spacing-audit/squared-after.jpg` |
+| Core 5, New poll | Old form: flat white rows on gray, a Closes row, a toggle row | Same sentence composer as beyond tonight (tokens for type, when, closes; photo option tiles; Add option; one Send to crew). Seeded with the 3 Explore picks, default title Saturday dinner. See `spacing-audit/core_create.png` |
+| Core 4, Find a place | Text rows ending in counts, mono step counter | One question per screen with the big photo and glass tiles from Find a place; progress dots in the header; auto-advance. See `core_explore.png` |
+| Core 13, All squared up | Dense mono ledger, mono eyebrow, crowded bottom | Check with glow, title, one line `3 payments · $124.50 · everyone at $0.00`, face stack, Share the recap, quiet See payments that opens the list. See `squared-after.png` |
 | Trips, Lisbon Crew, Tonight, Money | Two-row headers; full-width header card on Money | One-row inset HeaderMenu (avatar or Back, title, glass menu that grows into 5 shortcuts) |
 | Settle screens | Header card ran edge to edge | GlassHeader inset 12 px with full radius and float shadow |
 | All sheets | 8 px inset | 12 px inset, matching the content gutter |

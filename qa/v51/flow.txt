@@ -1,0 +1,29 @@
+#/trip
+#/trip
+#/explore
+explore feed
+explore answered
+#/create
+#/push
+#/live
+ari voted
+#/closed
+#/plan
+#/expense
+Ren and Nic: $30.10 eachEveryone else: $37.70
+#/money
+summary Solved: Ren pays Ari $18.40, Mara pays João $64.00, Ari pays Nic $42.10. 3 payments instead of 6, $124.50 moves instead of $190.60. Every net balance is unchanged.
+#/settle/choose
+#/settle/cash
+count $1 $1 $20 $20 Hand Nic 2 × $20 + 2 × $1 $42.00 Rounded from $42.10. $0.10 rolls into the next split.
+#/settle/pending
+after undo #/settle/cash
+pending #/settle/pending
+as nic #/settle/confirm?as=nic
+#/settle/confirmed
+#/squared
+sheet All squared up. 3 payments · $124.40 · $0.10 rolls over Share the recap See payments
+missing []
+checks 0/0
+ERRORS []
+exit 0

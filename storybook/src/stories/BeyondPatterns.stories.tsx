@@ -12,7 +12,9 @@ function Flow({ start }: { start: string }) {
   const host: FlowHost = { exit: () => d({ t: 'load', s: { ...s, route: start, history: [] } }) };
   return <FlowProvider s={s} d={d} host={host}><BeyondScreen /></FlowProvider>;
 }
-const story = (id: string, extra: Partial<St> = {}): St => { const f = FLOWS.find(x => x.id === id)!; return { name: f.title, parameters: { statusLight: !!f.routes[0].light }, render: () => <Flow start={f.start} />, ...extra }; };
+/* v5.1: flows cut from the step list (e.g. place, folded into Explore) fall back to a start route, so one missing flow can't break the whole file. */
+const FALLBACK: Record<string, [string, string]> = { place: ['Place card', 'place/taberna'] };
+const story = (id: string, extra: Partial<St> = {}): St => { const f = FLOWS.find(x => x.id === id); if (!f) { const [name, start] = FALLBACK[id] ?? [id, id]; return { name, render: () => <Flow start={start} />, ...extra }; } return { name: f.title, parameters: { statusLight: !!f.routes[0]?.light }, render: () => <Flow start={f.start} />, ...extra }; };
 export const CreateTrip = story('create');
 export const Explore = story('explore');
 export const PlaceCard = story('place');

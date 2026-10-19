@@ -1,4 +1,5 @@
 import { navClass } from '../../lib/motion';
+import { useNavGhost } from '../../lib/navghost';
 import '../../lib/motion.css';
 import React from 'react';
 import { useFlow, FlowToast } from './kit';
@@ -100,5 +101,6 @@ export function BeyondScreen() {
   }
   // Sheets keep their base screen mounted, so only animate when the base changes.
   const base = r.replace(/\/(addpoll|upload|tag|viewer|edit|install)$/, '').replace(/^plan\/add$/, 'plan/day').replace(/^guest\/voted$/, 'guest');
-  return <><div className={`b-screen-anim ${navClass('b:' + base)}`} key={base}>{el}</div><FlowToast /></>;
+  const cls = navClass('b:' + base); const ghost = useNavGhost(base, cls);
+  return <><div className={`b-screen-anim ${cls}`} key={base} ref={ghost}>{el}</div><FlowToast /></>;
 }

@@ -15,6 +15,7 @@ export function coreTarget(step: string, a: any, s: any): Target | null {
     case 'go': return x.step === 'invite' ? { sel: '[aria-label="Add people"]' } : null;
     case 'join': return { sel: '.pt-qr' };
     case 'set':
+      if (x.patch?.exploreFeed === false) return { sel: '.b-findhero' };
       if (x.patch?.exploreStage) return { sel: '.b-fp-photo, .b-fp-glass', nth: [0, 1, 0, 1][x.patch.exploreStage - 1] ?? 0 };
       if (x.patch?.shortlist) return { sel: '.pt-place' };
       if (x.patch?.pollSent) return { sel: 'button', text: 'Send to' };

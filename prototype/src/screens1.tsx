@@ -1,5 +1,6 @@
 import { FindHeader, FindQuestion, findBack, findSkip } from '@sb/components/beyond/findplace';
-import { curateStage, CurateAnswers } from '@sb/components/beyond/explore';
+import { curateStage, CurateAnswers, ExploreFeed } from '@sb/components/beyond/explore';
+import { COMMUNITY } from '@sb/lib/beyond';
 import { HeaderMenu } from '@sb/components/beyond/headermenu';
 import { AVATAR } from '@sb/assets/solver-assets';
 import React, { useRef, useState } from 'react';
@@ -221,10 +222,31 @@ export function Explore() {
   // v5: the questions use the same one-question-per-screen tiles as Find a place beyond tonight.
   const A = syncAnswers(ansRef.current, st); ansRef.current = A;
   const setStage = (a: CurateAnswers) => { ansRef.current = a; d({ t: 'set', patch: { exploreStage: curateStage(a), shortlist: [] } }); };
+  // v5.1: Part 1 lands on the Explore feed first (places other crews booked), then the hero tile starts the questions.
+  if (st === 0 && s.exploreFeed !== false) return (
+    <div className="b-scr">
+      <div className="b-scroll pt-feed has-hm">
+        <CoreHeader onBack={() => d({ t: 'go', step: 'trip' })} backLabel="Back to Lisbon Crew" title="Explore" sub="Lisbon · from TripUp travelers" />
+        <button type="button" className="b-findhero" onClick={() => { haptic(); d({ t: 'set', patch: { exploreFeed: false } }); }}>
+          <img src={photo.roofs} alt="" />
+          <span className="b-findhero-t"><b>Find a place for tonight</b><small className="tu-num">4 quick questions · 6 picks for the crew</small></span>
+          <span className="b-findhero-go" aria-hidden><BIcon name="arrowRight" size={20} /></span>
+        </button>
+        <div className="b-feed">
+          {COMMUNITY.slice(0, 4).map((p, i) => (
+            <div key={p.id} className="b-feed-item" style={{ ['--i' as any]: i }}>
+              <ExploreFeed places={[p]} saved={[]} inPoll={[]} onSave={() => d({ t: 'toast', msg: 'Saved to Lisbon Crew', tone: 'success' })}
+                onOpen={() => {}} onAddToPoll={() => { haptic(); d({ t: 'set', patch: { exploreFeed: false } }); }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
   if (st < QN) return (
     <div className="b-scr b-cmp">
       <div className="b-cmp-amb" aria-hidden />
-      <FindHeader answers={A} onBack={() => (st === 0 ? d({ t: 'go', step: 'trip' }) : (haptic(), setStage(findBack(A))))} onSkip={() => { haptic(); setStage(findSkip(A)); }} />
+      <FindHeader answers={A} onBack={() => (st === 0 ? d({ t: 'set', patch: { exploreFeed: true } }) : (haptic(), setStage(findBack(A))))} onSkip={() => { haptic(); setStage(findSkip(A)); }} />
       <div className="b-scroll b-cmp-scroll is-q"><FindQuestion answers={A} onAnswer={a => { haptic(10); setStage(a); }} /></div>
     </div>
   );

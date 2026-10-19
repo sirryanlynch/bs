@@ -8,6 +8,8 @@ import { Render3D } from '../../components/Icon';
 import { RECEIPT, RECEIPT_TOTAL, RECEIPT_PLACE, RECEIPT_WHEN } from '../../lib/beyond';
 const money = (n: number) => '$' + n.toFixed(2);
 import { useReducedMotion } from '../../lib/PrismRoot';
+import { Face } from '../../components/settle';
+import { NextSteps } from '../../components/beyond/elevate';
 
 const r2 = (n: number) => Math.round(n * 100) / 100;
 export function amountsOf(e: ReturnType<typeof useFlow>['s']['expense']) {
@@ -139,8 +141,15 @@ export function DoneScreen() {
   return (
     <div className="b-scr">
       <div className="b-scroll has-cta b-centered">
-        <div className="b-done anim-rise"><Render3D name="settle" size={120} /><h1 className="b-title">Balances updated</h1><p className="b-help tu-num">{RECEIPT_PLACE} · Lunch, {money(RECEIPT_TOTAL * (1 + st.expense.tip / 100))}. {others.length} people owe you {money(owed)} in total.</p></div>
-        <div className="b-card">{others.slice(0, 4).map(([id, v]) => <div key={id} className="b-tiprow"><span>{P[id]?.name ?? id} owes you</span><b className="tu-num">{money(v)}</b></div>)}{others.length > 4 && <div className="b-tiprow"><span>{others.length - 4} more</span><b className="tu-num">{money(r2(others.slice(4).reduce((a, [, v]) => a + v, 0)))}</b></div>}</div>
+        <section className="b-owedhero anim-rise" aria-label={`Balances updated. ${others.length} people owe you ${money(owed)}`}>
+          <span className="b-owedhero-glow" aria-hidden />
+          <span className="b-owedhero-badge" aria-hidden><BIcon name="check" size={20} /></span>
+          <p className="b-owedhero-k">Balances updated</p>
+          <p className="b-owedhero-amt tu-num">{money(owed)}</p>
+          <p className="b-owedhero-cap tu-num">owed to you for lunch at {RECEIPT_PLACE}, {money(RECEIPT_TOTAL * (1 + st.expense.tip / 100))} with tip</p>
+          <ul className="b-owedgrid">{others.map(([id, v]) => <li key={id}>{P[id] && <Face person={P[id]} size={48} />}<b>{P[id]?.name ?? id}</b><span className="tu-num">{money(v)}</span></li>)}</ul>
+        </section>
+        <NextSteps steps={['Logged to Money', `On the plan for ${RECEIPT_WHEN}`, 'Settle up any time']} />
       </div>
       <div className="b-bottom"><Button label="Done" variant="secondary" fullWidth onClick={() => go('plan/day')} /><Button label="See balances" fullWidth onClick={() => host.exit('money')} /></div>
     </div>

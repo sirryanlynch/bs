@@ -1,5 +1,5 @@
 # TripUp: Research Review (Figma audit + market scan)
-_Prepared Oct 16, 2026 (PT). Sources: the FigJam board `u2Ak20BVu3NUC4jMOSqMon` and the design file `z4TesJNPe6UfvgwmWtIA4y`, both read-only and unmodified, plus web research. The screenshots from that pass stayed with the working export and are not part of this repo._
+_Prepared Oct 16, 2026 (PT). Sources: the FigJam board `u2Ak20BVu3NUC4jMOSqMon` and the design file `z4TesJNPe6UfvgwmWtIA4y`, both read-only and unmodified, plus web research. Screenshots are in `/workspace/tripup/figma/`._
 
 ---
 
@@ -17,7 +17,7 @@ _Prepared Oct 16, 2026 (PT). Sources: the FigJam board `u2Ak20BVu3NUC4jMOSqMon` 
   - Wire-lite sketches and feature stickies:
     - **Polls:** tap to vote; long-press to deep-link (menu/Yelp); undo; transparent or anonymous? (open question); vote history; confirmation; timer?; "randomize".
     - **Expenses:** real-time snapshot; filterable history; settle (group or custom); receipt capture plus auto-itemize; Venmo/Cash App/Apple Pay; Apple Pay "trip card".
-    - **Itinerary:** what/where/when; "how we got here" (proof of decision); **"Objection" feature**; RSVP or pass; "new decision made".
+    - **Itinerary:** what/where/when; **"Objection" feature**; RSVP or pass; "new decision made".
     - **Chat:** familiar interface; SMS proxy; cross-platform.
 - **DEEP FLOW** (Pre-Trip, then Trip):
   - Create trip, invite, accept, add itinerary, chat.
@@ -47,7 +47,7 @@ _Prepared Oct 16, 2026 (PT). Sources: the FigJam board `u2Ak20BVu3NUC4jMOSqMon` 
 - **Page 1** contains a copy of the FigJam: BRAIN DUMP (PEOPLE/PRODUCT), DEEP FLOW and CHALLENGE REFINEMENT.
 - **Lo-Fi Slop** wires:
   - Titled blanks: Plan Trip, Trip Chat, +Users, Polls/Vote/Results, Itinerary, Event/Check-in/Add content/Photos.
-  - Grey wires: My Trips (Coming up / Active), Interests, trip detail with itinerary list.
+  - Gray wires: My Trips (Coming up / Active), Interests, trip detail with itinerary list.
   - Clippy sketches and a "Lets Explore" Guided/Manual Clippy quiz. The paperclip gains a hat, bib and coat as filters stack up.
   - AR "Which way?", a map with a results list, a "Dinner Plans" poll builder (Available friends / Time / Options) and a "Success!" confirmation.
 - **Designs:** about 13 frames at **402×874** (correct for iPhone 17).
@@ -72,11 +72,11 @@ _Prepared Oct 16, 2026 (PT). Sources: the FigJam board `u2Ak20BVu3NUC4jMOSqMon` 
 - **Icon Library MUI** page: Material icons, filled and outlined.
 
 ### The visual direction so far
-- **Soft "Liquid Glass" glassmorphism:** frosted translucent cards on a cool grey-blue field with a warm amber glow; big bold black grotesk headlines (SF/Inter); circular glass buttons.
+- **Soft "Liquid Glass" glassmorphism:** frosted translucent cards on a cool gray-blue field with a warm amber glow; big bold black grotesk headlines (SF/Inter); circular glass buttons.
 - **Playful layer:** the Clippy mascot, sticker illustrations, a liquid/bubble data viz, and bubbles sized by debt.
 - **Mood:** calm, premium, Apple-native, "ambient assistant" (greeting, voice). Accents aren't set yet: green poll, iOS blue Vote, teal Settle, green FAB.
 
-> Also on the box: a prior generated exploration (Oct 9), "TripUp v2 — Map, Dial, Magnets, Pie, Chips, Plate". It is a sketchy wireflow with a day dial, magnet polls, pie-slice bill and chip-stack balances, and it already uses Ari/Ren/Nic/Lisbon. It is **not** in either Figma file. Confirm with Ryan whether it's still in play.
+> Also on the box: a prior generated exploration at `/workspace/tripup/v2-*.png` (Oct 9), "TripUp v2: Map, Dial, Magnets, Pie, Chips, Plate". It is a sketchy wireflow with a day dial, magnet polls, pie-slice bill and chip-stack balances, and it already uses Ari/Ren/Nic/Lisbon. It is **not** in either Figma file. Confirm with Ryan whether it's still in play.
 
 ---
 
@@ -144,14 +144,14 @@ _Prepared Oct 16, 2026 (PT). Sources: the FigJam board `u2Ak20BVu3NUC4jMOSqMon` 
 
    The existing cards are 3 identical placeholders. The liquid-bar viz is fun but has no labels, counts or time remaining.
 4. **The expense flow is still placeholders.**
-   - "new charge" has grey bars. The FigJam logic is right (expand Wine, remove Ren + Nic), but no screen shows it.
+   - "new charge" has gray bars. The FigJam logic is right (expand Wine, remove Ren + Nic), but no screen shows it.
    - **"Lets square up" bubbles don't show direction** (does Ayla owe or is she owed?), and debt simplification isn't visualized.
    - **The confirmation ("everyone's squared up") screen is missing.**
 5. **Scope creep against the 10-screen / 2-tap limits.** Clippy quiz, AR "Which way", 3D avatar, voice mode, force-landscape, Explore filters, Uber/street view, and full chat are all off the brief's path.
    - "Polls over chats" argues *against* building out chat; keep it as context only.
    - **Clippy is Microsoft's character** (IP risk) and the archetype of an annoying assistant. If Ryan keeps a mascot, make it an original one, used lightly (a "tangled/untangled" debt metaphor is a strong added-value idea).
 6. **Visual-system issues:**
-   - Glass is applied to *content* cards, giving low-contrast grey text on grey (an HIG/accessibility risk).
+   - Glass is applied to *content* cards, giving low-contrast gray text on gray (an HIG/accessibility risk).
    - No defined palette or accent: green, blue, teal and amber all compete.
    - **Material (MUI) icons inside an iOS frame**; switch to SF Symbols style.
    - Placeholder avatars: the same woman everywhere.
@@ -159,14 +159,14 @@ _Prepared Oct 16, 2026 (PT). Sources: the FigJam board `u2Ak20BVu3NUC4jMOSqMon` 
    - Lisbon is **LIS**, not "LSB".
    - "6/23–6/31" is not a real date.
    - "Lets / Its" should be "Let's / It's".
-   - Prices in **$** while in Portugal; show € with the home-currency equivalent.
+   - Prices appear in one currency with no conversion while abroad; show the local price with the home-currency equivalent.
    - The hotel's address "2366 Avantina Hwy" is reused for the restaurant Los Gallos.
    - Tacos/pizza parlors aren't Lisbon. Use real-feeling Lisbon spots, e.g. a tasca in Alfama, a Bairro Alto rooftop, a Cais do Sodré seafood place.
 8. **Missing added-value features** that the evaluation rewards and Ryan already gestured at:
    - Vote from the push / Live Activity.
    - Guest web-vote for Ren.
    - Poll countdown plus tiebreak "spin".
-   - "How we got here" proof of decision on the itinerary item.
+   - The poll winner lands on the itinerary item, with its vote count ("Picked by poll, 5 of 7").
    - Item-level split with receipt itemize.
    - Simplified-debts explainer.
    - Apple Pay settle.

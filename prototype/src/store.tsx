@@ -36,7 +36,7 @@ export type State = {
   step: StepId;
   me: Me;
   renJoined: boolean; renVia?: 'qr' | 'tripup';
-  exploreStage: number; shortlist: string[];
+  exploreStage: number; shortlist: string[]; exploreFeed?: boolean; // v5.1: the Explore feed shows before the questions
   pollSent: boolean; votes: Record<string, number>; voteVia: Record<string, string>;
   pollClosed?: 'all' | 'timer' | 'pick'; tie: boolean; tiePath: boolean; winner?: number; clock: number; // minutes after 7:00 PM
   planAdded: boolean;
@@ -197,8 +197,8 @@ export const STEPS: StepMeta[] = [
     caption: 'Tonight has one gap: dinner at 8:30 PM.', hifi: () => '02', complete: s => s },
   { id: 'invite', n: '03', title: 'Add Ren', time: '6:54 PM', req: 'Add a person by invite sheet, QR or TripUp contacts',
     caption: 'Ren landed today with no app. He joins from a QR code.', hifi: s => s.renVia === 'tripup' ? 'E03' : '03', complete: s => ff(s, [{ t: 'join', via: 'qr' }, { t: 'set', patch: { toast: undefined } }]) },
-  { id: 'explore', n: '04', title: 'Explore', time: '6:56 PM', req: 'Explore narrows the city with a progress ring',
-    caption: 'Four quick questions, starting with how you get there, take 120 spots down to 6.', hifi: () => 'E05', complete: s => ({ ...s, exploreStage: 4, shortlist: ['taberna', 'ramiro', 'park'], done: { ...s.done, explore: true } }) },
+  { id: 'explore', n: '04', title: 'Explore', time: '6:56 PM', req: 'Explore feed, then four questions narrow the city',
+    caption: 'The feed shows what other crews booked. Then four quick questions take 120 spots down to 6.', hifi: () => 'E05', complete: s => ({ ...s, exploreFeed: false, exploreStage: 4, shortlist: ['taberna', 'ramiro', 'park'], done: { ...s.done, explore: true } }) },
   { id: 'create', n: '05', title: 'New poll', time: '6:58 PM', req: 'Create a poll with 3 restaurants',
     caption: 'Three picks become a poll that closes at 7:30 PM.', hifi: () => '04', complete: s => ({ ...s, pollSent: true, done: { ...s.done, create: true } }) },
   { id: 'push', n: '06', title: 'Push', time: '7:02 PM', req: 'Push notification with an answer right from the lock screen',

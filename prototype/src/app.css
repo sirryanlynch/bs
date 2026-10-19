@@ -258,3 +258,41 @@ html.is-embed, html.is-embed body, html.is-embed .prism, html.is-embed .pt-embed
 /* Reviewer FAB: 36 px disc inside a 44 px hit area (transparent ring). */
 .pt-fab { width: 44px; height: 44px; right: 16px; top: calc(max(env(safe-area-inset-top), 54px) + 9px); border: 4px solid transparent; background-clip: padding-box; box-shadow: none; filter: drop-shadow(0 4px 10px rgba(20,18,40,.22)); }
 .pt-fab::after { content: ''; position: absolute; inset: 0; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--color-border-subtle); pointer-events: none; }
+.prism .p-sscroll.pt-elev { gap: 16px; }
+
+/* v5.1 Split dinner: bill hero with live result, one decision card, one quiet list */
+.prism .pt-billhero { overflow: hidden; border-radius: 28px; background: color-mix(in srgb, var(--color-bg-surface) 74%, transparent); -webkit-backdrop-filter: blur(18px) saturate(1.3); backdrop-filter: blur(18px) saturate(1.3);
+  box-shadow: inset 0 1px 0 var(--color-glass-highlight), 0 0 0 1px var(--color-glass-stroke), 0 24px 48px -30px rgba(60, 50, 110, .5); }
+.prism .pt-billhero-ph { position: relative; height: 112px; }
+.prism .pt-billhero-ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.prism .pt-billhero-ph::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(14, 12, 28, .35)); }
+.prism .pt-billhero-chip { position: absolute; z-index: 1; left: 14px; bottom: 12px; height: 28px; padding: 0 12px; border-radius: 14px; display: inline-flex; align-items: center; font: 600 12px/1 var(--font-ui); color: #fff;
+  background: rgba(255, 255, 255, .22); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .35); }
+.prism .pt-billhero-body { padding: 14px 16px 16px; }
+.prism .pt-billhero-k { margin: 0; font: 500 14px/18px var(--font-ui); color: var(--color-text-secondary); }
+.prism .pt-billhero-amt { margin: 2px 0 12px; font: 400 52px/56px var(--font-display); letter-spacing: -1px; color: var(--color-text-primary); }
+.prism .pt-billhero .pt-summary { margin: 0; padding: 10px 14px; border-radius: 16px; display: flex; flex-direction: column; gap: 2px; font: 600 15px/20px var(--font-ui); color: var(--color-accent-text); background: color-mix(in srgb, var(--color-accent-subtle) 70%, transparent); box-shadow: none; }
+.prism .pt-featline { padding: 16px 12px 14px; border-radius: 24px; background: color-mix(in srgb, var(--color-bg-surface) 74%, transparent);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--color-accent-primary) 40%, transparent), 0 16px 32px -24px rgba(60, 50, 110, .5); transition: box-shadow 240ms ease; }
+.prism .pt-featline.is-ok { box-shadow: inset 0 1px 0 var(--color-glass-highlight), 0 0 0 1px var(--color-glass-stroke), 0 16px 32px -24px rgba(60, 50, 110, .45); }
+.prism .pt-featline-head { display: flex; align-items: center; gap: 12px; padding: 0 4px 12px; }
+.prism .pt-featline-head > span:last-child { display: flex; flex-direction: column; min-width: 0; }
+.prism .pt-featline-head b { font: 600 17px/22px var(--font-ui); color: var(--color-text-primary); }
+.prism .pt-featline-head small { font: 400 13px/18px var(--font-ui); color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.prism .pt-featline-ico { flex: none; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; color: var(--color-accent-text); background: color-mix(in srgb, var(--color-accent-subtle) 80%, transparent); }
+.prism .pt-featline-ico svg { display: block; }
+.prism .pt-who.pt-who-faces { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0; padding: 0; margin: 0; background: none; border: 0; }
+.prism .pt-who-faces .pt-whobtn { display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 64px; padding: 0; border: 0; background: none; font: 500 11px/14px var(--font-ui); color: var(--color-text-secondary); cursor: pointer; }
+.prism .pt-whoface { position: relative; display: block; transition: opacity 200ms ease, filter 200ms ease, transform var(--spring-live); }
+.prism .pt-whobtn:not(.is-on) .pt-whoface { opacity: .45; filter: grayscale(1); transform: scale(.92); }
+.prism .pt-whobtn:not(.is-on) > span:last-child { text-decoration: line-through; }
+.prism .pt-whobtn.is-on .pt-whoface .p-face { box-shadow: 0 0 0 2px var(--color-bg-surface), 0 0 0 4px color-mix(in srgb, var(--color-accent-primary) 55%, transparent); }
+.prism .pt-whooff { position: absolute; right: -2px; bottom: -2px; width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; color: #fff; background: var(--color-text-secondary); box-shadow: 0 0 0 2px var(--color-bg-surface); }
+.prism .pt-featline-note { margin: 10px 4px 0; font: 500 13px/18px var(--font-ui); color: var(--color-accent-text); }
+.prism .pt-featline.is-ok .pt-featline-note { color: var(--color-text-secondary); }
+.prism .pt-restlines { padding: 12px 16px 6px; border-radius: 24px; background: color-mix(in srgb, var(--color-bg-surface) 60%, transparent); box-shadow: inset 0 1px 0 var(--color-glass-highlight), 0 0 0 1px var(--color-glass-stroke); }
+.prism .pt-restlines-k { margin: 0 0 4px; font: 500 13px/18px var(--font-ui); color: var(--color-text-secondary); }
+.prism .pt-restline { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 8px 0; font: 400 15px/20px var(--font-ui); color: var(--color-text-primary); }
+.prism .pt-restline + .pt-restline { border-top: 1px solid var(--color-border-subtle); }
+.prism .pt-restline > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prism .pt-restline b { font-weight: 600; }

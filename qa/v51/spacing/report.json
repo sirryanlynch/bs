@@ -1,0 +1,66 @@
+{
+ "core:home": [],
+ "core:trip": [],
+ "core:invite": [],
+ "core:explore": [],
+ "core:create": [],
+ "core:push": [],
+ "core:live": [],
+ "core:closed": [],
+ "core:plan": [],
+ "core:expense": [],
+ "core:money": [],
+ "core:settle/choose": [],
+ "core:settle/cash": [],
+ "core:settle/pending": [],
+ "core:settle/confirm": [],
+ "core:squared": [],
+ "beyond:create/where": [],
+ "beyond:create/when": [],
+ "beyond:create/crew": [],
+ "beyond:create/done": [],
+ "beyond:explore": [],
+ "beyond:explore/curate": [],
+ "beyond:place/taberna": [],
+ "beyond:explore/addpoll": [
+  {
+   "kind": "collide",
+   "msg": "overlaps the tab bar",
+   "sel": ".b-listrow",
+   "box": [
+    34,
+    772,
+    334,
+    64
+   ]
+  }
+ ],
+ "beyond:poll/new": [],
+ "beyond:poll/new/sent": [],
+ "beyond:plan/day": [],
+ "beyond:plan/add": [],
+ "beyond:expense/scan": [],
+ "beyond:expense/assign": [],
+ "beyond:expense/done": [],
+ "beyond:album": [],
+ "beyond:album/viewer": [],
+ "beyond:invite": [],
+ "beyond:guest": [],
+ "beyond:guest/welcome": [],
+ "beyond:activity": [],
+ "beyond:recap": [
+  {
+   "kind": "clip",
+   "msg": "text runs off screen: \"Torre de Belém\"",
+   "sel": "figcaption",
+   "box": [
+    338,
+    763,
+    150,
+    16
+   ]
+  }
+ ],
+ "beyond:recap/card": [],
+ "beyond:profile": []
+}

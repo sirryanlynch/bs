@@ -1,0 +1,1109 @@
+--- /tmp/pre/deck-src/case-study.orig.html	2026-10-18 21:08:04.000000000 -0700
++++ deck-src/case-study.orig.html	2026-10-18 21:49:04.886637175 -0700
+@@ -197 +197 @@
+-          <li>Ari pays €248.70. Ren and Nic skip the wine.</li>
++          <li>Ari pays $248.70. Ren and Nic skip the wine.</li>
+@@ -252 +252 @@
+-        <tr><td>Deadline and tie rule</td><td><span class="pill p-improve">Improved</span></td><td>Closes at 19:30 or when all vote. On a tie, the starter picks.</td></tr>
++        <tr><td>Deadline and tie rule</td><td><span class="pill p-improve">Improved</span></td><td>Closes at 7:30 PM or when all vote. On a tie, the starter picks.</td></tr>
+@@ -254 +254 @@
+-        <tr><td>Split by line item</td><td><span class="pill p-follow">Followed</span></td><td>One tap takes Ren and Nic off the €38 wine.</td></tr>
++        <tr><td>Split by line item</td><td><span class="pill p-follow">Followed</span></td><td>One tap takes Ren and Nic off the $38 wine.</td></tr>
+@@ -279,2 +279,2 @@
+-      <div class="card"><h3>Why Ren and Nic pay €30.10</h3><p>Wine splits five ways, the rest seven.</p>
+-        <div class="math">€210.70 ÷ 7 = €30.10<br>€38.00 ÷ 5 = €7.60<br>Drinkers: €37.70</div></div>
++      <div class="card"><h3>Why Ren and Nic pay $30.10</h3><p>Wine splits five ways, the rest seven.</p>
++        <div class="math">$210.70 ÷ 7 = $30.10<br>$38.00 ÷ 5 = $7.60<br>Drinkers: $37.70</div></div>
+@@ -282 +282 @@
+-        <div class="math">Ari → Nic €42.10<br>Ren → Ari €18.40<br>Mara → João €64.00<br>€124.50 moves instead of €190.60</div></div>
++        <div class="math">Ari → Nic $42.10<br>Ren → Ari $18.40<br>Mara → João $64.00<br>$124.50 moves instead of $190.60</div></div>
+@@ -314 +314 @@
+-          <img src="assets/ba-poll-after.jpg" alt="Final: live dinner poll with three Lisbon restaurants, vote percentages, the leader and a 19:30 close time" loading="lazy" width="603" height="1311">
++          <img src="assets/ba-poll-after.jpg" alt="Final: live dinner poll with three Lisbon restaurants, vote percentages, the leader and a 7:30 PM close time" loading="lazy" width="603" height="1311">
+--- /tmp/pre/design-system/README.md	2026-10-18 21:08:01.000000000 -0700
++++ design-system/README.md	2026-10-18 21:49:04.886637175 -0700
+@@ -8 +8 @@
+-  - colour primitives (66) and semantic tokens (38, light/dark refs + hex)
++  - color primitives (66) and semantic tokens (38, light/dark refs + hex)
+--- /tmp/pre/design-system/build_tokens.py	2026-10-18 21:08:01.000000000 -0700
++++ design-system/build_tokens.py	2026-10-18 21:49:04.890637175 -0700
+@@ -58 +58 @@
+- "accent/primary":"The only acting colour: primary buttons, your vote, selected filter chips, and the active tab. Max one accent-filled element per view.",
++ "accent/primary":"The only acting color: primary buttons, your vote, selected filter chips, and the active tab. Max one accent-filled element per view.",
+@@ -82 +82 @@
+- ("display/l","display",400,44,48,-0.6,"Big amounts, e.g. €184.60 (tabular lining)"),
++ ("display/l","display",400,44,48,-0.6,"Big amounts, e.g. $184.60 (tabular lining)"),
+@@ -94 +94 @@
+- ("ui/caption-1","ui",500,12,16,0,"Tags, € · walk time"),
++ ("ui/caption-1","ui",500,12,16,0,"Tags, $ · walk time"),
+@@ -105 +105 @@
+-   "poll-bar-fill":{"rich":"spring.live on width; leader gets one travelling glint (900ms, once per lead change); % digits roll","reduced":"200ms opacity crossfade to final width; digits swap without rolling"},
++   "poll-bar-fill":{"rich":"spring.live on width; leader gets one traveling glint (900ms, once per lead change); % digits roll","reduced":"200ms opacity crossfade to final width; digits swap without rolling"},
+@@ -117 +117 @@
+- "never":["UI fills, backgrounds of regular cards","status colours","more than one spectrum element per view","during a task in progress"],
++ "never":["UI fills, backgrounds of regular cards","status colors","more than one spectrum element per view","during a task in progress"],
+@@ -151 +151 @@
+-L.append("\n  /* ---------- Semantic colour · light ---------- */")
++L.append("\n  /* ---------- Semantic color · light ---------- */")
+--- /tmp/pre/design-system/design-system-sheet.html	2026-10-18 21:08:01.000000000 -0700
++++ design-system/design-system-sheet.html	2026-10-18 21:49:04.898637175 -0700
+@@ -99 +99 @@
+-<p class="lede">Pearl-white Liquid Glass that refracts into colour only on the big moments. The tokens live in <code>tokens.json</code> and <code>tokens.css</code>. SF Pro (Inter shown as a stand-in here) runs the UI; Instrument Serif carries trip names, amounts and celebrations. Light mode is “Pearl”, dark mode is “Graphite Pearl”.</p></header>
++<p class="lede">Pearl-white Liquid Glass that refracts into color only on the big moments. The tokens live in <code>tokens.json</code> and <code>tokens.css</code>. SF Pro (Inter shown as a stand-in here) runs the UI; Instrument Serif carries trip names, amounts and celebrations. Light mode is “Pearl”, dark mode is “Graphite Pearl”.</p></header>
+@@ -101 +101 @@
+-<div class="sectitle">Foundations <small>colour roles · type · space · radius · glass · shadow · motion</small></div>
++<div class="sectitle">Foundations <small>color roles · type · space · radius · glass · shadow · motion</small></div>
+@@ -103 +103 @@
+- <div class="card"><h2>Semantic colour <span>each swatch: light | dark</span></h2>
++ <div class="card"><h2>Semantic color <span>each swatch: light | dark</span></h2>
+@@ -108 +108 @@
+-  <p class="note"><b>Allowed forms:</b> a light sheen over glass, the 1.5 pt celebrate-button border, spectrum text on <code>display/celebrate</code> (use the <code>text-*</code> deep stops on light surfaces), and 3D confetti. <b>Never</b> as a UI fill, as a status colour, more than once per view, or while a task is in progress. <b>Contrast:</b> all text roles pass AA in both modes (on-accent 4.56; owed jade-600 4.9; owe rose-600 5.7; tertiary 5.3).</p>
++  <p class="note"><b>Allowed forms:</b> a light sheen over glass, the 1.5 pt celebrate-button border, spectrum text on <code>display/celebrate</code> (use the <code>text-*</code> deep stops on light surfaces), and 3D confetti. <b>Never</b> as a UI fill, as a status color, more than once per view, or while a task is in progress. <b>Contrast:</b> all text roles pass AA in both modes (on-accent 4.56; owed jade-600 4.9; owe rose-600 5.7; tertiary 5.3).</p>
+@@ -110 +110 @@
+- <div class="card"><h2>Type scale <span>SF Pro UI · Instrument Serif display · tabular numerals</span></h2><div class="ty"><code>display/xl<br><span>56/56 · 400</span></code><span style="font:normal 400 46px/50px var(--font-display);letter-spacing:-1.0px;font-variant-numeric:tabular-nums;">Lisbon, tonight</span></div><div class="ty"><code>display/l<br><span>44/48 · 400</span></code><span style="font:normal 400 44px/48px var(--font-display);letter-spacing:-0.6px;font-variant-numeric:tabular-nums;">€184.60</span></div><div class="ty"><code>display/m<br><span>34/38 · 400</span></code><span style="font:normal 400 34px/38px var(--font-display);letter-spacing:-0.3px;font-variant-numeric:tabular-nums;">Taberna wins</span></div><div class="ty"><code>display/celebrate<br><span>40/44 · 400 · italic</span></code><span class="tu-celebrate-text" style="font:italic 400 40px/44px var(--font-display);letter-spacing:-0.4px;">All squared up.</span></div><div class="ty"><code>ui/large-title<br><span>34/41 · 700</span></code><span style="font:normal 700 34px/41px var(--font-ui);letter-spacing:0.4px;">Lisbon Crew</span></div><div class="ty"><code>ui/title-1<br><span>28/34 · 700</span></code><span style="font:normal 700 28px/34px var(--font-ui);letter-spacing:0.38px;">Tonight</span></div><div class="ty"><code>ui/title-2<br><span>22/28 · 700</span></code><span style="font:normal 700 22px/28px var(--font-ui);letter-spacing:-0.26px;">Dinner poll</span></div><div class="ty"><code>ui/title-3<br><span>20/25 · 600</span></code><span style="font:normal 600 20px/25px var(--font-ui);letter-spacing:-0.45px;">Balances</span></div><div class="ty"><code>ui/headline<br><span>17/22 · 600</span></code><span style="font:normal 600 17px/22px var(--font-ui);letter-spacing:-0.43px;">Taberna da Rua das Flores</span></div><div class="ty"><code>ui/body<br><span>17/22 · 400</span></code><span style="font:normal 400 17px/22px var(--font-ui);letter-spacing:-0.43px;">Ari added Ren to the trip</span></div><div class="ty"><code>ui/callout<br><span>16/21 · 400</span></code><span style="font:normal 400 16px/21px var(--font-ui);letter-spacing:-0.31px;">Votes close at 19:30</span></div><div class="ty"><code>ui/subhead<br><span>15/20 · 400</span></code><span style="font:normal 400 15px/20px var(--font-ui);letter-spacing:-0.23px;">Tasca · €€ · 6 min walk</span></div><div class="ty"><code>ui/footnote<br><span>13/18 · 400</span></code><span style="font:normal 400 13px/18px var(--font-ui);letter-spacing:-0.08px;">Updated just now</span></div><div class="ty"><code>ui/caption-1<br><span>12/16 · 500</span></code><span style="font:normal 500 12px/16px var(--font-ui);letter-spacing:0px;">4 VOTES · 57%</span></div><div class="ty"><code>ui/caption-2<br><span>11/13 · 600</span></code><span style="font:normal 600 11px/13px var(--font-ui);text-transform:uppercase;letter-spacing:.06em;">LEADING</span></div><div class="ty"><code>ui/amount<br><span>17/22 · 600</span></code><span style="font:normal 600 17px/22px var(--font-ui);letter-spacing:-0.43px;font-variant-numeric:tabular-nums;">+€18.40</span></div></div>
++ <div class="card"><h2>Type scale <span>SF Pro UI · Instrument Serif display · tabular numerals</span></h2><div class="ty"><code>display/xl<br><span>56/56 · 400</span></code><span style="font:normal 400 46px/50px var(--font-display);letter-spacing:-1.0px;font-variant-numeric:tabular-nums;">Lisbon, tonight</span></div><div class="ty"><code>display/l<br><span>44/48 · 400</span></code><span style="font:normal 400 44px/48px var(--font-display);letter-spacing:-0.6px;font-variant-numeric:tabular-nums;">$184.60</span></div><div class="ty"><code>display/m<br><span>34/38 · 400</span></code><span style="font:normal 400 34px/38px var(--font-display);letter-spacing:-0.3px;font-variant-numeric:tabular-nums;">Taberna wins</span></div><div class="ty"><code>display/celebrate<br><span>40/44 · 400 · italic</span></code><span class="tu-celebrate-text" style="font:italic 400 40px/44px var(--font-display);letter-spacing:-0.4px;">All squared up.</span></div><div class="ty"><code>ui/large-title<br><span>34/41 · 700</span></code><span style="font:normal 700 34px/41px var(--font-ui);letter-spacing:0.4px;">Lisbon Crew</span></div><div class="ty"><code>ui/title-1<br><span>28/34 · 700</span></code><span style="font:normal 700 28px/34px var(--font-ui);letter-spacing:0.38px;">Tonight</span></div><div class="ty"><code>ui/title-2<br><span>22/28 · 700</span></code><span style="font:normal 700 22px/28px var(--font-ui);letter-spacing:-0.26px;">Dinner poll</span></div><div class="ty"><code>ui/title-3<br><span>20/25 · 600</span></code><span style="font:normal 600 20px/25px var(--font-ui);letter-spacing:-0.45px;">Balances</span></div><div class="ty"><code>ui/headline<br><span>17/22 · 600</span></code><span style="font:normal 600 17px/22px var(--font-ui);letter-spacing:-0.43px;">Taberna da Rua das Flores</span></div><div class="ty"><code>ui/body<br><span>17/22 · 400</span></code><span style="font:normal 400 17px/22px var(--font-ui);letter-spacing:-0.43px;">Ari added Ren to the trip</span></div><div class="ty"><code>ui/callout<br><span>16/21 · 400</span></code><span style="font:normal 400 16px/21px var(--font-ui);letter-spacing:-0.31px;">Votes close at 7:30 PM</span></div><div class="ty"><code>ui/subhead<br><span>15/20 · 400</span></code><span style="font:normal 400 15px/20px var(--font-ui);letter-spacing:-0.23px;">Tasca · $$ · 6 min walk</span></div><div class="ty"><code>ui/footnote<br><span>13/18 · 400</span></code><span style="font:normal 400 13px/18px var(--font-ui);letter-spacing:-0.08px;">Updated just now</span></div><div class="ty"><code>ui/caption-1<br><span>12/16 · 500</span></code><span style="font:normal 500 12px/16px var(--font-ui);letter-spacing:0px;">4 VOTES · 57%</span></div><div class="ty"><code>ui/caption-2<br><span>11/13 · 600</span></code><span style="font:normal 600 11px/13px var(--font-ui);text-transform:uppercase;letter-spacing:.06em;">LEADING</span></div><div class="ty"><code>ui/amount<br><span>17/22 · 600</span></code><span style="font:normal 600 17px/22px var(--font-ui);letter-spacing:-0.43px;font-variant-numeric:tabular-nums;">+$18.40</span></div></div>
+@@ -132 +132 @@
+- <div class="card"><h2>Motion patterns <span>rich by default · Reduce Motion fallback</span></h2><table><tr><th>Pattern</th><th>Rich</th><th>Reduce Motion</th></tr><tr><td><b>poll-bar-fill</b></td><td>spring.live on width; leader gets one travelling glint (900ms, once per lead change); % digits roll</td><td>200ms opacity crossfade to final width; digits swap without rolling</td></tr><tr><td><b>debt-simplify-merge</b></td><td>bubbles drift + metaball fuse over duration.merge; arrows redraw as light paths</td><td>crossfade before→after (240ms) + label '6 → 3 payments'</td></tr><tr><td><b>settle-celebration</b></td><td>spectrum sweep across glass + 3D confetti, ≤ moment-max, once, success haptic</td><td>static spectrum badge + success haptic, no particles</td></tr><tr><td><b>sheet-present</b></td><td>spring.ui slide + glass blur ramp</td><td>240ms fade</td></tr><tr><td><b>explore-ring-advance</b></td><td>segment fills with spring.live; on ready, ring refracts into spectrum once</td><td>segment appears filled; ready state = static spectrum ring</td></tr><tr><td><b>ambient-caustics</b></td><td>slow background caustic drift with device tilt</td><td>off (static gradient)</td></tr></table><p class="note">Celebrations run once, never loop, and never block input. Nothing flashes more than 3 times per second. Use <code>UIAccessibility.isReduceMotionEnabled</code> on iOS and <code>prefers-reduced-motion</code> on web.</p></div>
++ <div class="card"><h2>Motion patterns <span>rich by default · Reduce Motion fallback</span></h2><table><tr><th>Pattern</th><th>Rich</th><th>Reduce Motion</th></tr><tr><td><b>poll-bar-fill</b></td><td>spring.live on width; leader gets one traveling glint (900ms, once per lead change); % digits roll</td><td>200ms opacity crossfade to final width; digits swap without rolling</td></tr><tr><td><b>debt-simplify-merge</b></td><td>bubbles drift + metaball fuse over duration.merge; arrows redraw as light paths</td><td>crossfade before→after (240ms) + label '6 → 3 payments'</td></tr><tr><td><b>settle-celebration</b></td><td>spectrum sweep across glass + 3D confetti, ≤ moment-max, once, success haptic</td><td>static spectrum badge + success haptic, no particles</td></tr><tr><td><b>sheet-present</b></td><td>spring.ui slide + glass blur ramp</td><td>240ms fade</td></tr><tr><td><b>explore-ring-advance</b></td><td>segment fills with spring.live; on ready, ring refracts into spectrum once</td><td>segment appears filled; ready state = static spectrum ring</td></tr><tr><td><b>ambient-caustics</b></td><td>slow background caustic drift with device tilt</td><td>off (static gradient)</td></tr></table><p class="note">Celebrations run once, never loop, and never block input. Nothing flashes more than 3 times per second. Use <code>UIAccessibility.isReduceMotionEnabled</code> on iOS and <code>prefers-reduced-motion</code> on web.</p></div>
+@@ -148,3 +148,3 @@
+-  <div class="opt lead"><span class="badge">Leading</span><img src="../moodboards/photos/px_34110274.jpg"><div class="oc"><div class="t-headline">Taberna da Rua das Flores</div><div class="t-subhead sec">Tasca · €€ · 6 min walk</div><div class="bar"><i style="width:57%"></i></div></div><div class="pct"><b class="tu-num">57%</b><div class="stack"><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#C9C1FF,#6E5BFF)">A</span><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#B4B2C0,#2E2D38)">M</span><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#EEEDF2,#6B6A78)">J</span><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#D9D7E1,#565564)">S</span></div></div></div>
+-  <div class="opt mine"><img src="../moodboards/photos/px_6314564.jpg"><div class="oc"><div class="t-headline">Cervejaria Ramiro <span class="myvote"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg> Your vote</span></div><div class="t-subhead sec">Seafood · €€€ · 14 min</div><div class="bar"><i style="width:29%"></i></div></div><div class="pct"><b class="tu-num">29%</b><div class="stack"><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#D9D7E1,#8D8C9A)">R</span><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#E2E0E9,#565564)">N</span></div></div></div>
+-  <div class="opt"><img src="../moodboards/photos/px_20594880.jpg"><div class="oc"><div class="t-headline">Park Rooftop</div><div class="t-subhead sec">Drinks &amp; bites · €€ · 9 min</div><div class="bar"><i style="width:14%"></i></div></div><div class="pct"><b class="tu-num">14%</b><div class="stack"><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#EEEDF2,#6B6A78)">J</span></div></div></div>
++  <div class="opt lead"><span class="badge">Leading</span><img src="../moodboards/photos/px_34110274.jpg"><div class="oc"><div class="t-headline">Taberna da Rua das Flores</div><div class="t-subhead sec">Tasca · $$ · 6 min walk</div><div class="bar"><i style="width:57%"></i></div></div><div class="pct"><b class="tu-num">57%</b><div class="stack"><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#C9C1FF,#6E5BFF)">A</span><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#B4B2C0,#2E2D38)">M</span><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#EEEDF2,#6B6A78)">J</span><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#D9D7E1,#565564)">S</span></div></div></div>
++  <div class="opt mine"><img src="../moodboards/photos/px_6314564.jpg"><div class="oc"><div class="t-headline">Cervejaria Ramiro <span class="myvote"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg> Your vote</span></div><div class="t-subhead sec">Seafood · $$$ · 14 min</div><div class="bar"><i style="width:29%"></i></div></div><div class="pct"><b class="tu-num">29%</b><div class="stack"><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#D9D7E1,#8D8C9A)">R</span><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#E2E0E9,#565564)">N</span></div></div></div>
++  <div class="opt"><img src="../moodboards/photos/px_20594880.jpg"><div class="oc"><div class="t-headline">Park Rooftop</div><div class="t-subhead sec">Drinks &amp; bites · $$ · 9 min</div><div class="bar"><i style="width:14%"></i></div></div><div class="pct"><b class="tu-num">14%</b><div class="stack"><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#EEEDF2,#6B6A78)">J</span></div></div></div>
+@@ -159,3 +159,3 @@
+-  <div><div class="lbl">Balance chips</div><div class="grid" style="gap:8px"><div class="chip tu-surface"><span class="av " style="width:36px;height:36px;font-size:14px;background:linear-gradient(135deg,#D9D7E1,#8D8C9A)">R</span><div><b>Ren</b><small>owes you</small></div><span class="amt owed tu-num">+€18.40</span></div>
+-<div class="chip tu-surface"><span class="av " style="width:36px;height:36px;font-size:14px;background:linear-gradient(135deg,#E2E0E9,#565564)">N</span><div><b>Nic</b><small>you owe</small></div><span class="amt owe tu-num">−€42.10</span></div>
+-<div class="chip tu-surface settled"><span class="av " style="width:36px;height:36px;font-size:14px;background:linear-gradient(135deg,#B4B2C0,#2E2D38)">M</span><div><b>Mara</b><small>settled</small></div><span class="amt tu-num" style="color:var(--color-status-settled)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg> €0.00</span></div></div></div>
++  <div><div class="lbl">Balance chips</div><div class="grid" style="gap:8px"><div class="chip tu-surface"><span class="av " style="width:36px;height:36px;font-size:14px;background:linear-gradient(135deg,#D9D7E1,#8D8C9A)">R</span><div><b>Ren</b><small>owes you</small></div><span class="amt owed tu-num">+$18.40</span></div>
++<div class="chip tu-surface"><span class="av " style="width:36px;height:36px;font-size:14px;background:linear-gradient(135deg,#E2E0E9,#565564)">N</span><div><b>Nic</b><small>you owe</small></div><span class="amt owe tu-num">−$42.10</span></div>
++<div class="chip tu-surface settled"><span class="av " style="width:36px;height:36px;font-size:14px;background:linear-gradient(135deg,#B4B2C0,#2E2D38)">M</span><div><b>Mara</b><small>settled</small></div><span class="amt tu-num" style="color:var(--color-status-settled)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg> $0.00</span></div></div></div>
+@@ -164,2 +164,2 @@
+-  <div><div class="lbl">Notification · actionable</div><div class="notif tu-glass"><span class="appicon">T</span><div><b class="t-headline" style="font-size:15px">Ari started a poll</b><div class="t-subhead sec" style="font-size:14px">Dinner tonight? 3 spots · closes 19:30</div><div class="quick"><span class="on">Taberna</span><span>Ramiro</span><span>Rooftop</span></div></div><span class="t-footnote ter">now</span></div></div>
+-  <div><div class="lbl">Live Activity · Dynamic Island</div><div class="island"><span style="display:flex;gap:8px;align-items:center"><span class="mini"></span>Taberna leads</span><span class="lv tu-num">57% · 12:40</span></div></div>
++  <div><div class="lbl">Notification · actionable</div><div class="notif tu-glass"><span class="appicon">T</span><div><b class="t-headline" style="font-size:15px">Ari started a poll</b><div class="t-subhead sec" style="font-size:14px">Dinner tonight? 3 spots · closes 7:30 PM</div><div class="quick"><span class="on">Taberna</span><span>Ramiro</span><span>Rooftop</span></div></div><span class="t-footnote ter">now</span></div></div>
++  <div><div class="lbl">Live Activity · Dynamic Island</div><div class="island"><span style="display:flex;gap:8px;align-items:center"><span class="mini"></span>Taberna leads</span><span class="lv tu-num">57% · 12:40 PM</span></div></div>
+@@ -177,2 +177,2 @@
+-   <div class="erow"><span class="eic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v8a2 2 0 002 2v8M11 3v8M15 3c-1.5 2-2 4-2 7h3V3zM16 13v8"/></svg></span><div><b class="t-headline">Dinner at Taberna</b><div class="t-subhead sec">Paid by Ari · split 6 ways</div></div><b class="tu-num" style="font:600 17px/1 var(--font-ui)">€146.60</b></div>
+-   <div class="erow" style="border:0"><span class="eic" style="color:var(--color-accent-primary);background:var(--color-accent-subtle)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8l-1 6a3 3 0 01-6 0zM12 12v8M8.5 20h7"/></svg></span><div><b class="t-headline">Vinho Verde × 2</b><div class="t-subhead sec">Split 4 · €9.50 each</div><span class="excl-tag"><span class="stack"><span class="av excl" style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#D9D7E1,#8D8C9A)">R</span><span class="av excl" style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#E2E0E9,#565564)">N</span></span>Ren &amp; Nic not on wine</span></div><b class="tu-num" style="font:600 17px/1 var(--font-ui)">€38.00</b></div></div></div>
++   <div class="erow"><span class="eic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v8a2 2 0 002 2v8M11 3v8M15 3c-1.5 2-2 4-2 7h3V3zM16 13v8"/></svg></span><div><b class="t-headline">Dinner at Taberna</b><div class="t-subhead sec">Paid by Ari · split 6 ways</div></div><b class="tu-num" style="font:600 17px/1 var(--font-ui)">$146.60</b></div>
++   <div class="erow" style="border:0"><span class="eic" style="color:var(--color-accent-primary);background:var(--color-accent-subtle)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8l-1 6a3 3 0 01-6 0zM12 12v8M8.5 20h7"/></svg></span><div><b class="t-headline">Vinho Verde × 2</b><div class="t-subhead sec">Split 4 · $9.50 each</div><span class="excl-tag"><span class="stack"><span class="av excl" style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#D9D7E1,#8D8C9A)">R</span><span class="av excl" style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#E2E0E9,#565564)">N</span></span>Ren &amp; Nic not on wine</span></div><b class="tu-num" style="font:600 17px/1 var(--font-ui)">$38.00</b></div></div></div>
+@@ -182,4 +182,4 @@
+-  <div class="pay"><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#C9C1FF,#6E5BFF)">A</span><span class="ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#E2E0E9,#565564)">N</span><div><b>You → Nic</b><small>Dinner, tram, wine</small></div><b class="tu-num owe">€42.10</b></div>
+-  <div class="pay"><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#D9D7E1,#8D8C9A)">R</span><span class="ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#C9C1FF,#6E5BFF)">A</span><div><b>Ren → You</b><small>Dinner (no wine)</small></div><b class="tu-num owed">€18.40</b></div>
+-  <div class="pay"><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#B4B2C0,#2E2D38)">M</span><span class="ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#EEEDF2,#6B6A78)">J</span><div><b>Mara → João</b><small>Airbnb</small></div><b class="tu-num">€64.00</b></div>
+-  <span class="btn primary full"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 4c-1 .1-2.2.7-2.9 1.6-.6.7-1.1 1.8-.9 2.8 1.1.1 2.2-.6 2.9-1.4.6-.8 1-1.9.9-3zM18.5 16.4c-.5 1.1-.7 1.6-1.4 2.6-.9 1.4-2.2 3-3.8 3-1.4 0-1.8-.9-3.7-.9s-2.3.9-3.7.9c-1.6 0-2.8-1.5-3.7-2.9C-.3 15.300 1.6 9.8 4.9 9.7c1.4 0 2.6 1 3.5 1s2.400-1.200 4-1c.7 0 2.600.300 3.800 2.100-3.300 1.800-2.800 6.500.300 4.600z"/></svg> Pay Nic €42.10</span>
++  <div class="pay"><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#C9C1FF,#6E5BFF)">A</span><span class="ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#E2E0E9,#565564)">N</span><div><b>You → Nic</b><small>Dinner, tram, wine</small></div><b class="tu-num owe">$42.10</b></div>
++  <div class="pay"><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#D9D7E1,#8D8C9A)">R</span><span class="ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#C9C1FF,#6E5BFF)">A</span><div><b>Ren → You</b><small>Dinner (no wine)</small></div><b class="tu-num owed">$18.40</b></div>
++  <div class="pay"><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#B4B2C0,#2E2D38)">M</span><span class="ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#EEEDF2,#6B6A78)">J</span><div><b>Mara → João</b><small>Airbnb</small></div><b class="tu-num">$64.00</b></div>
++  <span class="btn primary full"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 4c-1 .1-2.2.7-2.9 1.6-.6.7-1.1 1.8-.9 2.8 1.1.1 2.2-.6 2.9-1.4.6-.8 1-1.9.9-3zM18.5 16.4c-.5 1.1-.7 1.6-1.4 2.6-.9 1.4-2.2 3-3.8 3-1.4 0-1.8-.9-3.7-.9s-2.3.9-3.7.9c-1.6 0-2.8-1.5-3.7-2.9C-.3 15.300 1.6 9.8 4.9 9.7c1.4 0 2.6 1 3.5 1s2.400-1.200 4-1c.7 0 2.600.300 3.800 2.100-3.300 1.800-2.800 6.500.300 4.600z"/></svg> Pay Nic $42.10</span>
+@@ -190 +190 @@
+-  <div class="confirm tu-glass-thick"><img src="../moodboards/icons/prism_celebrate.png" style="width:150px;height:150px;margin:-18px auto -14px;display:block;transform:scale(1.5)"><div class="tu-celebrate-text" style="font:italic 400 40px/44px var(--font-display)">All squared up.</div><div class="t-subhead sec" style="margin:6px 0 14px">3 payments · €124.50 settled · everyone’s notified</div><span class="btn glass m">Share the recap</span></div>
++  <div class="confirm tu-glass-thick"><img src="../moodboards/icons/prism_celebrate.png" style="width:150px;height:150px;margin:-18px auto -14px;display:block;transform:scale(1.5)"><div class="tu-celebrate-text" style="font:italic 400 40px/44px var(--font-display)">All squared up.</div><div class="t-subhead sec" style="margin:6px 0 14px">3 payments · $124.50 settled · everyone’s notified</div><span class="btn glass m">Share the recap</span></div>
+@@ -200,3 +200,3 @@
+-  <div class="opt lead"><span class="badge">Leading</span><img src="../moodboards/photos/px_34110274.jpg"><div class="oc"><div class="t-headline">Taberna da Rua das Flores</div><div class="t-subhead sec">Tasca · €€ · 6 min walk</div><div class="bar"><i style="width:57%"></i></div></div><div class="pct"><b class="tu-num">57%</b><div class="stack"><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#C9C1FF,#6E5BFF)">A</span><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#B4B2C0,#2E2D38)">M</span><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#EEEDF2,#6B6A78)">J</span><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#D9D7E1,#565564)">S</span></div></div></div>
+-  <div class="opt mine"><img src="../moodboards/photos/px_6314564.jpg"><div class="oc"><div class="t-headline">Cervejaria Ramiro <span class="myvote"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg> Your vote</span></div><div class="t-subhead sec">Seafood · €€€ · 14 min</div><div class="bar"><i style="width:29%"></i></div></div><div class="pct"><b class="tu-num">29%</b><div class="stack"><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#D9D7E1,#8D8C9A)">R</span><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#E2E0E9,#565564)">N</span></div></div></div>
+-  <div class="opt"><img src="../moodboards/photos/px_20594880.jpg"><div class="oc"><div class="t-headline">Park Rooftop</div><div class="t-subhead sec">Drinks &amp; bites · €€ · 9 min</div><div class="bar"><i style="width:14%"></i></div></div><div class="pct"><b class="tu-num">14%</b><div class="stack"><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#EEEDF2,#6B6A78)">J</span></div></div></div>
++  <div class="opt lead"><span class="badge">Leading</span><img src="../moodboards/photos/px_34110274.jpg"><div class="oc"><div class="t-headline">Taberna da Rua das Flores</div><div class="t-subhead sec">Tasca · $$ · 6 min walk</div><div class="bar"><i style="width:57%"></i></div></div><div class="pct"><b class="tu-num">57%</b><div class="stack"><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#C9C1FF,#6E5BFF)">A</span><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#B4B2C0,#2E2D38)">M</span><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#EEEDF2,#6B6A78)">J</span><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#D9D7E1,#565564)">S</span></div></div></div>
++  <div class="opt mine"><img src="../moodboards/photos/px_6314564.jpg"><div class="oc"><div class="t-headline">Cervejaria Ramiro <span class="myvote"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg> Your vote</span></div><div class="t-subhead sec">Seafood · $$$ · 14 min</div><div class="bar"><i style="width:29%"></i></div></div><div class="pct"><b class="tu-num">29%</b><div class="stack"><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#D9D7E1,#8D8C9A)">R</span><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#E2E0E9,#565564)">N</span></div></div></div>
++  <div class="opt"><img src="../moodboards/photos/px_20594880.jpg"><div class="oc"><div class="t-headline">Park Rooftop</div><div class="t-subhead sec">Drinks &amp; bites · $$ · 9 min</div><div class="bar"><i style="width:14%"></i></div></div><div class="pct"><b class="tu-num">14%</b><div class="stack"><span class="av " style="width:20px;height:20px;font-size:8px;background:linear-gradient(135deg,#EEEDF2,#6B6A78)">J</span></div></div></div>
+@@ -206,3 +206,3 @@
+-  <span class="fab tu-glass"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span></div><div class="grid" style="gap:8px"><div class="chip tu-surface"><span class="av " style="width:36px;height:36px;font-size:14px;background:linear-gradient(135deg,#D9D7E1,#8D8C9A)">R</span><div><b>Ren</b><small>owes you</small></div><span class="amt owed tu-num">+€18.40</span></div>
+-<div class="chip tu-surface"><span class="av " style="width:36px;height:36px;font-size:14px;background:linear-gradient(135deg,#E2E0E9,#565564)">N</span><div><b>Nic</b><small>you owe</small></div><span class="amt owe tu-num">−€42.10</span></div>
+-<div class="chip tu-surface settled"><span class="av " style="width:36px;height:36px;font-size:14px;background:linear-gradient(135deg,#B4B2C0,#2E2D38)">M</span><div><b>Mara</b><small>settled</small></div><span class="amt tu-num" style="color:var(--color-status-settled)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg> €0.00</span></div></div><div style="display:flex;gap:10px"><span class="btn primary">Vote</span><span class="btn glass"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Add</span><span class="btn celebrate"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg> Squared up</span></div></div>
++  <span class="fab tu-glass"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span></div><div class="grid" style="gap:8px"><div class="chip tu-surface"><span class="av " style="width:36px;height:36px;font-size:14px;background:linear-gradient(135deg,#D9D7E1,#8D8C9A)">R</span><div><b>Ren</b><small>owes you</small></div><span class="amt owed tu-num">+$18.40</span></div>
++<div class="chip tu-surface"><span class="av " style="width:36px;height:36px;font-size:14px;background:linear-gradient(135deg,#E2E0E9,#565564)">N</span><div><b>Nic</b><small>you owe</small></div><span class="amt owe tu-num">−$42.10</span></div>
++<div class="chip tu-surface settled"><span class="av " style="width:36px;height:36px;font-size:14px;background:linear-gradient(135deg,#B4B2C0,#2E2D38)">M</span><div><b>Mara</b><small>settled</small></div><span class="amt tu-num" style="color:var(--color-status-settled)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg> $0.00</span></div></div><div style="display:flex;gap:10px"><span class="btn primary">Vote</span><span class="btn glass"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Add</span><span class="btn celebrate"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg> Squared up</span></div></div>
+@@ -212,4 +212,4 @@
+-  <div class="pay"><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#C9C1FF,#6E5BFF)">A</span><span class="ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#E2E0E9,#565564)">N</span><div><b>You → Nic</b><small>Dinner, tram, wine</small></div><b class="tu-num owe">€42.10</b></div>
+-  <div class="pay"><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#D9D7E1,#8D8C9A)">R</span><span class="ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#C9C1FF,#6E5BFF)">A</span><div><b>Ren → You</b><small>Dinner (no wine)</small></div><b class="tu-num owed">€18.40</b></div>
+-  <div class="pay"><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#B4B2C0,#2E2D38)">M</span><span class="ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#EEEDF2,#6B6A78)">J</span><div><b>Mara → João</b><small>Airbnb</small></div><b class="tu-num">€64.00</b></div>
+-  <span class="btn primary full"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 4c-1 .1-2.2.7-2.9 1.6-.6.7-1.1 1.8-.9 2.8 1.1.1 2.2-.6 2.9-1.4.6-.8 1-1.9.9-3zM18.5 16.4c-.5 1.1-.7 1.6-1.4 2.6-.9 1.4-2.2 3-3.8 3-1.4 0-1.8-.9-3.7-.9s-2.3.9-3.7.9c-1.6 0-2.8-1.5-3.7-2.9C-.3 15.300 1.6 9.8 4.9 9.7c1.4 0 2.6 1 3.5 1s2.400-1.200 4-1c.7 0 2.600.300 3.800 2.100-3.300 1.800-2.800 6.500.300 4.600z"/></svg> Pay Nic €42.10</span>
++  <div class="pay"><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#C9C1FF,#6E5BFF)">A</span><span class="ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#E2E0E9,#565564)">N</span><div><b>You → Nic</b><small>Dinner, tram, wine</small></div><b class="tu-num owe">$42.10</b></div>
++  <div class="pay"><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#D9D7E1,#8D8C9A)">R</span><span class="ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#C9C1FF,#6E5BFF)">A</span><div><b>Ren → You</b><small>Dinner (no wine)</small></div><b class="tu-num owed">$18.40</b></div>
++  <div class="pay"><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#B4B2C0,#2E2D38)">M</span><span class="ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span class="av " style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,#EEEDF2,#6B6A78)">J</span><div><b>Mara → João</b><small>Airbnb</small></div><b class="tu-num">$64.00</b></div>
++  <span class="btn primary full"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 4c-1 .1-2.2.7-2.9 1.6-.6.7-1.1 1.8-.9 2.8 1.1.1 2.2-.6 2.9-1.4.6-.8 1-1.9.9-3zM18.5 16.4c-.5 1.1-.7 1.6-1.4 2.6-.9 1.4-2.2 3-3.8 3-1.4 0-1.8-.9-3.7-.9s-2.3.9-3.7.9c-1.6 0-2.8-1.5-3.7-2.9C-.3 15.300 1.6 9.8 4.9 9.7c1.4 0 2.6 1 3.5 1s2.400-1.200 4-1c.7 0 2.600.300 3.800 2.100-3.300 1.800-2.800 6.500.300 4.600z"/></svg> Pay Nic $42.10</span>
+--- /tmp/pre/design-system/sheet.py	2026-10-18 21:08:01.000000000 -0700
++++ design-system/sheet.py	2026-10-18 21:49:04.906637175 -0700
+@@ -13 +13 @@
+-    sample={'display/xl':'Lisbon, tonight','display/l':'€184.60','display/m':'Taberna wins','display/celebrate':'All squared up.','ui/large-title':'Lisbon Crew','ui/title-1':'Tonight','ui/title-2':'Dinner poll','ui/title-3':'Balances','ui/headline':'Taberna da Rua das Flores','ui/body':'Ari added Ren to the trip','ui/callout':'Votes close at 19:30','ui/subhead':'Tasca · €€ · 6 min walk','ui/footnote':'Updated just now','ui/caption-1':'4 VOTES · 57%','ui/caption-2':'LEADING','ui/amount':'+€18.40'}[n]
++    sample={'display/xl':'Lisbon, tonight','display/l':'$184.60','display/m':'Taberna wins','display/celebrate':'All squared up.','ui/large-title':'Lisbon Crew','ui/title-1':'Tonight','ui/title-2':'Dinner poll','ui/title-3':'Balances','ui/headline':'Taberna da Rua das Flores','ui/body':'Ari added Ren to the trip','ui/callout':'Votes close at 7:30 PM','ui/subhead':'Tasca · $$ · 6 min walk','ui/footnote':'Updated just now','ui/caption-1':'4 VOTES · 57%','ui/caption-2':'LEADING','ui/amount':'+$18.40'}[n]
+@@ -51,4 +51,4 @@
+-  <div class="ph"><div><div class="t-headline">Dinner tonight?</div><div class="t-footnote sec">Ari’s poll · 5 of 7 voted</div></div><span class="timer tu-num">{ico('bell',13)} 12:40</span></div>
+-  <div class="opt lead"><span class="badge">Leading</span><img src="{PH(34110274)}"><div class="oc"><div class="t-headline">Taberna da Rua das Flores</div><div class="t-subhead sec">Tasca · €€ · 6 min walk</div><div class="bar"><i style="width:57%"></i></div></div><div class="pct"><b class="tu-num">57%</b><div class="stack">{av('A',20)}{av('M',20)}{av('J',20)}{av('S',20)}</div></div></div>
+-  <div class="opt mine"><img src="{PH(6314564)}"><div class="oc"><div class="t-headline">Cervejaria Ramiro <span class="myvote">{ico('check',12)} Your vote</span></div><div class="t-subhead sec">Seafood · €€€ · 14 min</div><div class="bar"><i style="width:29%"></i></div></div><div class="pct"><b class="tu-num">29%</b><div class="stack">{av('R',20)}{av('N',20)}</div></div></div>
+-  <div class="opt"><img src="{PH(20594880)}"><div class="oc"><div class="t-headline">Park Rooftop</div><div class="t-subhead sec">Drinks &amp; bites · €€ · 9 min</div><div class="bar"><i style="width:14%"></i></div></div><div class="pct"><b class="tu-num">14%</b><div class="stack">{av('J',20)}</div></div></div>
++  <div class="ph"><div><div class="t-headline">Dinner tonight?</div><div class="t-footnote sec">Ari’s poll · 5 of 7 voted</div></div><span class="timer tu-num">{ico('bell',13)} 12:40 PM</span></div>
++  <div class="opt lead"><span class="badge">Leading</span><img src="{PH(34110274)}"><div class="oc"><div class="t-headline">Taberna da Rua das Flores</div><div class="t-subhead sec">Tasca · $$ · 6 min walk</div><div class="bar"><i style="width:57%"></i></div></div><div class="pct"><b class="tu-num">57%</b><div class="stack">{av('A',20)}{av('M',20)}{av('J',20)}{av('S',20)}</div></div></div>
++  <div class="opt mine"><img src="{PH(6314564)}"><div class="oc"><div class="t-headline">Cervejaria Ramiro <span class="myvote">{ico('check',12)} Your vote</span></div><div class="t-subhead sec">Seafood · $$$ · 14 min</div><div class="bar"><i style="width:29%"></i></div></div><div class="pct"><b class="tu-num">29%</b><div class="stack">{av('R',20)}{av('N',20)}</div></div></div>
++  <div class="opt"><img src="{PH(20594880)}"><div class="oc"><div class="t-headline">Park Rooftop</div><div class="t-subhead sec">Drinks &amp; bites · $$ · 9 min</div><div class="bar"><i style="width:14%"></i></div></div><div class="pct"><b class="tu-num">14%</b><div class="stack">{av('J',20)}</div></div></div>
+@@ -57,3 +57,3 @@
+-    return f'''<div class="chip tu-surface">{av('R',36)}<div><b>Ren</b><small>owes you</small></div><span class="amt owed tu-num">+€18.40</span></div>
+-<div class="chip tu-surface">{av('N',36)}<div><b>Nic</b><small>you owe</small></div><span class="amt owe tu-num">−€42.10</span></div>
+-<div class="chip tu-surface settled">{av('M',36)}<div><b>Mara</b><small>settled</small></div><span class="amt tu-num" style="color:var(--color-status-settled)">{ico('check',16)} €0.00</span></div>'''
++    return f'''<div class="chip tu-surface">{av('R',36)}<div><b>Ren</b><small>owes you</small></div><span class="amt owed tu-num">+$18.40</span></div>
++<div class="chip tu-surface">{av('N',36)}<div><b>Nic</b><small>you owe</small></div><span class="amt owe tu-num">−$42.10</span></div>
++<div class="chip tu-surface settled">{av('M',36)}<div><b>Mara</b><small>settled</small></div><span class="amt tu-num" style="color:var(--color-status-settled)">{ico('check',16)} $0.00</span></div>'''
+@@ -68,4 +68,4 @@
+-  <div class="pay">{av('A',30)}<span class="ar">{ico('arrow',14)}</span>{av('N',30)}<div><b>You → Nic</b><small>Dinner, tram, wine</small></div><b class="tu-num owe">€42.10</b></div>
+-  <div class="pay">{av('R',30)}<span class="ar">{ico('arrow',14)}</span>{av('A',30)}<div><b>Ren → You</b><small>Dinner (no wine)</small></div><b class="tu-num owed">€18.40</b></div>
+-  <div class="pay">{av('M',30)}<span class="ar">{ico('arrow',14)}</span>{av('J',30)}<div><b>Mara → João</b><small>Airbnb</small></div><b class="tu-num">€64.00</b></div>
+-  <span class="btn primary full">{ico('apple',18)} Pay Nic €42.10</span>
++  <div class="pay">{av('A',30)}<span class="ar">{ico('arrow',14)}</span>{av('N',30)}<div><b>You → Nic</b><small>Dinner, tram, wine</small></div><b class="tu-num owe">$42.10</b></div>
++  <div class="pay">{av('R',30)}<span class="ar">{ico('arrow',14)}</span>{av('A',30)}<div><b>Ren → You</b><small>Dinner (no wine)</small></div><b class="tu-num owed">$18.40</b></div>
++  <div class="pay">{av('M',30)}<span class="ar">{ico('arrow',14)}</span>{av('J',30)}<div><b>Mara → João</b><small>Airbnb</small></div><b class="tu-num">$64.00</b></div>
++  <span class="btn primary full">{ico('apple',18)} Pay Nic $42.10</span>
+@@ -172 +172 @@
+-<p class="lede">Pearl-white Liquid Glass that refracts into colour only on the big moments. The tokens live in <code>tokens.json</code> and <code>tokens.css</code>. SF Pro (Inter shown as a stand-in here) runs the UI; Instrument Serif carries trip names, amounts and celebrations. Light mode is “Pearl”, dark mode is “Graphite Pearl”.</p></header>
++<p class="lede">Pearl-white Liquid Glass that refracts into color only on the big moments. The tokens live in <code>tokens.json</code> and <code>tokens.css</code>. SF Pro (Inter shown as a stand-in here) runs the UI; Instrument Serif carries trip names, amounts and celebrations. Light mode is “Pearl”, dark mode is “Graphite Pearl”.</p></header>
+@@ -174 +174 @@
+-<div class="sectitle">Foundations <small>colour roles · type · space · radius · glass · shadow · motion</small></div>
++<div class="sectitle">Foundations <small>color roles · type · space · radius · glass · shadow · motion</small></div>
+@@ -176 +176 @@
+- <div class="card"><h2>Semantic colour <span>each swatch: light | dark</span></h2>
++ <div class="card"><h2>Semantic color <span>each swatch: light | dark</span></h2>
+@@ -181 +181 @@
+-  <p class="note"><b>Allowed forms:</b> a light sheen over glass, the 1.5 pt celebrate-button border, spectrum text on <code>display/celebrate</code> (use the <code>text-*</code> deep stops on light surfaces), and 3D confetti. <b>Never</b> as a UI fill, as a status colour, more than once per view, or while a task is in progress. <b>Contrast:</b> all text roles pass AA in both modes (on-accent 4.56; owed jade-600 4.9; owe rose-600 5.7; tertiary 5.3).</p>
++  <p class="note"><b>Allowed forms:</b> a light sheen over glass, the 1.5 pt celebrate-button border, spectrum text on <code>display/celebrate</code> (use the <code>text-*</code> deep stops on light surfaces), and 3D confetti. <b>Never</b> as a UI fill, as a status color, more than once per view, or while a task is in progress. <b>Contrast:</b> all text roles pass AA in both modes (on-accent 4.56; owed jade-600 4.9; owe rose-600 5.7; tertiary 5.3).</p>
+@@ -228,2 +228,2 @@
+-  <div><div class="lbl">Notification · actionable</div><div class="notif tu-glass"><span class="appicon">T</span><div><b class="t-headline" style="font-size:15px">Ari started a poll</b><div class="t-subhead sec" style="font-size:14px">Dinner tonight? 3 spots · closes 19:30</div><div class="quick"><span class="on">Taberna</span><span>Ramiro</span><span>Rooftop</span></div></div><span class="t-footnote ter">now</span></div></div>
+-  <div><div class="lbl">Live Activity · Dynamic Island</div><div class="island"><span style="display:flex;gap:8px;align-items:center"><span class="mini"></span>Taberna leads</span><span class="lv tu-num">57% · 12:40</span></div></div>
++  <div><div class="lbl">Notification · actionable</div><div class="notif tu-glass"><span class="appicon">T</span><div><b class="t-headline" style="font-size:15px">Ari started a poll</b><div class="t-subhead sec" style="font-size:14px">Dinner tonight? 3 spots · closes 7:30 PM</div><div class="quick"><span class="on">Taberna</span><span>Ramiro</span><span>Rooftop</span></div></div><span class="t-footnote ter">now</span></div></div>
++  <div><div class="lbl">Live Activity · Dynamic Island</div><div class="island"><span style="display:flex;gap:8px;align-items:center"><span class="mini"></span>Taberna leads</span><span class="lv tu-num">57% · 12:40 PM</span></div></div>
+@@ -235,2 +235,2 @@
+-   <div class="erow"><span class="eic">{ico('fork',20)}</span><div><b class="t-headline">Dinner at Taberna</b><div class="t-subhead sec">Paid by Ari · split 6 ways</div></div><b class="tu-num" style="font:600 17px/1 var(--font-ui)">€146.60</b></div>
+-   <div class="erow" style="border:0"><span class="eic" style="color:var(--color-accent-primary);background:var(--color-accent-subtle)">{ico('wine',20)}</span><div><b class="t-headline">Vinho Verde × 2</b><div class="t-subhead sec">Split 4 · €9.50 each</div><span class="excl-tag"><span class="stack">{av('R',20,'excl')}{av('N',20,'excl')}</span>Ren &amp; Nic not on wine</span></div><b class="tu-num" style="font:600 17px/1 var(--font-ui)">€38.00</b></div></div></div>
++   <div class="erow"><span class="eic">{ico('fork',20)}</span><div><b class="t-headline">Dinner at Taberna</b><div class="t-subhead sec">Paid by Ari · split 6 ways</div></div><b class="tu-num" style="font:600 17px/1 var(--font-ui)">$146.60</b></div>
++   <div class="erow" style="border:0"><span class="eic" style="color:var(--color-accent-primary);background:var(--color-accent-subtle)">{ico('wine',20)}</span><div><b class="t-headline">Vinho Verde × 2</b><div class="t-subhead sec">Split 4 · $9.50 each</div><span class="excl-tag"><span class="stack">{av('R',20,'excl')}{av('N',20,'excl')}</span>Ren &amp; Nic not on wine</span></div><b class="tu-num" style="font:600 17px/1 var(--font-ui)">$38.00</b></div></div></div>
+@@ -240,2 +240,2 @@
+-  <span class="toast tu-glass"><span class="ok">{ico('plan',16)}</span><span>Taberna is on tonight<small>Added to itinerary · 20:30</small></span></span>
+-  <div class="confirm tu-glass-thick"><img src="../moodboards/icons/prism_celebrate.png" style="width:150px;height:150px;margin:-18px auto -14px;display:block;transform:scale(1.5)"><div class="tu-celebrate-text" style="font:italic 400 40px/44px var(--font-display)">All squared up.</div><div class="t-subhead sec" style="margin:6px 0 14px">3 payments · €124.50 settled · everyone’s notified</div><span class="btn glass m">Share the recap</span></div>
++  <span class="toast tu-glass"><span class="ok">{ico('plan',16)}</span><span>Taberna is on tonight<small>Added to itinerary · 8:30 PM</small></span></span>
++  <div class="confirm tu-glass-thick"><img src="../moodboards/icons/prism_celebrate.png" style="width:150px;height:150px;margin:-18px auto -14px;display:block;transform:scale(1.5)"><div class="tu-celebrate-text" style="font:italic 400 40px/44px var(--font-display)">All squared up.</div><div class="t-subhead sec" style="margin:6px 0 14px">3 payments · $124.50 settled · everyone’s notified</div><span class="btn glass m">Share the recap</span></div>
+--- /tmp/pre/design-system/tokens.json	2026-10-18 21:08:01.000000000 -0700
++++ design-system/tokens.json	2026-10-18 21:49:04.914637175 -0700
+@@ -716 +716 @@
+-      "accent/primary": "The only acting colour: primary buttons, your vote, selected filter chips, and the active tab. Max one accent-filled element per view.",
++      "accent/primary": "The only acting color: primary buttons, your vote, selected filter chips, and the active tab. Max one accent-filled element per view.",
+@@ -739 +739 @@
+-      "status colours",
++      "status colors",
+@@ -776 +776 @@
+-      "use": "Big amounts, e.g. €184.60 (tabular lining)",
++      "use": "Big amounts, e.g. $184.60 (tabular lining)",
+@@ -881 +881 @@
+-      "use": "Tags, € · walk time"
++      "use": "Tags, $ · walk time"
+@@ -1187 +1187 @@
+-        "rich": "spring.live on width; leader gets one travelling glint (900ms, once per lead change); % digits roll",
++        "rich": "spring.live on width; leader gets one traveling glint (900ms, once per lead change); % digits roll",
+--- /tmp/pre/prototype/SPEC-settle-v3.md	2026-10-18 21:25:11.000000000 -0700
++++ prototype/SPEC-settle-v3.md	2026-10-18 21:49:04.918637175 -0700
+@@ -1 +1 @@
+-# Settle-up v3 parity spec (Figma file z4TesJNPe6UfvgwmWtIA4y, 18 Oct 2026)
++# Settle-up v3 parity spec (Figma file z4TesJNPe6UfvgwmWtIA4y, Oct 18, 2026)
+@@ -3 +3 @@
+-These numbers come from `ledger.ts`: pairwise() and then simplify() run on baseExpenses plus tonight's dinner (Ari paid €248.70, with Ren and Nic taken off the wine). If the ledger changes, Figma has to change with it.
++These numbers come from `ledger.ts`: pairwise() and then simplify() run on baseExpenses plus tonight's dinner (Ari paid $248.70, with Ren and Nic taken off the wine). If the ledger changes, Figma has to change with it.
+@@ -8 +8 @@
+-All coordinates are inside the 362×268 card (radius 20, bg/surface, shadow/card). Graph centre CX 181, CY 112.
++All coordinates are inside the 362×268 card (radius 20, bg/surface, shadow/card). Graph center CX 181, CY 112.
+@@ -11 +11 @@
+-| key | name | centre | net |
++| key | name | center | net |
+@@ -27,3 +27,3 @@
+-- Frame with horizontal auto layout, gap 4, padding 1/4, radius 4, bg/surface at 88%. Name in mono/tag (JetBrains Mono 10), text/tertiary in Tangled and text/secondary after. Netting and Solved add the signed net in mono/tag, coloured status/owed, status/owe or text/tertiary.
+-- Placement: centred above the node when its y < CY − 20, otherwise centred below, 3px off the 40px ring.
+-- Ari: right of the chip at x + 25, vertically centred. In Netting and Solved the label stacks name over net (vertical, gap 0) so it stays clear of Sofia's.
++- Frame with horizontal auto layout, gap 4, padding 1/4, radius 4, bg/surface at 88%. Name in mono/tag (JetBrains Mono 10), text/tertiary in Tangled and text/secondary after. Netting and Solved add the signed net in mono/tag, colored status/owed, status/owe or text/tertiary.
++- Placement: centered above the node when its y < CY − 20, otherwise centered below, 3px off the 40px ring.
++- Ari: right of the chip at x + 25, vertically centered. In Netting and Solved the label stacks name over net (vertical, gap 0) so it stays clear of Sofia's.
+@@ -33,2 +33,2 @@
+-- Dot grid: 12px pitch, x 13 to 349, y 34 to 194, 1.25px dots, radial gradient border/strong at the centre to border/subtle at 60% to transparent.
+-- Orbit: dashed ellipse 250×108 centred on CX, CY, border/strong 0.75px, dash 1.5 / 3.5.
++- Dot grid: 12px pitch, x 13 to 349, y 34 to 194, 1.25px dots, radial gradient border/strong at the center to border/subtle at 60% to transparent.
++- Orbit: dashed ellipse 250×108 centered on CX, CY, border/strong 0.75px, dash 1.5 / 3.5.
+@@ -36 +36 @@
+-- Crosshair at the centre in Solved only.
++- Crosshair at the center in Solved only.
+@@ -40 +40 @@
+-- Each edge is a quadratic bezier. Control = midpoint + (centre − midpoint) × bend. It starts 24px from the source centre and ends 23px from the target centre.
++- Each edge is a quadratic bezier. Control = midpoint + (center − midpoint) × bend. It starts 24px from the source center and ends 23px from the target center.
+@@ -50 +50 @@
+-- Panel: `IOUS 6 · 7 people` | `CROSSINGS 4` | `FLOW €190.60`.
++- Panel: `IOUS 6 · 7 people` | `CROSSINGS 4` | `FLOW $190.60`.
+@@ -55 +55 @@
+-- Centre pill `Σ 0.00` in mono/tag.
++- Center pill `Σ 0.00` in mono/tag.
+@@ -62,2 +62,2 @@
+-- Tags: bg/surface, 1px accent/subtle, accent/text, `€42.10` style.
+-- Panel: `PAYMENTS 3 was 6` | `FLOW €124.50` | `SAVED 50% 3 fewer`.
++- Tags: bg/surface, 1px accent/subtle, accent/text, `$42.10` style.
++- Panel: `PAYMENTS 3 was 6` | `FLOW $124.50` | `SAVED 50% 3 fewer`.
+@@ -66 +66 @@
+-- At 16,206, 330×50, radius 12, bg/sunken at 55%, 1px border/subtle inside. Three equal cells with 1px border/subtle dividers. Each cell has a caption in mono/micro text/tertiary over a value in mono/value (JetBrains Mono Medium 13/16) text/primary. Status values use status colours.
++- At 16,206, 330×50, radius 12, bg/sunken at 55%, 1px border/subtle inside. Three equal cells with 1px border/subtle dividers. Each cell has a caption in mono/micro text/tertiary over a value in mono/value (JetBrains Mono Medium 13/16) text/primary. Status values use status colors.
+@@ -79 +79 @@
+-- 09a Tangled (201:9341). Caption: "2 IOUs: you owe Tomás €42.10. Ren owes you €18.40." Log card `IOUS · 6 · €190.60 MOVED` lists the 6 IOUs; rows that involve Ari use text/primary. Button: "Simplify 6 IOUs".
++- 09a Tangled (201:9341). Caption: "2 IOUs: you owe Tomás $42.10. Ren owes you $18.40." Log card `IOUS · 6 · $190.60 MOVED` lists the 6 IOUs; rows that involve Ari use text/primary. Button: "Simplify 6 IOUs".
+@@ -81 +81 @@
+-- 09 Balances (137:6808, dark 137:6901): Solved state. Row reasons: "Tejo boat tour, via Tomás" · "Dinner share minus Fado tickets" · "Flat deposit, via Sofia". CTA "Pay Nic €42.10".
++- 09 Balances (137:6808, dark 137:6901): Solved state. Row reasons: "Tejo boat tour, via Tomás" · "Dinner share minus Fado tickets" · "Flat deposit, via Sofia". CTA "Pay Nic $42.10".
+@@ -85,3 +85,3 @@
+-- One spectrum glow (angular gradient, 132px, layer blur 26, 85%) sits behind a 64px surface disc that holds a drawn check. That glow is the only colour moment. No confetti, no 3D render, no gradient text, no rainbow stripes.
+-- Mono eyebrow `22:41 · LISBON CREW · SETTLED`. Serif title "All squared up." in text/primary. Body "3 payments, €124.50 in total. Everyone in Lisbon Crew is at €0.00."
+-- Mono receipt (bg/sunken 80%): `Ari → Nic €42.10 22:39` / `Ren → Ari €18.40 22:40` / `Mara → João €64.00 cash ✓` / `total €124.50 3 of 3`. Primary button: "Share the recap".
++- One spectrum glow (angular gradient, 132px, layer blur 26, 85%) sits behind a 64px surface disc that holds a drawn check. That glow is the only color moment. No confetti, no 3D render, no gradient text, no rainbow stripes.
++- Mono eyebrow `10:41 PM · LISBON CREW · SETTLED`. Serif title "All squared up." in text/primary. Body "3 payments, $124.50 in total. Everyone in Lisbon Crew is at $0.00."
++- Mono receipt (bg/sunken 80%): `Ari → Nic $42.10 10:39 PM` / `Ren → Ari $18.40 10:40 PM` / `Mara → João $64.00 cash ✓` / `total $124.50 3 of 3`. Primary button: "Share the recap".
+@@ -99 +99 @@
+-| S5 | 226:7245 / 227:7528 | Lisbon Crew · Did Ari pay you? · Nic's phone · cash · 22:39 | settle-05-nic-confirm |
++| S5 | 226:7245 / 227:7528 | Lisbon Crew · Did Ari pay you? · Nic's phone · cash · 10:39 PM | settle-05-nic-confirm |
+@@ -116 +116 @@
+-- Hero: Ari → Nic, €42.10, caption "For the Tejo boat tour, routed through Tomás.", pill `1 OF 3`, link "Why €42.10" (opens S7's provenance block).
++- Hero: Ari → Nic, $42.10, caption "For the Tejo boat tour, routed through Tomás.", pill `1 OF 3`, link "Why $42.10" (opens S7's provenance block).
+@@ -123 +123 @@
+-- CTA label follows the selection: "Pay €42.10 with TripUp Pay", "Open MB WAY", "Open Revolut", "Copy bank details", "Continue with cash".
++- CTA label follows the selection: "Pay $42.10 with TripUp Pay", "Open MB WAY", "Open Revolut", "Copy bank details", "Continue with cash".
+@@ -127,3 +127,3 @@
+-- Hero card: overline HAND OVER, €42.00 in display/xl (56), pills `rounded from €42.10` (neutral) and `€0.10 carried` (accent).
+-- Round toggle card: "Round to €42.00" / "The €0.10 moves to the next split, so nobody counts coins tonight." Toggle on by default for cash.
+-- Count it out: note pills `€20 × 2`, `€2 × 1` and `= €42.00`. Notes come from a greedy split over 50, 20, 10, 5, 2, 1, 0.50, 0.20, 0.10.
++- Hero card: overline HAND OVER, $42.00 in display/xl (56), pills `rounded from $42.10` (neutral) and `$0.10 carried` (accent).
++- Round toggle card: "Round to $42.00" / "The $0.10 moves to the next split, so nobody counts coins tonight." Toggle on by default for cash.
++- Count it out: note pills `$20 × 2`, `$2 × 1` and `= $42.00`. Notes come from a greedy split over 50, 20, 10, 5, 2, 1, 0.50, 0.20, 0.10.
+@@ -132 +132 @@
+-- Slider "Slide to mark €42.00 paid".
++- Slider "Slide to mark $42.00 paid".
+@@ -135,2 +135,2 @@
+-- Cash only. Round to the nearest €1.00, so the change is never more than €0.50 either way. €42.10 becomes €42.00.
+-- The difference becomes a carry entry on the same pair (Ari ↔ Nic). It joins the next simplify() run. If the trip closes with a carry under €0.50 left, it is written off and shown as "rounded" in the recap.
++- Cash only. Round to the nearest $1.00, so the change is never more than $0.50 either way. $42.10 becomes $42.00.
++- The difference becomes a carry entry on the same pair (Ari ↔ Nic). It joins the next simplify() run. If the trip closes with a carry under $0.50 left, it is written off and shown as "rounded" in the recap.
+@@ -146 +146 @@
+-- Reduce Motion or VoiceOver: the track becomes a button "Mark €42.00 paid" that needs a 600ms long press with a circular fill, or a VoiceOver double tap followed by a confirm alert.
++- Reduce Motion or VoiceOver: the track becomes a button "Mark $42.00 paid" that needs a 600ms long press with a circular fill, or a VoiceOver double tap followed by a confirm alert.
+@@ -149,3 +149,3 @@
+-- 72px check disc (accent/subtle with a 1.5px accent/primary stroke), "Marked as paid", body "Nic gets a request to confirm €42.00 in cash. Your balance moves when he does."
+-- Readout TIMELINE with pill `PENDING`: `22:39:04 you marked cash €42.00 ✓`, `22:39:04 request sent to Nic ✓`, `--:--:-- Nic confirms pending`. Summary chip `due 42.10 · paid 42.00 · carried 0.10`.
+-- Undo toast at y 716: text/primary fill, 20px countdown ring, "Marked €42.00 paid · 4s", action "Undo". The window is 5s. Undo deletes the mark and withdraws Nic's request. After 5s the toast slides away and undo moves into the receipt as "Cancel the cash mark" until Nic confirms.
++- 72px check disc (accent/subtle with a 1.5px accent/primary stroke), "Marked as paid", body "Nic gets a request to confirm $42.00 in cash. Your balance moves when he does."
++- Readout TIMELINE with pill `PENDING`: `10:39:04 PM you marked cash $42.00 ✓`, `10:39:04 PM request sent to Nic ✓`, `--:--:-- Nic confirms pending`. Summary chip `due 42.10 · paid 42.00 · carried 0.10`.
++- Undo toast at y 716: text/primary fill, 20px countdown ring, "Marked $42.00 paid · 4s", action "Undo". The window is 5s. Undo deletes the mark and withdraws Nic's request. After 5s the toast slides away and undo moves into the receipt as "Cancel the cash mark" until Nic confirms.
+@@ -156,2 +156,2 @@
+-- Push to Nic: "Ari marked €42.00 cash for you. Tap to confirm." Opens S5.
+-- Hero €42.00, caption "Ari marked this as cash, handed over in person.", pill `NEEDS YOU`.
++- Push to Nic: "Ari marked $42.00 cash for you. Tap to confirm." Opens S5.
++- Hero $42.00, caption "Ari marked this as cash, handed over in person.", pill `NEEDS YOU`.
+@@ -160,2 +160,2 @@
+-- Buttons "Yes, I got €42.00" (Primary, y 724) and "Not yet" (Secondary, y 788). Not yet opens a sheet with an amount field and a note, which leads to E2 on Ari's phone.
+-- If Nic does nothing for 24h, Ari gets "Nic hasn't confirmed €42.00 yet" with Remind and Cancel.
++- Buttons "Yes, I got $42.00" (Primary, y 724) and "Not yet" (Secondary, y 788). Not yet opens a sheet with an amount field and a note, which leads to E2 on Ari's phone.
++- If Nic does nothing for 24h, Ari gets "Nic hasn't confirmed $42.00 yet" with Remind and Cancel.
+@@ -164,5 +164,5 @@
+-- YOUR BALANCE +€18.30 in status/owed, "Ren pays you €18.40. €0.10 carried to your next split."
+-- Success card: 40px owed check disc, "Nic confirmed €42.00", meta `cash · 22:40:12 · stl_7Q2K-0042`.
+-- Progress: overline `1 OF 3 SETTLED`, right `€42.00 of €124.50`, a 3-segment bar (filled segments accent/primary, others bg/sunken, 4px tall, 4px gaps).
+-- Rows: You → Nic with pill `€42.00 ✓`, Ren → You €18.40 (status/owed), Mara → João €64.00.
+-- CTA "Ask Ren for €18.40".
++- YOUR BALANCE +$18.30 in status/owed, "Ren pays you $18.40. $0.10 carried to your next split."
++- Success card: 40px owed check disc, "Nic confirmed $42.00", meta `cash · 10:40:12 PM · stl_7Q2K-0042`.
++- Progress: overline `1 OF 3 SETTLED`, right `$42.00 of $124.50`, a 3-segment bar (filled segments accent/primary, others bg/sunken, 4px tall, 4px gaps).
++- Rows: You → Nic with pill `$42.00 ✓`, Ren → You $18.40 (status/owed), Mara → João $64.00.
++- CTA "Ask Ren for $18.40".
+@@ -172,2 +172,2 @@
+-- Hero €42.00 with pill `CONFIRMED`, caption "Tejo boat tour, routed through Tomás".
+-- Readout PAYMENT: id stl_7Q2K-0042 · from Ari (you) · to Nic · method cash · in person · due €42.10 · paid €42.00 · carried €0.10 → next split · marked 22:39:04 · Ari · confirmed 22:40:12 · Nic · sync both phones ✓.
++- Hero $42.00 with pill `CONFIRMED`, caption "Tejo boat tour, routed through Tomás".
++- Readout PAYMENT: id stl_7Q2K-0042 · from Ari (you) · to Nic · method cash · in person · due $42.10 · paid $42.00 · carried $0.10 → next split · marked 10:39:04 PM · Ari · confirmed 10:40:12 PM · Nic · sync both phones ✓.
+@@ -178 +178 @@
+-- Hero: overline HAND OVER NOW, €20.00, "of €42.10 due". Quick pills €10, €20 (selected, accent), €40, All €42.10. Custom amount by tapping the hero.
++- Hero: overline HAND OVER NOW, $20.00, "of $42.10 due". Quick pills $10, $20 (selected, accent), $40, All $42.10. Custom amount by tapping the hero.
+@@ -181,2 +181,2 @@
+-- Note: "The other €22.10 stays on your plan. Pay it in cash or in the app later."
+-- Slider "Slide to mark €20.00 paid". Rounding is off for partial payments, and the remainder keeps the original reference with suffix `-b`.
++- Note: "The other $22.10 stays on your plan. Pay it in cash or in the app later."
++- Slider "Slide to mark $20.00 paid". Rounding is off for partial payments, and the remainder keeps the original reference with suffix `-b`.
+@@ -185 +185 @@
+-- Rose card: "Nic counted €40.00", pill `DISPUTED`, "Nic tapped Not yet at 22:41: “Got two twenties, no coin.”"
++- Rose card: "Nic counted $40.00", pill `DISPUTED`, "Nic tapped Not yet at 22:41: “Got two twenties, no coin.”"
+@@ -187 +187 @@
+-- WHAT NOW (radio list): Hand over the €2 coin (Nic confirms €42.00, same as before) · Change it to €40.00 (€2.10 stays on your plan) · Cancel the cash mark (back to €42.10 open).
++- WHAT NOW (radio list): Hand over the $2 coin (Nic confirms $42.00, same as before) · Change it to $40.00 ($2.10 stays on your plan) · Cancel the cash mark (back to $42.10 open).
+@@ -192,2 +192,2 @@
+-- Hero €42.00 with pill `QUEUED`, "Marked 22:39, not sent yet."
+-- Readout SYNC: queue 1 payment / last sync 22:31:48 / retry on reconnect, then every 30 s / balances pending until Nic confirms.
++- Hero $42.00 with pill `QUEUED`, "Marked 10:39 PM, not sent yet."
++- Readout SYNC: queue 1 payment / last sync 10:31:48 PM / retry on reconnect, then every 30 s / balances pending until Nic confirms.
+@@ -199 +199 @@
+-type SettleStatus = 'draft' | 'queued' | 'pending' | 'confirmed' | 'disputed' | 'cancelled';
++type SettleStatus = 'draft' | 'queued' | 'pending' | 'confirmed' | 'disputed' | 'canceled';
+@@ -216 +216 @@
+-- disputed → pending after the payer picks a fix and sends it. disputed → cancelled.
++- disputed → pending after the payer picks a fix and sends it. disputed → canceled.
+@@ -218 +218 @@
+-- Money is stored in cents as integers. Display uses tabular figures and the € prefix, with the minus sign U+2212.
++- Money is stored in cents as integers. Display uses tabular figures and the $ prefix, with the minus sign U+2212.
+@@ -221 +221 @@
+-The All squared up recap (hi-fi 10) shows the app path: €124.50 across 3 payments. When cash rounding happens, the receipt row reads `Ari → Nic €42.00 cash ✓` and the body reads "3 payments, €124.40 handed over, €0.10 carried to your next split."
++The All squared up recap (hi-fi 10) shows the app path: $124.50 across 3 payments. When cash rounding happens, the receipt row reads `Ari → Nic $42.00 cash ✓` and the body reads "3 payments, $124.40 handed over, $0.10 carried to your next split."
+--- /tmp/pre/prototype/src/App.tsx	2026-10-18 21:46:19.000000000 -0700
++++ prototype/src/App.tsx	2026-10-18 21:49:04.922637175 -0700
+@@ -170 +170 @@
+-  const time = s.step === 'live' ? clockStr(Math.max(17, Math.min(29, 17 + Object.keys(s.votes).length))) : s.step === 'settle' ? SETTLE_VIEWS.find(v => v.id === s.settleView)!.time : s.step === 'money' && (s.stl || Object.keys(s.paid).length) ? '22:40' : meta.time;
++  const time = s.step === 'live' ? clockStr(Math.max(17, Math.min(29, 17 + Object.keys(s.votes).length))) : s.step === 'settle' ? SETTLE_VIEWS.find(v => v.id === s.settleView)!.time : s.step === 'money' && (s.stl || Object.keys(s.paid).length) ? '10:40 PM' : meta.time;
+@@ -245 +245 @@
+-        {s.step === 'live' && !s.pollClosed && <button type="button" className="pt-link" onClick={() => d({ t: 'close', by: 'timer' })}>Skip to 19:30</button>}
++        {s.step === 'live' && !s.pollClosed && <button type="button" className="pt-link" onClick={() => d({ t: 'close', by: 'timer' })}>Skip to 7:30 PM</button>}
+--- /tmp/pre/prototype/src/renweb.tsx	2026-10-18 21:08:01.000000000 -0700
++++ prototype/src/renweb.tsx	2026-10-18 21:49:04.926637175 -0700
+@@ -29 +29 @@
+-      <p className="pt-web-p tu-num">{n} of 7 voted · closes 19:30</p>
++      <p className="pt-web-p tu-num">{n} of 7 voted · closes 7:30 PM</p>
+@@ -41,3 +41,3 @@
+-        <li><b>18:00</b>Sunset, Santa Catarina</li>
+-        <li><b>20:30</b>{s.pollClosed ? optName(s, s.winner) : 'Dinner, poll soon'}</li>
+-        <li><b>23:00</b>Fado, Tasca do Chico</li>
++        <li><b>6:00 PM</b>Sunset, Santa Catarina</li>
++        <li><b>8:30 PM</b>{s.pollClosed ? optName(s, s.winner) : 'Dinner, poll soon'}</li>
++        <li><b>11:00 PM</b>Fado, Tasca do Chico</li>
+--- /tmp/pre/prototype/src/screens1.tsx	2026-10-18 21:08:02.000000000 -0700
++++ prototype/src/screens1.tsx	2026-10-18 21:49:04.930637175 -0700
+@@ -39 +39 @@
+-  const next = s.planAdded ? `${optName(s, s.winner, true)} at 20:30` : 'Dinner 20:30 · undecided';
++  const next = s.planAdded ? `${optName(s, s.winner, true)} at 8:30 PM` : 'Dinner 8:30 PM · undecided';
+@@ -45 +45 @@
+-          <TripCard name="Lisbon" dates="12 to 17 Oct" photo={photo.alfama} people={crew} status="live" nextUp={next} balance={s.dinnerSaved ? bal : undefined} />
++          <TripCard name="Lisbon" dates="Oct 12 to 17" photo={photo.alfama} people={crew} status="live" nextUp={next} balance={s.dinnerSaved ? bal : undefined} />
+@@ -68 +68 @@
+-          <div className="scr-hero-text"><p>12 to 17 Oct · last night</p><h1>Lisbon Crew</h1></div>
++          <div className="scr-hero-text"><p>Oct 12 to 17 · last night</p><h1>Lisbon Crew</h1></div>
+@@ -78,2 +78,2 @@
+-            <ItinBlock it={{ time: '18:00', title: 'Sunset, Santa Catarina', icon: 'sun', kind: 'plan' }} />
+-            <ItinBlock it={{ time: '19:15', title: 'Pastéis at Manteigaria', icon: 'fork', kind: 'now' }} />
++            <ItinBlock it={{ time: '6:00 PM', title: 'Sunset, Santa Catarina', icon: 'sun', kind: 'plan' }} />
++            <ItinBlock it={{ time: '7:15 PM', title: 'Pastéis at Manteigaria', icon: 'fork', kind: 'now' }} />
+@@ -81 +81 @@
+-              ? <ItinBlock it={{ time: '20:30', title: optName(s, s.winner), place: 'Table for 7', icon: 'fork', kind: 'decided' }} />
++              ? <ItinBlock it={{ time: '8:30 PM', title: optName(s, s.winner), place: 'Table for 7', icon: 'fork', kind: 'decided' }} />
+@@ -84 +84 @@
+-                  <span className="p-itin-time tu-num">20:30</span>
++                  <span className="p-itin-time tu-num">8:30 PM</span>
+@@ -93 +93 @@
+-            <ItinBlock it={{ time: '23:00', title: 'Fado at Tasca do Chico', icon: 'music', kind: 'plan' }} last />
++            <ItinBlock it={{ time: '11:00 PM', title: 'Fado at Tasca do Chico', icon: 'music', kind: 'plan' }} last />
+@@ -149 +149 @@
+-  { q: 'Budget each?', opts: [['€ to €€', 6], ['€€ to €€€', 9], ['Anything', 14]] },
++  { q: 'Budget each?', opts: [['$ to $$', 6], ['$$ to $$$', 9], ['Anything', 14]] },
+@@ -152,2 +152,2 @@
+-  { id: 'taberna', ...places.taberna, walk: '6 min', price: '€€' },
+-  { id: 'ramiro', ...places.ramiro, walk: '14 min', price: '€€' },
++  { id: 'taberna', ...places.taberna, walk: '6 min', price: '$$' },
++  { id: 'ramiro', ...places.ramiro, walk: '14 min', price: '$$' },
+@@ -156,2 +156,2 @@
+-  { id: 'cevi', name: 'A Cevicheria', area: 'Príncipe Real', kind: 'Seafood', price: '€€', rating: 4.5, photo: photo.facade, walk: '11 min', note: '' },
+-  { id: 'esquina', name: 'Tasca da Esquina', area: 'Campo de Ourique', kind: 'Petiscos', price: '€€', rating: 4.6, photo: photo.azulejo, walk: '13 min', note: '' },
++  { id: 'cevi', name: 'A Cevicheria', area: 'Príncipe Real', kind: 'Seafood', price: '$$', rating: 4.5, photo: photo.facade, walk: '11 min', note: '' },
++  { id: 'esquina', name: 'Tasca da Esquina', area: 'Campo de Ourique', kind: 'Petiscos', price: '$$', rating: 4.6, photo: photo.azulejo, walk: '13 min', note: '' },
+--- /tmp/pre/prototype/src/screens2.tsx	2026-10-18 21:08:01.000000000 -0700
++++ prototype/src/screens2.tsx	2026-10-18 21:49:04.930637175 -0700
+@@ -28 +28 @@
+-          <ListRow title="Closes" trailing={<span className="pt-pillval tu-num">19:30</span>} />
++          <ListRow title="Closes" trailing={<span className="pt-pillval tu-num">7:30 PM</span>} />
+@@ -49,2 +49,2 @@
+-        <p className="p-lock-date">{s.me === 'nic' ? 'Friday 16 October' : "Nic's iPhone · Friday 16 October"}</p>
+-        <p className="p-lock-time pt-lock-time">19:02</p>
++        <p className="p-lock-date">{s.me === 'nic' ? 'Friday October 16' : "Nic's iPhone · Friday October 16"}</p>
++        <p className="p-lock-time pt-lock-time">7:02 PM</p>
+@@ -52 +52 @@
+-          <Notification title="Ari started a poll" body={voted ? `You voted ${optName(s, s.votes.nic, true)}` : 'Where do we eat tonight? Closes 19:30.'} person={P.ari} time="now" />
++          <Notification title="Ari started a poll" body={voted ? `You voted ${optName(s, s.votes.nic, true)}` : 'Where do we eat tonight? Closes 7:30 PM.'} person={P.ari} time="now" />
+@@ -92 +92 @@
+-        <TopBar back="Lisbon Crew" onBack={() => d({ t: 'go', step: 'trip' })} title="Dinner tonight?" sub={closed ? `Closed · ${n} of 7 voted` : `${n} of 7 voted · closes 19:30`} />
++        <TopBar back="Lisbon Crew" onBack={() => d({ t: 'go', step: 'trip' })} title="Dinner tonight?" sub={closed ? `Closed · ${n} of 7 voted` : `${n} of 7 voted · closes 7:30 PM`} />
+@@ -146 +146 @@
+-        subtitle={s.pollClosed === 'pick' ? `Ari broke the tie. Booked for 20:30.` : `${t[w]} of ${n} votes, ${pct}%. Booked for 20:30.`}
++        subtitle={s.pollClosed === 'pick' ? `Ari broke the tie. Booked for 8:30 PM.` : `${t[w]} of ${n} votes, ${pct}%. Booked for 8:30 PM.`}
+@@ -158,7 +158,7 @@
+-    ['18:56', 'Ari shortlisted 6 places'],
+-    ['18:58', 'Poll sent with 3'],
+-    ['19:02', 'Nic voted from the push'],
+-    ['19:24', 'Ren voted on the web'],
+-    ['19:30', `Closed: ${optIds(s).map((id, i) => `${PLACE_NAMES[id][1]} ${t[i]}`).join(', ')}`],
+-    ...(s.pollClosed === 'pick' ? [['19:30', `Ari broke the tie`]] : []),
+-    ['19:31', 'Added to tonight'],
++    ['6:56 PM', 'Ari shortlisted 6 places'],
++    ['6:58 PM', 'Poll sent with 3'],
++    ['7:02 PM', 'Nic voted from the push'],
++    ['7:24 PM', 'Ren voted on the web'],
++    ['7:30 PM', `Closed: ${optIds(s).map((id, i) => `${PLACE_NAMES[id][1]} ${t[i]}`).join(', ')}`],
++    ...(s.pollClosed === 'pick' ? [['7:30 PM', `Ari broke the tie`]] : []),
++    ['7:31 PM', 'Added to tonight'],
+@@ -169 +169 @@
+-        <TopBar back="Lisbon Crew" onBack={() => d({ t: 'go', step: 'trip' })} title="Tonight" sub="Friday 16 Oct" />
++        <TopBar back="Lisbon Crew" onBack={() => d({ t: 'go', step: 'trip' })} title="Tonight" sub="Friday Oct 16" />
+@@ -171,2 +171,2 @@
+-          <ItinBlock it={{ time: '18:00', title: 'Sunset, Santa Catarina', icon: 'sun', kind: 'plan' }} />
+-          <ItinBlock it={{ time: '19:15', title: 'Pastéis at Manteigaria', icon: 'fork', kind: 'now' }} />
++          <ItinBlock it={{ time: '6:00 PM', title: 'Sunset, Santa Catarina', icon: 'sun', kind: 'plan' }} />
++          <ItinBlock it={{ time: '7:15 PM', title: 'Pastéis at Manteigaria', icon: 'fork', kind: 'now' }} />
+@@ -174 +174 @@
+-            <span className="p-itin-time tu-num">20:30</span>
++            <span className="p-itin-time tu-num">8:30 PM</span>
+@@ -186 +186 @@
+-          <ItinBlock it={{ time: '23:00', title: 'Fado at Tasca do Chico', icon: 'music', kind: 'plan' }} last />
++          <ItinBlock it={{ time: '11:00 PM', title: 'Fado at Tasca do Chico', icon: 'music', kind: 'plan' }} last />
+--- /tmp/pre/prototype/src/screens3.tsx	2026-10-18 21:45:23.000000000 -0700
++++ prototype/src/screens3.tsx	2026-10-18 21:49:04.934637175 -0700
+@@ -28 +28 @@
+-        <TopBar back="Tonight" onBack={() => d({ t: 'go', step: 'plan' })} title="Split dinner" sub={`Paid by ${nm('ari', false)} · €248.70`} />
++        <TopBar back="Tonight" onBack={() => d({ t: 'go', step: 'plan' })} title="Split dinner" sub={`Paid by ${nm('ari', false)} · $248.70`} />
+@@ -75 +75 @@
+-          <span className={`pt-balance-amt tu-num ${net < -0.004 ? 'is-owe' : net > 0.004 ? 'is-owed' : ''}`}>{`${net < -0.004 ? '−' : net > 0.004 ? '+' : ''}€${shown.toFixed(2)}`}</span>
++          <span className={`pt-balance-amt tu-num ${net < -0.004 ? 'is-owe' : net > 0.004 ? 'is-owed' : ''}`}>{`${net < -0.004 ? '−' : net > 0.004 ? '+' : ''}$${shown.toFixed(2)}`}</span>
+@@ -124 +124 @@
+-        <p className="p-settle-amt tu-num">€{v.toFixed(2)}</p>
++        <p className="p-settle-amt tu-num">${v.toFixed(2)}</p>
+--- /tmp/pre/prototype/src/settleflow.tsx	2026-10-18 21:45:23.000000000 -0700
++++ prototype/src/settleflow.tsx	2026-10-18 21:49:04.938637175 -0700
+@@ -87 +87 @@
+-  const myOpen = dueOf(s) > 0.004 && !(stl && stl.status !== 'confirmed' && stl.status !== 'cancelled') && !flag(myEdge(s));
++  const myOpen = dueOf(s) > 0.004 && !(stl && stl.status !== 'confirmed' && stl.status !== 'canceled') && !flag(myEdge(s));
+@@ -214 +214 @@
+-        <span className="p-pend-disc is-q" aria-hidden><b>{m.id === 'mbway' ? 'MB' : m.id === 'revolut' ? 'R' : '€'}</b></span>
++        <span className="p-pend-disc is-q" aria-hidden><b>{m.id === 'mbway' ? 'MB' : m.id === 'revolut' ? 'R' : '$'}</b></span>
+@@ -218 +218 @@
+-      <Readout title="HAND-OFF" pill={<span className="p-readout-pill">OPENED 22:39</span>} rows={[['app', m.title], ['to', `${P[e.to].name} · ${m.meta.split(' · ')[0]}`], ['amount', due.toFixed(2)], ['reference', 'STL_7Q2K-0042']]} />
++      <Readout title="HAND-OFF" pill={<span className="p-readout-pill">OPENED 10:39 PM</span>} rows={[['app', m.title], ['to', `${P[e.to].name} · ${m.meta.split(' · ')[0]}`], ['amount', due.toFixed(2)], ['reference', 'STL_7Q2K-0042']]} />
+@@ -238 +238 @@
+-    <GlassHeader back="Lisbon Crew" onBack={() => { haptic(); d({ t: 'set', patch: { me: 'ari' } }); d({ t: 'view', v: 'pending' }); }} title={`Did ${from.name} pay you?`} subtitle={`${to.name}'s phone · ${stl.method === 'cash' ? 'cash' : stl.method} · ${(stl.markedAt ?? '22:39').slice(0, 5)}`} />
++    <GlassHeader back="Lisbon Crew" onBack={() => { haptic(); d({ t: 'set', patch: { me: 'ari' } }); d({ t: 'view', v: 'pending' }); }} title={`Did ${from.name} pay you?`} subtitle={`${to.name}'s phone · ${stl.method === 'cash' ? 'cash' : stl.method} · ${(stl.markedAt ?? '10:39 PM').slice(0, 5)}`} />
+@@ -245 +245 @@
+-        <label className="pt-field"><span>Amount you counted</span><span className="pt-field-in"><b>€</b><input inputMode="decimal" value={counted} onChange={e => setCounted(e.target.value)} aria-label="Amount you counted" /></span></label>
++        <label className="pt-field"><span>Amount you counted</span><span className="pt-field-in"><b>$</b><input inputMode="decimal" value={counted} onChange={e => setCounted(e.target.value)} aria-label="Amount you counted" /></span></label>
+@@ -302 +302 @@
+-  const times = ['22:39', '22:40', '22:41'];
++  const times = ['10:39 PM', '10:40 PM', '10:41 PM'];
+@@ -305 +305 @@
+-    return [P[e.from].name, P[e.to].name, eur2(got), s.paid[k] === 'cash' ? 'cash ✓' : times[i] ?? '22:41'];
++    return [P[e.from].name, P[e.to].name, eur2(got), s.paid[k] === 'cash' ? 'cash ✓' : times[i] ?? '10:41 PM'];
+@@ -310 +310 @@
+-  const body = carry > 0.004 ? `${plan.length} payments, ${eur2(handed)} handed over, ${eur2(carry)} carried to your next split.` : `${plan.length} payments, ${eur2(sum)} in total. Everyone in Lisbon Crew is at €0.00.`;
++  const body = carry > 0.004 ? `${plan.length} payments, ${eur2(handed)} handed over, ${eur2(carry)} carried to your next split.` : `${plan.length} payments, ${eur2(sum)} in total. Everyone in Lisbon Crew is at $0.00.`;
+--- /tmp/pre/prototype/src/store.tsx	2026-10-18 21:42:03.000000000 -0700
++++ prototype/src/store.tsx	2026-10-18 21:49:04.942637175 -0700
+@@ -12,10 +12,10 @@
+-  { id: 'choose', label: 'Choose how', time: '22:38', hifi: 'S1' },
+-  { id: 'cash', label: 'Count and round', time: '22:39', hifi: 'S2' },
+-  { id: 'partial', label: 'Partial cash', time: '22:39', hifi: 'X1' },
+-  { id: 'pending', label: 'Pending, with undo', time: '22:39', hifi: 'S4' },
+-  { id: 'handoff', label: 'MB WAY hand-off', time: '22:39', hifi: 'S1' },
+-  { id: 'confirm', label: 'Nic confirms', time: '22:39', hifi: 'S5', as: 'nic' },
+-  { id: 'confirmed', label: 'Confirmed, 1 of 3', time: '22:40', hifi: 'S6' },
+-  { id: 'receipt', label: 'Receipt', time: '22:40', hifi: 'S7' },
+-  { id: 'dispute', label: 'Dispute', time: '22:41', hifi: 'X2' },
+-  { id: 'offline', label: 'Offline', time: '22:39', hifi: 'X3' },
++  { id: 'choose', label: 'Choose how', time: '10:38 PM', hifi: 'S1' },
++  { id: 'cash', label: 'Count and round', time: '10:39 PM', hifi: 'S2' },
++  { id: 'partial', label: 'Partial cash', time: '10:39 PM', hifi: 'X1' },
++  { id: 'pending', label: 'Pending, with undo', time: '10:39 PM', hifi: 'S4' },
++  { id: 'handoff', label: 'MB WAY hand-off', time: '10:39 PM', hifi: 'S1' },
++  { id: 'confirm', label: 'Nic confirms', time: '10:39 PM', hifi: 'S5', as: 'nic' },
++  { id: 'confirmed', label: 'Confirmed, 1 of 3', time: '10:40 PM', hifi: 'S6' },
++  { id: 'receipt', label: 'Receipt', time: '10:40 PM', hifi: 'S7' },
++  { id: 'dispute', label: 'Dispute', time: '10:41 PM', hifi: 'X2' },
++  { id: 'offline', label: 'Offline', time: '10:39 PM', hifi: 'X3' },
+@@ -25,3 +25,3 @@
+-  taberna: ['Taberna da Rua das Flores', 'Taberna', '€€ · 6 min walk'], ramiro: ['Cervejaria Ramiro', 'Ramiro', '€€ · 14 min walk'],
+-  park: ['Park Rooftop', 'Park Rooftop', '€€ · 9 min walk'], eurico: ['O Velho Eurico', 'Eurico', '€€ · 12 min walk'],
+-  cevi: ['A Cevicheria', 'Cevicheria', '€€ · 11 min walk'], esquina: ['Tasca da Esquina', 'Esquina', '€€ · 13 min walk'],
++  taberna: ['Taberna da Rua das Flores', 'Taberna', '$$ · 6 min walk'], ramiro: ['Cervejaria Ramiro', 'Ramiro', '$$ · 14 min walk'],
++  park: ['Park Rooftop', 'Park Rooftop', '$$ · 9 min walk'], eurico: ['O Velho Eurico', 'Eurico', '$$ · 12 min walk'],
++  cevi: ['A Cevicheria', 'Cevicheria', '$$ · 11 min walk'], esquina: ['Tasca da Esquina', 'Esquina', '$$ · 13 min walk'],
+@@ -40 +40 @@
+-  pollClosed?: 'all' | 'timer' | 'pick'; tie: boolean; tiePath: boolean; winner?: number; clock: number; // minutes after 19:00
++  pollClosed?: 'all' | 'timer' | 'pick'; tie: boolean; tiePath: boolean; winner?: number; clock: number; // minutes after 7:00 PM
+@@ -90 +90 @@
+-      const stl: Settlement = { ...stlBase(s), due, paid: due, carry: 0, method: 'tripup', status: 'confirmed', markedAt: '22:39:12', confirmedAt: '22:39:12' };
++      const stl: Settlement = { ...stlBase(s), due, paid: due, carry: 0, method: 'tripup', status: 'confirmed', markedAt: '10:39:12 PM', confirmedAt: '10:39:12 PM' };
+@@ -97 +97 @@
+-      const stl: Settlement = { ...stlBase(s), due, paid: paidAmt, carry, method: 'cash', status: s.offline ? 'queued' : 'pending', partial: s.partial && paidAmt < due - 0.004, markedAt: '22:39:04' };
++      const stl: Settlement = { ...stlBase(s), due, paid: paidAmt, carry, method: 'cash', status: s.offline ? 'queued' : 'pending', partial: s.partial && paidAmt < due - 0.004, markedAt: '10:39:04 PM' };
+@@ -105 +105 @@
+-      const stl: Settlement = { ...st, status: 'confirmed', confirmedAt: '22:40:12', dispute: undefined };
++      const stl: Settlement = { ...st, status: 'confirmed', confirmedAt: '10:40:12 PM', dispute: undefined };
+@@ -110 +110 @@
+-    case 'dispute': return s.stl ? { ...s, me: 'ari', notYet: false, undoAt: undefined, stl: { ...s.stl, status: 'disputed', dispute: { counted: a.counted, note: a.note, at: '22:41' } }, settleView: 'dispute', done: { ...s.done, 'v-dispute': true } } : s;
++    case 'dispute': return s.stl ? { ...s, me: 'ari', notYet: false, undoAt: undefined, stl: { ...s.stl, status: 'disputed', dispute: { counted: a.counted, note: a.note, at: '10:41 PM' } }, settleView: 'dispute', done: { ...s.done, 'v-dispute': true } } : s;
+@@ -116 +116 @@
+-      return { ...s, stl, settleView: 'pending', toast: { msg: s.fix === 'change' ? `Sent to Nic: ${'€' + counted.toFixed(2)} in cash` : 'Sent to Nic: the €2 coin is on its way', id: Date.now(), tone: 'neutral' } };
++      return { ...s, stl, settleView: 'pending', toast: { msg: s.fix === 'change' ? `Sent to Nic: ${'$' + counted.toFixed(2)} in cash` : 'Sent to Nic: the $2 coin is on its way', id: Date.now(), tone: 'neutral' } };
+@@ -122 +122 @@
+-      const stl: Settlement = { ...stlBase(s), due, paid: due, carry: 0, method: s.pick, status: 'pending', markedAt: '22:39:40' };
++      const stl: Settlement = { ...stlBase(s), due, paid: due, carry: 0, method: s.pick, status: 'pending', markedAt: '10:39:40 PM' };
+@@ -193 +193 @@
+-  { id: 'home', n: '01', title: 'All trips', time: '18:52', req: 'Home shows every trip, with the live one first',
++  { id: 'home', n: '01', title: 'All trips', time: '6:52 PM', req: 'Home shows every trip, with the live one first',
+@@ -195,3 +195,3 @@
+-  { id: 'trip', n: '02', title: 'Lisbon Crew', time: '18:53', req: 'Trip group view with tonight, people and money',
+-    caption: 'Tonight has one gap: dinner at 20:30.', hifi: () => '02', complete: s => s },
+-  { id: 'invite', n: '03', title: 'Add Ren', time: '18:54', req: 'Add a person by invite sheet, QR or TripUp contacts',
++  { id: 'trip', n: '02', title: 'Lisbon Crew', time: '6:53 PM', req: 'Trip group view with tonight, people and money',
++    caption: 'Tonight has one gap: dinner at 8:30 PM.', hifi: () => '02', complete: s => s },
++  { id: 'invite', n: '03', title: 'Add Ren', time: '6:54 PM', req: 'Add a person by invite sheet, QR or TripUp contacts',
+@@ -199 +199 @@
+-  { id: 'explore', n: '04', title: 'Explore', time: '18:56', req: 'Explore narrows the city with a progress ring',
++  { id: 'explore', n: '04', title: 'Explore', time: '6:56 PM', req: 'Explore narrows the city with a progress ring',
+@@ -201,3 +201,3 @@
+-  { id: 'create', n: '05', title: 'New poll', time: '18:58', req: 'Create a poll with 3 restaurants',
+-    caption: 'Three picks become a poll that closes at 19:30.', hifi: () => '04', complete: s => ({ ...s, pollSent: true, done: { ...s.done, create: true } }) },
+-  { id: 'push', n: '06', title: 'Push', time: '19:02', req: 'Push notification with an answer right from the lock screen',
++  { id: 'create', n: '05', title: 'New poll', time: '6:58 PM', req: 'Create a poll with 3 restaurants',
++    caption: 'Three picks become a poll that closes at 7:30 PM.', hifi: () => '04', complete: s => ({ ...s, pollSent: true, done: { ...s.done, create: true } }) },
++  { id: 'push', n: '06', title: 'Push', time: '7:02 PM', req: 'Push notification with an answer right from the lock screen',
+@@ -205 +205 @@
+-  { id: 'live', n: '07', title: 'Live poll', time: '19:17', req: 'Votes stream in with a live leading option',
++  { id: 'live', n: '07', title: 'Live poll', time: '7:17 PM', req: 'Votes stream in with a live leading option',
+@@ -208 +208 @@
+-  { id: 'closed', n: '08', title: 'Poll closes', time: '19:30', req: 'Poll closes on timer or when all voted, with a tie-break',
++  { id: 'closed', n: '08', title: 'Poll closes', time: '7:30 PM', req: 'Poll closes on timer or when all voted, with a tie-break',
+@@ -210 +210 @@
+-  { id: 'plan', n: '09', title: 'Tonight', time: '19:31', req: 'Winner added to the itinerary with how we got here',
++  { id: 'plan', n: '09', title: 'Tonight', time: '7:31 PM', req: 'Winner added to the itinerary with how we got here',
+@@ -212,2 +212,2 @@
+-  { id: 'expense', n: '10', title: 'Split dinner', time: '22:36', req: 'Itemize dinner and take Ren and Nic off the wine',
+-    caption: 'Ren and Nic skip the wine, so they pay €30.10.', hifi: () => '08',
++  { id: 'expense', n: '10', title: 'Split dinner', time: '10:36 PM', req: 'Itemize dinner and take Ren and Nic off the wine',
++    caption: 'Ren and Nic skip the wine, so they pay $30.10.', hifi: () => '08',
+@@ -215 +215 @@
+-  { id: 'money', n: '11', title: 'Balances', time: '22:38', req: 'Balances update and debts simplify from 6 to 3',
++  { id: 'money', n: '11', title: 'Balances', time: '10:38 PM', req: 'Balances update and debts simplify from 6 to 3',
+@@ -217 +217 @@
+-  { id: 'settle', n: '12', title: 'Settle up', time: '22:39', req: 'Settle in the app or mark as cash',
++  { id: 'settle', n: '12', title: 'Settle up', time: '10:39 PM', req: 'Settle in the app or mark as cash',
+@@ -220 +220 @@
+-  { id: 'squared', n: '13', title: 'All squared up', time: '22:41', req: 'All squared up, with a shareable recap',
++  { id: 'squared', n: '13', title: 'All squared up', time: '10:41 PM', req: 'All squared up, with a shareable recap',
+--- /tmp/pre/research-review.md	2026-10-18 21:08:01.000000000 -0700
++++ research-review.md	2026-10-18 21:49:04.942637175 -0700
+@@ -50 +50 @@
+-  - Grey wires: My Trips (Coming up / Active), Interests, trip detail with itinerary list.
++  - Gray wires: My Trips (Coming up / Active), Interests, trip detail with itinerary list.
+@@ -75 +75 @@
+-- **Soft "Liquid Glass" glassmorphism:** frosted translucent cards on a cool grey-blue field with a warm amber glow; big bold black grotesk headlines (SF/Inter); circular glass buttons.
++- **Soft "Liquid Glass" glassmorphism:** frosted translucent cards on a cool gray-blue field with a warm amber glow; big bold black grotesk headlines (SF/Inter); circular glass buttons.
+@@ -147 +147 @@
+-   - "new charge" has grey bars. The FigJam logic is right (expand Wine, remove Ren + Nic), but no screen shows it.
++   - "new charge" has gray bars. The FigJam logic is right (expand Wine, remove Ren + Nic), but no screen shows it.
+@@ -154 +154 @@
+-   - Glass is applied to *content* cards, giving low-contrast grey text on grey (an HIG/accessibility risk).
++   - Glass is applied to *content* cards, giving low-contrast gray text on gray (an HIG/accessibility risk).
+@@ -162 +162 @@
+-   - Prices in **$** while in Portugal; show € with the home-currency equivalent.
++   - Prices in **$** while in Portugal; show $ with the home-currency equivalent.
+--- /tmp/pre/site/case-study/index.html	2026-10-18 21:08:04.000000000 -0700
++++ site/case-study/index.html	2026-10-18 21:49:04.950637175 -0700
+@@ -197 +197 @@
+-          <li>Ari pays €248.70. Ren and Nic skip the wine.</li>
++          <li>Ari pays $248.70. Ren and Nic skip the wine.</li>
+@@ -252 +252 @@
+-        <tr><td>Deadline and tie rule</td><td><span class="pill p-improve">Improved</span></td><td>Closes at 19:30 or when all vote. On a tie, the starter picks.</td></tr>
++        <tr><td>Deadline and tie rule</td><td><span class="pill p-improve">Improved</span></td><td>Closes at 7:30 PM or when all vote. On a tie, the starter picks.</td></tr>
+@@ -254 +254 @@
+-        <tr><td>Split by line item</td><td><span class="pill p-follow">Followed</span></td><td>One tap takes Ren and Nic off the €38 wine.</td></tr>
++        <tr><td>Split by line item</td><td><span class="pill p-follow">Followed</span></td><td>One tap takes Ren and Nic off the $38 wine.</td></tr>
+@@ -279,2 +279,2 @@
+-      <div class="card"><h3>Why Ren and Nic pay €30.10</h3><p>Wine splits five ways, the rest seven.</p>
+-        <div class="math">€210.70 ÷ 7 = €30.10<br>€38.00 ÷ 5 = €7.60<br>Drinkers: €37.70</div></div>
++      <div class="card"><h3>Why Ren and Nic pay $30.10</h3><p>Wine splits five ways, the rest seven.</p>
++        <div class="math">$210.70 ÷ 7 = $30.10<br>$38.00 ÷ 5 = $7.60<br>Drinkers: $37.70</div></div>
+@@ -282 +282 @@
+-        <div class="math">Ari → Nic €42.10<br>Ren → Ari €18.40<br>Mara → João €64.00<br>€124.50 moves instead of €190.60</div></div>
++        <div class="math">Ari → Nic $42.10<br>Ren → Ari $18.40<br>Mara → João $64.00<br>$124.50 moves instead of $190.60</div></div>
+@@ -314 +314 @@
+-          <img src="../assets/ba-poll-after.jpg" alt="Final: live dinner poll with three Lisbon restaurants, vote percentages, the leader and a 19:30 close time" loading="lazy" width="603" height="1311">
++          <img src="../assets/ba-poll-after.jpg" alt="Final: live dinner poll with three Lisbon restaurants, vote percentages, the leader and a 7:30 PM close time" loading="lazy" width="603" height="1311">
+--- /tmp/pre/site/deck/data.js	2026-10-18 21:08:04.000000000 -0700
++++ site/deck/data.js	2026-10-18 21:49:04.954637175 -0700
+@@ -44 +44 @@
+-      ans: 'Polls close at 19:30, or when everyone votes, and the winner goes straight into tonight\'s plan.', go: 7 },
++      ans: 'Polls close at 7:30 PM, or when everyone votes, and the winner goes straight into tonight\'s plan.', go: 7 },
+@@ -54 +54 @@
+-    { name: 'Decide', time: 'Until 19:30', y: 0.34, photo: 'Joan Costa', shot: 'hifi-05-vote-from-push', alt: 'Lock Screen notification with vote buttons',
++    { name: 'Decide', time: 'Until 7:30 PM', y: 0.34, photo: 'Joan Costa', shot: 'hifi-05-vote-from-push', alt: 'Lock Screen notification with vote buttons',
+@@ -57 +57 @@
+-    { name: 'Book', time: '19:30', y: 0.78, photo: 'Efe Ersoy', shot: 'hifi-07-poll-closed', alt: 'Poll closed with Taberna da Rua das Flores as the winner',
++    { name: 'Book', time: '7:30 PM', y: 0.78, photo: 'Efe Ersoy', shot: 'hifi-07-poll-closed', alt: 'Poll closed with Taberna da Rua das Flores as the winner',
+@@ -59,4 +59,4 @@
+-      moment: 'Taberna da Rua das Flores wins with 5 of 7 votes, 71%. It lands in tonight\'s plan, booked for 20:30.' },
+-    { name: 'Dine and log', time: '20:30', y: 0.46, photo: 'Doğu Tuncer', shot: 'hifi-08-wine-split', alt: 'Itemized dinner bill with the wine split five ways',
+-      pain: 'Ari paid €248.70. Ren and Nic skipped the wine.', job: 'Don\'t let money make the last night awkward.',
+-      moment: 'Itemize the bill and take Ren and Nic off the €38 wine in one tap.' },
++      moment: 'Taberna da Rua das Flores wins with 5 of 7 votes, 71%. It lands in tonight\'s plan, booked for 8:30 PM.' },
++    { name: 'Dine and log', time: '8:30 PM', y: 0.46, photo: 'Doğu Tuncer', shot: 'hifi-08-wine-split', alt: 'Itemized dinner bill with the wine split five ways',
++      pain: 'Ari paid $248.70. Ren and Nic skipped the wine.', job: 'Don\'t let money make the last night awkward.',
++      moment: 'Itemize the bill and take Ren and Nic off the $38 wine in one tap.' },
+@@ -69 +69 @@
+-  /* Node centres and states from prototype/SPEC-settle-v3.md (Figma set 121:4174). */
++  /* Node centers and states from prototype/SPEC-settle-v3.md (Figma set 121:4174). */
+@@ -72 +72 @@
+-  READOUT: [['in   6 IOUs · 7 people · €190.60', 'next sum each person: paid minus owed'], ['net  +106.10 owed · −106.10 owe', '2 creditors · 3 debtors · 2 at zero'], ['out  3 payments · €124.50', 'saved 3 payments · €66.10 less moved']],
++  READOUT: [['in   6 IOUs · 7 people · $190.60', 'next sum each person: paid minus owed'], ['net  +106.10 owed · −106.10 owe', '2 creditors · 3 debtors · 2 at zero'], ['out  3 payments · $124.50', 'saved 3 payments · $66.10 less moved']],
+--- /tmp/pre/site/deck/deck.js	2026-10-18 21:08:04.000000000 -0700
++++ site/deck/deck.js	2026-10-18 21:49:04.958637175 -0700
+@@ -425 +425 @@
+-    var O = [['Taberna da Rua das Flores', 'Tasca · €€ · 6 min walk'], ['Cervejaria Ramiro', 'Seafood · €€€ · 14 min'], ['Park Rooftop', 'Drinks and bites · €€ · 9 min']];
++    var O = [['Taberna da Rua das Flores', 'Tasca · $$ · 6 min walk'], ['Cervejaria Ramiro', 'Seafood · $$$ · 14 min'], ['Park Rooftop', 'Drinks and bites · $$ · 9 min']];
+@@ -443,2 +443,2 @@
+-      $('#pcSub').textContent = st.closed ? 'Closed at 19:30 · ' + n + ' of 7 voted' : n + ' of 7 voted · closes 19:30';
+-      $('.pc-as').textContent = st.closed ? (st.v[0] === 5 ? 'Taberna wins with 5 of 7. Booked for 20:30.' : 'Taberna still wins. In the story, Ren and João both pick it: 5 of 7, 71%.')
++      $('#pcSub').textContent = st.closed ? 'Closed at 7:30 PM · ' + n + ' of 7 voted' : n + ' of 7 voted · closes 7:30 PM';
++      $('.pc-as').textContent = st.closed ? (st.v[0] === 5 ? 'Taberna wins with 5 of 7. Booked for 8:30 PM.' : 'Taberna still wins. In the story, Ren and João both pick it: 5 of 7, 71%.')
+@@ -495 +495 @@
+-      var txt = (cls === 'pay' ? '€' : '') + e[2].toFixed(2), w = txt.length * 4.6 + 8;
++      var txt = (cls === 'pay' ? '$' : '') + e[2].toFixed(2), w = txt.length * 4.6 + 8;
+--- /tmp/pre/site/index.html	2026-10-18 21:08:02.000000000 -0700
++++ site/index.html	2026-10-18 21:49:04.962637175 -0700
+@@ -49,2 +49,2 @@
+-        <li><span><b>Ari polls</b> three restaurants. Votes close at 19:30.</span></li>
+-        <li><span>The <b>winner goes into</b> the itinerary, booked for 20:30.</span></li>
++        <li><span><b>Ari polls</b> three restaurants. Votes close at 7:30 PM.</span></li>
++        <li><span>The <b>winner goes into</b> the itinerary, booked for 8:30 PM.</span></li>
+@@ -57 +57 @@
+-        <p><b>Lisbon Crew</b> · 12 to 17 Oct<br><span>Ari, Mara, Nic, João, Sofia, Tomás and Ren Matsuda</span></p>
++        <p><b>Lisbon Crew</b> · Oct 12 to 17<br><span>Ari, Mara, Nic, João, Sofia, Tomás and Ren Matsuda</span></p>
+@@ -103 +103 @@
+-      <article class="job tu-surface" data-r data-job="1" data-token=".tu-surface · --radius-xl"><p class="k">Functional</p><h3>“Get seven of us to one table tonight.”</h3><p class="tension">The thread grows, nobody commits, and the good tables go.</p><a class="trace" href="#7">Answered on slide 7: a poll that closes at 19:30</a></article>
++      <article class="job tu-surface" data-r data-job="1" data-token=".tu-surface · --radius-xl"><p class="k">Functional</p><h3>“Get seven of us to one table tonight.”</h3><p class="tension">The thread grows, nobody commits, and the good tables go.</p><a class="trace" href="#7">Answered on slide 7: a poll that closes at 7:30 PM</a></article>
+@@ -219 +219 @@
+-          <div><h3>Dinner tonight?</h3><p class="tu-num" id="pcSub">5 of 7 voted · closes 19:30</p></div>
++          <div><h3>Dinner tonight?</h3><p class="tu-num" id="pcSub">5 of 7 voted · closes 7:30 PM</p></div>
+@@ -227 +227 @@
+-        <div class="pc-foot"><button class="btn btn-primary mag" type="button" id="closePoll" data-cursor="Close" data-token="--color-accent-primary · --shadow-accent">Close at 19:30</button><button class="btn btn-ghost" type="button" id="resetPoll">Reset</button><label class="rm"><input type="checkbox" id="pollRM"> Reduce Motion</label></div>
++        <div class="pc-foot"><button class="btn btn-primary mag" type="button" id="closePoll" data-cursor="Close" data-token="--color-accent-primary · --shadow-accent">Close at 7:30 PM</button><button class="btn btn-ghost" type="button" id="resetPoll">Reset</button><label class="rm"><input type="checkbox" id="pollRM"> Reduce Motion</label></div>
+@@ -257 +257 @@
+-          <title id="gTitle">Who owes whom</title><desc id="gDesc">Six IOUs totaling 190 euros 60 resolve into three payments totaling 124 euros 50: Ari pays Nic 42.10, Ren pays Ari 18.40, Mara pays João 64.00. Sofia and Tomás net to zero.</desc>
++          <title id="gTitle">Who owes whom</title><desc id="gDesc">Six IOUs totaling 190 dollars 60 resolve into three payments totaling 124 dollars 50: Ari pays Nic 42.10, Ren pays Ari 18.40, Mara pays João 64.00. Sofia and Tomás net to zero.</desc>
+@@ -278 +278 @@
+-        <p class="bill-total tu-num">€248.70</p>
++        <p class="bill-total tu-num">$248.70</p>
+@@ -280,5 +280,5 @@
+-          <div><dt>Vinho Verde, split 5 ways</dt><dd>€38.00 ÷ 5 = €7.60</dd></div>
+-          <div><dt>Everything else, split 7 ways</dt><dd>€210.70 ÷ 7 = €30.10</dd></div>
+-          <div><dt>Ren and Nic</dt><dd>€30.10 each</dd></div>
+-          <div><dt>Everyone else</dt><dd>€37.70 each</dd></div>
+-          <div class="net"><dt>Ari, across the trip</dt><dd><span class="owe">owes €23.70</span></dd></div>
++          <div><dt>Vinho Verde, split 5 ways</dt><dd>$38.00 ÷ 5 = $7.60</dd></div>
++          <div><dt>Everything else, split 7 ways</dt><dd>$210.70 ÷ 7 = $30.10</dd></div>
++          <div><dt>Ren and Nic</dt><dd>$30.10 each</dd></div>
++          <div><dt>Everyone else</dt><dd>$37.70 each</dd></div>
++          <div class="net"><dt>Ari, across the trip</dt><dd><span class="owe">owes $23.70</span></dd></div>
+--- /tmp/pre/storybook/.storybook/preview.tsx	2026-10-18 21:08:01.000000000 -0700
++++ storybook/.storybook/preview.tsx	2026-10-18 21:49:04.966637175 -0700
+@@ -32 +32 @@
+-      description: 'Colour mode',
++      description: 'Color mode',
+--- /tmp/pre/storybook/src/components/core.tsx	2026-10-18 21:34:58.000000000 -0700
++++ storybook/src/components/core.tsx	2026-10-18 21:49:04.966637175 -0700
+@@ -65 +65 @@
+-  const text = state === 'settled' ? 'Settled' : `${state === 'owed' ? 'Owed' : 'You owe'} €${Math.abs(amount).toFixed(2)}`;
++  const text = state === 'settled' ? 'Settled' : `${state === 'owed' ? 'Owed' : 'You owe'} $${Math.abs(amount).toFixed(2)}`;
+--- /tmp/pre/storybook/src/components/feedback.tsx	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/components/feedback.tsx	2026-10-18 21:49:04.970637175 -0700
+@@ -53 +53 @@
+-      <div className="p-island" role="status" aria-label="Dinner poll, 5 of 7 voted, closes 19:30">
++      <div className="p-island" role="status" aria-label="Dinner poll, 5 of 7 voted, closes 7:30 PM">
+@@ -56 +56 @@
+-        <span className="p-island-r tu-num">5/7 · 19:30</span>
++        <span className="p-island-r tu-num">5/7 · 7:30 PM</span>
+@@ -63 +63 @@
+-        <div className="p-live-head"><AppMark size={24} /><b>Dinner tonight?</b><span className="p-live-time tu-num">to 19:30</span></div>
++        <div className="p-live-head"><AppMark size={24} /><b>Dinner tonight?</b><span className="p-live-time tu-num">to 7:30 PM</span></div>
+@@ -79 +79 @@
+-        <div className="p-live-foot"><span>Mara pays João next</span><span className="tu-num">€64.00</span></div>
++        <div className="p-live-foot"><span>Mara pays João next</span><span className="tu-num">$64.00</span></div>
+--- /tmp/pre/storybook/src/components/money.tsx	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/components/money.tsx	2026-10-18 21:49:04.970637175 -0700
+@@ -45 +45 @@
+-        <header className="p-receipt-head"><span className="p-receipt-venue">{venue}</span><span className="p-receipt-sub">Scanned 22:41 · Chiado</span></header>
++        <header className="p-receipt-head"><span className="p-receipt-venue">{venue}</span><span className="p-receipt-sub">Scanned 10:41 PM · Chiado</span></header>
+@@ -84 +84 @@
+-/** Six IOUs collapse into three payments: €124.50 moves instead of €190.60. */
++/** Six IOUs collapse into three payments: $124.50 moves instead of $190.60. */
+@@ -111 +111 @@
+-          <text textAnchor="middle" dy="4" className="tu-num">€{e.amt.toFixed(2).replace(/\.00$/, '')}</text>
++          <text textAnchor="middle" dy="4" className="tu-num">${e.amt.toFixed(2).replace(/\.00$/, '')}</text>
+@@ -178,2 +178,2 @@
+-      <p className="p-settle-amt tu-num">€{v.toFixed(2)}</p>
+-      <p className="p-settle-note">Your share of Taberna, the Tram 28 passes and the Alfama flat, less the €18.40 Ren owes you</p>
++      <p className="p-settle-amt tu-num">${v.toFixed(2)}</p>
++      <p className="p-settle-note">Your share of Taberna, the Tram 28 passes and the Alfama flat, less the $18.40 Ren owes you</p>
+--- /tmp/pre/storybook/src/components/overlays.tsx	2026-10-18 21:40:03.000000000 -0700
++++ storybook/src/components/overlays.tsx	2026-10-18 21:49:04.974637175 -0700
+@@ -64 +64 @@
+-/** Calm pearl glass. The spectrum shows up once, as light travelling along the card edge. Under 1.4 s, then still. */
++/** Calm pearl glass. The spectrum shows up once, as light traveling along the card edge. Under 1.4 s, then still. */
+@@ -66 +66 @@
+-const SQ_ROWS: SquaredRow[] = [['Ari', 'Nic', '€42.10', '22:39'], ['Ren', 'Ari', '€18.40', '22:40'], ['Mara', 'João', '€64.00', 'cash ✓']];
++const SQ_ROWS: SquaredRow[] = [['Ari', 'Nic', '$42.10', '10:39 PM'], ['Ren', 'Ari', '$18.40', '10:40 PM'], ['Mara', 'João', '$64.00', 'cash ✓']];
+@@ -68 +68 @@
+- * All squared up (Figma hifi-10). A white sheet over a dimmed Money screen. The only colour is a soft spectrum glow
++ * All squared up (Figma hifi-10). A white sheet over a dimmed Money screen. The only color is a soft spectrum glow
+@@ -71,2 +71,2 @@
+-export function SquaredSheet({ eyebrow = '22:41 · Lisbon Crew · settled', title = 'All squared up.', body = '3 payments, €124.50 in total. Everyone in Lisbon Crew is at €0.00.',
+-  rows = SQ_ROWS, total = ['€124.50', '3 of 3'], actionLabel = 'Share the recap', onAction, replayKey = 0 }:
++export function SquaredSheet({ eyebrow = '10:41 PM · Lisbon Crew · settled', title = 'All squared up.', body = '3 payments, $124.50 in total. Everyone in Lisbon Crew is at $0.00.',
++  rows = SQ_ROWS, total = ['$124.50', '3 of 3'], actionLabel = 'Share the recap', onAction, replayKey = 0 }:
+@@ -101 +101 @@
+-  const s = subtitle ?? { squared: 'Three payments instead of six. Nobody owes anything.', pollWon: '5 of 7 picked Taberna da Rua das Flores. Booked for 20:30.', milestone: 'Flights, the Alfama flat and both dinners are locked in.' }[kind];
++  const s = subtitle ?? { squared: 'Three payments instead of six. Nobody owes anything.', pollWon: '5 of 7 picked Taberna da Rua das Flores. Booked for 8:30 PM.', milestone: 'Flights, the Alfama flat and both dinners are locked in.' }[kind];
+@@ -112 +112 @@
+-        {(kind as string) === 'squared' && <dl className="p-celebrate-stats">{(stats ?? [['€124.50', 'settled'], ['3', 'payments'], ['€0.00', 'owed']]).map(([v, l]) => <div key={l}><dt>{l}</dt><dd className="tu-num">{v}</dd></div>)}</dl>}
++        {(kind as string) === 'squared' && <dl className="p-celebrate-stats">{(stats ?? [['$124.50', 'settled'], ['3', 'payments'], ['$0.00', 'owed']]).map(([v, l]) => <div key={l}><dt>{l}</dt><dd className="tu-num">{v}</dd></div>)}</dl>}
+--- /tmp/pre/storybook/src/components/settle.tsx	2026-10-18 21:43:27.000000000 -0700
++++ storybook/src/components/settle.tsx	2026-10-18 21:49:04.990637175 -0700
+@@ -13 +13 @@
+-export type SettleStatus = 'draft' | 'queued' | 'pending' | 'confirmed' | 'disputed' | 'cancelled';
++export type SettleStatus = 'draft' | 'queued' | 'pending' | 'confirmed' | 'disputed' | 'canceled';
+@@ -31 +31 @@
+-export const eur2 = (n: number) => `${n < 0 ? '−' : ''}€${Math.abs(n).toFixed(2)}`;
++export const eur2 = (n: number) => `${n < 0 ? '−' : ''}$${Math.abs(n).toFixed(2)}`;
+@@ -33 +33 @@
+-/** Cash rounds to the nearest euro, so the change is never more than €0.50 either way. */
++/** Cash rounds to the nearest dollar, so the change is never more than $0.50 either way. */
+@@ -41 +41 @@
+-const noteLabel = (v: number) => (v >= 1 ? `€${v}` : `€${v.toFixed(2)}`);
++const noteLabel = (v: number) => (v >= 1 ? `$${v}` : `$${v.toFixed(2)}`);
+@@ -214,2 +214,2 @@
+-          [<><span className="p-tl-t">{s.markedAt ?? '22:39:04'}</span>you marked {s.method === 'cash' ? 'cash' : s.method}</>, <>{eur2(s.paid)} ✓</>, 'strong'],
+-          [<><span className="p-tl-t">{s.markedAt ?? '22:39:04'}</span>request sent to {to.name}</>, <span className="p-ok">✓</span>],
++          [<><span className="p-tl-t">{s.markedAt ?? '10:39:04 PM'}</span>you marked {s.method === 'cash' ? 'cash' : s.method}</>, <>{eur2(s.paid)} ✓</>, 'strong'],
++          [<><span className="p-tl-t">{s.markedAt ?? '10:39:04 PM'}</span>request sent to {to.name}</>, <span className="p-ok">✓</span>],
+@@ -254 +254 @@
+-export function PaymentSuccess({ title = 'Nic confirmed €42.00', meta = 'cash · 22:40:12 · stl_7Q2K-0042', animate = true }: { title?: string; meta?: string; animate?: boolean }) {
++export function PaymentSuccess({ title = 'Nic confirmed $42.00', meta = 'cash · 10:40:12 PM · stl_7Q2K-0042', animate = true }: { title?: string; meta?: string; animate?: boolean }) {
+@@ -297 +297 @@
+-        ['marked', `${s.markedAt ?? '22:39:04'} · ${from.name}`],
++        ['marked', `${s.markedAt ?? '10:39:04 PM'} · ${from.name}`],
+@@ -313 +313 @@
+-  const opts: [string, number][] = [['€10', 10], ['€20', 20], ['€40', 40], [`All ${eur2(due)}`, due]];
++  const opts: [string, number][] = [['$10', 10], ['$20', 20], ['$40', 40], [`All ${eur2(due)}`, due]];
+@@ -337 +337 @@
+-  const d = s.dispute ?? { counted: 40, note: 'Got two twenties, no coin.', at: '22:41' };
++  const d = s.dispute ?? { counted: 40, note: 'Got two twenties, no coin.', at: '10:41 PM' };
+@@ -371,2 +371,2 @@
+-      <PairHero from={from} to={to} amount={s.paid} caption={`Marked ${(s.markedAt ?? '22:39').slice(0, 5)}, not sent yet.`} pill={<SPill>QUEUED</SPill>} />
+-      <Readout title="SYNC" rows={[['queue', '1 payment'], ['last sync', '22:31:48'], ['retry', 'on reconnect, then every 30 s'], ['balances', `pending until ${to.name} confirms`]]} />
++      <PairHero from={from} to={to} amount={s.paid} caption={`Marked ${(s.markedAt ?? '10:39 PM').slice(0, 5)}, not sent yet.`} pill={<SPill>QUEUED</SPill>} />
++      <Readout title="SYNC" rows={[['queue', '1 payment'], ['last sync', '10:31:48 PM'], ['retry', 'on reconnect, then every 30 s'], ['balances', `pending until ${to.name} confirms`]]} />
+@@ -379 +379 @@
+-  return { id: 'stl_7Q2K-0042', clientId: 'c_ari_7Q2K_0042', from: 'ari', to: 'nic', due: 42.1, paid: 42, carry: 0.1, method: 'cash', status: 'pending', markedAt: '22:39:04', provenance: NIC_PROVENANCE, ...over };
++  return { id: 'stl_7Q2K-0042', clientId: 'c_ari_7Q2K_0042', from: 'ari', to: 'nic', due: 42.1, paid: 42, carry: 0.1, method: 'cash', status: 'pending', markedAt: '10:39:04 PM', provenance: NIC_PROVENANCE, ...over };
+--- /tmp/pre/storybook/src/components/untangle.tsx	2026-10-18 21:32:59.000000000 -0700
++++ storybook/src/components/untangle.tsx	2026-10-18 21:49:04.994637175 -0700
+@@ -16 +16 @@
+-/** Node centres from the Figma card. Anyone else is placed on the orbit. */
++/** Node centers from the Figma card. Anyone else is placed on the orbit. */
+@@ -49 +49 @@
+-/** Parameter where the curve is d away from an endpoint centre. */
++/** Parameter where the curve is d away from an endpoint center. */
+@@ -185 +185 @@
+-    const tags2 = placeTags(solvedG.map(x => ({ g: x.g, label: `€${x.e.amt.toFixed(2)}` })), nodes, lab1, solvedG.map(x => x.g.poly));
++    const tags2 = placeTags(solvedG.map(x => ({ g: x.g, label: `$${x.e.amt.toFixed(2)}` })), nodes, lab1, solvedG.map(x => x.g.poly));
+@@ -243 +243 @@
+-    [['IOUS', <><tspan>{raw.length}</tspan><tspan className="p-ut-sub" dx="6">{ids.length} people</tspan></>], ['CROSSINGS', <tspan>{G.knots.length}</tspan>], ['FLOW', <tspan>€{sum(raw).toFixed(2)}</tspan>]],
++    [['IOUS', <><tspan>{raw.length}</tspan><tspan className="p-ut-sub" dx="6">{ids.length} people</tspan></>], ['CROSSINGS', <tspan>{G.knots.length}</tspan>], ['FLOW', <tspan>${sum(raw).toFixed(2)}</tspan>]],
+@@ -245 +245 @@
+-    [['PAYMENTS', <><tspan>{simple.length}</tspan><tspan className="p-ut-sub" dx="6">was {raw.length}</tspan></>], ['FLOW', <tspan>€{sum(simple).toFixed(2)}</tspan>],
++    [['PAYMENTS', <><tspan>{simple.length}</tspan><tspan className="p-ut-sub" dx="6">was {raw.length}</tspan></>], ['FLOW', <tspan>${sum(simple).toFixed(2)}</tspan>],
+@@ -250 +250 @@
+-  const summary = phase === 2 ? `Solved: ${simple.map(e => `${people[e.from].name} pays ${people[e.to].name} €${e.amt.toFixed(2)}`).join(', ')}. ${simple.length} payments instead of ${raw.length}, €${sum(simple).toFixed(2)} moves instead of €${sum(raw).toFixed(2)}. Every net balance ${netsHold ? 'is unchanged' : 'changed'}.`
++  const summary = phase === 2 ? `Solved: ${simple.map(e => `${people[e.from].name} pays ${people[e.to].name} $${e.amt.toFixed(2)}`).join(', ')}. ${simple.length} payments instead of ${raw.length}, $${sum(simple).toFixed(2)} moves instead of $${sum(raw).toFixed(2)}. Every net balance ${netsHold ? 'is unchanged' : 'changed'}.`
+@@ -252 +252 @@
+-    : `Tangled: ${raw.length} IOUs between ${ids.length} people, €${sum(raw).toFixed(2)} in total, ${G.knots.length} crossings.`;
++    : `Tangled: ${raw.length} IOUs between ${ids.length} people, $${sum(raw).toFixed(2)} in total, ${G.knots.length} crossings.`;
+--- /tmp/pre/storybook/src/docs/Color.mdx	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/docs/Color.mdx	2026-10-18 21:49:04.994637175 -0700
+@@ -6 +6 @@
+-# Colour roles
++# Color roles
+@@ -15 +15 @@
+-  <div className="doc-do"><b>Do</b>Pair jade and rose with words and a sign: owes you +€18.40, you owe −€42.10.</div>
++  <div className="doc-do"><b>Do</b>Pair jade and rose with words and a sign: owes you +$18.40, you owe −$42.10.</div>
+--- /tmp/pre/storybook/src/docs/Elevation.mdx	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/docs/Elevation.mdx	2026-10-18 21:49:04.994637175 -0700
+@@ -14 +14 @@
+-  <div className="doc-dont"><b>Don't</b>Add coloured glows to cards, chips or avatars.</div>
++  <div className="doc-dont"><b>Don't</b>Add colored glows to cards, chips or avatars.</div>
+--- /tmp/pre/storybook/src/docs/Introduction.mdx	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/docs/Introduction.mdx	2026-10-18 21:49:04.994637175 -0700
+@@ -9 +9 @@
+-The direction is calm and native: pearl white on a soft prismatic grey, Liquid Glass for chrome only, and a single accent, **Iris #6E5BFF**. The celebration spectrum is held back for three moments: a poll is won, the group is all squared up, a trip milestone lands.
++The direction is calm and native: pearl white on a soft prismatic gray, Liquid Glass for chrome only, and a single accent, **Iris #6E5BFF**. The celebration spectrum is held back for three moments: a poll is won, the group is all squared up, a trip milestone lands.
+@@ -11 +11 @@
+-## How this Storybook is organised
++## How this Storybook is organized
+@@ -13 +13 @@
+-- **Foundations** cover colour roles in both modes, the type scale, spacing, radius, glass layers, elevation, motion, icons and photography. Every swatch and sample reads straight from `tokens.json`.
++- **Foundations** cover color roles in both modes, the type scale, spacing, radius, glass layers, elevation, motion, icons and photography. Every swatch and sample reads straight from `tokens.json`.
+@@ -31 +31 @@
+-Ari (you, the organiser), Mara, Nic, João, Sofia, Tomás, and Ren, who joins halfway through planning. Prices are in euros and every place is real.
++Ari (you, the organizer), Mara, Nic, João, Sofia, Tomás, and Ren, who joins halfway through planning. Prices are in dollars and every place is real.
+--- /tmp/pre/storybook/src/docs/Typography.mdx	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/docs/Typography.mdx	2026-10-18 21:49:04.998637175 -0700
+@@ -15 +15 @@
+-  <div className="doc-do"><b>Do</b>Apply .tu-num to every amount so euros line up in columns.</div>
++  <div className="doc-do"><b>Do</b>Apply .tu-num to every amount so dollars line up in columns.</div>
+--- /tmp/pre/storybook/src/docs/UsageMoney.mdx	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/docs/UsageMoney.mdx	2026-10-18 21:49:04.998637175 -0700
+@@ -10 +10 @@
+-The simplify view shows €124.50 moving in three payments instead of six IOUs worth €190.60. Each person pays or receives once.
++The simplify view shows $124.50 moving in three payments instead of six IOUs worth $190.60. Each person pays or receives once.
+@@ -15,2 +15,2 @@
+-  <div className="doc-do"><b>Do</b>Write amounts with the euro sign first and two decimals: €42.10.</div>
+-  <div className="doc-dont"><b>Don't</b>Colour totals that are not yours. Only your balance gets jade or rose.</div>
++  <div className="doc-do"><b>Do</b>Write amounts with the dollar sign first and two decimals: $42.10.</div>
++  <div className="doc-dont"><b>Don't</b>Color totals that are not yours. Only your balance gets jade or rose.</div>
+--- /tmp/pre/storybook/src/docs/UsageNav.mdx	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/docs/UsageNav.mdx	2026-10-18 21:49:04.998637175 -0700
+@@ -18 +18 @@
+-  <div className="doc-do"><b>Do</b>Write button labels as a verb with an object: Send to group, Pay €42.10 with MB WAY.</div>
++  <div className="doc-do"><b>Do</b>Write button labels as a verb with an object: Send to group, Pay $42.10 with MB WAY.</div>
+--- /tmp/pre/storybook/src/docs/UsagePolls.mdx	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/docs/UsagePolls.mdx	2026-10-18 21:49:04.998637175 -0700
+@@ -16 +16 @@
+-| Default | Grey fill to share | Any open option |
++| Default | Gray fill to share | Any open option |
+--- /tmp/pre/storybook/src/foundations/Foundations.tsx	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/foundations/Foundations.tsx	2026-10-18 21:49:04.998637175 -0700
+@@ -33 +33 @@
+-      <p className="doc-lead">38 semantic colours alias 66 primitives. Components only read semantic tokens, so the dark mode swap is a single attribute on the root. Iris is the only acting colour.</p>
++      <p className="doc-lead">38 semantic colors alias 66 primitives. Components only read semantic tokens, so the dark mode swap is a single attribute on the root. Iris is the only acting color.</p>
+@@ -59 +59 @@
+-  const sample = (k: string) => k.startsWith('display/xl') ? 'Lisbon' : k.startsWith('display/l') ? '€248.70' : k.startsWith('display/m') ? 'Taberna da Rua das Flores' : k.includes('celebrate') ? 'All squared up' : k.includes('amount') ? '€42.10' : k.includes('title') ? 'Dinner on Friday?' : 'Mara paid for the Alfama flat, split seven ways.';
++  const sample = (k: string) => k.startsWith('display/xl') ? 'Lisbon' : k.startsWith('display/l') ? '$248.70' : k.startsWith('display/m') ? 'Taberna da Rua das Flores' : k.includes('celebrate') ? 'All squared up' : k.includes('amount') ? '$42.10' : k.includes('title') ? 'Dinner on Friday?' : 'Mara paid for the Alfama flat, split seven ways.';
+@@ -158 +158 @@
+-        <MotionCard name="ease.standard" curve="cubic-bezier(0.2, 0, 0, 1)" dur={240} note="Colour, opacity, layout shifts." />
++        <MotionCard name="ease.standard" curve="cubic-bezier(0.2, 0, 0, 1)" dur={240} note="Color, opacity, layout shifts." />
+--- /tmp/pre/storybook/src/lib/PhoneFrame.tsx	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/lib/PhoneFrame.tsx	2026-10-18 21:49:04.998637175 -0700
+@@ -15 +15 @@
+-          <span className="phone-time">9:41</span>
++          <span className="phone-time">9:41 AM</span>
+--- /tmp/pre/storybook/src/lib/data.ts	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/lib/data.ts	2026-10-18 21:49:05.002637175 -0700
+@@ -33,7 +33,7 @@
+-  taberna: { name: 'Taberna da Rua das Flores', area: 'Chiado', kind: 'Petiscos', price: '€€', rating: 4.7, photo: photo.taberna, note: 'No bookings. Queue by 18:45.' },
+-  ramiro: { name: 'Cervejaria Ramiro', area: 'Intendente', kind: 'Seafood', price: '€€€', rating: 4.6, photo: photo.ramiro, note: 'Prego for dessert, house rule.' },
+-  eurico: { name: 'O Velho Eurico', area: 'Alfama', kind: 'Tasca', price: '€€', rating: 4.8, photo: photo.eurico, note: 'Book by phone. Cash friendly.' },
+-  park: { name: 'Park Rooftop', area: 'Bairro Alto', kind: 'Drinks and bites', price: '€€', rating: 4.5, photo: photo.bridge, note: 'Top of a car park. Go up before sunset.' },
+-  graca: { name: 'Miradouro da Graça', area: 'Graça', kind: 'Viewpoint', price: 'Free', rating: 4.7, photo: photo.roofs, note: 'Best at 19:20 for sunset.' },
+-  pink: { name: 'Rua Nova do Carvalho', area: 'Cais do Sodré', kind: 'Bars', price: '€', rating: 4.3, photo: photo.pinkStreet, note: 'Pink Street. Loud after 23:00.' },
+-  tram: { name: 'Tram 28', area: 'Martim Moniz', kind: 'Ride', price: '€3', rating: 4.4, photo: photo.tram, note: 'Board at the first stop to sit.' },
++  taberna: { name: 'Taberna da Rua das Flores', area: 'Chiado', kind: 'Petiscos', price: '$$', rating: 4.7, photo: photo.taberna, note: 'No bookings. Queue by 6:45 PM.' },
++  ramiro: { name: 'Cervejaria Ramiro', area: 'Intendente', kind: 'Seafood', price: '$$$', rating: 4.6, photo: photo.ramiro, note: 'Prego for dessert, house rule.' },
++  eurico: { name: 'O Velho Eurico', area: 'Alfama', kind: 'Tasca', price: '$$', rating: 4.8, photo: photo.eurico, note: 'Book by phone. Cash friendly.' },
++  park: { name: 'Park Rooftop', area: 'Bairro Alto', kind: 'Drinks and bites', price: '$$', rating: 4.5, photo: photo.bridge, note: 'Top of a car park. Go up before sunset.' },
++  graca: { name: 'Miradouro da Graça', area: 'Graça', kind: 'Viewpoint', price: 'Free', rating: 4.7, photo: photo.roofs, note: 'Best at 7:20 PM for sunset.' },
++  pink: { name: 'Rua Nova do Carvalho', area: 'Cais do Sodré', kind: 'Bars', price: '$', rating: 4.3, photo: photo.pinkStreet, note: 'Pink Street. Loud after 11:00 PM.' },
++  tram: { name: 'Tram 28', area: 'Martim Moniz', kind: 'Ride', price: '$3', rating: 4.4, photo: photo.tram, note: 'Board at the first stop to sit.' },
+@@ -43 +43 @@
+-  (sign && n > 0 ? '+' : n < 0 ? '−' : '') + '€' + Math.abs(n).toLocaleString('en-IE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
++  (sign && n > 0 ? '+' : n < 0 ? '−' : '') + '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+--- /tmp/pre/storybook/src/lib/itinerary.ts	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/lib/itinerary.ts	2026-10-18 21:49:05.002637175 -0700
+@@ -4,5 +4,5 @@
+-  { time: '14:10', title: 'Land at LIS, T1', place: 'Metro red line to Saldanha', icon: 'plane', kind: 'plan', people: crewWithRen },
+-  { time: '16:00', title: 'Check in, Alfama flat', place: 'Rua de São Miguel 14', icon: 'bed', kind: 'plan', cost: '€612 split 7 ways' },
+-  { time: '20:30', title: 'Dinner at Taberna da Rua das Flores', place: 'Chiado · booked for 7', icon: 'fork', kind: 'decided', decidedBy: '71%', photo: places.taberna.photo },
+-  { time: '21:30', title: 'Miradouro da Graça', place: 'Graça · 12 min walk uphill', icon: 'pin', kind: 'plan', photo: photo.roofs },
+-  { time: '23:00', title: 'Drinks on Pink Street', place: 'Cais do Sodré', icon: 'wine', kind: 'tentative' },
++  { time: '2:10 PM', title: 'Land at LIS, T1', place: 'Metro red line to Saldanha', icon: 'plane', kind: 'plan', people: crewWithRen },
++  { time: '4:00 PM', title: 'Check in, Alfama flat', place: 'Rua de São Miguel 14', icon: 'bed', kind: 'plan', cost: '$612 split 7 ways' },
++  { time: '8:30 PM', title: 'Dinner at Taberna da Rua das Flores', place: 'Chiado · booked for 7', icon: 'fork', kind: 'decided', decidedBy: '71%', photo: places.taberna.photo },
++  { time: '9:30 PM', title: 'Miradouro da Graça', place: 'Graça · 12 min walk uphill', icon: 'pin', kind: 'plan', photo: photo.roofs },
++  { time: '11:00 PM', title: 'Drinks on Pink Street', place: 'Cais do Sodré', icon: 'wine', kind: 'tentative' },
+@@ -11,3 +11,3 @@
+-  { time: '09:30', title: 'Tram 28 from Martim Moniz', place: 'Board at the first stop to sit', icon: 'tram', kind: 'now', photo: photo.tram },
+-  { time: '13:00', title: 'Lunch at Cervejaria Ramiro', place: 'Intendente', icon: 'fork', kind: 'plan', photo: places.ramiro.photo },
+-  { time: '20:30', title: 'Dinner at O Velho Eurico', place: 'Alfama · booked by phone', icon: 'fork', kind: 'plan', photo: places.eurico.photo },
++  { time: '9:30 AM', title: 'Tram 28 from Martim Moniz', place: 'Board at the first stop to sit', icon: 'tram', kind: 'now', photo: photo.tram },
++  { time: '1:00 PM', title: 'Lunch at Cervejaria Ramiro', place: 'Intendente', icon: 'fork', kind: 'plan', photo: places.ramiro.photo },
++  { time: '8:30 PM', title: 'Dinner at O Velho Eurico', place: 'Alfama · booked by phone', icon: 'fork', kind: 'plan', photo: places.eurico.photo },
+--- /tmp/pre/storybook/src/lib/scenario.ts	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/lib/scenario.ts	2026-10-18 21:49:05.002637175 -0700
+@@ -2 +2 @@
+-// Numbers match the Figma hi-fi story: 7 people, Taberna wins 5 of 7 (71%), booked 20:30, poll closes 19:30.
++// Numbers match the Figma hi-fi story: 7 people, Taberna wins 5 of 7 (71%), booked 8:30 PM, poll closes 7:30 PM.
+@@ -6,3 +6,3 @@
+-    { label: 'Taberna da Rua das Flores', detail: 'Chiado · petiscos · €€', votes: 3, voters: [P.mara, P.joao, P.sofia], photo: places.taberna.photo },
+-    { label: 'Cervejaria Ramiro', detail: 'Intendente · seafood · €€€', votes: 2, voters: [P.ari, P.tomas], photo: places.ramiro.photo },
+-    { label: 'Park Rooftop', detail: 'Bairro Alto · drinks and bites · €€', votes: 0, voters: [], photo: places.park.photo },
++    { label: 'Taberna da Rua das Flores', detail: 'Chiado · petiscos · $$', votes: 3, voters: [P.mara, P.joao, P.sofia], photo: places.taberna.photo },
++    { label: 'Cervejaria Ramiro', detail: 'Intendente · seafood · $$$', votes: 2, voters: [P.ari, P.tomas], photo: places.ramiro.photo },
++    { label: 'Park Rooftop', detail: 'Bairro Alto · drinks and bites · $$', votes: 0, voters: [], photo: places.park.photo },
+@@ -14,3 +14,3 @@
+-    { label: 'Taberna da Rua das Flores', detail: 'Booked 20:30 · Chiado', votes: 5, voters: [P.mara, P.joao, P.sofia, P.nic, P.ren], photo: places.taberna.photo },
+-    { label: 'Cervejaria Ramiro', detail: 'Intendente · seafood · €€€', votes: 2, voters: [P.ari, P.tomas], photo: places.ramiro.photo },
+-    { label: 'Park Rooftop', detail: 'Bairro Alto · drinks and bites · €€', votes: 0, voters: [], photo: places.park.photo },
++    { label: 'Taberna da Rua das Flores', detail: 'Booked 8:30 PM · Chiado', votes: 5, voters: [P.mara, P.joao, P.sofia, P.nic, P.ren], photo: places.taberna.photo },
++    { label: 'Cervejaria Ramiro', detail: 'Intendente · seafood · $$$', votes: 2, voters: [P.ari, P.tomas], photo: places.ramiro.photo },
++    { label: 'Park Rooftop', detail: 'Bairro Alto · drinks and bites · $$', votes: 0, voters: [], photo: places.park.photo },
+@@ -22 +22 @@
+-// Dinner €248.70: food €210.70 split 7 (€30.10 each), wine €38.00 split 5 (€7.60 each). Ren and Nic €30.10, everyone else €37.70.
++// Dinner $248.70: food $210.70 split 7 ($30.10 each), wine $38.00 split 5 ($7.60 each). Ren and Nic $30.10, everyone else $37.70.
+--- /tmp/pre/storybook/src/patterns/screens.tsx	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/patterns/screens.tsx	2026-10-18 21:49:05.002637175 -0700
+@@ -19,2 +19,2 @@
+-        <NavBar title="Trips" subtitle="Friday 16 October" actions={[{ icon: 'bell', label: 'Activity', badge: 2 }]} />
+-        <TripCard name="Lisbon" dates="12 to 17 Oct · 7 friends" status="upcoming" photo={photo.alfama} people={crewWithRen} nextUp="Dinner poll closes 19:30" balance={-23.7} />
++        <NavBar title="Trips" subtitle="Friday October 16" actions={[{ icon: 'bell', label: 'Activity', badge: 2 }]} />
++        <TripCard name="Lisbon" dates="Oct 12 to 17 · 7 friends" status="upcoming" photo={photo.alfama} people={crewWithRen} nextUp="Dinner poll closes 7:30 PM" balance={-23.7} />
+@@ -25 +25 @@
+-            <ListRow leading={<span className="p-rowicon p-rowicon-owe"><Icon name="wallet" size={20} /></span>} title="You owe Nic €42.10" subtitle="Ren owes you €18.40 · net −€23.70" trailing={<button className="p-pay-nudge" style={{ height: 30, padding: '0 12px', borderRadius: 15, font: 'var(--type-ui-footnote)', fontWeight: 600 }}>Pay</button>} />
++            <ListRow leading={<span className="p-rowicon p-rowicon-owe"><Icon name="wallet" size={20} /></span>} title="You owe Nic $42.10" subtitle="Ren owes you $18.40 · net −$23.70" trailing={<button className="p-pay-nudge" style={{ height: 30, padding: '0 12px', borderRadius: 15, font: 'var(--type-ui-footnote)', fontWeight: 600 }}>Pay</button>} />
+@@ -30 +30 @@
+-          <TripCard size="compact" name="Porto" dates="5 to 8 Dec · planning" photo={photo.tiles} people={crew.slice(0, 4)} />
++          <TripCard size="compact" name="Porto" dates="Dec 5 to 8 · planning" photo={photo.tiles} people={crew.slice(0, 4)} />
+@@ -50 +50 @@
+-            <p>12 to 17 Oct</p>
++            <p>Oct 12 to 17</p>
+@@ -56,2 +56,2 @@
+-          <div className="scr-stat"><span>Dinner</span><b className="tu-num">€248.70</b></div>
+-          <div className="scr-stat"><span>You owe, net</span><b className="tu-num is-owe">€23.70</b></div>
++          <div className="scr-stat"><span>Dinner</span><b className="tu-num">$248.70</b></div>
++          <div className="scr-stat"><span>You owe, net</span><b className="tu-num is-owe">$23.70</b></div>
+@@ -62 +62 @@
+-              subtitle={p.you ? 'Organiser' : p.id === 'ren' ? 'Joined just now with the code' : p.id === 'nic' ? 'Has not voted on dinner' : 'Member'}
++              subtitle={p.you ? 'Organizer' : p.id === 'ren' ? 'Joined just now with the code' : p.id === 'nic' ? 'Has not voted on dinner' : 'Member'}
+@@ -91 +91 @@
+-        <NavBar title="Poll" subtitle="Lisbon · closes 19:30" large={false} back="Lisbon" actions={[{ icon: 'share', label: 'Share poll' }]} />
++        <NavBar title="Poll" subtitle="Lisbon · closes 7:30 PM" large={false} back="Lisbon" actions={[{ icon: 'share', label: 'Share poll' }]} />
+@@ -114 +114 @@
+-        <Timeline day="Friday" date="16 Oct" items={friday} />
++        <Timeline day="Friday" date="Oct 16" items={friday} />
+@@ -129 +129 @@
+-        <TextField kind="amount" prefix="€" value="38.00" helper="Douro tinto, 2 bottles · Taberna da Rua das Flores" />
++        <TextField kind="amount" prefix="$" value="38.00" helper="Douro tinto, 2 bottles · Taberna da Rua das Flores" />
+@@ -142 +142 @@
+-          <ListRow title="Date" value="Fri 16 Oct" chevron />
++          <ListRow title="Date" value="Fri Oct 16" chevron />
+@@ -158,2 +158,2 @@
+-          <span className="scr-balance-amt tu-num is-owe">€{v.toFixed(2)}</span>
+-          <span className="scr-balance-label tu-num">You pay Nic €42.10 · Ren pays you €18.40</span>
++          <span className="scr-balance-amt tu-num is-owe">${v.toFixed(2)}</span>
++          <span className="scr-balance-label tu-num">You pay Nic $42.10 · Ren pays you $18.40</span>
+@@ -179 +179 @@
+-        <ListGroup header="3 payments instead of 6 · €124.50" footer="Each person makes at most one payment. Totals match the raw debts to the cent.">
++        <ListGroup header="3 payments instead of 6 · $124.50" footer="Each person makes at most one payment. Totals match the raw debts to the cent.">
+--- /tmp/pre/storybook/src/stories/Feedback.stories.tsx	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/stories/Feedback.stories.tsx	2026-10-18 21:49:05.002637175 -0700
+@@ -25 +25 @@
+-  args: { title: 'Nic and Ren have not voted', body: 'Dinner poll closes at 19:30.', tone: 'accent', action: 'Nudge them', onDismiss: true },
++  args: { title: 'Nic and Ren have not voted', body: 'Dinner poll closes at 7:30 PM.', tone: 'accent', action: 'Nudge them', onDismiss: true },
+@@ -30,3 +30,3 @@
+-    <Banner tone="info" title="Ramiro does not take bookings" body="Arrive before 19:00 or expect a 40 minute queue." />
+-    <Banner tone="warning" title="Receipt total does not match" body="Items add up to €248.70. You entered €284.70." action="Review items" />
+-    <Banner tone="success" title="João marked €64.00 received" body="Mara is all paid up." />
++    <Banner tone="info" title="Ramiro does not take bookings" body="Arrive before 7:00 PM or expect a 40 minute queue." />
++    <Banner tone="warning" title="Receipt total does not match" body="Items add up to $248.70. You entered $284.70." action="Review items" />
++    <Banner tone="success" title="João marked $64.00 received" body="Mara is all paid up." />
+@@ -44,2 +44,2 @@
+-        <p className="p-lock-date">Friday 16 October</p>
+-        <p className="p-lock-time">9:41</p>
++        <p className="p-lock-date">Friday October 16</p>
++        <p className="p-lock-time">9:41 AM</p>
+@@ -61,2 +61,2 @@
+-        <p className="p-lock-date">Friday 16 October</p>
+-        <p className="p-lock-time" style={{ marginBottom: 200 }}>19:02</p>
++        <p className="p-lock-date">Friday October 16</p>
++        <p className="p-lock-time" style={{ marginBottom: 200 }}>7:02 PM</p>
+--- /tmp/pre/storybook/src/stories/Inputs.stories.tsx	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/stories/Inputs.stories.tsx	2026-10-18 21:49:05.006637175 -0700
+@@ -43 +43 @@
+-    <TextField label="Amount" prefix="€" value="186,40" error="That is more than the receipt total of €162.40" />
++    <TextField label="Amount" prefix="$" value="186,40" error="That is more than the receipt total of $162.40" />
+@@ -46 +46 @@
+-    <TextField kind="amount" prefix="€" value="186.40" helper="Dinner at O Velho Eurico" />
++    <TextField kind="amount" prefix="$" value="186.40" helper="Dinner at O Velho Eurico" />
+@@ -74 +74 @@
+-      <ListRow leading={<RowIcon icon="calendar" tone="accent" />} title="Dates" value="12 to 17 Oct" chevron />
++      <ListRow leading={<RowIcon icon="calendar" tone="accent" />} title="Dates" value="Oct 12 to 17" chevron />
+@@ -76 +76 @@
+-      <ListRow leading={<RowIcon icon="wallet" tone="owed" />} title="Currency" value="EUR" chevron />
++      <ListRow leading={<RowIcon icon="wallet" tone="owed" />} title="Currency" value="USD" chevron />
+--- /tmp/pre/storybook/src/stories/Money.stories.tsx	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/stories/Money.stories.tsx	2026-10-18 21:49:05.006637175 -0700
+@@ -50 +50 @@
+-  parameters: { docs: { description: { story: 'The settle-up solve, shown as a graph. Six IOUs between seven people start as crossing threads. Step 1 nets each balance, step 2 matches debtors to creditors and the people who net to zero drop out, step 3 redraws the money as three payments: €190.60 of IOUs becomes €124.50 of payments, and every net balance is unchanged. Untangle plays it in 3.6 s, Replay runs it again, and the scrubber moves through it by hand. With Reduce Motion, Untangle jumps to the result and the scrubber steps through the three stages.' } } },
++  parameters: { docs: { description: { story: 'The settle-up solve, shown as a graph. Six IOUs between seven people start as crossing threads. Step 1 nets each balance, step 2 matches debtors to creditors and the people who net to zero drop out, step 3 redraws the money as three payments: $190.60 of IOUs becomes $124.50 of payments, and every net balance is unchanged. Untangle plays it in 3.6 s, Replay runs it again, and the scrubber moves through it by hand. With Reduce Motion, Untangle jumps to the result and the scrubber steps through the three stages.' } } },
+--- /tmp/pre/storybook/src/stories/Navigation.stories.tsx	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/stories/Navigation.stories.tsx	2026-10-18 21:49:05.006637175 -0700
+@@ -13 +13 @@
+-  args: { title: 'Lisbon Crew', subtitle: '12 to 17 Oct', large: true, displayTitle: true, back: 'Trips' },
++  args: { title: 'Lisbon Crew', subtitle: 'Oct 12 to 17', large: true, displayTitle: true, back: 'Trips' },
+--- /tmp/pre/storybook/src/stories/Overlays.stories.tsx	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/stories/Overlays.stories.tsx	2026-10-18 21:49:05.006637175 -0700
+@@ -30 +30 @@
+-  args: { title: 'Remove Ren from Lisbon?', body: 'Ren owes you €18.40. Settle that first or it stays on your balance.', primary: 'Remove', secondary: 'Cancel', destructive: true },
++  args: { title: 'Remove Ren from Lisbon?', body: 'Ren owes you $18.40. Settle that first or it stays on your balance.', primary: 'Remove', secondary: 'Cancel', destructive: true },
+--- /tmp/pre/storybook/src/stories/Polls.stories.tsx	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/stories/Polls.stories.tsx	2026-10-18 21:49:05.006637175 -0700
+@@ -14 +14 @@
+-  args: { label: 'Taberna da Rua das Flores', detail: 'Chiado · petiscos · €€', votes: 3, total: 6, state: 'leading', photo: places.taberna.photo },
++  args: { label: 'Taberna da Rua das Flores', detail: 'Chiado · petiscos · $$', votes: 3, total: 6, state: 'leading', photo: places.taberna.photo },
+@@ -18,4 +18,4 @@
+-    <Label>Default</Label><PollOption label="O Velho Eurico" detail="Alfama · tasca · €€" votes={1} total={6} />
+-    <Label>Your vote</Label><PollOption label="Cervejaria Ramiro" detail="Intendente · seafood · €€€" votes={2} total={6} state="yourVote" voters={[P.ari, P.nic]} />
+-    <Label>Leading</Label><PollOption label="Taberna da Rua das Flores" detail="Chiado · petiscos · €€" votes={3} total={6} state="leading" voters={[P.mara, P.joao, P.sofia]} />
+-    <Label>Winner, after close</Label><PollOption label="Taberna da Rua das Flores" detail="Booked Fri 20:30" votes={5} total={7} state="winner" closed voters={[P.mara, P.joao, P.sofia, P.nic, P.ren]} />
++    <Label>Default</Label><PollOption label="O Velho Eurico" detail="Alfama · tasca · $$" votes={1} total={6} />
++    <Label>Your vote</Label><PollOption label="Cervejaria Ramiro" detail="Intendente · seafood · $$$" votes={2} total={6} state="yourVote" voters={[P.ari, P.nic]} />
++    <Label>Leading</Label><PollOption label="Taberna da Rua das Flores" detail="Chiado · petiscos · $$" votes={3} total={6} state="leading" voters={[P.mara, P.joao, P.sofia]} />
++    <Label>Winner, after close</Label><PollOption label="Taberna da Rua das Flores" detail="Booked Fri 8:30 PM" votes={5} total={7} state="winner" closed voters={[P.mara, P.joao, P.sofia, P.nic, P.ren]} />
+--- /tmp/pre/storybook/src/stories/Trips.stories.tsx	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/stories/Trips.stories.tsx	2026-10-18 21:49:05.010637175 -0700
+@@ -14 +14 @@
+-  args: { name: 'Lisbon', dates: '12 to 17 Oct', status: 'upcoming', balance: -23.7, nextUp: 'Dinner poll closes 19:30', size: 'hero', photo: photo.alfama },
++  args: { name: 'Lisbon', dates: 'Oct 12 to 17', status: 'upcoming', balance: -23.7, nextUp: 'Dinner poll closes 7:30 PM', size: 'hero', photo: photo.alfama },
+@@ -19,2 +19,2 @@
+-    <TripCard size="compact" name="Porto" dates="5 to 8 Dec · planning" photo={photo.tiles} people={crew.slice(0, 4)} />
+-    <TripCard size="compact" name="Sintra day" dates="Sun 25 Oct" photo={photo.facade} people={crew} balance={-12.5} />
++    <TripCard size="compact" name="Porto" dates="Dec 5 to 8 · planning" photo={photo.tiles} people={crew.slice(0, 4)} />
++    <TripCard size="compact" name="Sintra day" dates="Sun Oct 25" photo={photo.facade} people={crew} balance={-12.5} />
+@@ -41 +41 @@
+-  args: { time: '20:30', title: 'Dinner at Taberna da Rua das Flores', place: 'Chiado · booked for 7', icon: 'fork', kind: 'decided', decidedBy: '71%', photo: places.taberna.photo },
++  args: { time: '8:30 PM', title: 'Dinner at Taberna da Rua das Flores', place: 'Chiado · booked for 7', icon: 'fork', kind: 'decided', decidedBy: '71%', photo: places.taberna.photo },
+@@ -47,3 +47,3 @@
+-      <ItineraryItem time="09:30" title="Tram 28 from Martim Moniz" place="Board at the first stop" icon="tram" kind="now" />
+-      <ItineraryItem time="13:00" title="Lunch at Cervejaria Ramiro" place="Intendente" icon="fork" kind="plan" />
+-      <ItineraryItem time="23:00" title="Drinks on Pink Street" place="Cais do Sodré" icon="wine" kind="tentative" last />
++      <ItineraryItem time="9:30 AM" title="Tram 28 from Martim Moniz" place="Board at the first stop" icon="tram" kind="now" />
++      <ItineraryItem time="1:00 PM" title="Lunch at Cervejaria Ramiro" place="Intendente" icon="fork" kind="plan" />
++      <ItineraryItem time="11:00 PM" title="Drinks on Pink Street" place="Cais do Sodré" icon="wine" kind="tentative" last />
+@@ -53 +53 @@
+-export const Timelines: StoryObj = { name: 'Timeline', render: () => <><Timeline day="Friday" date="16 Oct" items={friday} /><Timeline day="Saturday" date="17 Oct" items={saturday} /></> };
++export const Timelines: StoryObj = { name: 'Timeline', render: () => <><Timeline day="Friday" date="Oct 16" items={friday} /><Timeline day="Saturday" date="Oct 17" items={saturday} /></> };
+--- /tmp/pre/storybook/src/tokens/tokens.css	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/tokens/tokens.css	2026-10-18 21:49:05.010637175 -0700
+@@ -70 +70 @@
+-  /* ---------- Semantic colour · light ---------- */
++  /* ---------- Semantic color · light ---------- */
+--- /tmp/pre/storybook/src/tokens/tokens.json	2026-10-18 21:08:01.000000000 -0700
++++ storybook/src/tokens/tokens.json	2026-10-18 21:49:05.014637175 -0700
+@@ -716 +716 @@
+-      "accent/primary": "The only acting colour: primary buttons, your vote, selected filter chips, and the active tab. Max one accent-filled element per view.",
++      "accent/primary": "The only acting color: primary buttons, your vote, selected filter chips, and the active tab. Max one accent-filled element per view.",
+@@ -739 +739 @@
+-      "status colours",
++      "status colors",
+@@ -776 +776 @@
+-      "use": "Big amounts, e.g. €184.60 (tabular lining)",
++      "use": "Big amounts, e.g. $184.60 (tabular lining)",
+@@ -881 +881 @@
+-      "use": "Tags, € · walk time"
++      "use": "Tags, $ · walk time"
+@@ -1187 +1187 @@
+-        "rich": "spring.live on width; leader gets one travelling glint (900ms, once per lead change); % digits roll",
++        "rich": "spring.live on width; leader gets one traveling glint (900ms, once per lead change); % digits roll",

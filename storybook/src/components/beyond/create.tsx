@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './beyond.css';
+import './elevate.css';
 import { Stepper } from './stepper';
 import { BIcon } from './icons';
 import { Avatar, AvatarStack } from '../core';
@@ -31,18 +32,33 @@ export function DestinationSearch({ query, onQuery, results, selected, onPick, l
         {query && <button type="button" className="b-search-clear" aria-label="Clear search" onClick={() => onQuery?.('')}><BIcon name="close" size={14} /></button>}
       </label>
       <p className="b-overline">{query ? `${list.length} ${list.length === 1 ? 'match' : 'matches'}` : 'Suggested for your crew'}</p>
-      <ul className="b-dest-list" role="listbox" aria-label="Destinations">
-        {list.map(r => (
-          <li key={r.id}>
-            <button type="button" role="option" aria-selected={selected === r.id} className={`b-dest-row ${selected === r.id ? 'is-on' : ''}`} onClick={() => onPick?.(r.id)}>
-              {r.photos[0] ? <img src={r.photos[0]} alt="" /> : <span className="b-dest-pin"><BIcon name="pin" size={20} /></span>}
-              <span className="b-dest-text"><b><Hl text={r.name} q={query} /></b><small>{r.country} · {r.sub}</small></span>
-              {selected === r.id ? <span className="b-check"><BIcon name="check" size={14} /></span> : <BIcon name="chevronRight" size={20} className="b-muted" />}
+      {/* v5.1: the best match is a photo hero; the rest sit in one glass list. */}
+      <div className="b-dest-list" role="listbox" aria-label="Destinations">
+        {list.map((r, i) => {
+          const on = selected === r.id; const hero = i === 0 && !!r.photos[0];
+          if (hero) return (
+            <button key={r.id} type="button" role="option" aria-selected={on} className={`b-dest-hero ${on ? 'is-on' : ''}`} onClick={() => onPick?.(r.id)}>
+              <img src={r.photos[0]} alt="" />
+              <span className="b-dest-hero-tag">{query ? 'Best match' : 'Suggested'}</span>
+              <span className="b-dest-hero-t"><b><Hl text={r.name} q={query} /></b><small>{r.country} · {r.sub}</small></span>
+              <span className="b-dest-hero-go" aria-hidden>{on ? <BIcon name="check" size={18} /> : <BIcon name="arrowRight" size={18} />}</span>
             </button>
-          </li>
-        ))}
-        {!list.length && <li className="b-empty-line">No city called “{query}” yet. Check the spelling, or type a country.</li>}
-      </ul>
+          );
+          return null;
+        })}
+        {list.filter((r, i) => !(i === 0 && r.photos[0])).length > 0 && (
+          <div className="b-dest-more">
+            {list.filter((r, i) => !(i === 0 && r.photos[0])).map(r => (
+              <button key={r.id} type="button" role="option" aria-selected={selected === r.id} className={`b-dest-row ${selected === r.id ? 'is-on' : ''}`} onClick={() => onPick?.(r.id)}>
+                {r.photos[0] ? <img src={r.photos[0]} alt="" /> : <span className="b-dest-pin"><BIcon name="pin" size={20} /></span>}
+                <span className="b-dest-text"><b><Hl text={r.name} q={query} /></b><small>{r.country} · {r.sub}</small></span>
+                {selected === r.id ? <span className="b-check"><BIcon name="check" size={14} /></span> : <BIcon name="chevronRight" size={20} className="b-muted" />}
+              </button>
+            ))}
+          </div>
+        )}
+        {!list.length && <p className="b-empty-line">No city called “{query}” yet. Check the spelling, or type a country.</p>}
+      </div>
     </div>
   );
 }
@@ -139,22 +155,22 @@ export function BudgetInput({ value, onChange, crewSize = 7, presets = [600, 900
 
 /* ---------------- CrewPicker (recent crews + people) ---------------- */
 export function CrewPicker({ crews, people, selected, onToggle, onCrew }:
-  { crews: { id: string; name: string; members: Person[]; last: string }[]; people: Person[]; selected: string[]; onToggle?: (id: string) => void; onCrew?: (id: string) => void }) {
+  { crews: { id: string; name: string; members: Person[]; last: string; photo?: string }[]; people: Person[]; selected: string[]; onToggle?: (id: string) => void; onCrew?: (id: string) => void }) {
   return (
     <div className="b-crew">
-      <p className="b-overline">Recent crews</p>
       {crews.map(c => {
         const all = c.members.every(m => m.you || selected.includes(m.id));
         return (
-          <button key={c.id} type="button" className={`b-crewcard ${all ? 'is-on' : ''}`} aria-pressed={all} onClick={() => onCrew?.(c.id)}>
-            <AvatarStack people={c.members} size={28} max={5} />
-            <span className="b-crewcard-text"><b>{c.name}</b><small>{c.members.length} people · {c.last}</small></span>
-            <span className={`b-pill ${all ? 'is-on' : ''}`}>{all ? <><BIcon name="check" size={14} />Added</> : 'Add all'}</span>
+          <button key={c.id} type="button" className={`b-crewhero ${all ? 'is-on' : ''}`} aria-pressed={all} onClick={() => onCrew?.(c.id)}>
+            {c.photo && <img src={c.photo} alt="" />}
+            <span className="b-crewhero-k">Your last crew</span>
+            <span className="b-crewhero-t"><b>{c.name}</b><small>{c.members.length} people · {c.last}</small></span>
+            <span className="b-crewhero-row"><AvatarStack people={c.members} size={28} max={7} /><span className={`b-crewhero-btn ${all ? 'is-on' : ''}`}>{all ? <><BIcon name="check" size={14} />All {c.members.length - 1} added</> : `Add all ${c.members.length - 1}`}</span></span>
           </button>
         );
       })}
-      <p className="b-overline">People</p>
-      <div className="b-people">
+      <p className="b-overline">Or pick people</p>
+      <div className="b-people b-people-glass">
         {people.filter(p => !p.you).map(p => {
           const on = selected.includes(p.id);
           return (

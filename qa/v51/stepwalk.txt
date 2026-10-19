@@ -1,0 +1,49 @@
+ROUTE ORDER (37):
+#/home  |  Part 1 · The Lisbon evening · 1 of 13
+#/trip  |  Part 1 · The Lisbon evening · 2 of 13
+#/invite  |  Part 1 · The Lisbon evening · 3 of 13
+#/explore  |  Part 1 · The Lisbon evening · 4 of 13
+#/create  |  Part 1 · The Lisbon evening · 5 of 13
+#/push  |  Part 1 · The Lisbon evening · 6 of 13
+#/live  |  Part 1 · The Lisbon evening · 7 of 13
+#/closed  |  Part 1 · The Lisbon evening · 8 of 13
+#/plan  |  Part 1 · The Lisbon evening · 9 of 13
+#/expense  |  Part 1 · The Lisbon evening · 10 of 13
+#/money  |  Part 1 · The Lisbon evening · 11 of 13
+#/settle/choose  |  Part 1 · The Lisbon evening · 12 of 13
+#/squared  |  Part 1 · The Lisbon evening · 13 of 13
+#/beyond/create/where  |  Part 2 · Beyond tonight · A of J
+#/beyond/create/when  |  Part 2 · Beyond tonight · A of J
+#/beyond/create/crew  |  Part 2 · Beyond tonight · A of J
+#/beyond/create/done  |  Part 2 · Beyond tonight · A of J
+#/beyond/explore  |  Part 2 · Beyond tonight · B of J
+#/beyond/explore/curate  |  Part 2 · Beyond tonight · B of J
+#/beyond/place/taberna  |  Part 2 · Beyond tonight · B of J
+#/beyond/explore/addpoll  |  Part 2 · Beyond tonight · B of J
+#/poll/new  |  Part 2 · Beyond tonight · C of J
+#/poll/new/sent  |  Part 2 · Beyond tonight · C of J
+#/beyond/plan/day  |  Part 2 · Beyond tonight · D of J
+#/beyond/plan/add  |  Part 2 · Beyond tonight · D of J
+#/beyond/expense/scan  |  Part 2 · Beyond tonight · E of J
+#/beyond/expense/assign  |  Part 2 · Beyond tonight · E of J
+#/beyond/expense/done  |  Part 2 · Beyond tonight · E of J
+#/beyond/album  |  Part 2 · Beyond tonight · F of J
+#/beyond/album/viewer  |  Part 2 · Beyond tonight · F of J
+#/beyond/invite  |  Part 2 · Beyond tonight · G of J
+#/beyond/guest  |  Part 2 · Beyond tonight · G of J
+#/beyond/guest/welcome  |  Part 2 · Beyond tonight · G of J
+#/beyond/activity  |  Part 2 · Beyond tonight · H of J
+#/beyond/recap  |  Part 2 · Beyond tonight · I of J
+#/beyond/recap/card  |  Part 2 · Beyond tonight · I of J
+#/beyond/profile  |  Part 2 · Beyond tonight · J of J
+Back from create/where -> #/squared
+Drawer collapse: phone x 319 -> 465 (150ms) -> 509 (550ms)
+Reopen: 509 -> 375 (150ms) -> 319 (550ms)
+Back to deck in tour: ../
+slide8 stage 1 "Create the poll" iframe=#/poll/new/dinner?hold=1 link=prototype/?mode=self&from=deck&slide=8#/poll/new/dinner
+slide8 stage 2 "Receive and vote" iframe=#/push?hold=1 link=prototype/?mode=self&from=deck&slide=8#/push
+slide8 stage 3 "Results land on the plan" iframe=#/plan?hold=1 link=prototype/?mode=self&from=deck&slide=8#/plan
+#8 #addOpen: deck stays #8; new tab #8... back href ../#8 -> #8
+#9 .cashlink: deck stays #9; new tab #9... back href ../#9 -> #9
+#10 .s9 a.btn-hero: deck stays #10; new tab #10... back href ../#10 -> #10
+shortcut rows on trip: 0

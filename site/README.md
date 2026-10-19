@@ -4,7 +4,7 @@ Everything here is static and uses relative paths, so it works from a GitHub Pag
 
 | Path | What it is |
 |---|---|
-| `/` | The deck: 9 slides, research first, then decisions, then the product (`index.html` + `deck/`) |
+| `/` | The deck: 10 slides, research first, then decisions, then the product (`index.html` + `deck/`) |
 | `/case-study/` | Long-form case study |
 | `/prototype/` | Interactive prototype (React + Vite build) |
 | `/storybook/` | Prism design system (Storybook static build) |

@@ -1,3 +1,4 @@
+import { heroFlip } from '../../lib/navghost';
 import React, { useEffect, useState } from 'react';
 import './beyond.css';
 import { BIcon, BIconName } from './icons';
@@ -15,7 +16,7 @@ export function ExploreCard({ place, saved, inPoll, mode = 'walk', onSave, onAdd
   { place: CommunityPlace; saved?: boolean; inPoll?: boolean; mode?: Mode; onSave?: () => void; onAddToPoll?: () => void; onOpen?: () => void }) {
   return (
     <article className="b-xcard" aria-label={place.name}>
-      <button type="button" className="b-xcard-media" onClick={onOpen} aria-label={`Open ${place.name}: photos and reviews`}>
+      <button type="button" className="b-xcard-media" onClick={e => { heroFlip.mark(e.currentTarget.querySelector('img')); onOpen?.(); }} aria-label={`Open ${place.name}: photos and reviews`}>
         <img src={place.photos[0]} alt="" loading="lazy" />
         <span className="b-xcard-count tu-glass"><BIcon name="images" size={14} />{place.photos.length + 20}</span>
       </button>

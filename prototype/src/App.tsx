@@ -15,6 +15,7 @@ import { TourCursor, cursor } from './flows/cursor';
 import { coreTarget } from './flows/tour';
 import { PACE } from './flows/pacing';
 import { navClass } from '@sb/lib/motion';
+import { useNavGhost } from '@sb/lib/navghost';
 import { ModeChooser, ModeSwitch, initialMode, showChooserAtStart, trackMode, useChapter, Mode } from './flows/shell';
 import { track } from './analytics';
 
@@ -77,7 +78,8 @@ function tourScript(s: State): [number, Action | Action[] | 'next'][] {
     case 'home': return [[2600, 'next']];
     case 'trip': return [[2800, s.me === 'ren' ? { t: 'join', via: 'qr' } : { t: 'go', step: 'invite' }], ...(s.me === 'ren' ? [[2400, 'next']] as any : [])];
     case 'invite': return [[1800, { t: 'join', via: 'qr' }], [2200, 'next']];
-    case 'explore': return [[1300, { t: 'set', patch: { exploreStage: 1 } }], [1300, { t: 'set', patch: { exploreStage: 2 } }], [1300, { t: 'set', patch: { exploreStage: 3 } }], [1300, { t: 'set', patch: { exploreStage: 4 } }], [1400, { t: 'set', patch: { shortlist: ['taberna', 'ramiro', 'park'] } }], [1600, 'next']];
+    case 'explore': if (s.exploreStage === 0 && s.exploreFeed !== false) return [[1500, { t: '__scroll', dy: 420 } as any], [2000, { t: '__scroll', dy: -420 } as any], [1500, { t: 'set', patch: { exploreFeed: false } }]];
+      return [[1300, { t: 'set', patch: { exploreStage: 1 } }], [1300, { t: 'set', patch: { exploreStage: 2 } }], [1300, { t: 'set', patch: { exploreStage: 3 } }], [1300, { t: 'set', patch: { exploreStage: 4 } }], [1400, { t: 'set', patch: { shortlist: ['taberna', 'ramiro', 'park'] } }], [1600, 'next']];
     case 'create': return [[2600, [{ t: 'set', patch: { pollSent: true } }, { t: 'done', key: 'create' }, { t: 'vote', who: 'ari', opt: 1 }, { t: 'go', step: 'push' }]]];
     case 'push': return [[2200, [{ t: 'vote', who: 'nic', opt: 0, via: 'the push' }, { t: 'done', key: 'push' }]], [1400, 'next']];
     case 'live': return s.me === 'ren' ? [[5200, { t: 'vote', who: 'ren', opt: s.tiePath ? 1 : 0, via: 'the web as a guest' }]] : s.me === 'ari' ? [[1400, { t: 'vote', who: 'ari', opt: 1 }]] : [];
@@ -208,7 +210,7 @@ export function App() {
       if (tg) timers.push(window.setTimeout(() => { cursor.moveTo(tg).then(x => { el = x; }); }, Math.max(0, at - PACE.coreLead)));
       if (tg) timers.push(window.setTimeout(() => { if (el) cursor.tap(el, false); }, Math.max(0, at - P.press - P.hold)));
       timers.push(window.setTimeout(() => {
-        if (a === 'next') next(); else (Array.isArray(a) ? a : [a]).forEach(x => d(x));
+        if (a === 'next') next(); else if ((a as any).t === '__scroll') { if (!EMBED) cursor.drag((a as any).dy); } else (Array.isArray(a) ? a : [a]).forEach(x => d(x));
       }, at)); });
     return () => timers.forEach(clearTimeout);
   }, [tour, tourKey, chapter, bz.active]);
@@ -246,11 +248,13 @@ export function App() {
   const dark = theme === 'dark';
   const statusLight = bz.active ? !!bz.meta.light : s.step === 'push' || (s.step === 'trip' && s.me !== 'ren') || s.step === 'invite' && false;
 
+  const coreId = `${s.step === 'settle' && s.settleView === 'confirmed' ? 'money' : s.step}-${s.me}-${s.recap}-${s.step === 'settle' ? s.settleView : ''}`;
+  const coreCls = bz.active ? '' : navClass(coreId.replace(/-ari-false-$/, ''));
+  const coreGhost = useNavGhost(bz.active ? 'beyond' : coreId, coreCls);
   const screen = (
     <div className="pt-screen-inner" onPointerDown={onDown}>
       {bz.active ? <div className="pt-anim mo-none" key="beyond"><BeyondLayer bz={bz} /></div>
-        : (() => { const id = `${s.step === 'settle' && s.settleView === 'confirmed' ? 'money' : s.step}-${s.me}-${s.recap}-${s.step === 'settle' ? s.settleView : ''}`;
-          return <div className={`pt-anim ${navClass(id.replace(/-ari-false-$/, ''))}`} key={id}><PhoneScreen s={s} /></div>; })()}
+        : <div className={`pt-anim ${coreCls}`} key={coreId} ref={coreGhost}><PhoneScreen s={s} /></div>}
       {s.toast && <div className={`pt-itoast ${s.toast.tone === 'success' ? 'is-success' : ''}`} key={s.toast.id} role="status"><Icon name={s.toast.tone === 'success' ? 'check' : 'info'} size={20} /><span>{s.toast.msg}</span></div>}
       {ripples.map(r => <span key={r.id} className="pt-ripple" style={{ left: r.x, top: r.y }} aria-hidden />)}
       {!EMBED && <TourCursor on={tour} reduce={motion === 'reduce'} />}

@@ -4,6 +4,7 @@ import { Avatar, AvatarStack, Button, useCountUp } from '@sb/components/core';
 import { PaymentRow } from '@sb/components/money';
 import { DebtUntangle } from '@sb/components/untangle';
 import { BottomSheet, CelebrationOverlay } from '@sb/components/overlays';
+import { Face } from '@sb/components/settle';
 import { usd, photo } from '@sb/lib/data';
 import { useApp, rawOf, simplifyOf, liveNets, expensesOf, total, linesToSharesExport, optName, tally, haptic, wineOff } from './store';
 import { TopBar, Tabs, crewOf } from './screens1';
@@ -13,7 +14,6 @@ import { MoneyScreen, SquaredOverlay } from './settleflow';
 export function Expense() {
   const { s, d, P, nm } = useApp();
   const crew = crewOf(true);
-  const [open, setOpen] = useState<string | null>('wine');
   const shares = linesToSharesExport(s.lines);
   const groups = new Map<number, string[]>();
   crew.forEach(id => groups.set(shares[id] ?? 0, [...(groups.get(shares[id] ?? 0) ?? []), id]));
@@ -22,32 +22,38 @@ export function Expense() {
   const summary = sorted.length === 1 ? [`Everyone pays ${usd(sorted[0][0])}`]
     : [...sorted.slice(0, -1).map(([v, ids]) => `${order(ids).map(id => nm(id)).join(' and ')}: ${usd(v)}${ids.length > 1 ? ' each' : ''}`), `Everyone else: ${usd(sorted[sorted.length - 1][0])}`];
   const ok = wineOff(s);
+  const feat = s.lines.find(l => /vinho|wine/i.test(l.item))?.id ?? 'wine';
   return (
     <div className="scr">
       <div className="scr-scroll has-cta">
         <TopBar back="Tonight" onBack={() => d({ t: 'go', step: 'plan' })} title="Split dinner" sub={`Paid by ${nm('ari', false)} · $248.70`} />
-        <div className="pt-lines">
-          {s.lines.map(l => {
-            const isOpen = open === l.id && !l.group;
-            const out = crew.filter(x => !l.who.includes(x));
-            return (
-              <div key={l.id} className={`pt-line ${out.length ? 'is-partial' : ''} ${isOpen ? 'is-open' : ''}`}>
-                <button type="button" className="pt-line-head" aria-expanded={isOpen} disabled={l.group} onClick={() => { haptic(); setOpen(isOpen ? null : l.id); }}>
-                  <span className="pt-line-name">{l.qty > 1 && <span className="tu-num">{l.qty}× </span>}{l.item}</span>
-                  <span className="pt-line-amt tu-num">{usd(l.price)}</span>
-                  {out.length > 0 && <span className="pt-line-sub tu-num">{`Skipped by ${out.map(x => nm(x)).join(' and ')}`}</span>}
-                </button>
-                {isOpen && <div className="p-receipt-who pt-who">{crew.map(id => {
-                  const on = l.who.includes(id);
-                  return <button key={id} type="button" className={`pt-whobtn ${on ? 'is-on' : ''}`} aria-pressed={on} aria-label={`${P[id].name} ${on ? 'shares' : 'skips'} ${l.item}`} onClick={() => { haptic(); d({ t: 'toggleLine', line: l.id, who: id }); }}>
-                    <Avatar person={P[id]} size={36} ring="none" /><span>{nm(id)}</span></button>;
-                })}</div>}
-              </div>
-            );
-          })}
-        </div>
-        {!ok && <p className="pt-hint"><Icon name="wine" size={20} />Ren and Nic skipped the wine. Tap them off.</p>}
-        <div className="pt-summary" role="status">{summary.map(x => <span key={x} className="tu-num">{x}</span>)}</div>
+        {/* v5.1: the bill is the hero and shows the live result; the one decision (who had the wine) is its own card; the rest is one quiet list. */}
+        <section className="pt-billhero" aria-label="Dinner at Taberna, $248.70">
+          <div className="pt-billhero-ph"><img src={photo.taberna} alt="" /><span className="pt-billhero-chip tu-num">Sat, Oct 17 · 8:30 PM · {crew.length} people</span></div>
+          <div className="pt-billhero-body">
+            <p className="pt-billhero-k">Dinner at Taberna</p>
+            <p className="pt-billhero-amt tu-num">$248.70</p>
+            <div className="pt-summary" role="status">{summary.map(x => <span key={x} className="tu-num">{x}</span>)}</div>
+          </div>
+        </section>
+        {s.lines.filter(l => l.id === feat).map(l => (
+          <section key={l.id} className={`pt-featline ${ok ? 'is-ok' : ''}`}>
+            <div className="pt-featline-head"><span className="pt-featline-ico" aria-hidden><Icon name="wine" size={20} /></span>
+              <span><b>Who had the wine?</b><small className="tu-num">{l.qty > 1 ? `${l.qty}× ` : ''}{l.item.split(',')[0]} · {usd(l.price)}</small></span></div>
+            <div className="pt-who pt-who-faces">{crew.map(id => {
+              const on = l.who.includes(id);
+              return <button key={id} type="button" className={`pt-whobtn ${on ? 'is-on' : ''}`} aria-pressed={on} aria-label={`${P[id].name} ${on ? 'shares' : 'skips'} ${l.item}`} onClick={() => { haptic(); d({ t: 'toggleLine', line: l.id, who: id }); }}>
+                <span className="pt-whoface"><Face person={P[id]} size={40} />{!on && <span className="pt-whooff" aria-hidden><Icon name="close" size={12} /></span>}</span><span>{nm(id)}</span></button>;
+            })}</div>
+            <p className="pt-featline-note">{ok ? 'Ren and Nic are off the wine.' : 'Ren and Nic skipped the wine. Tap them off.'}</p>
+          </section>
+        ))}
+        <section className="pt-restlines" aria-label="Shared by everyone">
+          <p className="pt-restlines-k">Shared by everyone</p>
+          {s.lines.filter(l => l.id !== feat).map(l => (
+            <div key={l.id} className="pt-restline"><span>{l.qty > 1 && <span className="tu-num">{l.qty}× </span>}{l.item}</span><b className="tu-num">{usd(l.price)}</b></div>
+          ))}
+        </section>
       </div>
       <div className="scr-bottombar">
         <Button label="Save expense" fullWidth onClick={() => { haptic(18); d({ t: 'saveDinner' }); setTimeout(() => d({ t: 'go', step: 'money' }), 500); }} />

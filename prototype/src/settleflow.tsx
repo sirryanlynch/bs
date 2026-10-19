@@ -150,12 +150,11 @@ function Choose() {
     else { if (s.pick === 'bank') d({ t: 'toast', msg: 'Bank details copied', tone: 'success' }); d({ t: 'view', v: 'handoff' }); }
   };
   return (<>
-    <div className="p-sscroll">
-      <PairHero from={P[e.from]} to={P[e.to]} amount={due} caption={due < e.amt ? `What's left after ${usd2(r2(e.amt - due))} in cash.` : 'For the Tejo boat tour, routed through Tomás.'} pill={<SPill tone="accent">1 OF 3</SPill>} link={`Why ${usd2(e.amt)}`} onLink={() => setWhy(true)} />
-      <Overline>HOW YOU'LL PAY</Overline>
+    <div className="p-sscroll has-hm pt-elev">
+      <PairHero from={P[e.from]} to={P[e.to]} amount={due} caption={due < e.amt ? `What's left after ${usd2(r2(e.amt - due))} in cash.` : 'For the Tejo boat tour, routed through Tomás.'} link={`Why ${usd2(e.amt)}`} onLink={() => setWhy(true)} />
       <MethodPicker value={s.pick} onChange={pick => d({ t: 'set', patch: { pick } })} />
     </div>
-    <GlassHeader back="Money" onBack={toMoney(d)} title={`Pay ${P[e.to].name}`} subtitle="Payment 1 of 3 · simplified" />
+    <CoreHeader onBack={toMoney(d)} backLabel="Back to Money" title={`Pay ${P[e.to].name}`} sub="Payment 1 of 3 · simplified" />
     <div className="p-sbottom"><Button label={m.cta(usd2(due))} fullWidth onClick={go} /></div>
     {why && <BottomSheet title={`Why ${usd2(e.amt)}`} detent="compact" onClose={() => setWhy(false)}>
       <div className="pt-why"><Readout title="WHERE IT CAME FROM" rows={NIC_PROVENANCE.map((p, i) => [p.label, i === 0 ? `+${p.amount.toFixed(2)}` : `${p.amount < 0 ? '−' : ''}${Math.abs(p.amount).toFixed(2)}`, i === NIC_PROVENANCE.length - 1 ? 'carry' : undefined])} />
@@ -170,10 +169,10 @@ function Cash() {
   const [held, setHeld] = useState(false);
   const hand = s.round ? roundCash(due).paid : due;
   return (<>
-    <div className={`p-sscroll ${held ? 'is-dim' : ''}`}>
+    <div className={`p-sscroll has-hm pt-elev ${held ? 'is-dim' : ''}`}>
       <CashCount due={due} round={s.round} onRound={round => { haptic(6); d({ t: 'set', patch: { round } }); }} onPartial={() => { haptic(); d({ t: 'set', patch: { partial: true } }); d({ t: 'view', v: 'partial' }); }} from={P[e.from]} to={P[e.to]} />
     </div>
-    <GlassHeader back={`Pay ${P[e.to].name}`} onBack={() => { haptic(); d({ t: 'view', v: 'choose' }); }} title={`Cash for ${P[e.to].name}`} subtitle="Count it out, then slide" />
+    <CoreHeader onBack={() => { haptic(); d({ t: 'view', v: 'choose' }); }} backLabel={`Back to Pay ${P[e.to].name}`} title={`Cash for ${P[e.to].name}`} sub="Count it out, then slide" />
     <div className="p-sbottom is-slide"><SlideToSettle amount={hand} onHold={setHeld} onConfirm={() => { d({ t: 'set', patch: { partial: false } }); d({ t: 'mark' }); }} /></div>
   </>);
 }

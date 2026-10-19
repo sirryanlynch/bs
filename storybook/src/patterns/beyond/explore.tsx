@@ -11,6 +11,8 @@ import { FindHeader, FindQuestion, FindPicks, findBack, findSkip } from '../../c
 import { COMMUNITY, placeById, reviewsOf, POLLS, DAYS, ALBUM } from '../../lib/beyond';
 import { typeLabel } from '../../data/experienceTypes';
 import { photo } from '../../lib/data';
+import { Face } from '../../components/settle';
+import { NextSteps } from '../../components/beyond/elevate';
 
 /** Save on glass. Saved shows a filled Iris bookmark, never a dark fill, so it sits calmly next to the Iris primary. */
 export function GlassSave({ saved, onClick }: { saved: boolean; onClick: () => void }) {
@@ -163,17 +165,30 @@ export function PollNewScreen() {
 }
 export function PollSentScreen() {
   const { s, go, P } = useFlow(); const p = s.poll; const day = DAYS.find(x => x.id === p.day)!;
+  const dow = day.label.split(',')[0];
+  const title = p.title || (p.what ? `${p.what}, ${dow} at ${p.time}?` : defaultTitle(dow, p.category, p.time));
+  const lead = COMMUNITY.find(c => c.name === p.options[0]?.label);
+  const cover = p.options[0]?.photo ?? lead?.photos[0];
+  const crew = Object.values(P).filter(x => !x.you).slice(0, 6);
   return (
     <div className="b-scr">
       <div className="b-scroll has-cta">
         <Top title="Poll sent" onBack={() => go('polls')} />
-        <div className="b-card b-pollcard anim-rise">
-          <p className="b-overline tu-num">{day.label} · {p.time}</p>
-          <h2 className="b-h2">{p.title}</h2>
-          {p.options.map((o, i) => { const pl = COMMUNITY.find(c => c.name === o.label); const row = <><span className="b-opted-n tu-num">{String.fromCharCode(65 + i)}</span><b>{o.label}</b><span className="tu-num b-muted">{i === 0 ? '1 vote' : '0'}</span>{pl && <BIcon name="chevronRight" size={16} className="b-muted" />}</>;
-            return pl ? <button key={o.label} type="button" className="b-pollopt is-link" onClick={() => go(`place/${pl.id}`)} aria-label={`${o.label}, photos and reviews`}>{row}</button> : <div key={o.label} className="b-pollopt">{row}</div>; })}
-          <p className="b-help tu-num">You voted A. 6 people got a notification with one-tap voting.</p>
-        </div>
+        <section className="b-sent anim-rise" aria-label={`Poll sent: ${title}`}>
+          <div className="b-sent-photo">{cover && <img src={cover} alt="" />}<span className="b-sent-chip"><BIcon name="check" size={14} />Sent to {crew.length} people</span></div>
+          <div className="b-sent-body">
+            <p className="b-sent-when tu-num">{day.label} · {p.time}</p>
+            <h2 className="b-sent-t">{title}</h2>
+            <div className="b-sent-opts">
+              {p.options.map((o, i) => { const pl = COMMUNITY.find(c => c.name === o.label); const ph = o.photo ?? pl?.photos[0];
+                const inner = <>{ph ? <img src={ph} alt="" /> : <span className="b-sent-ico"><BIcon name="waves" size={20} /></span>}<b>{o.label}</b><span className={`b-sent-v tu-num ${i === 0 ? 'is-you' : ''}`}>{i === 0 ? 'Your vote' : 'No votes yet'}</span></>;
+                return pl ? <button key={o.label} type="button" className="b-sent-opt" onClick={() => go(`place/${pl.id}`)} aria-label={`${o.label}, photos and reviews`}>{inner}</button> : <div key={o.label} className="b-sent-opt">{inner}</div>; })}
+            </div>
+            <div className="b-sent-crew"><span className="b-sent-faces" aria-hidden><Face person={P.ari} size={32} />{crew.map(c => <span key={c.id} className="is-wait"><Face person={c} size={32} /></span>)}</span>
+              <span className="tu-num">1 of 7 voted · closes {p.closes}</span></div>
+          </div>
+        </section>
+        <NextSteps steps={['Crew votes from the notification', `Closes ${p.closes}`, `Winner lands on ${dow}`]} />
       </div>
       <div className="b-bottom"><Button label="See all polls" variant="secondary" fullWidth onClick={() => go('polls')} /><Button label="Done" fullWidth onClick={() => go('polls')} /></div>
     </div>

@@ -1,3 +1,4 @@
+import './settle-elevate.css';
 import { AVATAR } from '../assets/solver-assets';
 import React, { useEffect, useRef, useState } from 'react';
 import { Icon, IconName } from './Icon';
@@ -78,36 +79,62 @@ export function Readout({ title, pill, rows, cols }: { title: React.ReactNode; p
 function Chip({ person, filled }: { person: Person; filled?: boolean }) {
   return <span className={`p-pchip ${filled ? 'is-me' : ''}`} aria-hidden>{person.initials}</span>;
 }
-/** Pair hero: payer and receiver joined by an Iris arrow, the amount in display type, a caption and a pill. */
+export function Face({ person, size = 56 }: { person: Person; size?: number }) {
+  const src = AVATAR[person.id];
+  return src ? <img className="p-face" src={src} alt="" width={size} height={size} style={{ width: size, height: size }} />
+    : <span className="p-face is-init" style={{ width: size, height: size }} aria-hidden>{person.initials}</span>;
+}
+/** Pair hero (v5.1): photo faces joined by a soft Iris thread, the amount large in display type, one caption and one quiet link. */
 export function PairHero({ from = P.ari, to = P.nic, amount, caption, pill, link, onLink, compact }:
   { from?: Person; to?: Person; amount: number; caption?: React.ReactNode; pill?: React.ReactNode; link?: string; onLink?: () => void; compact?: boolean }) {
-  return (
-    <section className={`p-scard p-pairhero ${compact ? 'is-compact' : ''}`} aria-label={`${from.name} pays ${to.name} ${usd2(amount)}`}>
-      {!compact && <div className="p-pairhero-top">
-        <Chip person={from} filled={from.id === 'ari'} />
-        <svg className="p-pairhero-arrow" width="62" height="14" viewBox="0 0 62 14" aria-hidden><defs><linearGradient id="phg" x1="0" x2="1"><stop offset="0" className="p-ut-s0" /><stop offset=".55" className="p-ut-s1" /></linearGradient></defs><path d="M1 7H58M52 1.5 58 7l-6 5.5" fill="none" stroke="url(#phg)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-        <Chip person={to} />
-        <span className="p-pairhero-pill">{pill}</span>
-      </div>}
-      {compact && <span className="p-pairhero-pill is-abs">{pill}</span>}
+  if (compact) return (
+    <section className="p-scard p-pairhero is-compact" aria-label={`${from.name} pays ${to.name} ${usd2(amount)}`}>
+      <span className="p-pairhero-pill is-abs">{pill}</span>
       <p className="p-pairhero-amt tu-num">{usd2(amount)}</p>
       {caption && <p className="p-pairhero-cap">{caption}</p>}
       {link && <button type="button" className="p-pairhero-link" onClick={onLink}>{link}<Icon name="chevronRight" size={14} /></button>}
     </section>
   );
+  return (
+    <section className="p-payhero" aria-label={`${from.you ? 'You pay' : `${from.name} pays`} ${to.name} ${usd2(amount)}`}>
+      <span className="p-payhero-glow" aria-hidden />
+      {pill && <span className="p-payhero-pill">{pill}</span>}
+      <div className="p-payhero-pair" aria-hidden>
+        <span className="p-payhero-who"><Face person={from} /><small>{from.you ? 'You' : from.name}</small></span>
+        <svg className="p-payhero-thread" viewBox="0 0 120 24" preserveAspectRatio="none"><defs><linearGradient id="pht" x1="0" x2="1"><stop offset="0" stopColor="var(--color-accent-primary)" stopOpacity=".25" /><stop offset="1" stopColor="var(--color-accent-primary)" /></linearGradient></defs>
+          <path d="M2 16 C 40 2, 80 2, 112 12" fill="none" stroke="url(#pht)" strokeWidth="2.5" strokeLinecap="round" /><path d="M105 7.5 112 12l-7.5 3" fill="none" stroke="var(--color-accent-primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        <span className="p-payhero-who"><Face person={to} /><small>{to.name}</small></span>
+      </div>
+      <p className="p-payhero-amt tu-num">{usd2(amount)}</p>
+      {caption && <p className="p-payhero-cap">{caption}</p>}
+      {link && <button type="button" className="p-payhero-link" onClick={onLink}>{link}<Icon name="chevronRight" size={14} /></button>}
+    </section>
+  );
 }
 
-/* ---------- S1 method picker ---------- */
+/* ---------- S1 method picker (v5.1): two featured tiles, other apps as one compact row ---------- */
+const FEATURED: SettleMethod[] = ['tripup', 'cash'];
 export function MethodPicker({ value = 'cash', onChange }: { value?: SettleMethod; onChange?: (m: SettleMethod) => void }) {
+  const cur = METHODS.find(m => m.id === value)!;
+  const pick = (id: SettleMethod) => { vib(6); onChange?.(id); };
   return (
-    <div className="p-scard p-methods" role="radiogroup" aria-label="How you'll pay">
-      {METHODS.map(m => (
-        <button key={m.id} type="button" role="radio" aria-checked={value === m.id} className={`p-method ${value === m.id ? 'is-on' : ''}`} onClick={() => { vib(6); onChange?.(m.id); }}>
-          <span className="p-method-tile" aria-hidden>{m.tile.length <= 2 ? <b>{m.tile}</b> : <Icon name={m.tile as IconName} size={20} />}</span>
-          <span className="p-method-txt"><span className="p-method-title">{m.title}</span><span className="p-method-meta">{m.meta}</span></span>
-          <span className="p-radio" aria-hidden />
-        </button>
-      ))}
+    <div className="p-methods2" role="radiogroup" aria-label="How you'll pay">
+      <div className="p-mfeat">
+        {METHODS.filter(m => FEATURED.includes(m.id)).map(m => (
+          <button key={m.id} type="button" role="radio" aria-checked={value === m.id} className={`p-mtile ${value === m.id ? 'is-on' : ''}`} onClick={() => pick(m.id)}>
+            <span className="p-mtile-ico" aria-hidden><Icon name={m.tile as IconName} size={22} /></span>
+            <span className="p-mtile-t">{m.title}</span>
+            <span className="p-mtile-m">{m.id === 'cash' ? 'In person' : 'Arrives now'}</span>
+            <span className="p-mtile-check" aria-hidden><Icon name="check" size={14} /></span>
+          </button>
+        ))}
+      </div>
+      <div className="p-mmore" aria-label="Other apps">
+        {METHODS.filter(m => !FEATURED.includes(m.id)).map(m => (
+          <button key={m.id} type="button" role="radio" aria-checked={value === m.id} className={`p-mchip ${value === m.id ? 'is-on' : ''}`} onClick={() => pick(m.id)}>{m.title}</button>
+        ))}
+      </div>
+      <p className="p-mnote" aria-live="polite">{cur.meta}</p>
     </div>
   );
 }
@@ -116,23 +143,23 @@ export function MethodPicker({ value = 'cash', onChange }: { value?: SettleMetho
 export function CashCount({ due = 42.1, round = true, onRound, onPartial, from = P.ari, to = P.nic }:
   { due?: number; round?: boolean; onRound?: (v: boolean) => void; onPartial?: () => void; from?: Person; to?: Person }) {
   const r = roundCash(due); const hand = round ? r.paid : due; const carry = round ? r.carry : 0; const notes = cashNotes(hand);
+  const bills = [...notes].sort((a, b) => a.v - b.v).flatMap(n => Array.from({ length: n.n }, (_, i) => ({ v: n.v, k: `${n.v}-${i}` })));
   return (
     <>
-      <section className="p-scard p-hand">
-        <p className="p-overline-s">HAND OVER</p>
-        <p className="p-hand-amt tu-num">{usd2(hand)}</p>
-        {round && Math.abs(carry) > 0.004 && <div className="p-pills"><SPill>rounded from {usd2(due)}</SPill><SPill tone="accent">{usd2(Math.abs(carry))} carried</SPill></div>}
+      <section className="p-cashhero" aria-label={`Hand over ${usd2(hand)}: ${notes.map(n => `${n.n} times ${noteLabel(n.v)}`).join(', ')}`}>
+        <span className="p-payhero-glow" aria-hidden />
+        <div className="p-bills" aria-hidden>
+          {bills.map((b, i) => <span key={b.k} className={`p-bill ${b.v >= 5 ? 'is-big' : ''}`} style={{ ['--i' as any]: i, ['--n' as any]: bills.length }}><b className="tu-num">{noteLabel(b.v)}</b></span>)}
+        </div>
+        <p className="p-cashhero-k">Hand {to.name} {notes.map(n => `${n.n} × ${noteLabel(n.v)}`).join(' + ')}</p>
+        <p className="p-cashhero-amt tu-num">{usd2(hand)}</p>
+        <p className="p-cashhero-cap">{round && Math.abs(carry) > 0.004 ? <>Rounded from {usd2(due)}. <span className="is-iris">{usd2(Math.abs(carry))} rolls into the next split.</span></> : <>Exactly what you owe {to.name}.</>}</p>
       </section>
-      <section className="p-scard p-round">
-        <div><p className="p-round-title">Round to {usd2(r.paid)}</p><p className="p-round-body">The {usd2(Math.abs(r.carry))} moves to the next split, so nobody counts coins tonight.</p></div>
+      <section className="p-roundrow">
+        <div><p className="p-round-title">Round to {usd2(r.paid)}</p><p className="p-round-body">Nobody counts coins tonight.</p></div>
         <Toggle checked={round} label={`Round to ${usd2(r.paid)}`} onChange={onRound} />
       </section>
-      <section className="p-scard p-cashcount" aria-label={`Count it out: ${notes.map(n => `${n.n} times ${noteLabel(n.v)}`).join(', ')}`}>
-        <p className="p-overline-s">COUNT IT OUT</p>
-        <div className="p-cashcount-row"><div className="p-pills">{notes.map(n => <SPill key={n.v}>{noteLabel(n.v)} × {n.n}</SPill>)}</div><span className="p-cashcount-total tu-num">= {usd2(hand)}</span></div>
-      </section>
-      <Readout title={<>CASH · {from.you ? 'YOU' : from.name.toUpperCase()} → {to.name.toUpperCase()}</>} rows={[['due', num(due)], ['hand over', num(hand)], ...(carry ? [['carry → next split', num(carry), 'carry'] as ReadoutRow] : [])]} />
-      <button type="button" className="p-scard p-rowlink" onClick={onPartial}><span>Paying part of it?</span><Icon name="chevronRight" size={20} /></button>
+      <button type="button" className="p-quietlink" onClick={onPartial}>Paying part of it?<Icon name="chevronRight" size={16} /></button>
     </>
   );
 }

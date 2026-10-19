@@ -47,15 +47,7 @@ export const Simplify: StoryObj<typeof DebtSimplify> = {
 };
 
 export const Untangle: StoryObj<typeof DebtUntangle> = {
-  name: 'DebtUntangle (v4 Instrument)',
-  args: { solved: false, controls: 'full', startButton: true, skin: 'instrument' },
-  argTypes: { controls: { control: 'inline-radio', options: ['full', 'inline', 'none'] }, skin: { control: 'inline-radio', options: ['solver', 'instrument'], description: 'Visual layer. The model, timeline and controls stay the same; register another skin with registerUntangleSkin().' } },
-  render: (a) => <div style={{ maxWidth: 362 }}><DebtUntangle {...a} /></div>,
-  parameters: { docs: { description: { story: 'Figma set 121:4174, card 362 × 268. Three steps: 01 Tangled (6 graphite IOUs, 4 computed crossings marked as knots, $190.60 of flow), 02 Netting (each person becomes one balance ring; Σ net 0.00 ✓), 03 Solved (3 Iris arcs, $124.50, 50% fewer payments). The nets-unchanged check is computed, never hard-coded. Untangle plays 600 ms steps with a 900 ms hold; Replay restarts; the scrubber or the stepper labels move by hand. Reduce Motion: 200 ms cross-fades, scrubber snaps per step.' } } },
-};
-
-export const UntangleSolver: StoryObj<typeof DebtUntangle> = {
-  name: 'DebtUntangle (v5.1 Solver, restraint pass)',
+  name: 'DebtUntangle (v5.1 Solver, default)',
   args: { solved: false, controls: 'full', startButton: true, skin: 'solver' },
   argTypes: { controls: { control: 'inline-radio', options: ['full', 'inline', 'none'] }, skin: { control: 'inline-radio', options: ['solver', 'instrument'] } },
   render: (a) => <div style={{ maxWidth: 362 }}><DebtUntangle {...a} /></div>,
@@ -107,4 +99,12 @@ export const Settle: StoryObj<typeof SettleContent> = {
   args: { amount: 42.1, method: 'MB WAY', state: 'review' },
   argTypes: { method: { control: 'inline-radio', options: ['MB WAY', 'Apple Pay', 'Revolut', 'Cash'] }, state: { control: 'inline-radio', options: ['review', 'sent'] } },
   render: (a) => <div className="scr"><BottomSheet title="Settle up" detent="compact"><SettleContent {...a} from={P.nic} to={P.ari} /></BottomSheet></div>,
+};
+
+export const UntangleLegacyInstrument: StoryObj<typeof DebtUntangle> = {
+  name: 'DebtUntangle, legacy v4 Instrument skin',
+  args: { solved: false, controls: 'full', startButton: true, skin: 'instrument' },
+  argTypes: { controls: { control: 'inline-radio', options: ['full', 'inline', 'none'] }, skin: { control: 'inline-radio', options: ['solver', 'instrument'], description: 'Visual layer. The model, timeline and controls stay the same; register another skin with registerUntangleSkin().' } },
+  render: (a) => <div style={{ maxWidth: 362 }}><DebtUntangle {...a} /></div>,
+  parameters: { docs: { description: { story: 'Figma set 121:4174, card 362 × 268. Three steps: 01 Tangled (6 graphite IOUs, 4 computed crossings marked as knots, $190.60 of flow), 02 Netting (each person becomes one balance ring; Σ net 0.00 ✓), 03 Solved (3 Iris arcs, $124.50, 50% fewer payments). The nets-unchanged check is computed, never hard-coded. Untangle plays 600 ms steps with a 900 ms hold; Replay restarts; the scrubber or the stepper labels move by hand. Reduce Motion: 200 ms cross-fades, scrubber snaps per step.' } } },
 };

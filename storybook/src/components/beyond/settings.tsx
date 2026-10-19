@@ -1,3 +1,5 @@
+import { Face } from '../settle';
+import { AVATAR } from '../../assets/solver-assets';
 import React from 'react';
 import './beyond.css';
 import { BIcon, BIconName } from './icons';
@@ -22,10 +24,11 @@ export function SettingsGroup({ title, footer, children }: { title?: string; foo
 }
 
 /* ---------------- ProfileHeader ---------------- */
-export function ProfileHeader({ person, full, sub, stats }: { person: Person; full: string; sub: string; stats: [string, string][] }) {
+export function ProfileHeader({ person, full, sub, stats, cover }: { person: Person; full: string; sub: string; stats: [string, string][]; cover?: string }) {
   return (
-    <header className="b-profile">
-      <Avatar person={{ ...person, you: false }} size={72} ring="none" />
+    <header className={`b-profile ${cover ? 'has-cover' : ''}`}>
+      {cover && <div className="b-profile-cover" aria-hidden><img src={cover} alt="" /></div>}
+      <span className="b-profile-face">{AVATAR[person.id] ? <Face person={person} size={88} /> : <Avatar person={{ ...person, you: false }} size={72} ring="none" />}</span>
       <h1 className="b-display">{full}</h1>
       <p>{sub}</p>
       <dl className="b-profile-stats">{stats.map(([k, v]) => <div key={k}><dd className="tu-num">{v}</dd><dt>{k}</dt></div>)}</dl>

@@ -1,3 +1,4 @@
+import { heroFlip } from '../../lib/navghost';
 import React, { useRef, useState } from 'react';
 import './beyond.css';
 import { BIcon } from './icons';
@@ -26,7 +27,7 @@ export function PlaceGallery({ photos, credits }: { photos: string[]; credits?: 
     <div className="b-gallery" aria-roledescription="carousel" aria-label="Photos from TripUp visitors">
       <div className="b-gallery-track" ref={ref} onScroll={e => setI(Math.round(e.currentTarget.scrollLeft / e.currentTarget.clientWidth))} tabIndex={0}
         onKeyDown={e => { if (e.key === 'ArrowRight') go(i + 1); if (e.key === 'ArrowLeft') go(i - 1); }}>
-        {photos.map((p, k) => <img key={p + k} src={p} alt={`Visitor photo ${k + 1} of ${photos.length}`} />)}
+        {photos.map((p, k) => <img key={p + k} src={p} alt={`Visitor photo ${k + 1} of ${photos.length}`} ref={k === 0 ? heroFlip.land : undefined} />)}
       </div>
       <span className="b-gallery-count tu-glass tu-num" aria-live="polite">{i + 1} of {photos.length}</span>
       {credits?.[i] && <span className="b-gallery-credit tu-glass">{credits[i]}</span>}

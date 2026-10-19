@@ -14,7 +14,7 @@ export const cursor: Api & { _impl?: Api } = {
 
 const visible = (el: Element) => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && !el.closest('[inert],[aria-hidden="true"]'); };
 export function findTarget(root: ParentNode, t: Target): HTMLElement | null {
-  const all = Array.from(root.querySelectorAll(t.sel)).filter(visible) as HTMLElement[];
+  const all = (Array.from(root.querySelectorAll(t.sel)).filter(visible) as HTMLElement[]).filter(el => !el.closest('.mo-ghost'));
   const hit = all.filter(el => (!t.text || (el.textContent ?? '').includes(t.text) || (el.getAttribute('aria-label') ?? '').includes(t.text)) && (!t.aria || t.aria.test(el.getAttribute('aria-label') ?? '')));
   return hit[t.nth ?? 0] ?? null;
 }

@@ -3,7 +3,7 @@ import { useFlow, Top, crewPeople } from './kit';
 import { Button, AvatarStack } from '../../components/core';
 import { BIcon } from '../../components/beyond/icons';
 import { TripCreateStepper, DestinationSearch, DateRangePicker, CoverPicker, BudgetInput, CrewPicker, MilestoneMoment, fmtRange, nights } from '../../components/beyond/create';
-import { DESTINATIONS, CREW } from '../../lib/beyond';
+import { DESTINATIONS, CREW, px } from '../../lib/beyond';
 import { QRCodeSVG } from 'qrcode.react';
 
 export const CREATE_STEPS = ['Where to', 'Dates', 'Cover photo', 'Starter budget', 'Invite crew'];
@@ -76,13 +76,13 @@ export function CreateCrew() {
   return (
     <Shell step={4} title="Invite your crew" lead="Link, QR or contacts." cta={c.crew.length ? `Review · ${c.crew.length} invited` : 'Review'} onCta={() => go('create/review')}
       onSkip={() => { d({ t: 'patch', k: 'create', v: { crew: [] } }); go('create/review'); }}>
-      <CrewPicker crews={[{ id: 'lisbon', name: 'Lisbon Crew', members: lisbon, last: 'Oct 2026' }]}
+      <CrewPicker crews={[{ id: 'lisbon', name: 'Lisbon Crew', members: lisbon, last: 'Oct 2026', photo: px.sunsetCrew }]}
         people={lisbon} selected={c.crew} onToggle={toggle}
         onCrew={id => { const ids = CREW.filter(x => x !== 'ari'); const all = ids.every(x => c.crew.includes(x)); d({ t: 'patch', k: 'create', v: { crew: all ? [] : ids } }); }} />
-      <div className="b-grid3">
-        <button type="button" className="b-shortcut" onClick={() => toast('Link copied')}><BIcon name="link" size={24} />Copy link</button>
-        <button type="button" className="b-shortcut" onClick={() => go('invite')}><BIcon name="qr" size={24} />QR code</button>
-        <button type="button" className="b-shortcut" onClick={() => toast('Contacts open here')}><BIcon name="contacts" size={24} />Contacts</button>
+      <div className="b-sharerow" role="group" aria-label="Other ways to invite">
+        <button type="button" onClick={() => toast('Link copied')}><span><BIcon name="link" size={20} /></span>Copy link</button>
+        <button type="button" onClick={() => go('invite')}><span><BIcon name="qr" size={20} /></span>QR code</button>
+        <button type="button" onClick={() => toast('Contacts open here')}><span><BIcon name="contacts" size={20} /></span>Contacts</button>
       </div>
     </Shell>
   );

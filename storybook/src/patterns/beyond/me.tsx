@@ -4,8 +4,10 @@ import { Button } from '../../components/core';
 import { BIcon } from '../../components/beyond/icons';
 import { ActivityItem, NotificationBanner, LockScreen } from '../../components/beyond/activity';
 import { SettingsRow, SettingsGroup, ProfileHeader, ChoiceList } from '../../components/beyond/settings';
-import { ACTIVITY } from '../../lib/beyond';
+import { ACTIVITY, FUTURE_TRIPS } from '../../lib/beyond';
 import { photo } from '../../lib/data';
+import { Face } from '../../components/settle';
+import '../../components/beyond/elevate.css';
 
 /* ---------------- Activity ---------------- */
 export function ActivityScreen() {
@@ -16,12 +18,26 @@ export function ActivityScreen() {
     <div className="b-scr">
       <div className="b-scroll">
         <Top title="Activity" sub="Lisbon Crew" onBack={back} right={<button type="button" className="b-top-btn" aria-label="Notification settings" onClick={() => go('activity/settings')}><BIcon name="gear" size={20} /></button>} />
-        <button type="button" className="b-lockpromo" onClick={() => go('activity/lock')}><BIcon name="bellX" size={20} /><span>Preview Lock Screen notifications</span><BIcon name="chevronRight" size={20} className="b-muted" /></button>
-        {groups.map(g => { const items = ACTIVITY.filter(a => a.group === g); return items.length ? (
-          <section key={g} className="b-section"><h2 className="b-overline">{g}</h2>
-            <ul className="b-actlist">{items.map(a => <ActivityItem key={a.id} act={{ ...a, unread: a.unread && !s.notif.done.includes('read') }} person={P[a.who]} onOpen={() => open(a.id)} onAction={() => { toast('Voted Park Rooftop'); d({ t: 'patch', k: 'notif', v: { done: [...s.notif.done, 'v4'] } }); }} />)}</ul>
+        {/* v5.1: the one thing waiting on you is the hero; the feed below is grouped glass, not stacked rows. */}
+        {(() => { const voted = s.notif.done.find(x => x.startsWith('v4')); const pick = voted?.split(':')[1];
+          return (
+            <section className={`b-acthero ${voted ? 'is-done' : ''}`} aria-label="Waiting on you: Drinks after fado?">
+              <img src={photo.bridge} alt="" />
+              <span className="b-acthero-k"><Face person={P.tomas} size={24} />{voted ? 'You voted' : 'Tomás asks the crew'}</span>
+              <h2 className="b-acthero-t">Drinks after fado?</h2>
+              <p className="b-acthero-m tu-num">{voted ? `${pick ?? 'Park Rooftop'} · 4 of 7 voted` : '3 of 7 voted · closes 11:15 PM'}</p>
+              {!voted && <div className="b-acthero-opts">{['Park Rooftop', 'Rua Nova do Carvalho', 'Home, early night'].map(o => (
+                <button key={o} type="button" onClick={() => { toast(`Voted ${o}`); d({ t: 'patch', k: 'notif', v: { done: [...s.notif.done, `v4:${o}`] } }); }}>{o}</button>))}</div>}
+            </section>
+          ); })()}
+        {groups.map(g => { const items = ACTIVITY.filter(a => a.group === g && a.id !== 'v4'); return items.length ? (
+          <section key={g} className="b-section b-actgroup"><h2 className="b-overline">{g}</h2>
+            <ul className="b-actlist">{items.map(a => <ActivityItem key={a.id} act={{ ...a, unread: a.unread && !s.notif.done.includes('read') }} person={P[a.who]} onOpen={() => open(a.id)} />)}</ul>
           </section>) : null; })}
-        <Button label="Mark all as read" variant="plain" size="medium" onClick={() => d({ t: 'patch', k: 'notif', v: { done: [...s.notif.done, 'read'] } })} />
+        <div className="b-actfoot">
+          <button type="button" className="b-quiet" onClick={() => go('activity/lock')}><BIcon name="bellX" size={18} />Preview Lock Screen</button>
+          <button type="button" className="b-quiet" onClick={() => d({ t: 'patch', k: 'notif', v: { done: [...s.notif.done, 'read'] } })}>Mark all as read</button>
+        </div>
       </div>
     </div>
   );
@@ -71,20 +87,21 @@ export function ProfileScreen() {
     <div className="b-scr">
       <div className="b-scroll">
         <Top title="" onBack={back} />
-        <ProfileHeader person={P.ari} full="Ari Lindqvist" sub="San Francisco · on TripUp since 2024" stats={[['trips', '6'], ['crews', '3'], ['places reviewed', '11']]} />
-        <SettingsGroup title="Money">
+        <ProfileHeader person={P.ari} full="Ari Lindqvist" sub="San Francisco · on TripUp since 2024" cover={photo.alfama} stats={[['trips', '6'], ['crews', '3'], ['places reviewed', '11']]} />
+        <section className="b-section"><h2 className="b-overline">Your trips</h2>
+          <div className="b-triprail">
+            <button type="button" className="b-triptile" onClick={() => go('recap')}><img src={photo.roofs} alt="" /><span><b>Lisbon Crew</b><small className="tu-num">Oct 12 to 17 · recap</small></span></button>
+            {FUTURE_TRIPS.map(t => <div key={t.id} className="b-triptile"><img src={t.photo} alt="" /><span><b>{t.name}</b><small className="tu-num">{t.dates}</small></span></div>)}
+          </div>
+        </section>
+        <SettingsGroup title="Settings">
           <SettingsRow icon="cardX" tone="accent" title="Payment methods" value={st.method} chevron onClick={() => go('profile/payments')} />
-          <SettingsRow icon="dollar" title="Currency" value="USD, $" chevron onClick={() => go('profile/payments')} />
-        </SettingsGroup>
-        <SettingsGroup title="App">
           <SettingsRow icon="sunny" title="Appearance" value={st.appearance === 'system' ? 'System' : st.appearance === 'dark' ? 'Dark' : 'Light'} chevron onClick={() => go('profile/appearance')} />
           <SettingsRow icon="sparkleX" title="Reduce Motion" sub="Fades instead of movement" toggle={st.reduceMotion} onToggle={v => { d({ t: 'patch', k: 'settings', v: { reduceMotion: v } }); host.setReduceMotion?.(v); }} />
           <SettingsRow icon="bellX" title="Notifications" chevron onClick={() => go('activity/settings')} />
+          <SettingsRow icon="shield" title="Album privacy" value={st.albumDefault === 'crew' ? 'Crew only' : 'Ask each time'} chevron onClick={() => go('profile/privacy')} />
         </SettingsGroup>
-        <SettingsGroup title="Privacy">
-          <SettingsRow icon="shield" title="Album and public posts" value={st.albumDefault === 'crew' ? 'Crew only' : 'Ask each time'} chevron onClick={() => go('profile/privacy')} />
-        </SettingsGroup>
-        <SettingsGroup><SettingsRow icon="signOut" title="Sign out" destructive onClick={() => host.exit('home')} /></SettingsGroup>
+        <button type="button" className="b-quiet b-signout" onClick={() => host.exit('home')}>Sign out</button>
         <p className="b-fine b-center">TripUp 2.4 · Made for crews</p>
       </div>
     </div>

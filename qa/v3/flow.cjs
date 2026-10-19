@@ -17,6 +17,8 @@ const mode = process.argv[2] || 'cash';
   await click('.pt-cardbtn'); log.push(await step());
   await click('button', 'Add people'); await click('button', /Simulate Ren scanning/); await click('button', 'Done'); log.push(await step());
   await click('button', 'Start a poll'); await p.waitForTimeout(900); log.push(await step());
+  // v5.1: Part 1 lands on the Explore feed first; the hero tile starts the questions.
+  if (await ph.locator('.b-findhero').count()) { await ph.locator('.b-findhero').first().click(); await p.waitForTimeout(700); log.push('explore feed'); }
   // Explore questions change often; answer each with its first option (rows end in a spot count) until the picks appear.
   for (let q = 0; q < 6; q++) {
     if (await ph.getByRole('button', { name: /Taberna da Rua/ }).count()) break;
@@ -41,7 +43,7 @@ const mode = process.argv[2] || 'cash';
   await click('button', /Pay Nic \$42\.10/); log.push(await step());
   if (mode === 'cash') {
     await click('radio', /Cash/); await click('button', 'Continue with cash'); log.push(await step());
-    log.push('count ' + (await ph.locator('.p-cashcount').innerText()).replace(/\s+/g, ' ').slice(0, 120));
+    log.push('count ' + (await ph.locator('.p-cashhero').innerText()).replace(/\s+/g, ' ').slice(0, 120));
     const k = ph.locator('.p-slide-knob'); const bb = await k.boundingBox(); const tb = await ph.locator('.p-slide').boundingBox();
     await p.mouse.move(bb.x + bb.width / 2, bb.y + bb.height / 2); await p.mouse.down();
     for (let i = 1; i <= 20; i++) { await p.mouse.move(bb.x + bb.width / 2 + (tb.width - 60) * i / 20, bb.y + bb.height / 2); await p.waitForTimeout(16); }

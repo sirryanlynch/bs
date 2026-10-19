@@ -2,6 +2,13 @@
 
 `tokens.json` is the source of truth. `tokens.css` and the Figma variables are generated from it by `build_tokens.py`. Anyone building on `tokens.*` (for example the Storybook in `/workspace/tripup/storybook/`) should check here before they rebuild.
 
+## v5.1 (Oct 19, 2026)
+- Elevation pass: one hero per screen on Create trip (Where to, Invite your crew), Pay Nic, Cash for Nic, Poll sent, Balances updated, Split dinner, Activity and Profile. New patterns: pay hero (photo faces + Iris thread), featured method tiles, cash bills hero, NextSteps strip, photo hero tiles, trip rail.
+- Motion: exit half of every transition (outgoing ghost: push parallax, pop slide-off, fade, sheet settle) and photo-to-hero FLIP from Explore into the place card. Reduce Motion: fades only.
+- Part 1 tour lands on the Explore feed before the questions.
+- DebtUntangle default skin is Solver (v5.1); Instrument kept as a legacy story.
+- Deck: nav thumbnails and journey hi-fi shots regenerated (US formats, current screens).
+
 ## v5 · Oct 19, 2026
 
 - **HeaderMenu**: one-row inset glass header (avatar or Back, title, glass menu that grows into Notifications, Album, Add expense, Invite, Settings). Used on Trips, Lisbon Crew, Tonight and Money.

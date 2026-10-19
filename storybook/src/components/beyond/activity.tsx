@@ -1,3 +1,4 @@
+import { Face } from '../settle';
 import React from 'react';
 import './beyond.css';
 import { BIcon, BIconName } from './icons';
@@ -13,7 +14,7 @@ export function ActivityItem({ act, person, onAction, onOpen }: { act: Act; pers
   return (
     <li className={`b-act-item ${act.unread ? 'is-unread' : ''}`}>
       <button type="button" className="b-act-main" onClick={onOpen}>
-        <span className="b-act-av"><Avatar person={person} size={36} ring="none" /><span className={`b-act-kind is-${act.kind}`}><BIcon name={KIND_ICON[act.kind]} size={12} /></span></span>
+        <span className="b-act-av"><Face person={person} size={40} /><span className={`b-act-kind is-${act.kind}`}><BIcon name={KIND_ICON[act.kind]} size={12} /></span></span>
         <span className="b-act-text"><span>{act.text}</span><small className="tu-num">{act.time}</small></span>
         {act.thumb && <img src={act.thumb} alt="" className="b-act-thumb" />}
       </button>

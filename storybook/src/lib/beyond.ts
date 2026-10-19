@@ -104,7 +104,7 @@ export const COMMUNITY: CommunityPlace[] = [
     photos: [photo.bridge, px.riverside], tags: ['2 hours', 'Under the bridge', 'Drinks on board'],
     snippet: { who: 'Nic, your crew', text: 'Book the 5:30 PM sail. You pass under the bridge right at golden hour.' }, signal: 'booked' },
   { id: 'dive', name: 'Dive Point Sesimbra', area: 'Sesimbra', type: 'Scuba diving', kind: 'active', price: '$$$', rating: 4.9, reviews: 64, beenHere: 120, crews: 5, saves: 310, walk: 400, drive: 45,
-    photos: [px.riverside, photo.bridge], tags: ['Beginner dives', 'Gear included', 'Leaves 7:00 AM'],
+    photos: [px.diver, px.riverside, photo.bridge], tags: ['Beginner dives', 'Gear included', 'Leaves 6:00 AM'],
     snippet: { who: 'Kai, Sydney', text: 'Calm water inside the bay. Octopus on the first dive.' }, signal: 'been' },
 ];
 export const placeById = (id: string) => COMMUNITY.find(p => p.id === id) ?? COMMUNITY[0];
