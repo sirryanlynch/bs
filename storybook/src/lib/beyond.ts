@@ -134,7 +134,7 @@ export const DURATIONS: Record<Mode, { label: string; n: number }[]> = {
   drive: [{ label: '10 min', n: 34 }, { label: '20 min', n: 58 }, { label: '40 min', n: 77 }],
   destination: [{ label: 'Under 1 hr', n: 12 }, { label: 'Half day', n: 19 }, { label: 'Day trip', n: 26 }],
 };
-export const CURATE_STEPS = ['How are you getting there?', 'How long is OK?', 'What are you in the mood for?', 'Price per person'];
+export const CURATE_STEPS = ['How are you getting there?', 'How long is OK?', 'What are you in the mood for?', 'Price point'];
 /** Step 3 type options: the experience types Explore offers (no All, no Travel). */
 export const AFTER = [{ label: 'Food', id: 'food', f: 0.42 }, { label: 'Drinks', id: 'drinks', f: 0.6 }, { label: 'Culture', id: 'culture', f: 0.34 }, { label: 'Activity', id: 'active', f: 0.22 }] as const;
 export const BUDGET = [{ label: '$', f: 0.45 }, { label: '$$', f: 0.7 }, { label: '$$$', f: 0.5 }, { label: 'Any', f: 1 }];

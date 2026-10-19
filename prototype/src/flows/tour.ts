@@ -55,7 +55,7 @@ export const CHAPTER: TourStep[] = [
   { tap: { sel: '.b-fchip', text: 'Activity' }, wait: 1300, say: 'One row of type filters. The list fades instead of jumping.' },
   { tap: { sel: '.b-fchip', text: 'All' }, wait: 700 },
   { scroll: -380, wait: 500 },
-  { hash: '#/beyond/explore/curate', wait: 1400, say: 'Find a place: one question per screen. Tap a tile and it moves on.' },
+  { hash: '#/beyond/explore/curate', wait: 1400, say: 'Find a place: what kind first, then price point, then how you get there. Tap a tile and it moves on.' },
   { tap: { sel: '.b-fp-photo' }, wait: 1100 },
   { tap: { sel: '.b-fp-glass', nth: 1 }, wait: 1100 },
   { tap: { sel: '.b-fp-photo' }, wait: 1100 },

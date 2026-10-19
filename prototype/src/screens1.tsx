@@ -1,4 +1,4 @@
-import { FindHeader, FindQuestion, findBack, findSkip } from '@sb/components/beyond/findplace';
+import { FindHeader, FindQuestion, findBack, findSkip, findStage, findUpTo, findTrail } from '@sb/components/beyond/findplace';
 import { curateStage, CurateAnswers, ExploreFeed } from '@sb/components/beyond/explore';
 import { COMMUNITY } from '@sb/lib/beyond';
 import { HeaderMenu } from '@sb/components/beyond/headermenu';
@@ -237,16 +237,17 @@ export const EXPLORE_PLACES = [
   { id: 'esquina', name: 'Tasca da Esquina', area: 'Campo de Ourique', kind: 'Petiscos', price: '$$', rating: 4.6, photo: photo.azulejo, walk: '13 min', note: '' },
 ];
 const pickLabel: string[] = [];
-const ANS_KEYS = ['mode', 'dur', 'after', 'budget'] as const;
+const ANS_KEYS = ['after', 'budget', 'mode', 'dur'] as const; // v5.4.1 order: kind, price point, getting there, how long
 const ANS_DEF: CurateAnswers = { mode: 'walk', dur: 1, after: 0, budget: 1 } as CurateAnswers;
 /** Keeps the tile answers in step with exploreStage, which the guided tour can also move. */
 function syncAnswers(a: CurateAnswers, st: number): CurateAnswers {
-  if (curateStage(a) === st) return a;
+  if (findStage(a) === st) return a;
   const o: any = {}; ANS_KEYS.slice(0, st).forEach(k => { o[k] = (a as any)[k] ?? (ANS_DEF as any)[k]; }); return o;
 }
 export function Explore() {
   const { s, d } = useApp();
   const ansRef = useRef<CurateAnswers>({});
+  const prevRef = useRef<CurateAnswers | undefined>(); // v5.4.1: answers before a chip jump, shown prefilled
   const [picks, setPicks] = useState<string[]>([]);
   const st = s.exploreStage;
   const QUESTIONS = questionsFor(pickLabel);
@@ -255,7 +256,7 @@ export function Explore() {
   const toggle = (id: string) => { haptic(); setPicks(p => p.includes(id) ? p.filter(x => x !== id) : p.length >= 3 ? p : [...p, id]); };
   // v5: the questions use the same one-question-per-screen tiles as Find a place in the Full JTBD analysis.
   const A = syncAnswers(ansRef.current, st); ansRef.current = A;
-  const setStage = (a: CurateAnswers) => { ansRef.current = a; d({ t: 'set', patch: { exploreStage: curateStage(a), shortlist: [] } }); };
+  const setStage = (a: CurateAnswers) => { ansRef.current = a; d({ t: 'set', patch: { exploreStage: findStage(a), shortlist: [] } }); };
   // v5.1: Part 1 lands on the Explore feed first (places other crews booked), then the hero tile starts the questions.
   if (st === 0 && s.exploreFeed !== false) return (
     <div className="b-scr">
@@ -281,7 +282,7 @@ export function Explore() {
     <div className="b-scr b-cmp">
       <div className="b-cmp-amb" aria-hidden />
       <FindHeader answers={A} onBack={() => (st === 0 ? d({ t: 'set', patch: { exploreFeed: true } }) : (haptic(), setStage(findBack(A))))} onSkip={() => { haptic(); setStage(findSkip(A)); }} />
-      <div className="b-scroll b-cmp-scroll is-q"><FindQuestion answers={A} onAnswer={a => { haptic(10); setStage(a); }} /></div>
+      <div className="b-scroll b-cmp-scroll is-q"><FindQuestion answers={A} prev={prevRef.current} onAnswer={a => { haptic(10); if (findStage(a) >= 4) prevRef.current = undefined; setStage(a); }} /></div>
     </div>
   );
   return (
@@ -289,10 +290,9 @@ export function Explore() {
       <div className={`scr-scroll pt-explore ${st >= QN ? 'has-cta' : ''}`}>
         <TopBar back={st > 0 ? 'previous step' : 'Lisbon Crew'} title="Find a place" sub={st < QN ? 'For 7 · tonight' : 'Pick 3'}
           onBack={() => { if (st === 0) return d({ t: 'go', step: 'trip' }); const to = st >= QN ? 2 : st >= 2 ? 1 : 0; pickLabel.length = to; d({ t: 'set', patch: { exploreStage: to, shortlist: [] } }); }} />
-        {/* One Stepper for the whole app. The nav bar has Back, so the stepper shows Skip only. Questions 3 and 4 share step 3. */}
-        <Stepper steps={['Getting there', 'How long', 'What kind', 'Picks ready']} current={st <= 1 ? st : st < QN ? 2 : 3} label="Find a place progress"
-          onStep={i => { haptic(); pickLabel.length = i; d({ t: 'set', patch: { exploreStage: i, shortlist: [] } }); }}
-          onSkip={st < QN ? () => { haptic(); if (st === 0) { pickLabel[0] = 'Any way'; pickLabel[1] = 'Any'; } else if (st === 1) pickLabel[1] = 'Any'; d({ t: 'set', patch: { exploreStage: st < 2 ? 2 : QN } }); } : undefined} />
+        {/* v5.4.1: the answers as chips, in question order. Tap one to go back to that question; later ones come prefilled with Next. */}
+        {st >= QN && <p className="b-fp-trail pt-trail">{findTrail(A).map(t => <button key={t.st} type="button" className="b-fp-chip" aria-label={`Change: ${t.label}`}
+          onClick={() => { haptic(); prevRef.current = A; setStage(findUpTo(A, t.st)); }}>{t.label}</button>)}</p>}
         {st < QN ? (
           <>
             <p className="b-countpill tu-num pt-countpill" aria-live="polite">{st === 0 || pickLabel[0] === 'Any way' ? `${spots} places in Lisbon so far` : st === 2 && pickLabel[1] !== 'Any' ? `${spots} places within ${pickLabel[1]}` : `${spots} places so far`}</p>

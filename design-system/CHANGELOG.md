@@ -2,6 +2,13 @@
 
 `tokens.json` is the source of truth. `tokens.css` and the Figma variables are generated from it by `build_tokens.py`. Anyone building on `tokens.*` (for example the Storybook in `/workspace/tripup/storybook/`) should check here before they rebuild.
 
+## v5.4.1 (Oct 19, 2026)
+
+- **Find a place, new order:** what kind (Food, Drinks, Culture, Activity, the same set as the Explore chips), then Price point, then how you're getting there, then how long. Counts narrow from the first answer.
+- **Price per person is now Price point** everywhere.
+- **Picks chips jump back:** on the 6 picks screen the chips (Food · $$ · Walk · 5 min) follow the question order. Tap one to go back to that question with your answer preselected. Each later question comes prefilled with Next, then the picks refresh. The Part 1 picks screen gets the same chips (in place of the old Stepper).
+- Tour copy and taps follow the new order. Storybook: Find a place stories for price point and getting there.
+
 ## v5.4 (Oct 19, 2026)
 
 Navigation restructure. Builds on v5.3.1 (folded in: Back and swipe down only in flows, no in-flow menu, Poll sent exits fixed).

@@ -82,7 +82,8 @@ export function CurateRing({ done, total, count, size = 128 }: { done: number; t
 export type CurateAnswers = { mode?: Mode | 'any'; dur?: number; after?: number; budget?: number };
 export const curateMode = (a: CurateAnswers): Mode | undefined => (a.mode && a.mode !== 'any' ? a.mode : undefined);
 export const curateCount = (a: CurateAnswers, total = 120) => {
-  if (!a.mode) return total;
+  // v5.4.1: kind and price come first now, so they narrow the count before any distance is set.
+  if (!a.mode) { let n = total; if (a.after != null && a.after >= 0) n = Math.round(n * AFTER[a.after].f); if (a.budget != null && a.budget >= 0) n = Math.max(6, Math.round(n * BUDGET[a.budget].f)); return n; }
   if (a.dur == null || a.dur < 0 || a.mode === 'any') { if (a.after == null) return a.mode === 'walk' ? 48 : a.mode === 'drive' ? 96 : a.mode === 'any' ? total : 31; }
   let n = a.mode !== 'any' && a.dur != null && a.dur >= 0 ? DURATIONS[a.mode][a.dur].n : a.mode === 'walk' ? 48 : a.mode === 'drive' ? 96 : a.mode === 'any' ? 61 : 31;
   if (a.after != null && a.after >= 0) n = Math.max(4, Math.round(n * AFTER[a.after].f));
@@ -98,7 +99,7 @@ export const curateStep = (st: number) => (st <= 1 ? st : st < 4 ? 2 : 3);
 /** Skip applies the default (any) and advances one Stepper step. */
 export const curateSkip = (a: CurateAnswers): CurateAnswers => { const st = curateStage(a); return st === 0 ? { mode: 'any', dur: -1 } : st === 1 ? { ...a, dur: -1 } : { ...a, after: a.after ?? -1, budget: -1 }; };
 export const curateStage = (a: CurateAnswers) => (a.mode == null ? 0 : a.dur == null ? 1 : a.after == null ? 2 : a.budget == null ? 3 : 4);
-export const curateSummary = (a: CurateAnswers) => [a.mode && (a.mode === 'any' ? 'Any way' : MODES.find(m => m.id === a.mode)!.label), a.mode && a.mode !== 'any' && a.dur != null && a.dur >= 0 && DURATIONS[a.mode][a.dur].label, a.after != null && a.after >= 0 && AFTER[a.after].label, a.budget != null && a.budget >= 0 && BUDGET[a.budget].label].filter(Boolean) as string[];
+export const curateSummary = (a: CurateAnswers) => [a.after != null && a.after >= 0 && AFTER[a.after].label, a.budget != null && a.budget >= 0 && BUDGET[a.budget].label, a.mode && (a.mode === 'any' ? 'Any way' : MODES.find(m => m.id === a.mode)!.label), a.mode && a.mode !== 'any' && a.dur != null && a.dur >= 0 && DURATIONS[a.mode][a.dur].label].filter(Boolean) as string[];
 
 /** The questions, one step at a time. Step 1 sets how you travel, step 2 tightens time to match (nobody is assumed to walk),
  * step 3 asks type and price on one screen. Picks ready is the result. */
@@ -115,7 +116,7 @@ export function CurateFlow({ answers, onAnswer }: { answers: CurateAnswers; onAn
         <p className="b-help">Pick one, then set a price.</p>
         <FilterChips value={xt} onChange={setXt} surface="explore" noAll label="Type" />
         <h3 className="b-overline">{CURATE_STEPS[3]}</h3>
-        <div className="b-seg4" role="radiogroup" aria-label="Price per person">
+        <div className="b-seg4" role="radiogroup" aria-label="Price point">
           {BUDGET.map((b, i) => <button key={b.label} type="button" role="radio" aria-checked={price === i} className={`b-fchip ${price === i ? 'is-on' : ''}`} onClick={() => setPrice(i)}><span className="tu-num">{b.label}</span></button>)}
         </div>
         <button type="button" className="b-curate-go" onClick={() => onAnswer(next)}>Show {curateCount(next)} places</button>
