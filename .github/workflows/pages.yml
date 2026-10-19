@@ -35,7 +35,12 @@ jobs:
       - name: Link prototype dependencies
         run: ln -sfn ../storybook/node_modules prototype/node_modules
 
+      # enablement asks GitHub to turn Pages on with source GitHub Actions.
+      # GITHUB_TOKEN cannot create the Pages site (that needs administration).
+      # The build and deploy still run so a later re-run can publish once Pages is on.
       - name: Configure GitHub Pages
+        id: pages
+        continue-on-error: true
         uses: actions/configure-pages@v5
         with:
           enablement: true

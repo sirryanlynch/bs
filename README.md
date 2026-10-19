@@ -88,3 +88,5 @@ Consent mode starts denied for analytics and ads. `analytics_storage` is granted
 ## Publish
 
 Pushes to `main` run `.github/workflows/pages.yml`. The workflow installs dependencies, builds Storybook and the prototype, assembles `site/`, and deploys that folder with GitHub Pages. If the source build fails, the workflow uploads the `site/` folder already in the repo.
+
+The workflow also asks GitHub to enable Pages and set the source to GitHub Actions. The default Actions token cannot create the Pages site. If the run reports "Create Pages site failed", open the repo Settings, choose Pages, set the source to GitHub Actions, and re-run the workflow.
