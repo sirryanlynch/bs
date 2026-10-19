@@ -11,12 +11,25 @@ for p in photos:
 for b in ['prism', 'golden', 'night']:
     im = Image.open(root / f'moodboards/board_{b}.png').convert('RGB'); im.thumbnail((1600, 900))
     im.save(out / f'img/board_{b}.jpg', quality=84, optimize=True, progressive=True)
+# Journey shots. The Figma exports still show euros and the 24-hour clock, so the deck uses US-English captures of the
+# built prototype from deck-src/shots/ (made by qa/v3/usshots.cjs) when they exist, and falls back to the exports.
+shots = root / 'deck-src/shots'
 for e in ['hifi-04-create-poll', 'hifi-05-vote-from-push', 'hifi-07-poll-closed', 'hifi-08-wine-split', 'hifi-10-squared-up']:
-    im = Image.open(root / f'exports/{e}.png').convert('RGB'); im.thumbnail((420, 920))
+    src = shots / f'{e}.jpg' if (shots / f'{e}.jpg').exists() else root / f'exports/{e}.png'
+    im = Image.open(src).convert('RGB'); im.thumbnail((420, 920))
     im.save(out / f'img/{e}.jpg', quality=84, optimize=True)
+# Slide 8 cash-flow thumbnails.
+for c in ['cash-1-count', 'cash-2-pending', 'cash-3-confirm', 'cash-4-confirmed']:
+    if (shots / f'{c}.jpg').exists():
+        im = Image.open(shots / f'{c}.jpg').convert('RGB'); im.thumbnail((280, 608))
+        im.save(out / f'img/{c}.jpg', quality=84, optimize=True)
 shutil.copy(root / 'design-system/tokens.css', out / 'tokens.css')
 inter = sorted(glob.glob(str(root / 'site/prototype/assets/Inter-*.woff2')) + glob.glob(str(root / 'storybook/storybook-static/**/Inter*.woff2'), recursive=True))
 if inter: shutil.copy(inter[0], out / 'fonts/Inter.woff2')
 for f in ['InstrumentSerif-Regular.woff2', 'InstrumentSerif-Italic.woff2']:
     shutil.copy(root / 'site/assets' / f, out / 'fonts' / f)
+shutil.copy(root / 'storybook/src/assets/fonts/JetBrainsMono.woff2', out / 'fonts/JetBrainsMono.woff2')
+# Slide 8 photo avatars (Pexels, credits in storybook/src/assets/avatars/CREDITS.md), same crops as the prototype.
+for _p in ['ari', 'sofia', 'mara', 'ren', 'nic', 'tomas', 'joao']:
+    shutil.copy(root / f'storybook/src/assets/avatars/{_p}.jpg', out / f'img/av-{_p}.jpg')
 print('deck assets ready')

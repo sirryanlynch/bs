@@ -33,7 +33,7 @@ window.DECK = {
     { app: 'Wanderlog', kind: 'Planner',
       cells: [['y', 'Shared itinerary with view or edit rights for tripmates.', [8, 9]], ['n', 'No poll or vote found on its help or features pages.', [8, 9]], ['y', 'Budgeting, expense tracking and splitting for group trips.', [9]], ['p', 'A debt summary and a way to record payments. Even splits only, per the Wanderlog team.', [10]], ['u', 'Invites go by email or message. Whether a guest needs an account is not stated.', [8]]],
       gap: 'Whoever edits last decides, and nothing records how the group got there.',
-      ans: 'A poll with a deadline, then "how we got here" on the plan item.', go: 7 },
+      ans: 'A poll with a deadline, and the winner lands on the itinerary.', go: 7 },
     { app: 'TripIt', kind: 'Planner',
       cells: [['y', 'Itineraries you can share with view or edit rights.', [11]], ['n', 'No group decision feature found.'], ['n', 'No expense splitting found.'], ['n', 'No settle feature found.'], ['p', 'A read-only share by SMS or email, with nothing to vote on or pay.', [11]]],
       gap: "Built around one traveler's logistics. Group choices happen outside it.",

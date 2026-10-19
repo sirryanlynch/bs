@@ -584,3 +584,16 @@ html[data-motion="reduce"] .ov-grid button { transform: none; transition: opacit
 }
 .bill dd { white-space: nowrap; }
 @media (max-width: 900px) { .bill dl div { font-size: 13.5px; } .quote { font-size: 18px; } }
+/* Slide 8, v5.1 restraint pass: no HUD grid or ticks, no amounts on Tangled threads, crossings as small hollow graphite dots, no balance rings. */
+#tech .g-dot, #tech .g-orbit, #tech .g-tick { display: none; }
+.g-tag.is-iou { display: none; }
+.g-knot .glow { display: none; }
+.g-knot .core { r: 3px; fill: var(--color-bg-surface, #fff); stroke: var(--ink-3, #8a8796); stroke-opacity: .55; stroke-width: .75; }
+.g-node .bal { display: none; }
+
+/* Cash thumbnails: the new-tab glyph rides on the last word, so it never wraps onto its own line. */
+.cashrow a[data-ext]::after { display: none; }
+.cashrow .nw { white-space: nowrap; }
+.cashrow a[data-ext] .nw::after { content: ""; display: inline-block; flex: none; width: .58em; height: .58em; margin-left: .32em; vertical-align: .04em; background: currentColor; opacity: .7; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 2h6v6M10 2 3 9'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 2h6v6M10 2 3 9'/%3E%3C/svg%3E") center / contain no-repeat; }
+/* Slide 8 photo medallions (v5.1). */
+.g-node .disc { fill: var(--color-bg-surface); filter: drop-shadow(0 2px 3px rgba(20, 18, 51, .10)); } .g-node .edge { fill: none; stroke: var(--color-border-subtle); stroke-width: 1; }

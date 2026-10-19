@@ -527,6 +527,7 @@
     var svg = $('#graph'), gE = $('#edges'), gN = $('#nodes'), gT = $('#tech'), gP = $('#panel'), counter = $('#gCounter');
     var mk = function (t, a, par) { var e = document.createElementNS(NS, t); for (var k in a) e.setAttribute(k, a[k]); if (par) par.appendChild(e); return e; };
     var defs = svg.querySelector('defs');
+    if (!document.getElementById('gAvClip')) mk('circle', { r: 16 }, mk('clipPath', { id: 'gAvClip' }, defs));
     // Technical layer: 12 px dot grid with a radial falloff, the dashed orbit, side ticks, and a crosshair shown on Solved.
     for (var x = 13; x <= 349; x += 12) for (var y = 34; y <= 194; y += 12) { var dd = Math.hypot((x - CX) / 170, (y - CY) / 82); if (dd < 1) mk('circle', { cx: x, cy: y, r: .625, class: 'g-dot', style: 'opacity:' + (dd < .6 ? 1 - dd * .6 : (1 - dd) * 1.6).toFixed(2) }, gT); }
     mk('ellipse', { cx: CX, cy: CY, rx: 125, ry: 54, class: 'g-orbit' }, gT);
@@ -597,10 +598,12 @@
       var ex = Math.sin(ang) * r * (v > 0 ? 1 : -1), ey = -Math.cos(ang) * r; return 'M0 ' + (-r) + ' A' + r + ' ' + r + ' 0 ' + (ang > Math.PI ? 1 : 0) + ' ' + sw + ' ' + ex.toFixed(2) + ' ' + ey.toFixed(2); }
     Object.keys(NP).forEach(function (id) {
       var p = NP[id], v = D.NETS[id], g = mk('g', { class: 'g-node' + (id === 'ari' ? ' is-me' : '') + (v === 0 ? ' is-zero' : ''), transform: 'translate(' + p[0] + ' ' + p[1] + ')' }, gN);
-      mk('circle', { r: 20, class: 'ring' }, g);
       var ar = mk('path', { d: arc(v), class: 'bal ' + (v < 0 ? 'owe' : 'owed') }, g);
-      mk('circle', { r: 16, class: 'chip' }, g);
-      var ini = mk('text', { y: 4, 'text-anchor': 'middle', class: 'ini' }, g); ini.textContent = P[id][0];
+      // v5.1 medallion: 36 pt disc, 32 pt photo, same avatars as the prototype.
+      mk('circle', { r: 18, class: 'disc' }, g);
+      var im = mk('image', { x: -16, y: -16, width: 32, height: 32, 'clip-path': 'url(#gAvClip)', preserveAspectRatio: 'xMidYMid slice', class: 'av' }, g);
+      im.setAttribute('href', 'deck/img/av-' + id + '.jpg');
+      mk('circle', { r: 17.5, class: 'edge' }, g);
       // Labels: above when the node sits high, otherwise below. Ari sits to the right of the chip, stacked; Sofia is nudged right so labels never collide.
       var up = p[1] < CY - 20, nm = id === 'ari' ? 'You' : P[id], val = (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(2);
       var lx = id === 'ari' ? 25 : id === 'sofia' ? 8 : 0, anchor = id === 'ari' ? 'start' : 'middle';
@@ -660,7 +663,7 @@
     show(2, false);
   })();
 
-  /* slide_view, outbound_click and jtbd_drawer_open go through analytics/ga.js so consent and Do Not Track match the rest of the site. */
+  /* slide_view, outbound_click and jtbd_drawer_open go through analytics/ga.js. sync.js writes the measurement id. */
   function track(i) { if (typeof window.gtag === 'function') window.gtag('event', 'slide_view', { slide_number: i + 1, slide_title: slides[i].dataset.title }); }
 
   /* ---------- links that open a new tab: glyph, screen reader suffix, GA outbound_click ---------- */
