@@ -13,6 +13,8 @@ import { typeLabel } from '../../data/experienceTypes';
 import { photo } from '../../lib/data';
 import { Face } from '../../components/settle';
 import { NextSteps } from '../../components/beyond/elevate';
+import { HeaderMenu } from '../../components/beyond/headermenu';
+import { AVATAR } from '../../assets/solver-assets';
 
 /** Save on glass. Saved shows a filled Iris bookmark, never a dark fill, so it sits calmly next to the Iris primary. */
 export function GlassSave({ saved, onClick }: { saved: boolean; onClick: () => void }) {
@@ -28,11 +30,8 @@ export function ExploreFeedScreen() {
   const save = (id: string) => { const on = s.saved.includes(id); d({ t: 'set', v: { saved: on ? s.saved.filter(x => x !== id) : [...s.saved, id] } }); toast(on ? 'Removed from Lisbon Crew' : 'Saved to Lisbon Crew'); };
   return (
     <div className="b-scr">
-      <div className="b-scroll has-tabs">
-        <div className="b-head">
-          {/* v5.4: no + here. Find a place is the one entry on Explore; the floating + keeps New poll everywhere. */}
-          <div><p className="b-overline">Lisbon · from TripUp travelers</p><h1 className="b-title-xl">Explore</h1></div>
-        </div>
+      <HeaderMenu title="Explore" sub="Lisbon · from TripUp travelers" avatar={AVATAR.ari} onAvatar={() => go('profile')} actions={[]} onPick={id => go(id === 'notifications' ? 'activity' : 'profile')} />
+      <div className="b-scroll has-hm has-tabs">
         <button type="button" className="b-findhero" onClick={() => go('explore/curate')}>
           <img src={photo.roofs} alt="" />
           <span className="b-findhero-t"><b>{st >= 4 ? '6 picks for tonight' : st ? 'Keep going' : 'Find a place for tonight'}</b><small className="tu-num">{st ? curateSummary(s.curate).join(' · ') || 'Any way' : '4 quick questions · 6 picks for the crew'}</small></span>

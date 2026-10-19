@@ -6,6 +6,7 @@ import { FilterChips } from '../../components/beyond/filterchips';
 import { CAMERA_ROLL, placeType, DAYS } from '../../lib/beyond';
 import { AVATAR } from '../../assets/solver-assets';
 import { BIcon } from '../../components/beyond/icons';
+import { HeaderMenu } from '../../components/beyond/headermenu';
 
 export function AlbumScreen() {
   const { s, d, go, back, P } = useFlow(); const a = s.album;
@@ -17,11 +18,9 @@ export function AlbumScreen() {
   return (
     <div className="b-scr">
       {/* v5.4: Photos is a tab landing (it used to be Album, reached from the header menu). */}
-      <div className="b-scroll has-tabs">
-        <div className="b-head">
-          <div><p className="b-overline tu-num">Lisbon Crew · {a.photos.length} photos · 7 people</p><h1 className="b-title-xl">Photos</h1></div>
-          <div className="b-head-tools"><TopBtn icon="upload" label="Add photos" accent onClick={() => go('album/upload')} /></div>
-        </div>
+      <HeaderMenu title="Photos" sub={`Lisbon Crew · ${a.photos.length} photos`} onBack={back} backLabel="Back to Lisbon Crew" actions={[]} onPick={id => go(id === 'notifications' ? 'activity' : 'profile')} />
+      <div className="b-scroll has-hm has-tabs">
+        <div className="b-album-tools"><TopBtn icon="upload" label="Add photos" accent onClick={() => go('album/upload')} /></div>
         <SegmentedControl options={['By day', 'By place']} value={a.groupBy === 'day' ? 'By day' : 'By place'} onChange={v => d({ t: 'patch', k: 'album', v: { groupBy: v === 'By day' ? 'day' : 'place' } })} />
         <FilterChips value={a.xt} surface="album" counts={counts} onChange={t => d({ t: 'patch', k: 'album', v: { xt: t } })} />
         {who && <div className="b-album-who" role="status">

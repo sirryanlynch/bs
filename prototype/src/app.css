@@ -381,3 +381,7 @@ html.is-embed, html.is-embed body, html.is-embed .prism, html.is-embed .pt-embed
 #emb-cur.is-press::after { animation: embRip 420ms ease-out; }
 @keyframes embRip { from { transform: scale(.3); opacity: .9; } to { transform: scale(2.2); opacity: 0; } }
 .prism .pt-feed { padding-bottom: 120px !important; }
+/* v5.4.9: Money keeps the in-trip tab bar; its CTA sits above the bar, toasts above the CTA */
+.prism .p-sbottom.is-tabs { bottom: 118px; }
+.phone-screen:has(.p-sbottom.is-tabs), .prism:has(.p-sbottom.is-tabs) { --toast-b: 190px; }
+.prism .p-sscroll:has(~ .p-sbottom.is-tabs), .prism .pt-money-scroll { padding-bottom: 220px !important; }

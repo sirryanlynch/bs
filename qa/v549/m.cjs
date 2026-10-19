@@ -1,0 +1,11 @@
+const { chromium } = require('/workspace/tripup/qa/v3/node_modules/playwright-core'); const O = '/workspace/tripup/qa/v549/';
+(async () => { const b = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--no-sandbox'] });
+  const p = await b.newPage({ viewport: { width: 1280, height: 1000 }, deviceScaleFactor: 2 });
+  const go = async h => { await p.goto('http://localhost:8080/prototype/?mode=self&v=' + Date.now() + h); await p.waitForTimeout(1800); };
+  const geo = () => p.evaluate(() => { const s = document.querySelector('.phone-screen').getBoundingClientRect(); const r = e => { const x = document.querySelector(e); if (!x) return null; const q = x.getBoundingClientRect(); return [Math.round(q.top - s.top), Math.round(q.bottom - s.top)]; }; return { cta: r('.p-sbottom'), tabs: r('.phone-screen .p-tabbar'), toast: r('.pt-itoast'), hdr: r('.b-hm-bar') }; });
+  await go('#/money'); console.log('money', JSON.stringify(await geo())); await p.locator('.phone-screen').screenshot({ path: O + 'money.png' });
+  await p.locator('.pt-mseg button:has-text("You")').click(); await p.waitForTimeout(400); await p.locator('.pt-myrow-btn:has-text("Request")').first().click(); await p.waitForTimeout(500); console.log('money request', JSON.stringify(await geo())); await p.locator('.phone-screen').screenshot({ path: O + 'money-request.png' });
+  await go('#/trip'); await p.locator('.phone-screen .p-tabbar button:has-text("Photos"), .phone-screen [role=tab]:has-text("Photos")').first().click().catch(() => console.log('no photos tab')); await p.waitForTimeout(1500);
+  console.log('photos', await p.evaluate(() => location.hash), JSON.stringify(await geo())); await p.locator('.phone-screen').screenshot({ path: O + 'photos.png' });
+  await go('#/beyond/explore'); console.log('home explore', JSON.stringify(await geo())); await p.locator('.phone-screen').screenshot({ path: O + 'home-explore.png' });
+  await b.close(); })();

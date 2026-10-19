@@ -2,6 +2,13 @@
 
 `tokens.json` is the source of truth. `tokens.css` and the Figma variables are generated from it by `build_tokens.py`. Anyone building on `tokens.*` (for example the Storybook in `/workspace/tripup/storybook/`) should check here before they rebuild.
 
+## v5.4.9 (Oct 19, 2026)
+
+- **Money keeps the in-trip tab bar** (Plan / Explore / Photos / Money and +, with Money selected). Simplify, Pay and Request sit above the bar with a 34px gap. Toasts sit above the button.
+- **Photos** gets the master header card (Back, title, layers and grid). Add photos moves to a small button under it. The tab bar was already there.
+- **Home Explore (#/beyond/explore)** gets the master header card, the same as Home: avatar, title, layers and grid.
+- **GA4 (G-T7WTSRRSGT)** on the deck, the prototype (page_view on load and on every hash route change) and the Storybook manager page. Page views only; no other tracking.
+
 ## v5.4.7 (Oct 19, 2026)
 
 - **Trip home header:** the layers (Up next) button is back. It's the same circular icon button as on Home, with the same color and contrast; it had been rendered white-on-white. Its count badge shows when items are pending. The Lisbon Crew hero now sits 12px below the header, like Home. Plan, Explore, Photos and Money checked. Nothing else changed.

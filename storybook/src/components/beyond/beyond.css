@@ -623,3 +623,4 @@
 .prism.theme-dark .b-cmenu .b-listrow-text b, .prism.theme-dark .b-un-card b { color: #F4F3FA; }
 .prism.theme-dark .b-cmenu .b-listrow-text small, .prism.theme-dark .b-un-card small { color: #B9B6CC; }
 .prism .b-un-drop.is-on::before { pointer-events: none; } /* v5.4.3: the scrim is visual only; tap-outside still closes via the document listener */
+.prism .b-album-tools { display: flex; justify-content: flex-end; margin: -4px 0 8px; }

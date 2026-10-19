@@ -1,4 +1,4 @@
-import { CoreHeader } from './screens1';
+import { CoreHeader, Tabs } from './screens1';
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Avatar } from '@sb/components/core';
 import { DebtUntangle, UntanglePhase } from '@sb/components/untangle';
@@ -65,13 +65,14 @@ export function MoneyScreen() {
         </>)}
       </div>
       <CoreHeader onBack={() => { haptic(); d({ t: 'go', step: 'trip' }); }} backLabel="Back to Lisbon Crew" title="Money" sub={view === 'you' ? 'Your balance' : `Whole trip · ${Object.keys(nets(raw)).length} people`} />
-      <div className="p-sbottom">
+      <div className="p-sbottom is-tabs">
         {view === 'trip' && phase === 0 && !s.simplified ? <Button label={`Simplify ${raw.length} IOUs`} fullWidth onClick={() => { haptic(16); d({ t: 'set', patch: { simplified: true } }); }} />
           : view === 'trip' && phase < 2 ? <Button label="Finding the fewest payments" disabled fullWidth />
           : myOut ? <Button label={`Pay ${P[myOut.to].name} ${usd2(myOut.amt)}`} fullWidth onClick={() => { haptic(); d({ t: 'view', v: 'choose' }); }} />
           : myIn ? <Button label={s.requested?.[`${myIn.from}>${myIn.to}`] ? `Requested from ${P[myIn.from].name}` : `Request ${usd2(myIn.amt)} from ${P[myIn.from].name}`} disabled={!!s.requested?.[`${myIn.from}>${myIn.to}`]} fullWidth onClick={() => ask(myIn)} />
           : <Button label="Back to the trip" variant="secondary" fullWidth onClick={() => d({ t: 'go', step: 'trip' })} />}
       </div>
+      <Tabs active="money" />
     </div>
   );
 }

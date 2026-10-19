@@ -168,7 +168,18 @@ export function App() {
   }, []);
   const deepLink = useRef(parseHash().open === 'trip' ? 'trip' as StepId : parseHash().step);
   useEffect(() => {
-    if (bz.active) return;
+    if (bz.active) {
+      const hash = hashForRoute(bz.route);
+      track('page_view', {
+        page_location: `${location.origin}${location.pathname}${location.search}${hash}`,
+        page_path: `${location.pathname}${hash}`,
+        page_title: bz.meta.label,
+        step: bz.route,
+        play_as: s.me,
+        embed: EMBED,
+      });
+      return;
+    }
     if (deepLink.current && s.step !== deepLink.current) return;
     deepLink.current = undefined;
     const hash = s.step === 'settle' ? `#/settle/${s.settleView}` : `#/${s.step}`;
@@ -180,7 +191,7 @@ export function App() {
       play_as: s.me,
       embed: EMBED,
     });
-  }, [s.step, s.settleView, bz.active]);
+  }, [s.step, s.settleView, bz.active, bz.route]);
   const tourSeen = useRef(false);
   useEffect(() => {
     if (tour && !tourSeen.current) track('guided_tour_start', { step: sRef.current.step, embed: EMBED });
