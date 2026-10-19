@@ -11,14 +11,14 @@ export default meta;
 
 export const Option: StoryObj<typeof PollOption> = {
   name: 'PollOption',
-  args: { label: 'Taberna da Rua das Flores', detail: 'Chiado · petiscos · €€', votes: 3, total: 6, state: 'leading', photo: places.taberna.photo },
+  args: { label: 'Taberna da Rua das Flores', detail: 'Chiado · petiscos · $$', votes: 3, total: 6, state: 'leading', photo: places.taberna.photo },
   argTypes: { state: { control: 'inline-radio', options: ['default', 'yourVote', 'leading', 'winner'] }, votes: { control: { type: 'range', min: 0, max: 6 } } },
   render: (a) => (<>
     <PollOption {...a} voters={[P.mara, P.joao, P.sofia].slice(0, a.votes)} />
-    <Label>Default</Label><PollOption label="O Velho Eurico" detail="Alfama · tasca · €€" votes={1} total={6} />
-    <Label>Your vote</Label><PollOption label="Cervejaria Ramiro" detail="Intendente · seafood · €€€" votes={2} total={6} state="yourVote" voters={[P.ari, P.nic]} />
-    <Label>Leading</Label><PollOption label="Taberna da Rua das Flores" detail="Chiado · petiscos · €€" votes={3} total={6} state="leading" voters={[P.mara, P.joao, P.sofia]} />
-    <Label>Winner, after close</Label><PollOption label="Taberna da Rua das Flores" detail="Booked Fri 20:30" votes={5} total={7} state="winner" closed voters={[P.mara, P.joao, P.sofia, P.nic, P.ren]} />
+    <Label>Default</Label><PollOption label="O Velho Eurico" detail="Alfama · tasca · $$" votes={1} total={6} />
+    <Label>Your vote</Label><PollOption label="Cervejaria Ramiro" detail="Intendente · seafood · $$$" votes={2} total={6} state="yourVote" voters={[P.ari, P.nic]} />
+    <Label>Leading</Label><PollOption label="Taberna da Rua das Flores" detail="Chiado · petiscos · $$" votes={3} total={6} state="leading" voters={[P.mara, P.joao, P.sofia]} />
+    <Label>Winner, after close</Label><PollOption label="Taberna da Rua das Flores" detail="Booked Fri 8:30 PM" votes={5} total={7} state="winner" closed voters={[P.mara, P.joao, P.sofia, P.nic, P.ren]} />
   </>),
 };
 

@@ -40,10 +40,10 @@ export const Fields: StoryObj<typeof TextField> = {
     <TextField kind="search" value="Ramiro" />
     <Label>States</Label>
     <TextField label="Trip name" value="Lisbon Crew" helper="Everyone sees this name" />
-    <TextField label="Amount" prefix="€" value="186,40" error="That is more than the receipt total of €162.40" />
+    <TextField label="Amount" prefix="$" value="186,40" error="That is more than the receipt total of $162.40" />
     <TextField label="Booking ref" value="TP-4471" disabled />
     <Label>Amount entry</Label>
-    <TextField kind="amount" prefix="€" value="186.40" helper="Dinner at O Velho Eurico" />
+    <TextField kind="amount" prefix="$" value="186.40" helper="Dinner at O Velho Eurico" />
   </>),
 };
 
@@ -71,9 +71,9 @@ export const Rows: StoryObj<typeof ListRow> = {
   render: (a) => (<>
     <ListGroup><ListRow {...a} leading={<RowIcon icon="bell" />} /></ListGroup>
     <ListGroup header="Trip" footer="Members can add plans and expenses. Only Ari can remove people.">
-      <ListRow leading={<RowIcon icon="calendar" tone="accent" />} title="Dates" value="12 to 17 Oct" chevron />
+      <ListRow leading={<RowIcon icon="calendar" tone="accent" />} title="Dates" value="Oct 12 to 17" chevron />
       <ListRow leading={<RowIcon icon="pin" />} title="Base" value="Alfama" chevron />
-      <ListRow leading={<RowIcon icon="wallet" tone="owed" />} title="Currency" value="EUR" chevron />
+      <ListRow leading={<RowIcon icon="wallet" tone="owed" />} title="Currency" value="USD" chevron />
       <ListRow leading={<RowIcon icon="personAdd" />} title="Invite people" chevron />
     </ListGroup>
     <ListGroup>

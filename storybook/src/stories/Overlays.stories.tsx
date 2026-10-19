@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
-import { BottomSheet, Modal, CelebrationOverlay } from '../components/overlays';
+import { BottomSheet, Modal, CelebrationOverlay, SquaredSheet } from '../components/overlays';
 import { ListRow, RowIcon } from '../components/core';
 import { HomeScreen } from '../patterns/screens';
 
@@ -27,14 +27,27 @@ export const Sheet: StoryObj<typeof BottomSheet> = {
 
 export const Alert: StoryObj<typeof Modal> = {
   name: 'Modal',
-  args: { title: 'Remove Ren from Lisbon?', body: 'Ren owes you €18.40. Settle that first or it stays on your balance.', primary: 'Remove', secondary: 'Cancel', destructive: true },
+  args: { title: 'Remove Ren from Lisbon?', body: 'Ren owes you $18.40. Settle that first or it stays on your balance.', primary: 'Remove', secondary: 'Cancel', destructive: true },
   render: (a) => <div className="scr"><HomeScreen /><Modal {...a} /></div>,
 };
 
 export const Celebration: StoryObj<typeof CelebrationOverlay> = {
   name: 'CelebrationOverlay',
-  args: { kind: 'squared', replayKey: 0, secondaryLabel: 'Share the recap' },
+  args: { kind: 'pollWon', replayKey: 0 },
   argTypes: { kind: { control: 'inline-radio', options: ['squared', 'pollWon', 'milestone'] }, replayKey: { control: { type: 'number' }, description: 'Change to replay the moment' } },
-  parameters: { docs: { description: { story: 'Pearl glass card with a crafted mark: the seven threads let go, the ring closes, a check draws in. The celebration spectrum appears once, as light sweeping the card edge, then settles to a faint rim. Plays once in about 1.4 s and never blocks input. Reduce Motion shows the settled state with no movement.' } } },
+  parameters: { docs: { description: { story: 'Pearl glass card with a crafted mark. kind="squared" renders the SquaredSheet below (hi-fi 10). Plays once and never blocks input. Reduce Motion shows the settled state with no movement.' } } },
   render: (a) => <div className="scr"><HomeScreen /><CelebrationOverlay {...a} /></div>,
+};
+
+export const Squared: StoryObj<typeof SquaredSheet> = {
+  name: 'SquaredSheet (All squared up)',
+  args: { replayKey: 0 },
+  parameters: { docs: { description: { story: 'Figma hi-fi 10. A glass sheet at 90% over a blurred scrim. The only color moment is one soft spectrum glow behind the 72 px check disc: it blooms in about 900 ms, then holds still while the check draws in. Mono receipt of the three payments, then "Share the recap". Reduce Motion: the glow is static and the sheet fades in over 200 ms.' } } },
+  render: (a) => <div className="scr"><HomeScreen /><SquaredSheet {...a} /></div>,
+};
+
+export const SquaredCash: StoryObj<typeof SquaredSheet> = {
+  name: 'SquaredSheet, cash rounding',
+  args: { body: '3 payments, $124.40 handed over, $0.10 carried to your next split.', rows: [['Ari', 'Nic', '$42.00', 'cash ✓'], ['Ren', 'Ari', '$18.40', '10:40 PM'], ['Mara', 'João', '$64.00', 'cash ✓']], total: ['$124.40', '3 of 3'] },
+  render: (a) => <div className="scr"><HomeScreen /><SquaredSheet {...a} /></div>,
 };

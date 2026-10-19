@@ -1,3 +1,7 @@
 @font-face { font-family: 'Inter'; src: url('../assets/fonts/Inter.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
 @font-face { font-family: 'Instrument Serif'; src: url('../assets/fonts/InstrumentSerif-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
 @font-face { font-family: 'Instrument Serif'; src: url('../assets/fonts/InstrumentSerif-Italic.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'JetBrains Mono'; src: url('../assets/fonts/JetBrainsMono.woff2') format('woff2'); font-weight: 100 800; font-display: swap; }
+:root { --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --type-mono-micro: 500 10px/12px var(--font-mono); --type-mono-tag: 500 10px/12px var(--font-mono);
+  --type-mono-value: 500 13px/16px var(--font-mono); --type-mono-readout: 400 12px/18px var(--font-mono); }

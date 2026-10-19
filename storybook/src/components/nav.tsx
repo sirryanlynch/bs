@@ -31,8 +31,8 @@ export const defaultTabs: { id: string; label: string; icon: IconName }[] = [
 ];
 
 /** Floating Liquid Glass tab bar with a sliding lens behind the active item, plus a detached search/action bubble. */
-export function TabBar({ active = 'trips', tabs = defaultTabs, accessory = 'plus', floating = true, onChange }:
-  { active?: string; tabs?: typeof defaultTabs; accessory?: 'plus' | 'search' | 'none'; floating?: boolean; onChange?: (id: string) => void }) {
+export function TabBar({ active = 'trips', tabs = defaultTabs, accessory = 'plus', floating = true, onChange, onAccessory, accessoryLabel, accessoryExpanded }:
+  { active?: string; tabs?: typeof defaultTabs; accessory?: 'plus' | 'search' | 'none'; floating?: boolean; onChange?: (id: string) => void; onAccessory?: () => void; accessoryLabel?: string; accessoryExpanded?: boolean }) {
   const [a, setA] = useState(active);
   React.useEffect(() => setA(active), [active]);
   const i = Math.max(0, tabs.findIndex(t => t.id === a));
@@ -49,7 +49,7 @@ export function TabBar({ active = 'trips', tabs = defaultTabs, accessory = 'plus
         ))}
       </div>
       {accessory !== 'none' && (
-        <button type="button" className={`p-tabbar-acc tu-glass ${accessory === 'plus' ? 'is-accent' : ''}`} aria-label={accessory === 'plus' ? 'Add' : 'Search'}>
+        <button type="button" className={`p-tabbar-acc tu-glass ${accessory === 'plus' ? 'is-accent' : ''}`} aria-label={accessoryLabel ?? (accessory === 'plus' ? 'Add' : 'Search')} aria-haspopup={onAccessory ? 'dialog' : undefined} aria-expanded={onAccessory ? !!accessoryExpanded : undefined} onClick={onAccessory}>
           <Icon name={accessory === 'plus' ? 'plus' : 'search'} size={24} />
         </button>
       )}

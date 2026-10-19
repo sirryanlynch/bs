@@ -2,23 +2,37 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { PrismRoot } from '@sb/lib/PrismRoot';
 import { Icon } from '@sb/components/Icon';
-import { AppProvider, useApp, useStore, STEPS, stepIndex, stateAt, CHECKS, StepId, Me, State, Action, STREAM, clockStr, simplifyOf, initial } from './store';
+import { AppProvider, useApp, useStore, STEPS, stepIndex, stateAt, CHECKS, StepId, Me, State, Action, STREAM, clockStr, statusTime, simplifyOf, initial, SETTLE_VIEWS, SettleView, isSettleView, settlePreset } from './store';
+import { MoneyScreen, SettleFlow } from './settleflow';
 import { Home, Trip, InviteSheet, Explore } from './screens1';
 import { Create, Push, PollView, Closed, Plan, usePollStream } from './screens2';
-import { Expense, Money, Squared } from './screens3';
+import { Expense, Squared } from './screens3';
 import { RenWeb } from './renweb';
+import { useBeyond, BeyondLayer, BeyondPanel, BeyondBridge } from './flows';
+import { isBeyondHash } from './flows/nav';
+import { FLOWS } from '@sb/patterns/beyond/router';
+import { TourCursor, cursor } from './flows/cursor';
+import { coreTarget } from './flows/tour';
+import { ModeChooser, ModeSwitch, initialMode, showChooserAtStart, trackMode, useChapter, Mode } from './flows/shell';
 import { track } from './analytics';
 
 const params = new URLSearchParams(location.search);
 const EMBED = params.has('embed');
 const isPhone = () => window.matchMedia('(max-width: 560px)').matches;
 
-function parseHash(): { step?: StepId; me?: Me; tie?: boolean } {
+function parseHash(): { step?: StepId; view?: SettleView; me?: Me; tie?: boolean } {
   const [p, q] = location.hash.replace(/^#\/?/, '').split('?');
+  const [seg, sub] = (p ?? '').split('/');
   const sp = new URLSearchParams(q ?? '');
-  const step = STEPS.find(x => x.id === p)?.id;
-  return { step, me: (['ari', 'nic', 'ren'].includes(sp.get('as') ?? '') ? sp.get('as') : undefined) as Me | undefined, tie: sp.get('tie') === '1' };
+  const step = STEPS.find(x => x.id === seg)?.id;
+  const me = (['ari', 'nic', 'ren'].includes(sp.get('as') ?? '') ? sp.get('as') : undefined) as Me | undefined;
+  const view = step === 'settle' ? (isSettleView(sub) ? sub : me === 'nic' ? 'confirm' : 'choose') : undefined;
+  return { step, view, me, tie: sp.get('tie') === '1' };
 }
+const hashOf = (s: State) => {
+  const q = [s.me !== 'ari' ? `as=${s.me}` : '', s.tiePath ? 'tie=1' : ''].filter(Boolean).join('&');
+  return `#/${s.step}${s.step === 'settle' ? `/${s.settleView}` : ''}${q ? `?${q}` : ''}`;
+};
 
 function PhoneScreen({ s }: { s: State }) {
   usePollStream();
@@ -38,7 +52,8 @@ function PhoneScreen({ s }: { s: State }) {
     case 'closed': return <Closed />;
     case 'plan': return <Plan />;
     case 'expense': return <Expense />;
-    case 'money': case 'settle': return <Money />;
+    case 'money': return <MoneyScreen />;
+    case 'settle': return <SettleFlow />;
     case 'squared': return <Squared />;
   }
 }
@@ -50,21 +65,22 @@ function tourScript(s: State): [number, Action | Action[] | 'next'][] {
     case 'home': return [[2600, 'next']];
     case 'trip': return [[2800, s.me === 'ren' ? { t: 'join', via: 'qr' } : { t: 'go', step: 'invite' }], ...(s.me === 'ren' ? [[2400, 'next']] as any : [])];
     case 'invite': return [[1800, { t: 'join', via: 'qr' }], [2200, 'next']];
-    case 'explore': return [[1300, { t: 'set', patch: { exploreStage: 1 } }], [1300, { t: 'set', patch: { exploreStage: 2 } }], [1300, { t: 'set', patch: { exploreStage: 3 } }], [1400, { t: 'set', patch: { shortlist: ['taberna', 'ramiro', 'park'] } }], [1600, 'next']];
+    case 'explore': return [[1300, { t: 'set', patch: { exploreStage: 1 } }], [1300, { t: 'set', patch: { exploreStage: 2 } }], [1300, { t: 'set', patch: { exploreStage: 3 } }], [1300, { t: 'set', patch: { exploreStage: 4 } }], [1400, { t: 'set', patch: { shortlist: ['taberna', 'ramiro', 'park'] } }], [1600, 'next']];
     case 'create': return [[2600, [{ t: 'set', patch: { pollSent: true } }, { t: 'done', key: 'create' }, { t: 'vote', who: 'ari', opt: 1 }, { t: 'go', step: 'push' }]]];
     case 'push': return [[2200, [{ t: 'vote', who: 'nic', opt: 0, via: 'the push' }, { t: 'done', key: 'push' }]], [1400, 'next']];
     case 'live': return s.me === 'ren' ? [[5200, { t: 'vote', who: 'ren', opt: s.tiePath ? 1 : 0, via: 'the web as a guest' }]] : s.me === 'ari' ? [[1400, { t: 'vote', who: 'ari', opt: 1 }]] : [];
     case 'closed': return s.tie && s.winner == null ? [[2600, { t: 'pick', opt: 0 }]] : [[3000, [{ t: 'set', patch: { planAdded: true } }, { t: 'go', step: 'plan' }, { t: 'toast', msg: 'Taberna added to tonight', tone: 'success' }]]];
-    case 'plan': return [[2400, [{ t: 'set', patch: { howOpen: true } }, { t: 'done', key: 'how' }]], [3600, { t: 'set', patch: { howOpen: false } }], [900, 'next']];
+    case 'plan': return [[3200, 'next']];
     case 'expense': return [[1600, { t: 'toggleLine', line: 'wine', who: 'ren' }], [800, { t: 'toggleLine', line: 'wine', who: 'nic' }], [2200, { t: 'saveDinner' }], [700, 'next']];
     case 'money': return [[1400, { t: 'set', patch: { simplified: true } }], [4600, { t: 'done', key: 'simplify' }], [2000, 'next']];
     case 'settle': {
-      const plan = simplifyOf(s);
-      const seq: [number, Action | Action[] | 'next'][] = [];
-      seq.push([1600, [{ t: 'pay', key: `${plan[0].from}>${plan[0].to}`, how: 'pending' }, { t: 'done', key: 'settle' }]]);
-      plan.forEach((e, i) => seq.push([i === 0 ? 1100 : 900, { t: 'pay', key: `${e.from}>${e.to}`, how: 'app' }]));
-      seq.push([400, { t: 'set', patch: { settleOpen: false } }]);
-      return seq;
+      const v = s.settleView;
+      if (v === 'choose') return [[1800, { t: 'view', v: 'cash' }]];
+      if (v === 'cash') return [[2600, { t: 'mark' }]];
+      if (v === 'pending') return [[3000, [{ t: 'set', patch: { undoAt: undefined, me: 'nic' } }, { t: 'view', v: 'confirm' }]]];
+      if (v === 'confirm') return [[2800, { t: 'confirm' }]];
+      if (v === 'confirmed') { const plan = simplifyOf(s); const seq: [number, Action | Action[] | 'next'][] = []; plan.filter(e => !s.paid[`${e.from}>${e.to}`]).forEach((e, i) => seq.push([i === 0 ? 2600 : 1100, { t: 'pay', key: `${e.from}>${e.to}`, how: e.from === 'mara' ? 'cash' : 'app' }])); return seq; }
+      return [[2400, { t: 'view', v: 'choose' }]];
     }
     case 'squared': return s.recap ? [[2400, { t: 'set', patch: { shared: true } }], [3000, 'next']] : [[3400, { t: 'set', patch: { recap: true } }]];
   }
@@ -73,15 +89,23 @@ function tourScript(s: State): [number, Action | Action[] | 'next'][] {
 
 export function App() {
   const [s, d] = useStore();
-  const [tour, setTour] = useState(EMBED);
+  const [tour, setTour] = useState(EMBED || params.get('mode') === 'tour');
   const [theme, setTheme] = useState<'light' | 'dark'>(params.get('theme') === 'dark' ? 'dark' : 'light');
   const [motion, setMotion] = useState<'full' | 'reduce'>(matchMedia('(prefers-reduced-motion: reduce)').matches ? 'reduce' : 'full');
-  const [compare, setCompare] = useState<'off' | 'side' | 'overlay'>('off');
-  const [opacity, setOpacity] = useState(50);
   const [phone, setPhone] = useState(isPhone());
   const [panelOpen, setPanelOpen] = useState(false);
   const [help, setHelp] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  // Shell modes: self guided (panel tucked away) or guided tour (cursor taps through, then the Beyond tonight chapter).
+  const [mode, setMode] = useState<Mode | null>(initialMode);
+  const [chooser, setChooser] = useState(() => !EMBED && showChooserAtStart());
+  const [drawer, setDrawer] = useState(false);
+  const [chapter, setChapter] = useState(false);
+  const [caption, setCaption] = useState('');
+  const bz = useBeyond({ coreHash: () => hashOf(sRef.current), setTheme, setMotion, theme });
+  useEffect(() => { if (tour && bz.active && !EMBED) setChapter(true); }, [tour, bz.active]);
+  useChapter({ on: tour && chapter && !EMBED, reduce: motion === 'reduce', onCaption: setCaption, onEnd: () => { track('guided_tour_complete', { embed: EMBED }); setChapter(false); setCaption(''); d({ t: 'reset' }); location.hash = '#/home'; } });
+  const pickMode = (m: Mode, fresh = false) => { setMode(m); trackMode(m); setChooser(false); setDrawer(false); if (m === 'tour') { if (fresh) { d({ t: 'reset' }); if (location.hash !== '#/home') location.hash = '#/home'; } setTour(true); } else setTour(false); };
   useEffect(() => {
     if (!settingsOpen) return;
     const down = (e: Event) => { const t = e.target as HTMLElement; if (!t.closest('.pt-pop, .pt-gear')) setSettingsOpen(false); };
@@ -93,60 +117,42 @@ export function App() {
   const idx = stepIndex(s.step);
   const sRef = useRef(s); sRef.current = s;
 
-  const jump = (id: StepId, over: Partial<State> = {}) => d({ t: 'load', s: { ...stateAt(id, { ...sRef.current, ...over } as State), ...over } as State });
-  const next = () => {
-    const n = STEPS[idx + 1];
-    if (n) {
-      const cur = sRef.current;
-      if (!tour) track('step_jump', { from: cur.step, to: n.id, method: 'next' });
-      const x = STEPS[idx].complete(cur);
-      d({ t: 'load', s: { ...x, step: n.id, settleOpen: n.id === 'settle', howOpen: false, done: { ...x.done, [n.id]: true } } });
-    } else if (EMBED || tour) {
-      if (tour) {
-        track('guided_tour_complete', { embed: EMBED });
-        track('guided_tour_start', { step: 'home', embed: EMBED });
-      }
-      d({ t: 'reset' });
-    }
+  const asMe = (me: Me) => { const c = sRef.current; if (me !== c.me) track('play_as', { play_as: me, from: c.me }); if (c.step === 'settle' && me !== 'ren') { d({ t: 'load', s: settlePreset(me === 'nic' ? 'confirm' : c.settleView === 'confirm' ? 'pending' : c.settleView, { ...stateAt('settle', { ...c, me: 'ari' }), me: 'ari' }) }); return; } d({ t: 'load', s: { ...stateAt(c.step, { ...c, me }), me } }); };
+  const jump = (id: StepId, over: Partial<State> = {}, view?: SettleView) => {
+    const base = { ...stateAt(id, { ...sRef.current, ...over } as State), ...over } as State;
+    d({ t: 'load', s: id === 'settle' ? settlePreset(view ?? 'choose', base) : base });
   };
-  const prev = () => {
-    const p = STEPS[idx - 1];
-    if (!p) return;
-    if (!tour) track('step_jump', { from: sRef.current.step, to: p.id, method: 'prev' });
-    jump(p.id);
-  };
+  const next = () => { const n = STEPS[idx + 1]; if (n) { const cur = sRef.current; if (!tour) track('step_jump', { from: cur.step, to: n.id, method: 'next' }); let x = STEPS[idx].complete(cur); if (n.id === 'squared') x = { ...x, me: 'ari' }; d({ t: 'load', s: { ...x, step: n.id, settleView: n.id === 'settle' ? 'choose' : x.settleView, settleOpen: false, done: { ...x.done, [n.id]: true } } }); } else if (EMBED) d({ t: 'reset' }); else if (tour) setChapter(true); };
+  const prev = () => { const p = STEPS[idx - 1]; if (p) { if (!tour) track('step_jump', { from: sRef.current.step, to: p.id, method: 'prev' }); jump(p.id); } };
 
   // Deep links: #/step?as=nic&tie=1
   useEffect(() => {
     let first = true;
     const apply = () => {
-      const h = parseHash();
-      const cur = sRef.current;
-      if (h.step && (h.step !== cur.step || (h.me ?? 'ari') !== cur.me)) {
-        if (!first && h.step !== cur.step) track('step_jump', { from: cur.step, to: h.step, method: 'list' });
-        jump(h.step, { me: h.me ?? 'ari', tiePath: h.tie });
+      const h = parseHash(); const c = sRef.current;
+      if (h.step && (h.step !== c.step || (h.me ?? 'ari') !== c.me || (h.view && h.view !== c.settleView))) {
+        if (!first && h.step !== c.step) track('step_jump', { from: c.step, to: h.step, method: 'list' });
+        jump(h.step, { me: h.view ? 'ari' : h.me ?? 'ari', tiePath: h.tie }, h.view);
       }
       first = false;
     };
     apply(); window.addEventListener('hashchange', apply); return () => window.removeEventListener('hashchange', apply);
   }, []);
-  // The first paint is always home. A deep link is applied in an effect, and the hash
-  // sync effect rewrites the hash to match home before that update commits. Remember the
-  // link from the first render so the home paint is not recorded as a page view.
   const deepLink = useRef(parseHash().step);
   useEffect(() => {
+    if (bz.active) return;
     if (deepLink.current && s.step !== deepLink.current) return;
     deepLink.current = undefined;
-    const hash = `#/${s.step}`;
+    const hash = s.step === 'settle' ? `#/settle/${s.settleView}` : `#/${s.step}`;
     track('page_view', {
       page_location: `${location.origin}${location.pathname}${location.search}${hash}`,
       page_path: `${location.pathname}${hash}`,
       page_title: meta.title,
-      step: s.step,
+      step: s.step === 'settle' ? `settle/${s.settleView}` : s.step,
       play_as: s.me,
       embed: EMBED,
     });
-  }, [s.step]);
+  }, [s.step, s.settleView, bz.active]);
   const tourSeen = useRef(false);
   useEffect(() => {
     if (tour && !tourSeen.current) track('guided_tour_start', { step: sRef.current.step, embed: EMBED });
@@ -162,32 +168,32 @@ export function App() {
     if (!motionSeen.current) { motionSeen.current = true; return; }
     track('reduce_motion_toggle', { motion, surface: 'prototype' });
   }, [motion]);
-  const compareSeen = useRef(false);
   useEffect(() => {
-    if (!compareSeen.current) { compareSeen.current = true; return; }
-    track('compare_hifi', { mode: compare });
-  }, [compare]);
-  useEffect(() => {
-    if (EMBED) return;
-    const h = `#/${s.step}${s.me !== 'ari' || s.tiePath ? `?${[s.me !== 'ari' ? `as=${s.me}` : '', s.tiePath ? 'tie=1' : ''].filter(Boolean).join('&')}` : ''}`;
+    if (EMBED || isBeyondHash()) return;
+    const h = hashOf(s);
     if (location.hash !== h) history.replaceState(null, '', h);
-  }, [s.step, s.me, s.tiePath]);
+  }, [s.step, s.me, s.tiePath, s.settleView]);
   useEffect(() => { const m = matchMedia('(max-width: 560px)'); const f = () => setPhone(m.matches); m.addEventListener('change', f); return () => m.removeEventListener('change', f); }, []);
 
   // Toast auto dismiss
   useEffect(() => { if (!s.toast) return; const t = setTimeout(() => d({ t: 'set', patch: { toast: undefined } }), 2600); return () => clearTimeout(t); }, [s.toast?.id]);
 
   // Guided tour
-  const tourKey = `${s.step}|${s.tie && s.winner == null}|${s.recap}|${s.me}`;
+  const tourKey = `${s.step}|${s.tie && s.winner == null}|${s.recap}|${s.me}|${s.settleView}`;
   useEffect(() => {
-    if (!tour) return;
+    if (!tour || chapter || bz.active) return;
     const script = tourScript(s);
     const timers: number[] = []; let at = 0;
-    script.forEach(([ms, a]) => { at += motion === 'reduce' ? ms * 0.8 : ms; timers.push(window.setTimeout(() => {
-      if (a === 'next') next(); else (Array.isArray(a) ? a : [a]).forEach(x => d(x));
-    }, at)); });
+    script.forEach(([ms, a]) => { at += motion === 'reduce' ? ms * 0.8 : ms;
+      // The cursor glides to the control first, then taps it as the action lands.
+      const tg = EMBED ? null : coreTarget(s.step, a, s); let el: Element | null = null;
+      if (tg) timers.push(window.setTimeout(() => { cursor.moveTo(tg).then(x => { el = x; }); }, Math.max(0, at - 950)));
+      timers.push(window.setTimeout(() => {
+        if (el) cursor.tap(el, false);
+        if (a === 'next') next(); else (Array.isArray(a) ? a : [a]).forEach(x => d(x));
+      }, at)); });
     return () => timers.forEach(clearTimeout);
-  }, [tour, tourKey]);
+  }, [tour, tourKey, chapter, bz.active]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -199,14 +205,9 @@ export function App() {
       else if (k === ' ') { e.preventDefault(); setTour(t => !t); }
       else if (k === 'd') setTheme(t => (t === 'dark' ? 'light' : 'dark'));
       else if (k === 'm') setMotion(m => (m === 'reduce' ? 'full' : 'reduce'));
-      else if (k === 'c') setCompare(c => (c === 'off' ? 'side' : c === 'side' ? 'overlay' : 'off'));
       else if (k === 'r') { setTour(false); d({ t: 'reset' }); }
       else if (k === '?') setHelp(h => !h);
-      else if (k === '1' || k === '2' || k === '3') {
-        const me = (['ari', 'nic', 'ren'] as Me[])[+k - 1];
-        if (me !== sRef.current.me) track('play_as', { play_as: me, from: sRef.current.me });
-        d({ t: 'load', s: { ...stateAt(sRef.current.step, { ...sRef.current, me }), me } });
-      }
+      else if (k === '1' || k === '2' || k === '3') asMe((['ari', 'nic', 'ren'] as Me[])[+k - 1]);
       else return;
     };
     window.addEventListener('keydown', onKey); return () => window.removeEventListener('keydown', onKey);
@@ -215,6 +216,7 @@ export function App() {
   // Touch ripple so taps read on desktop, and a little press feedback everywhere
   const [ripples, setRipples] = useState<{ x: number; y: number; id: number }[]>([]);
   const onDown = (e: React.PointerEvent) => {
+    if (tour && !EMBED && e.isTrusted) { setTour(false); cursor.hide(); }
     if (motion === 'reduce') return;
     const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
     const id = Date.now() + Math.random();
@@ -222,17 +224,17 @@ export function App() {
     setTimeout(() => setRipples(x => x.filter(y => y.id !== id)), 600);
   };
 
-  const hifi = meta.hifi(s);
-  const time = s.step === 'live' ? clockStr(Math.max(17, Math.min(29, 17 + Object.keys(s.votes).length))) : meta.time;
+  const time = bz.active ? bz.meta.time : s.step === 'live' ? clockStr(Math.max(17, Math.min(29, 17 + Object.keys(s.votes).length))) : s.step === 'settle' ? SETTLE_VIEWS.find(v => v.id === s.settleView)!.time : s.step === 'money' && (s.stl || Object.keys(s.paid).length) ? '10:40 PM' : meta.time;
   const dark = theme === 'dark';
-  const statusLight = s.step === 'push' || (s.step === 'trip' && s.me !== 'ren') || s.step === 'invite' && false;
+  const statusLight = bz.active ? !!bz.meta.light : s.step === 'push' || (s.step === 'trip' && s.me !== 'ren') || s.step === 'invite' && false;
 
   const screen = (
     <div className="pt-screen-inner" onPointerDown={onDown}>
-      <div className="pt-anim" key={`${s.step}-${s.me}-${s.recap}`}><PhoneScreen s={s} /></div>
+      {bz.active ? <div className="pt-anim" key="beyond"><BeyondLayer bz={bz} /></div>
+        : <div className="pt-anim" key={`${s.step === 'settle' && s.settleView === 'confirmed' ? 'money' : s.step}-${s.me}-${s.recap}-${s.step === 'settle' ? s.settleView : ''}`}><PhoneScreen s={s} /></div>}
       {s.toast && <div className={`pt-itoast ${s.toast.tone === 'success' ? 'is-success' : ''}`} key={s.toast.id} role="status"><Icon name={s.toast.tone === 'success' ? 'check' : 'info'} size={20} /><span>{s.toast.msg}</span></div>}
       {ripples.map(r => <span key={r.id} className="pt-ripple" style={{ left: r.x, top: r.y }} aria-hidden />)}
-      {compare === 'overlay' && <img className="pt-overlay" src={`./hifi/${hifi}.png`} alt="" style={{ opacity: opacity / 100 }} />}
+      {!EMBED && <TourCursor on={tour} reduce={motion === 'reduce'} />}
     </div>
   );
 
@@ -242,7 +244,7 @@ export function App() {
       <div className="phone-screen">
         <div className="phone-content">{screen}</div>
         <div className="phone-status" aria-hidden>
-          <span className="phone-time tu-num">{s.step === 'push' ? '' : time}</span><span className="phone-island" />
+          <span className="phone-time tu-num">{(bz.active ? !time : s.step === 'push') ? '' : statusTime(time)}</span><span className="phone-island" />
           <span className="phone-glyphs"><svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1" /><rect x="5" y="5.5" width="3" height="6.5" rx="1" /><rect x="10" y="3" width="3" height="9" rx="1" /><rect x="15" y="0" width="3" height="12" rx="1" /></svg><span className="phone-batt"><span /></span></span>
         </div>
         <div className="phone-home" aria-hidden />
@@ -251,31 +253,25 @@ export function App() {
   );
 
   if (EMBED) return (
-    <PrismRoot theme={theme} motion={motion}><AppProvider s={s} d={d}><div className="pt-embed">{frame}</div></AppProvider></PrismRoot>
+    <PrismRoot theme={theme} motion={motion}><AppProvider s={s} d={d}><BeyondBridge bz={bz}><div className="pt-embed">{frame}</div></BeyondBridge></AppProvider></PrismRoot>
   );
 
-  const shareUrl = location.href.split('#')[0].replace(/[?&]embed=1/, '') + `#/${s.step}`;
-  const doneCount = CHECKS.filter(c => c.test(s)).length;
-  const stepDone = (id: StepId) => { const keys: Record<string, string[]> = { closed: ['closed'], plan: ['plan', 'how'], money: ['money', 'simplify'], squared: ['squared', 'recap'] }; return (keys[id] ?? [id]).every(k => CHECKS.find(c => c.key === k)?.test(s)); };
+  const shareUrl = location.href.split('#')[0].replace(/[?&]embed=1/, '') + hashOf(s);
+  const stepDone = (id: StepId) => { const keys: Record<string, string[]> = { closed: ['closed'], plan: ['plan'], money: ['money', 'simplify'], settle: ['settle', 'cashround', 'nicconfirm'], squared: ['squared', 'recap'] }; return (keys[id] ?? [id]).every(k => CHECKS.find(c => c.key === k)?.test(s)); };
   const settings = (
     <div className="pt-pop" role="dialog" aria-label="Settings">
       <div className="pt-pop-row"><span>Play as</span>
         <div className="pt-seg" role="radiogroup" aria-label="Play as">
           {([['ari', 'Ari'], ['nic', 'Nic'], ['ren', 'Ren (web)']] as [Me, string][]).map(([id, l]) => (
-            <button key={id} type="button" role="radio" aria-checked={s.me === id} className={s.me === id ? 'is-on' : ''} onClick={() => { if (s.me !== id) track('play_as', { play_as: id, from: s.me }); d({ t: 'load', s: { ...stateAt(s.step, { ...s, me: id }), me: id } }); }}>{l}</button>
+            <button key={id} type="button" role="radio" aria-checked={s.me === id} className={s.me === id ? 'is-on' : ''} onClick={() => asMe(id)}>{l}</button>
           ))}
         </div></div>
-      <div className="pt-pop-row"><span>Compare with Figma <small className="tu-num">{hifi}</small></span>
-        <div className="pt-seg" role="radiogroup" aria-label="Compare with hi-fi">
-          {(['off', 'side', 'overlay'] as const).map(c => <button key={c} type="button" role="radio" aria-checked={compare === c} className={compare === c ? 'is-on' : ''} onClick={() => setCompare(c)}>{c === 'off' ? 'Off' : c === 'side' ? 'Side' : 'Overlay'}</button>)}
-        </div>
-        {compare === 'overlay' && <input className="pt-range" type="range" min={0} max={100} value={opacity} onChange={e => setOpacity(+e.target.value)} aria-label="Overlay opacity" />}</div>
       <label className="pt-check"><input type="checkbox" checked={s.tiePath} onChange={e => { const tie = e.target.checked; track('tie_break', { enabled: tie }); const at = stepIndex(s.step) > stepIndex('live') ? 'live' : s.step; d({ t: 'load', s: { ...stateAt(at, { ...s, tiePath: tie }), tiePath: tie } }); }} />Tie-break path</label>
       <label className="pt-check"><input type="checkbox" checked={dark} onChange={e => setTheme(e.target.checked ? 'dark' : 'light')} />Dark mode</label>
       <label className="pt-check"><input type="checkbox" checked={motion === 'reduce'} onChange={e => setMotion(e.target.checked ? 'reduce' : 'full')} />Reduce Motion</label>
       <details className="pt-more"><summary>Open on a phone</summary><div className="pt-qrcard"><QRCodeSVG value={shareUrl} size={96} level="M" bgColor="transparent" fgColor="currentColor" /><p>Scan to open this step full screen.</p></div></details>
       <details className="pt-more"><summary>Keyboard shortcuts</summary>
-        <dl className="pt-keys"><dt>← →</dt><dd>Step</dd><dt>Space</dt><dd>Tour</dd><dt>1 2 3</dt><dd>Ari, Nic, Ren</dd><dt>C</dt><dd>Compare</dd><dt>D</dt><dd>Dark</dd><dt>M</dt><dd>Motion</dd><dt>R</dt><dd>Reset</dd></dl></details>
+        <dl className="pt-keys"><dt>← →</dt><dd>Step</dd><dt>Space</dt><dd>Tour</dd><dt>1 2 3</dt><dd>Ari, Nic, Ren</dd><dt>D</dt><dd>Dark</dd><dt>M</dt><dd>Motion</dd><dt>R</dt><dd>Reset</dd></dl></details>
       <button type="button" className="pt-btn is-wide" onClick={() => { setTour(false); d({ t: 'reset' }); setSettingsOpen(false); }}>Reset demo</button>
     </div>
   );
@@ -285,35 +281,43 @@ export function App() {
         <div><p className="pt-eyebrow">Reviewer</p><h1>TripUp prototype</h1></div>
         <div className="pt-panel-tools">
           <button type="button" className={`pt-iconbtn pt-gear ${settingsOpen ? 'is-on' : ''}`} onClick={() => setSettingsOpen(o => !o)} aria-expanded={settingsOpen} aria-label="Settings"><Icon name="gear" size={20} /></button>
-          {phone && <button type="button" className="pt-iconbtn" onClick={() => setPanelOpen(false)} aria-label="Close panel"><Icon name="close" size={20} /></button>}
+          {(phone || drawer) && <button type="button" className="pt-iconbtn" onClick={() => { setPanelOpen(false); setDrawer(false); }} aria-label="Close panel"><Icon name="close" size={20} /></button>}
         </div>
         {settingsOpen && settings}
       </header>
+      <div className="fl-panelmode"><ModeSwitch mode={mode ?? 'self'} onMode={m => pickMode(m)} /></div>
       <section className="pt-stepcard" aria-live="polite">
-        <p className="pt-stepline tu-num">{meta.n} of 13</p>
-        <h2>{meta.title}</h2>
-        <p>{meta.caption}</p>
+        <p className="pt-stepline tu-num">{bz.active ? 'Beyond tonight' : `${meta.n} of 13`}</p>
+        <h2>{bz.active ? FLOWS.find(f => f.id === bz.meta.flow)?.title ?? 'Beyond tonight' : meta.title}</h2>
+        <p>{tour && chapter && caption ? caption : bz.active ? bz.meta.label : meta.caption}</p>
         <div className="pt-row">
           <button type="button" className="pt-btn" onClick={prev} disabled={idx === 0} aria-label="Previous step"><Icon name="chevronLeft" size={20} /></button>
           <button type="button" className={`pt-btn is-primary ${tour ? 'is-on' : ''}`} onClick={() => setTour(t => !t)}>{tour ? 'Pause tour' : 'Play guided tour'}</button>
           <button type="button" className="pt-btn" onClick={next} disabled={idx === STEPS.length - 1 && !tour} aria-label="Next step"><Icon name="chevronRight" size={20} /></button>
         </div>
-        {s.step === 'live' && !s.pollClosed && <button type="button" className="pt-link" onClick={() => d({ t: 'close', by: 'timer' })}>Skip to 19:30</button>}
+        {s.step === 'live' && !s.pollClosed && <button type="button" className="pt-link" onClick={() => d({ t: 'close', by: 'timer' })}>Skip to 7:30 PM</button>}
+        {s.step === 'settle' && <div className="pt-actions">
+          {s.stl?.status === 'pending' && s.me === 'ari' && <button type="button" className="pt-btn is-wide" onClick={() => { d({ t: 'set', patch: { me: 'nic', undoAt: undefined } }); d({ t: 'view', v: 'confirm' }); }}>Switch to Nic's phone</button>}
+          {s.stl?.status === 'pending' && s.me === 'ari' && <button type="button" className="pt-link" onClick={() => d({ t: 'confirm' })}>Nic confirms (simulate)</button>}
+          {s.me === 'nic' && <button type="button" className="pt-link" onClick={() => { d({ t: 'set', patch: { me: 'ari' } }); d({ t: 'view', v: s.stl ? 'pending' : 'choose' }); }}>Back to Ari's phone</button>}
+          {s.offline && <button type="button" className="pt-btn is-wide" onClick={() => d({ t: 'reconnect' })}>Reconnect</button>}
+          {!s.stl && (s.settleView === 'cash' || s.settleView === 'partial') && <label className="pt-check"><input type="checkbox" checked={s.offline} onChange={e => d({ t: 'set', patch: { offline: e.target.checked } })} />Simulate offline</label>}
+        </div>}
       </section>
-      <nav aria-label="Steps"><ol className="pt-jumps">{STEPS.map(x => { const ok = stepDone(x.id); return (
+      <nav aria-label="Steps" onClickCapture={() => setChapter(false)}><ol className="pt-jumps">{STEPS.map(x => { const ok = stepDone(x.id); return (
         <li key={x.id}><a href={`#/${x.id}`} className={x.id === s.step ? 'is-on' : ''} aria-current={x.id === s.step ? 'step' : undefined}>
-          <span className={`pt-dot ${ok ? 'is-ok' : ''}`} aria-hidden>{ok ? <Icon name="check" size={14} /> : <span className="tu-num">{+x.n}</span>}</span>{x.title}<span className="sr-only">{ok ? ', done' : ''}</span></a></li>
+          <span className={`pt-dot ${ok ? 'is-ok' : ''}`} aria-hidden>{ok ? <Icon name="check" size={14} /> : <span className="tu-num">{+x.n}</span>}</span>{x.title}<span className="sr-only">{ok ? ', done' : ''}</span></a>
+          {x.id === 'settle' && <ol className="pt-subjumps" aria-label="Settle up screens">{SETTLE_VIEWS.map(v => { const on = s.step === 'settle' && s.settleView === v.id; const seen = !!s.done[`v-${v.id}`]; return (
+            <li key={v.id}><a href={`#/settle/${v.id}${v.as ? `?as=${v.as}` : ''}`} className={on ? 'is-on' : ''} aria-current={on ? 'page' : undefined}><span className={`pt-subdot ${seen ? 'is-ok' : ''}`} aria-hidden />{v.label}<span className="sr-only">{seen ? ', seen' : ''}</span></a></li>); })}</ol>}</li>
       ); })}</ol></nav>
-      <details className="pt-more pt-checks"><summary>Brief checklist <span className="tu-num">{doneCount} of {CHECKS.length}</span></summary>
-        <ul className="pt-checklist">{CHECKS.map(c => { const ok = c.test(s); return <li key={c.key} className={ok ? 'is-ok' : ''}><span aria-hidden>{ok && <Icon name="check" size={14} />}</span>{c.label}</li>; })}</ul>
-      </details>
-      <p className="pt-foot"><a href="../">Deck</a><a href="../case-study/">Case study</a><a href="../storybook/">Storybook</a><a href="https://www.figma.com/design/z4TesJNPe6UfvgwmWtIA4y/TripUp-Working" target="_blank" rel="noreferrer">Figma</a></p>
+      <BeyondPanel bz={bz} playing={tour && chapter} onPlay={() => { if (tour && chapter) setTour(false); else { setChapter(true); setTour(true); if (mode !== 'tour') { setMode('tour'); trackMode('tour'); } } }} />
+      <p className="pt-foot"><a href="../">Case study</a><a href="../storybook/">Storybook</a><a href="https://www.figma.com/design/z4TesJNPe6UfvgwmWtIA4y/TripUp-Working" target="_blank" rel="noreferrer">Figma</a></p>
     </aside>
   );
 
   return (
     <PrismRoot theme={theme} motion={motion}>
-      <AppProvider s={s} d={d}>
+      <AppProvider s={s} d={d}><BeyondBridge bz={bz}>
         {phone ? (
           <div className={`pt-mobile ${dark ? 'is-dark' : ''}`}>
             <div className="phone-content pt-mobile-screen">{screen}</div>
@@ -322,18 +326,20 @@ export function App() {
             {panelOpen && <div className="pt-drawer" role="dialog" aria-modal="true" aria-label="Reviewer panel"><div className="pt-drawer-scrim" onClick={() => setPanelOpen(false)} />{panel}</div>}
           </div>
         ) : (
-          <div className={`pt-desk ${dark ? 'is-dark' : ''}`}>
+          <div className={`pt-desk ${dark ? 'is-dark' : ''} ${mode === 'self' ? 'fl-self' : ''} ${drawer ? 'fl-drawer' : ''}`}>
+            {mode === 'self' && !drawer && <div className="fl-float"><ModeSwitch mode="self" onMode={m => pickMode(m)} onSteps={() => setDrawer(true)} /></div>}
+            {drawer && <div className="fl-scrim" onClick={() => setDrawer(false)} />}
             <main className="pt-stage">
               <div className="pt-devices">
                 <div className="pt-device">{frame}</div>
-                {compare === 'side' && <figure className="pt-hifi"><img src={`./hifi/${hifi}.png`} alt={`Figma hi-fi frame ${hifi}`} width={402} height={874} /><figcaption>Figma hi-fi · {hifi}</figcaption></figure>}
               </div>
             </main>
             {panel}
           </div>
         )}
-        {help && <div className="pt-help" onClick={() => setHelp(false)}>Shortcuts: arrows, Space, 1 2 3, C, D, M, R</div>}
-      </AppProvider>
+        {help && <div className="pt-help" onClick={() => setHelp(false)}>Shortcuts: arrows, Space, 1 2 3, D, M, R</div>}
+        {chooser && <ModeChooser onPick={m => pickMode(m, true)} />}
+      </BeyondBridge></AppProvider>
     </PrismRoot>
   );
 }

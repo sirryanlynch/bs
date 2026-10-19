@@ -53,7 +53,7 @@ function CelebrateMark({ kind }: { kind: 'squared' | 'pollWon' | 'milestone' }) 
   return (
     <svg className="p-cmark" viewBox="0 0 120 120" width="112" height="112" aria-hidden>
       <circle cx="60" cy="60" r="54" className="p-cmark-disc" />
-      {kind === 'squared' && threads.map(([a, b], i) => <line key={i} x1={pts[a][0]} y1={pts[a][1]} x2={pts[b][0]} y2={pts[b][1]} className="p-cmark-thread" style={{ animationDelay: `${i * 40}ms` }} />)}
+      {(kind as string) === 'squared' && threads.map(([a, b], i) => <line key={i} x1={pts[a][0]} y1={pts[a][1]} x2={pts[b][0]} y2={pts[b][1]} className="p-cmark-thread" style={{ animationDelay: `${i * 40}ms` }} />)}
       <circle cx="60" cy="60" r="42" className="p-cmark-ring" pathLength={100} />
       {pts.map(([x, y], i) => <circle key={i} cx={x} cy={y} r="4.5" className="p-cmark-dot" style={{ animationDelay: `${520 + i * 40}ms` }} />)}
       <path d="M46 61 l10 10 l19 -21" className="p-cmark-check" pathLength={100} />
@@ -61,12 +61,44 @@ function CelebrateMark({ kind }: { kind: 'squared' | 'pollWon' | 'milestone' }) 
   );
 }
 
-/** Calm pearl glass. The spectrum shows up once, as light travelling along the card edge. Under 1.4 s, then still. */
+/** Calm pearl glass. The spectrum shows up once, as light traveling along the card edge. Under 1.4 s, then still. */
+export type SquaredRow = [string, string, string, string];
+const SQ_ROWS: SquaredRow[] = [['Ari', 'Nic', '$42.10', '10:39 PM'], ['Ren', 'Ari', '$18.40', '10:40 PM'], ['Mara', 'João', '$64.00', 'cash ✓']];
+/**
+ * All squared up (Figma hifi-10). A white sheet over a dimmed Money screen. The only color is a soft spectrum glow
+ * behind the check disc; it blooms once (about 900 ms) and then holds still. Reduce Motion shows it at rest with a 200 ms fade.
+ */
+export function SquaredSheet({ eyebrow = '10:41 PM · Lisbon Crew · settled', title = 'All squared up.', body = '3 payments, $124.50 in total. Everyone in Lisbon Crew is at $0.00.',
+  rows = SQ_ROWS, total = ['$124.50', '3 of 3'], actionLabel = 'Share the recap', onAction, replayKey = 0 }:
+  { eyebrow?: string; title?: string; body?: React.ReactNode; rows?: SquaredRow[]; total?: [string, string]; actionLabel?: string; onAction?: () => void; replayKey?: number }) {
+  const reduce = useReducedMotion();
+  return (
+    <div className={`p-sq ${reduce ? 'is-reduced' : ''}`} key={replayKey} role="status" aria-live="polite">
+      <div className="p-sq-scrim" aria-hidden />
+      <section className="p-sq-card" aria-label={title}>
+        <div className="p-sq-mark" aria-hidden>
+          <span className="p-sq-glow" />
+          <svg className="p-sq-disc" width="72" height="72" viewBox="0 0 72 72"><circle cx="36" cy="36" r="35.5" /><path d="M23 37.5 32 46.5 50 27" pathLength={100} /></svg>
+        </div>
+        <p className="p-sq-eyebrow tu-num">{eyebrow}</p>
+        <h2 className="p-sq-title">{title}</h2>
+        <p className="p-sq-body">{body}</p>
+        <table className="p-sq-receipt tu-num">
+          <tbody>{rows.map(r => <tr key={r[0] + r[1]}><td>{r[0]}</td><td className="p-sq-arrow">→</td><td>{r[1]}</td><td>{r[2]}</td><td>{r[3]}</td></tr>)}</tbody>
+          <tfoot><tr><td colSpan={3}>total</td><td>{total[0]}</td><td>{total[1]}</td></tr></tfoot>
+        </table>
+        <Button label={actionLabel} onClick={onAction} />
+      </section>
+    </div>
+  );
+}
+
 export function CelebrationOverlay({ kind = 'squared', title, subtitle, eyebrow, replayKey = 0, stats, actionLabel, onAction, secondaryLabel, onSecondary }:
   { kind?: 'squared' | 'pollWon' | 'milestone'; title?: string; subtitle?: string; eyebrow?: string; replayKey?: number; stats?: [string, string][]; actionLabel?: string; onAction?: () => void; secondaryLabel?: string; onSecondary?: () => void }) {
   const reduce = useReducedMotion();
+  if (kind === 'squared') return <SquaredSheet replayKey={replayKey} title={title} eyebrow={eyebrow} body={subtitle} actionLabel={actionLabel} onAction={onAction} />;
   const t = title ?? { squared: 'All squared up.', pollWon: 'Taberna wins.', milestone: 'Lisbon, booked.' }[kind];
-  const s = subtitle ?? { squared: 'Three payments instead of six. Nobody owes anything.', pollWon: '5 of 7 picked Taberna da Rua das Flores. Booked for 20:30.', milestone: 'Flights, the Alfama flat and both dinners are locked in.' }[kind];
+  const s = subtitle ?? { squared: 'Three payments instead of six. Nobody owes anything.', pollWon: '5 of 7 picked Taberna da Rua das Flores. Booked for 8:30 PM.', milestone: 'Flights, the Alfama flat and both dinners are locked in.' }[kind];
   const e = eyebrow ?? { squared: 'Lisbon Crew · settled', pollWon: 'Poll closed', milestone: 'Lisbon Crew' }[kind];
   return (
     <div className={`p-celebrate ${reduce ? 'is-reduced' : ''}`} key={replayKey} role="status" aria-live="polite">
@@ -77,9 +109,9 @@ export function CelebrationOverlay({ kind = 'squared', title, subtitle, eyebrow,
         <p className="p-celebrate-eyebrow">{e}</p>
         <h2 className="p-celebrate-title">{t}</h2>
         <p className="p-celebrate-sub">{s}</p>
-        {kind === 'squared' && <dl className="p-celebrate-stats">{(stats ?? [['€124.50', 'settled'], ['3', 'payments'], ['€0.00', 'owed']]).map(([v, l]) => <div key={l}><dt>{l}</dt><dd className="tu-num">{v}</dd></div>)}</dl>}
+        {(kind as string) === 'squared' && <dl className="p-celebrate-stats">{(stats ?? [['$124.50', 'settled'], ['3', 'payments'], ['$0.00', 'owed']]).map(([v, l]) => <div key={l}><dt>{l}</dt><dd className="tu-num">{v}</dd></div>)}</dl>}
         <div className="p-celebrate-actions">
-          <Button label={actionLabel ?? (kind === 'squared' ? 'See the recap' : 'See the plan')} fullWidth onClick={onAction} />
+          <Button label={actionLabel ?? 'See the plan'} fullWidth onClick={onAction} />
           {secondaryLabel && <Button label={secondaryLabel} variant="plain" fullWidth onClick={onSecondary} />}
         </div>
       </div>

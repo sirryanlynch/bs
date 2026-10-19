@@ -22,14 +22,14 @@ export const Toasts: StoryObj<typeof Toast> = {
 
 export const Banners: StoryObj<typeof Banner> = {
   name: 'Banner',
-  args: { title: 'Nic and Ren have not voted', body: 'Dinner poll closes at 19:30.', tone: 'accent', action: 'Nudge them', onDismiss: true },
+  args: { title: 'Nic and Ren have not voted', body: 'Dinner poll closes at 7:30 PM.', tone: 'accent', action: 'Nudge them', onDismiss: true },
   argTypes: { tone: { control: 'inline-radio', options: ['info', 'accent', 'warning', 'success'] } },
   render: (a) => (<>
     <Banner {...a} />
     <Label>Tones</Label>
-    <Banner tone="info" title="Ramiro does not take bookings" body="Arrive before 19:00 or expect a 40 minute queue." />
-    <Banner tone="warning" title="Receipt total does not match" body="Items add up to €248.70. You entered €284.70." action="Review items" />
-    <Banner tone="success" title="João marked €64.00 received" body="Mara is all paid up." />
+    <Banner tone="info" title="Ramiro does not take bookings" body="Arrive before 7:00 PM or expect a 40 minute queue." />
+    <Banner tone="warning" title="Receipt total does not match" body="Items add up to $248.70. You entered $284.70." action="Review items" />
+    <Banner tone="success" title="João marked $64.00 received" body="Mara is all paid up." />
   </>),
 };
 
@@ -41,7 +41,7 @@ export const Notifications: StoryObj<typeof Notification> = {
     <div className="scr">
       <div className="p-lock" style={{ backgroundImage: `url(${photo.alfama})` }} />
       <div className="p-lock-inner">
-        <p className="p-lock-date">Friday 16 October</p>
+        <p className="p-lock-date">Friday October 16</p>
         <p className="p-lock-time">9:41</p>
         <Notification {...a} person={P.mara} />
       </div>
@@ -58,8 +58,8 @@ export const Live: StoryObj<typeof LiveActivity> = {
     <div className="scr">
       <div className="p-lock" style={{ backgroundImage: `url(${photo.bridge})` }} />
       <div className="p-lock-inner">
-        <p className="p-lock-date">Friday 16 October</p>
-        <p className="p-lock-time" style={{ marginBottom: 200 }}>19:02</p>
+        <p className="p-lock-date">Friday October 16</p>
+        <p className="p-lock-time" style={{ marginBottom: 200 }}>7:02 PM</p>
         <LiveActivity {...a} />
         {a.kind !== 'trip' && <LiveActivity kind="trip" />}
       </div>

@@ -4,7 +4,7 @@ Storybook 8 (React, Vite, TypeScript) for the Prism design system. Components re
 
 ## Run
 
-    cd storybook
+    cd /workspace/tripup/storybook
     npm install
     npm run storybook          # dev server on :6006, syncs tokens first
     npm run build-storybook    # static build in storybook-static/, syncs tokens first

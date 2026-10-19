@@ -12,10 +12,14 @@ npm run build    # outputs dist/ with relative paths (base './')
 ## How it works
 
 - `src/ledger.ts` holds the seven trip expenses. Balances, the six pairwise IOUs and the three simplified payments are all computed from them.
-- `src/store.tsx` is the state machine: steps, actions, the vote stream, the scenario checklist, and `stateAt()`, which replays the path so deep links land in a consistent state.
+- `src/store.tsx` is the state machine: steps, actions, the vote stream, the step completion checks, and `stateAt()`, which replays the path so deep links land in a consistent state.
 - `src/screens*.tsx` and `src/renweb.tsx` are the screens. `src/App.tsx` is the device frame, reviewer panel, guided tour, shortcuts and hash routing.
-- `public/hifi/` holds the Figma frames used by "Compare with hi-fi".
 
 ## Keyboard
 
-Left and right arrows step through, Space plays the tour, 1 2 3 switch between Ari, Nic and Ren, C compares with hi-fi, D toggles dark mode, M toggles Reduce Motion, R resets.
+Left and right arrows step through, Space plays the tour, 1 2 3 switch between Ari, Nic and Ren, D toggles dark mode, M toggles Reduce Motion, R resets.
+
+## Modes and Beyond tonight
+
+- The shell opens with a choice: **Self guided** (the step panel tucks away behind a small Steps button) or **Guided tour** (a touch cursor taps through tonight, then the Beyond tonight chapter). `?mode=self` and `?mode=tour` skip the choice. The pick fires `guided_mode_select {mode}` to `gtag` if present, else `dataLayer`.
+- Flows beyond tonight live at `#/beyond/<route>` (plus `#/poll/new`). Screens come from `storybook/src/patterns/beyond`; `src/flows/` holds only routing, the panel section, the cursor and the mode shell.

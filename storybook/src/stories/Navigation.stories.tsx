@@ -10,7 +10,7 @@ export default meta;
 
 export const Nav: StoryObj<typeof NavBar> = {
   name: 'NavBar',
-  args: { title: 'Lisbon Crew', subtitle: '12 to 17 Oct', large: true, displayTitle: true, back: 'Trips' },
+  args: { title: 'Lisbon Crew', subtitle: 'Oct 12 to 17', large: true, displayTitle: true, back: 'Trips' },
   render: (a) => (<>
     <NavBar {...a} actions={[{ icon: 'personAdd', label: 'Invite' }, { icon: 'more', label: 'More' }]} />
     <Label>Large, UI title</Label>

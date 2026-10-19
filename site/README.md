@@ -15,7 +15,7 @@ Everything here is static and uses relative paths, so it works from a GitHub Pag
 - Each slide has a hash (`#1` to `#9`). Arrow keys, Space, the dock arrows, a horizontal swipe or a click on empty space move between slides. Scrolling never changes slides.
 - The iPhone on slides 1, 7 and 9 is one live embed of `prototype/?embed=1` that moves between slides.
 - Content and sources for the interactive parts live in `deck/data.js`. Overview thumbnails are in `deck/thumbs/` (regenerate with `qa/deck.cjs`).
-- GA4: `analytics/sync.js` writes the measurement id into the `ga-measurement-id` meta tag. The default is `G-T7WTSRRSGT`. Slide changes send `slide_view`. Opening the jobs drawer sends `jtbd_drawer_open`. Links that open a new tab send `outbound_click`. Do Not Track keeps the loader off.
+- GA4: `./build-site.sh` writes `G-T7WTSRRSGT` into the `ga-measurement-id` meta tag (a `GA_MEASUREMENT_ID` override replaces it). Each slide change sends a `slide_view` event. The deck, case study, and prototype share that id. Do Not Track keeps the loader off.
 
 ## Run locally
 
@@ -26,11 +26,11 @@ python3 -m http.server 8080 -d site
 
 ## Rebuild
 
-From the repo root run `./build-site.sh`. It rebuilds the prototype and Storybook from source and leaves the deck and case study in place. `./build-site.sh --deck-only` refreshes deck assets when `moodboards/photos` and `exports/` are in the checkout.
+From the `tripup/` folder run `./build-site.sh`. It rebuilds the prototype and Storybook and refreshes deck assets. `./build-site.sh --deck-only` refreshes only the deck assets. It never deletes the deck or the case study.
 
 ## Publish to GitHub Pages
 
-Pushes to `main` run `.github/workflows/pages.yml`. The workflow builds Storybook and the prototype, assembles this folder, and deploys it with GitHub Pages. Keep the `.nojekyll` file so folders that start with an underscore are served. Pages source is GitHub Actions.
+Pushes to `main` run `.github/workflows/pages.yml`. The workflow builds the prototype and Storybook from source, keeps this deck and case study, and deploys `site/`. `.nojekyll` stays so folders that start with an underscore are served. Pages source is GitHub Actions.
 
 ## Prototype URLs
 

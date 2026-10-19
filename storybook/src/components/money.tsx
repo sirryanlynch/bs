@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Icon } from './Icon';
 import { Avatar, Button, IconButton, useCountUp } from './core';
-import { people as P, Person, eur } from '../lib/data';
+import { people as P, Person, usd } from '../lib/data';
 import { useReducedMotion } from '../lib/PrismRoot';
 
 /* ---------------- ExpenseRow ---------------- */
@@ -19,10 +19,10 @@ export function ExpenseRow({ title, payer, amount, share, date, category = 'fork
         )}
       </div>
       <div className="p-exp-amt">
-        <span className="p-exp-total tu-num">{eur(amount)}</span>
+        <span className="p-exp-total tu-num">{usd(amount)}</span>
         {state === 'youExcluded' ? <span className="p-exp-share is-muted">Not in your split</span>
           : state === 'pending' ? <span className="p-exp-share is-muted">Pending</span>
-          : share != null && <span className={`p-exp-share tu-num ${youPaid ? 'is-owed' : 'is-owe'}`}>{youPaid ? `You lent ${eur(amount - share)}` : `Your share ${eur(share)}`}</span>}
+          : share != null && <span className={`p-exp-share tu-num ${youPaid ? 'is-owed' : 'is-owe'}`}>{youPaid ? `You lent ${usd(amount - share)}` : `Your share ${usd(share)}`}</span>}
       </div>
     </div>
   );
@@ -42,10 +42,10 @@ export function ReceiptSplit({ venue = 'Taberna da Rua das Flores', lines, membe
   return (
     <div className="p-receipt">
       <div className="p-receipt-paper">
-        <header className="p-receipt-head"><span className="p-receipt-venue">{venue}</span><span className="p-receipt-sub">Scanned 22:41 · Chiado</span></header>
+        <header className="p-receipt-head"><span className="p-receipt-venue">{venue}</span><span className="p-receipt-sub">Scanned 10:41 PM · Chiado</span></header>
         {rows.map((r, i) => (
           <div key={r.item} className={`p-receipt-line ${r.who.length < members.length ? 'is-partial' : ''}`}>
-            <div className="p-receipt-l1"><span>{r.qty && r.qty > 1 ? <span className="p-receipt-qty tu-num">{r.qty}×</span> : null}{r.item}</span><span className="tu-num">{eur(r.price)}</span></div>
+            <div className="p-receipt-l1"><span>{r.qty && r.qty > 1 ? <span className="p-receipt-qty tu-num">{r.qty}×</span> : null}{r.item}</span><span className="tu-num">{usd(r.price)}</span></div>
             <div className="p-receipt-who">
               {members.map(m => {
                 const on = r.who.includes(m.id);
@@ -55,14 +55,14 @@ export function ReceiptSplit({ venue = 'Taberna da Rua das Flores', lines, membe
           </div>
         ))}
         <div className="p-receipt-sum">
-          <div><span>Subtotal</span><span className="tu-num">{eur(subtotal)}</span></div>
-          {tip > 0 && <div><span>Service, shared by share</span><span className="tu-num">{eur(tip)}</span></div>}
-          <div className="p-receipt-total"><span>Total</span><span className="tu-num">{eur(subtotal + tip)}</span></div>
+          <div><span>Subtotal</span><span className="tu-num">{usd(subtotal)}</span></div>
+          {tip > 0 && <div><span>Service, shared by share</span><span className="tu-num">{usd(tip)}</span></div>}
+          <div className="p-receipt-total"><span>Total</span><span className="tu-num">{usd(subtotal + tip)}</span></div>
         </div>
       </div>
       <div className="p-receipt-people">
         {members.map(m => (
-          <div key={m.id} className="p-receipt-person"><Avatar person={m} size={28} ring="none" /><span>{m.you ? 'You' : m.name}</span><b className="tu-num">{eur(totals[m.id] * tipK)}</b></div>
+          <div key={m.id} className="p-receipt-person"><Avatar person={m} size={28} ring="none" /><span>{m.you ? 'You' : m.name}</span><b className="tu-num">{usd(totals[m.id] * tipK)}</b></div>
         ))}
       </div>
     </div>
@@ -81,7 +81,7 @@ export const simplifiedDebts: Edge[] = [
 const W = 362, H = 310;
 const pos: Record<string, [number, number]> = { mara: [70, 44], ari: [70, 160], ren: [70, 266], sofia: [190, 104], tomas: [190, 266], joao: [310, 44], nic: [310, 160] };
 
-/** Six IOUs collapse into three payments: €124.50 moves instead of €190.60. */
+/** Six IOUs collapse into three payments: $124.50 moves instead of $190.60. */
 export function DebtSimplify({ simplified: simplifiedProp = false, autoplay = true, raw = rawDebts, simple = simplifiedDebts, people = P, onToggle, toggle = true }:
   { simplified?: boolean; autoplay?: boolean; raw?: Edge[]; simple?: Edge[]; people?: Record<string, Person>; onToggle?: (next: boolean) => void; toggle?: boolean }) {
   const net: Record<string, number> = {};
@@ -108,7 +108,7 @@ export function DebtSimplify({ simplified: simplifiedProp = false, autoplay = tr
         <line x1={sx} y1={sy} x2={ex} y2={ey} strokeDasharray={len} strokeDashoffset={visible || reduce ? 0 : len} markerEnd={`url(#arrow-${kind})`} />
         <g transform={`translate(${mx} ${my})`} className="p-debt-label">
           <rect x={-27} y={-11} width={54} height={22} rx={11} />
-          <text textAnchor="middle" dy="4" className="tu-num">€{e.amt.toFixed(2).replace(/\.00$/, '')}</text>
+          <text textAnchor="middle" dy="4" className="tu-num">${e.amt.toFixed(2).replace(/\.00$/, '')}</text>
         </g>
       </g>
     );
@@ -116,10 +116,10 @@ export function DebtSimplify({ simplified: simplifiedProp = false, autoplay = tr
   return (
     <div className={`p-debt ${s ? 'is-simple' : ''} ${reduce ? 'is-reduced' : ''}`}>
       <div className="p-debt-head">
-        <div><span className="p-debt-count tu-num">{s ? simple.length : raw.length}</span><span className="p-debt-countlabel">{s ? `payments, ${eur(sum(simple))} total` : `IOUs, ${eur(sum(raw))} total`}</span></div>
+        <div><span className="p-debt-count tu-num">{s ? simple.length : raw.length}</span><span className="p-debt-countlabel">{s ? `payments, ${usd(sum(simple))} total` : `IOUs, ${usd(sum(raw))} total`}</span></div>
         {toggle && <button type="button" className="p-debt-switch" onClick={() => (onToggle ? onToggle(!s) : setS(!s))} aria-pressed={s}>{s ? 'Show before' : 'Simplify'}</button>}
       </div>
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label={(s ? simple : raw).map(e => `${people[e.from].name} pays ${people[e.to].name} ${eur(e.amt)}`).join(', ')}>
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label={(s ? simple : raw).map(e => `${people[e.from].name} pays ${people[e.to].name} ${usd(e.amt)}`).join(', ')}>
         <defs>
           {['raw', 'simple'].map(k => (
             <marker key={k} id={`arrow-${k}`} viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -153,7 +153,7 @@ export function PaymentRow({ from, to, amount, state = 'due', method }: { from: 
         <span className="p-pay-sub">{state === 'paid' ? `Paid${method ? ` with ${method}` : ''}` : state === 'sending' ? 'Waiting for confirmation' : state === 'requested' ? 'Reminder sent today' : method ?? 'Not paid yet'}</span>
       </div>
       <div className="p-pay-right">
-        <span className={`p-pay-amt tu-num ${youGet ? 'is-owed' : youPay ? 'is-owe' : ''}`}>{eur(amount)}</span>
+        <span className={`p-pay-amt tu-num ${youGet ? 'is-owed' : youPay ? 'is-owe' : ''}`}>{usd(amount)}</span>
         {state === 'paid' && <span className="p-pay-done"><Icon name="check" size={14} />Paid</span>}
         {state === 'sending' && <span className="p-spinner p-spinner-sm" aria-label="Sending" />}
       </div>
@@ -175,15 +175,15 @@ export function SettleContent({ from = P.ari, to = P.nic, amount = 42.1, method 
         <Avatar person={to} size={56} ring="none" />
       </div>
       <p className="p-settle-who">{from.you ? 'You' : from.name} to {to.you ? 'you' : to.name}</p>
-      <p className="p-settle-amt tu-num">€{v.toFixed(2)}</p>
-      <p className="p-settle-note">Your share of Taberna, the Tram 28 passes and the Alfama flat, less the €18.40 Ren owes you</p>
+      <p className="p-settle-amt tu-num">${v.toFixed(2)}</p>
+      <p className="p-settle-note">Your share of Taberna, the Tram 28 passes and the Alfama flat, less the $18.40 Ren owes you</p>
       <div className="p-settle-methods" role="radiogroup" aria-label="Payment method">
         {(['MB WAY', 'Apple Pay', 'Revolut', 'Cash'] as const).map(x => (
           <button type="button" role="radio" aria-checked={m === x} key={x} className={`p-settle-method ${m === x ? 'is-on' : ''}`} onClick={() => setM(x)}>{x}</button>
         ))}
       </div>
       {state === 'review'
-        ? <Button label={to.you ? `Mark ${eur(amount)} as received` : `Pay ${eur(amount)} with ${m}`} fullWidth />
+        ? <Button label={to.you ? `Mark ${usd(amount)} as received` : `Pay ${usd(amount)} with ${m}`} fullWidth />
         : <div className="p-settle-sent anim-fade"><Icon name="check" size={20} />Sent. {to.you ? 'You' : to.name} will confirm when it lands.</div>}
       <Button label="Pay a different amount" variant="plain" fullWidth />
     </div>

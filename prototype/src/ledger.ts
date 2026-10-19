@@ -18,9 +18,9 @@ export const baseExpenses: Expense[] = [
 export const crewIds = ['ari', 'mara', 'nic', 'joao', 'sofia', 'tomas', 'ren'];
 
 export const dinnerLines = (members: string[]): Line[] => [
-  { id: 'pet', item: 'Petiscos to share', qty: 6, price: 62.4, who: members },
-  { id: 'bac', item: 'Bacalhau à Brás', qty: 3, price: 51, who: members },
-  { id: 'wine', item: 'Vinho Verde, Quinta da Aveleda', qty: 2, price: 38, who: members },
+  { id: 'pet', item: 'Petiscos (small plates to share)', qty: 6, price: 62.4, who: members },
+  { id: 'bac', item: 'Bacalhau à Brás (cod)', qty: 3, price: 51, who: members },
+  { id: 'wine', item: 'Vinho Verde (bottle), Quinta da Aveleda', qty: 2, price: 38, who: members },
   { id: 'more', item: '3 more lines', qty: 1, price: 97.3, who: members, group: true },
 ];
 

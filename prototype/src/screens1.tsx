@@ -7,15 +7,28 @@ import { TabBar } from '@sb/components/nav';
 import { BottomSheet } from '@sb/components/overlays';
 import { photo, places } from '@sb/lib/data';
 import { useApp, liveNets, optName, StepId, haptic } from './store';
+import { TABS, GlobalTabs, CREATE_ROUTES } from '@sb/patterns/beyond/kit';
+import { FUTURE_TRIPS, DESTINATIONS } from '@sb/lib/beyond';
+import { fmtRange } from '@sb/components/beyond/create';
+import { BIcon } from '@sb/components/beyond/icons';
+import { useBridge } from './flows';
+import { Stepper } from '@sb/components/beyond/stepper';
+import { CurateRing } from '@sb/components/beyond/explore';
 
 export const crewOf = (renJoined: boolean) => ['ari', 'mara', 'nic', 'joao', 'sofia', 'tomas', ...(renJoined ? ['ren'] : [])];
 
 export function Tabs({ active }: { active: string }) {
   const { s, d } = useApp();
+  const { go } = useBridge();
   const map: Record<string, StepId[]> = { trips: ['home'], plan: ['plan', 'trip'], polls: ['closed', 'live'], money: ['money'] };
   return (
-    <TabBar active={active} accessory="none" tabs={[{ id: 'trips', label: 'Trips', icon: 'home' }, { id: 'plan', label: 'Plan', icon: 'calendar' }, { id: 'polls', label: 'Polls', icon: 'poll' }, { id: 'money', label: 'Money', icon: 'wallet' }]}
-      onChange={id => { haptic(); const t = map[id].find(x => s.done[x]); if (t) d({ t: 'go', step: t }); else d({ t: 'toast', msg: id === 'money' ? 'Money opens after dinner' : 'Nothing here yet' }); }} />
+    <GlobalTabs active={active} onCreate={k => { haptic(); go(CREATE_ROUTES[k]); }}
+      onTab={id => {
+        haptic();
+        // Explore is its own tab. Polls opens the live dinner poll while it runs, otherwise the list of every poll.
+        if (id === 'explore') return go('explore');
+        if (id === 'polls' && !(s.pollSent && !s.pollClosed)) return go('polls');
+        const t = map[id].find(x => s.done[x]); if (t) d({ t: 'go', step: t }); else d({ t: 'toast', msg: id === 'money' ? 'Money opens after dinner' : 'Nothing here yet' }); }} />
   );
 }
 
@@ -36,17 +49,27 @@ export function Home() {
   const { s, d, P } = useApp();
   const crew = crewOf(s.renJoined).map(id => P[id]);
   const bal = liveNets(s)[s.me] ?? 0;
-  const next = s.planAdded ? `${optName(s, s.winner, true)} at 20:30` : 'Dinner 20:30 · undecided';
+  const next = s.planAdded ? `${optName(s, s.winner, true)} at 8:30 PM` : 'Dinner 8:30 PM · undecided';
+  const bz = useBridge(); const made = bz.s?.create.created ? bz.s.create : undefined;
+  const madeDest = made && DESTINATIONS.find(x => x.id === made.dest);
   return (
     <div className="scr">
       <div className="scr-scroll">
+        <div className="fl-homebar">
+          <button type="button" className="fl-avatar" onClick={() => { haptic(); bz.go('profile'); }} aria-label="Profile and settings"><Avatar person={P.ari} size={36} ring="none" /></button>
+          <span className="fl-homebar-sp" />
+          <button type="button" className="fl-roundbtn tu-glass" onClick={() => { haptic(); bz.go('activity'); }} aria-label="Activity, 3 new"><BIcon name="bell" size={20} /><span className="fl-badge" aria-hidden /></button>
+          <button type="button" className="fl-roundbtn tu-glass is-accent" onClick={() => { haptic(); bz.go('create/where'); }} aria-label="New trip"><BIcon name="add" size={20} /></button>
+        </div>
         <h1 className="pt-largetitle">Trips</h1>
         <button type="button" className="pt-cardbtn" onClick={() => { haptic(); d({ t: 'go', step: 'trip' }); }}>
-          <TripCard name="Lisbon" dates="12 to 17 Oct" photo={photo.alfama} people={crew} status="live" nextUp={next} balance={s.dinnerSaved ? bal : undefined} />
+          <TripCard name="Lisbon" dates="Oct 12 to 17" photo={photo.alfama} people={crew} status="live" nextUp={next} balance={s.dinnerSaved ? bal : undefined} />
         </button>
         <ListGroup header="Later">
-          <ListRow title="Lisbon, New Year" subtitle="In 74 days" leading={<img className="pt-thumb" src={photo.augusta} alt="" />} chevron />
-          <ListRow title="Lisbon, spring" subtitle="Apr 2025 · settled" leading={<img className="pt-thumb" src={photo.tiles} alt="" />} chevron />
+          <ListRow title="Lisbon, New Year" subtitle="Dec 31 to Jan 3 · in 75 days" leading={<img className="pt-thumb" src={photo.augusta} alt="" />} chevron />
+          {made && <ListRow title={made.name} subtitle={made.start && made.end ? `${fmtRange(made.start, made.end)}, ${made.end.y} · planning` : 'Dates to decide · planning'} leading={<img className="pt-thumb" src={made.cover ?? madeDest?.photos[0]} alt="" />} chevron onClick={() => bz.go('create/done')} />}
+          {FUTURE_TRIPS.filter(t => !t.name.startsWith('Lisbon')).map(t => <ListRow key={t.id} title={t.name} subtitle={`${t.dates} · ${t.sub.split(' · ')[0].toLowerCase()}`} leading={<img className="pt-thumb" src={t.photo} alt="" />} chevron />)}
+          <ListRow title="Lisbon, spring" subtitle="Apr 2026 · settled" leading={<img className="pt-thumb" src={photo.tiles} alt="" />} chevron />
         </ListGroup>
       </div>
       <Tabs active="trips" />
@@ -65,7 +88,7 @@ export function Trip() {
         <div className="scr-hero pt-hero">
           <img src={photo.roofs} alt="" />
           <div className="scr-hero-bar"><button type="button" className="pt-back is-light" onClick={() => d({ t: 'go', step: 'home' })} aria-label="Back to Trips"><Icon name="chevronLeft" size={20} /></button></div>
-          <div className="scr-hero-text"><p>12 to 17 Oct · last night</p><h1>Lisbon Crew</h1></div>
+          <div className="scr-hero-text"><p>Oct 12 to 17 · last night</p><h1>Lisbon Crew</h1></div>
         </div>
         <div className="pt-people">
           <AvatarStack people={crew} size={28} max={7} />
@@ -75,13 +98,13 @@ export function Trip() {
         <section className="scr-section">
           <h2 className="pt-h2">Tonight</h2>
           <ol className="pt-itin">
-            <ItinBlock it={{ time: '18:00', title: 'Sunset, Santa Catarina', icon: 'sun', kind: 'plan' }} />
-            <ItinBlock it={{ time: '19:15', title: 'Pastéis at Manteigaria', icon: 'fork', kind: 'now' }} />
+            <ItinBlock it={{ time: '6:00 PM', title: 'Sunset, Santa Catarina', icon: 'sun', kind: 'plan' }} />
+            <ItinBlock it={{ time: '7:15 PM', title: 'Pastéis at Manteigaria', icon: 'fork', kind: 'now' }} />
             {s.planAdded
-              ? <ItinBlock it={{ time: '20:30', title: optName(s, s.winner), place: 'Table for 7', icon: 'fork', kind: 'decided' }} />
+              ? <ItinBlock it={{ time: '8:30 PM', title: optName(s, s.winner), place: 'Table for 7', icon: 'fork', kind: 'decided' }} />
               : (
                 <li className="p-itin is-plan">
-                  <span className="p-itin-time tu-num">20:30</span>
+                  <span className="p-itin-time tu-num">8:30 PM</span>
                   <span className="p-itin-rail" aria-hidden><span className="p-itin-node"><Icon name="fork" size={14} /></span><span className="p-itin-line" /></span>
                   <div className="p-itin-card pt-gapcard">
                     <div><h4>Dinner</h4><p>Not decided</p></div>
@@ -90,12 +113,24 @@ export function Trip() {
                   </div>
                 </li>
               )}
-            <ItinBlock it={{ time: '23:00', title: 'Fado at Tasca do Chico', icon: 'music', kind: 'plan' }} last />
+            <ItinBlock it={{ time: '11:00 PM', title: 'Fado at Tasca do Chico', icon: 'music', kind: 'plan' }} last />
           </ol>
         </section>
+        <TripShortcuts />
       </div>
       <Tabs active="plan" />
     </div>
+  );
+}
+
+/** Trip home shortcuts into the flows beyond tonight. */
+function TripShortcuts() {
+  const { go } = useBridge();
+  const items: [string, React.ComponentProps<typeof BIcon>['name'], string][] = [['explore', 'compass', 'Explore'], ['album', 'images', 'Album'], ['plan/day', 'calendar', 'Day plan'], ['expense/scan', 'receipt', 'Expense'], ['poll/new', 'poll', 'New poll']];
+  return (
+    <section className="scr-section fl-shortcuts" aria-label="Shortcuts">
+      {items.map(([r, ic, l]) => <button key={r} type="button" className="fl-shortcut" onClick={() => { haptic(); go(r); }}><span className="fl-shortcut-ico tu-glass"><BIcon name={ic} size={24} /></span><span>{l}</span></button>)}
+    </section>
   );
 }
 
@@ -106,7 +141,7 @@ export function InviteSheet() {
   const [q, setQ] = useState('');
   const link = 'tripup.app/j/lisbon-crew-742';
   const close = () => d({ t: 'go', step: 'trip' });
-  const contacts = [{ id: 'ren', name: 'Ren Matsuda', sub: 'Porto weekend' }, { id: 'renata', name: 'Renata Lopes', sub: "Mara's friend" }];
+  const contacts = [{ id: 'ren', name: 'Ren Matsuda', sub: 'Lisbon, spring' }, { id: 'renata', name: 'Renata Lopes', sub: "Mara's friend" }];
   return (
     <BottomSheet title="Add people" detent="large" onClose={close}>
       <div className="pt-invite">
@@ -143,53 +178,69 @@ export function InviteSheet() {
 }
 
 /* ---------------- 04 Explore ---------------- */
-const QUESTIONS = [
-  { q: 'What are we after?', opts: [['Dinner', 38], ['Drinks', 54], ['A view', 21]] },
-  { q: 'How far will you walk?', opts: [['Under 10 min', 14], ['Under 15 min', 22], ['Any distance', 38]] },
-  { q: 'Budget each?', opts: [['€ to €€', 6], ['€€ to €€€', 9], ['Anything', 14]] },
-] as const;
+/** Four questions: how you get there, then how long, then what and how much. Counts follow the earlier answers. */
+type Q = { q: string; opts: [string, number][]; def: number };
+const MODE_N: Record<string, number> = { Walk: 48, Drive: 96, Destination: 31 };
+const DUR: Record<string, { q: string; opts: [string, number][] }> = {
+  Walk: { q: 'How far on foot?', opts: [['5 min', 9], ['10 min', 22], ['20 min', 41]] },
+  Drive: { q: 'How long a drive?', opts: [['10 min', 34], ['20 min', 58], ['40 min', 77]] },
+  Destination: { q: 'How far is worth it?', opts: [['Under 1 hr', 12], ['Half day', 19], ['Day trip', 26]] },
+};
+const questionsFor = (picks: string[]): Q[] => {
+  const mode = picks[0] ?? 'Walk'; const dur = DUR[mode] ?? DUR.Walk;
+  const dn = (dur.opts.find(o => o[0] === picks[1]) ?? dur.opts[1])[1];
+  const after: [string, number][] = [['Dinner', Math.round(dn * 0.42)], ['Drinks', Math.round(dn * 0.6)], ['A view', Math.round(dn * 0.28)]];
+  const an = (after.find(o => o[0] === picks[2]) ?? after[0])[1];
+  return [
+    { q: 'How are you getting there?', opts: [['Walk', MODE_N.Walk], ['Drive', MODE_N.Drive], ['Destination', MODE_N.Destination]], def: 0 },
+    { q: dur.q, opts: dur.opts, def: 1 },
+    { q: 'What are we after?', opts: after, def: 0 },
+    { q: 'Budget each?', opts: [['$ to $$', Math.max(3, Math.round(an * 0.45))], ['$$ to $$$', Math.max(4, Math.round(an * 0.7))], ['Anything', an]], def: 1 },
+  ];
+};
+const QN = 4;
 export const EXPLORE_PLACES = [
-  { id: 'taberna', ...places.taberna, walk: '6 min', price: '€€' },
-  { id: 'ramiro', ...places.ramiro, walk: '14 min', price: '€€' },
+  { id: 'taberna', ...places.taberna, walk: '6 min', price: '$$' },
+  { id: 'ramiro', ...places.ramiro, walk: '14 min', price: '$$' },
   { id: 'park', ...places.park, walk: '9 min' },
   { id: 'eurico', ...places.eurico, walk: '12 min' },
-  { id: 'cevi', name: 'A Cevicheria', area: 'Príncipe Real', kind: 'Seafood', price: '€€', rating: 4.5, photo: photo.facade, walk: '11 min', note: '' },
-  { id: 'esquina', name: 'Tasca da Esquina', area: 'Campo de Ourique', kind: 'Petiscos', price: '€€', rating: 4.6, photo: photo.azulejo, walk: '13 min', note: '' },
+  { id: 'cevi', name: 'A Cevicheria', area: 'Príncipe Real', kind: 'Seafood', price: '$$', rating: 4.5, photo: photo.facade, walk: '11 min', note: '' },
+  { id: 'esquina', name: 'Tasca da Esquina', area: 'Campo de Ourique', kind: 'Petiscos', price: '$$', rating: 4.6, photo: photo.azulejo, walk: '13 min', note: '' },
 ];
 const pickLabel: string[] = [];
 export function Explore() {
   const { s, d } = useApp();
   const [picks, setPicks] = useState<string[]>([]);
   const st = s.exploreStage;
-  const spots = st === 0 ? 120 : (QUESTIONS[st - 1].opts.find(o => o[0] === pickLabel[st - 1]) ?? QUESTIONS[st - 1].opts[0])[1];
-  const r = 52, c = 2 * Math.PI * r;
+  const QUESTIONS = questionsFor(pickLabel);
+  const spots = st === 0 || pickLabel[0] === 'Any way' && st <= 2 ? 120 : (QUESTIONS[st - 1].opts.find(o => o[0] === pickLabel[st - 1]) ?? QUESTIONS[st - 1].opts[QUESTIONS[st - 1].def])[1];
   const shortlist = s.shortlist.length ? s.shortlist : picks;
   const toggle = (id: string) => { haptic(); setPicks(p => p.includes(id) ? p.filter(x => x !== id) : p.length >= 3 ? p : [...p, id]); };
   return (
     <div className="scr">
-      <div className={`scr-scroll pt-explore ${st >= 3 ? 'has-cta' : ''}`}>
-        <TopBar back="Lisbon Crew" onBack={() => d({ t: 'go', step: 'trip' })} title="Explore" sub={st < 3 ? `Step ${st + 1} of 3` : 'Pick 3'} />
-        {st < 3 ? (
+      <div className={`scr-scroll pt-explore ${st >= QN ? 'has-cta' : ''}`}>
+        <TopBar back={st > 0 ? 'previous step' : 'Lisbon Crew'} title="Find a place" sub={st < QN ? 'For 7 · tonight' : 'Pick 3'}
+          onBack={() => { if (st === 0) return d({ t: 'go', step: 'trip' }); const to = st >= QN ? 2 : st >= 2 ? 1 : 0; pickLabel.length = to; d({ t: 'set', patch: { exploreStage: to, shortlist: [] } }); }} />
+        {/* One Stepper for the whole app. The nav bar has Back, so the stepper shows Skip only. Questions 3 and 4 share step 3. */}
+        <Stepper steps={['Getting there', 'How long', 'What kind', 'Picks ready']} current={st <= 1 ? st : st < QN ? 2 : 3} label="Find a place progress"
+          onStep={i => { haptic(); pickLabel.length = i; d({ t: 'set', patch: { exploreStage: i, shortlist: [] } }); }}
+          onSkip={st < QN ? () => { haptic(); if (st === 0) { pickLabel[0] = 'Any way'; pickLabel[1] = 'Any'; } else if (st === 1) pickLabel[1] = 'Any'; d({ t: 'set', patch: { exploreStage: st < 2 ? 2 : QN } }); } : undefined} />
+        {st < QN ? (
           <>
-            <div className="pt-ring" role="img" aria-label={`${spots} spots match`}>
-              <svg width="128" height="128" viewBox="0 0 128 128">
-                <circle cx="64" cy="64" r={r} className="p-ring-track" />
-                <circle cx="64" cy="64" r={r} className="p-ring-fill pt-ring-fill" strokeDasharray={c} strokeDashoffset={c * (1 - st / 3)} transform="rotate(-90 64 64)" />
-              </svg>
-              <div className="pt-ring-n"><b className="tu-num" key={spots}>{spots}</b><span>spots</span></div>
-            </div>
+            <p className="b-countpill tu-num pt-countpill" aria-live="polite">{st === 0 || pickLabel[0] === 'Any way' ? `${spots} places in Lisbon so far` : st === 2 && pickLabel[1] !== 'Any' ? `${spots} places within ${pickLabel[1]}` : `${spots} places so far`}</p>
             <section className="pt-q anim-rise" key={st}>
               <h2>{QUESTIONS[st].q}</h2>
               <div className="pt-qopts">
                 {QUESTIONS[st].opts.map(([l, n]) => (
-                  <button type="button" key={l} className="pt-qopt" onClick={() => { haptic(10); pickLabel[st] = l; d({ t: 'set', patch: { exploreStage: st + 1 } }); }}>
+                  <button type="button" key={l} className="pt-qopt" onClick={() => { haptic(10); pickLabel[st] = l; pickLabel.length = st + 1; d({ t: 'set', patch: { exploreStage: st + 1 } }); }}>
                     <span>{l}</span><small className="tu-num">{n}</small>
                   </button>
                 ))}
               </div>
             </section>
           </>
-        ) : (
+        ) : (<>
+          <div className="b-picks-head anim-rise"><CurateRing done={4} total={4} count={EXPLORE_PLACES.length} size={72} /><span><b>All answered</b><small>Sorted by how often crews like yours booked</small></span></div>
           <div className="pt-places anim-rise">
             {EXPLORE_PLACES.map(p => {
               const on = shortlist.includes(p.id);
@@ -201,9 +252,9 @@ export function Explore() {
               );
             })}
           </div>
-        )}
+        </>)}
       </div>
-      {st >= 3 && (
+      {st >= QN && (
         <div className="scr-bottombar">
           <Button label={shortlist.length === 3 ? 'Start a poll with these 3' : `Pick ${3 - shortlist.length} more`} disabled={shortlist.length !== 3} fullWidth
             onClick={() => { haptic(14); d({ t: 'set', patch: { shortlist } }); d({ t: 'go', step: 'create' }); }} />

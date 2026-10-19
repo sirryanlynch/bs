@@ -10,7 +10,7 @@ TripUp is a group trip app for the two arguments every trip has: where to eat, a
 - [Storybook](https://sirryanlynch.github.io/bs/storybook/)
 - [Figma](https://www.figma.com/design/z4TesJNPe6UfvgwmWtIA4y/TripUp-Working)
 
-The prototype is one scenario with seven friends. You can play as Ari, Nic, or Ren, walk the 13 steps, or let the guided tour play.
+The prototype is one scenario with seven friends. You can play as Ari, Nic, or Ren, walk the 13 steps, or let the guided tour play. Settle-up screens are `#/settle/cash` and `#/settle/confirm?as=nic`. Screens beyond tonight are `#/beyond/explore` and the other beyond routes. `?mode=self` and `?mode=tour` choose self guided or the guided tour.
 
 ## Repo
 
@@ -75,11 +75,11 @@ Events:
 
 - `slide_view` on the deck, with the slide number and title
 - `jtbd_drawer_open` when the deck opens the jobs drawer
-- `page_view` for each prototype step, using the hash route (`#/live` and the rest)
+- `page_view` for each prototype step, using the hash route (`#/live`, `#/settle/cash`, and the rest)
+- `guided_mode_select` when someone chooses self guided or the guided tour
 - `guided_tour_start` and `guided_tour_complete`
 - `step_jump` from the step list, next, or previous
 - `play_as` when the person changes (Ari, Nic, Ren)
-- `compare_hifi` when the Figma compare mode changes
 - `theme_toggle` and `reduce_motion_toggle` in the prototype and in Storybook
 - `tie_break` when the tie-break path is switched
 - `poll_vote`, `expense_added`, and `settle_complete`

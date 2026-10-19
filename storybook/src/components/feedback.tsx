@@ -50,17 +50,17 @@ export function Notification({ title, body, time = 'now', person, stacked = 0 }:
 export function LiveActivity({ kind = 'poll', compact }: { kind?: 'poll' | 'trip' | 'settle'; compact?: boolean }) {
   if (compact) {
     return (
-      <div className="p-island" role="status" aria-label="Dinner poll, 5 of 7 voted, closes 19:30">
+      <div className="p-island" role="status" aria-label="Dinner poll, 5 of 7 voted, closes 7:30 PM">
         <span className="p-island-l"><AppMark size={26} /></span>
         <span className="p-island-cam" aria-hidden />
-        <span className="p-island-r tu-num">5/7 · 19:30</span>
+        <span className="p-island-r tu-num">5/7 · 7:30 PM</span>
       </div>
     );
   }
   return (
     <div className="p-live" role="status">
       {kind === 'poll' && <>
-        <div className="p-live-head"><AppMark size={24} /><b>Dinner tonight?</b><span className="p-live-time tu-num">to 19:30</span></div>
+        <div className="p-live-head"><AppMark size={24} /><b>Dinner tonight?</b><span className="p-live-time tu-num">to 7:30 PM</span></div>
         <div className="p-live-bars">
           {[['Taberna da Rua das Flores', 3], ['Cervejaria Ramiro', 2], ['Park Rooftop', 0]].map(([l, v], i) => (
             <div key={l as string} className={`p-live-bar ${i === 0 ? 'is-lead' : ''}`}><span className="p-live-fill" style={{ width: `${((v as number) / 5) * 100}%` }} /><span>{l}</span><b className="tu-num">{v}</b></div>
@@ -76,7 +76,7 @@ export function LiveActivity({ kind = 'poll', compact }: { kind?: 'poll' | 'trip
       {kind === 'settle' && <>
         <div className="p-live-head"><AppMark size={24} /><b>Settling Lisbon</b><span className="p-live-time tu-num">2 of 3 paid</span></div>
         <div className="p-live-progress is-owed"><span style={{ width: '66%' }} /></div>
-        <div className="p-live-foot"><span>Mara pays João next</span><span className="tu-num">€64.00</span></div>
+        <div className="p-live-foot"><span>Mara pays João next</span><span className="tu-num">$64.00</span></div>
       </>}
     </div>
   );

@@ -6,7 +6,7 @@ import { useReducedMotion } from '../lib/PrismRoot';
 /* ---------------- Button ---------------- */
 export type ButtonProps = {
   label: string;
-  variant?: 'primary' | 'secondary' | 'glass' | 'plain' | 'destructive';
+  variant?: 'primary' | 'secondary' | 'glass' | 'plain' | 'destructive' | 'surface';
   size?: 'large' | 'medium' | 'small';
   icon?: IconName;
   loading?: boolean;
@@ -62,7 +62,7 @@ export function AvatarStack({ people, max = 4, size = 28, label }: { people: Per
 /* ---------------- BalanceChip ---------------- */
 export function BalanceChip({ amount, size = 'medium' }: { amount: number; size?: 'small' | 'medium' }) {
   const state = Math.abs(amount) < 0.005 ? 'settled' : amount > 0 ? 'owed' : 'owe';
-  const text = state === 'settled' ? 'Settled' : `${state === 'owed' ? 'Owed' : 'You owe'} €${Math.abs(amount).toFixed(2)}`;
+  const text = state === 'settled' ? 'Settled' : `${state === 'owed' ? 'Owed' : 'You owe'} $${Math.abs(amount).toFixed(2)}`;
   return (
     <span className={`p-balance p-balance-${state} p-balance-${size} tu-num`}>
       {state === 'settled' ? <Icon name="check" size={14} /> : <span className="p-balance-dot" aria-hidden />}

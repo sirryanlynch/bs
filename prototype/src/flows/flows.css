@@ -1,0 +1,82 @@
+/* Shell for the beyond flows, the mode choice and the tour cursor. Scoped to fl-* so nothing else moves. */
+
+/* ---- Panel section ---- */
+.prism .fl-panel { display: flex; flex-direction: column; gap: 6px; padding-top: 14px; border-top: 1px solid var(--color-border-subtle); }
+.prism .fl-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 10px 4px; }
+.prism .fl-chapter { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 15px; border: 1px solid var(--color-border-subtle); background: var(--color-bg-surface); color: var(--color-accent-text); font: 600 13px var(--font-ui); cursor: pointer; }
+.prism .fl-chapter.is-on { background: var(--color-accent-primary); color: #fff; border-color: transparent; }
+.prism .fl-chapter:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 2px; }
+.prism .fl-caption { margin: 0; padding: 10px 12px; border-radius: 12px; background: var(--color-accent-subtle); color: var(--color-accent-text); font: var(--type-ui-footnote); }
+
+/* ---- Mode switch ---- */
+.prism .fl-switch { display: flex; align-items: center; gap: 8px; }
+.prism .fl-seg { display: inline-flex; padding: 3px; border-radius: 18px; background: var(--color-track-default); }
+.prism .fl-seg button { height: 30px; padding: 0 12px; border: 0; border-radius: 15px; background: transparent; color: var(--color-text-secondary); font: 600 13px var(--font-ui); cursor: pointer; transition: background var(--duration-quick, 160ms), color var(--duration-quick, 160ms); }
+.prism .fl-seg button.is-on { background: var(--color-bg-surface); color: var(--color-text-primary); box-shadow: 0 1px 3px rgba(20,18,40,.12); }
+.prism .fl-seg button:focus-visible, .prism .fl-steps:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 2px; }
+.prism .fl-steps { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px 0 12px; border-radius: 18px; border: 1px solid var(--color-border-subtle); background: var(--color-bg-surface); color: var(--color-text-primary); font: 600 13px var(--font-ui); cursor: pointer; }
+.prism .fl-float { position: fixed; z-index: 80; top: 20px; right: 20px; padding: 5px; border-radius: 24px; background: color-mix(in srgb, var(--color-bg-surface) 78%, transparent); backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4); box-shadow: 0 0 0 1px var(--color-border-subtle), 0 8px 24px rgba(20,18,40,.10); }
+.prism .fl-float .fl-steps { border: 0; }
+.pt-desk.fl-self { grid-template-columns: 1fr; }
+.pt-desk.fl-self > .pt-panel { display: none; }
+.pt-desk.fl-self.fl-drawer > .pt-panel { display: flex; position: fixed; z-index: 85; top: 12px; right: 12px; bottom: 12px; width: 380px; height: auto; border-radius: 24px; border: 1px solid var(--color-border-subtle); box-shadow: 0 24px 60px rgba(20,18,40,.22); animation: fl-in 260ms cubic-bezier(.2,.8,.2,1) both; }
+.fl-scrim { position: fixed; inset: 0; z-index: 84; background: rgba(20,18,40,.12); }
+@keyframes fl-in { from { opacity: 0; transform: translateX(24px); } }
+.prism[data-motion="reduce"] .pt-desk.fl-self.fl-drawer > .pt-panel { animation: fl-fade 160ms ease both; }
+@keyframes fl-fade { from { opacity: 0; } }
+.prism .fl-panelmode { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+
+/* ---- Entry choice ---- */
+.prism .fl-choose { position: fixed; inset: 0; z-index: 120; display: grid; place-items: center; padding: 24px; background: color-mix(in srgb, var(--color-bg-canvas, #EEEDF2) 62%, transparent); backdrop-filter: blur(28px) saturate(1.3); -webkit-backdrop-filter: blur(28px) saturate(1.3); animation: fl-fade 320ms ease both; }
+.prism .fl-choose-card { width: min(760px, 100%); display: flex; flex-direction: column; gap: 10px; text-align: center; align-items: center; }
+.prism .fl-choose-card h1 { margin: 0; font: var(--type-display-l, 400 44px/48px var(--font-display)); font-family: var(--font-display); color: var(--color-text-primary); }
+.prism .fl-choose-sub { margin: 0 0 18px; max-width: 46ch; color: var(--color-text-secondary); font: var(--type-ui-body); }
+.prism .fl-choose-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; }
+.prism .fl-opt { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; text-align: left; padding: 22px 22px 20px; border-radius: 28px; border: 1px solid var(--color-border-subtle); background: var(--color-bg-surface); color: var(--color-text-primary); cursor: pointer; box-shadow: 0 1px 2px rgba(20,18,40,.06), 0 12px 32px rgba(20,18,40,.08); transition: transform 220ms cubic-bezier(.2,.8,.2,1), box-shadow 220ms, border-color 220ms; animation: fl-rise 420ms cubic-bezier(.2,.8,.2,1) both; }
+.prism .fl-opt + .fl-opt { animation-delay: 70ms; }
+.prism .fl-opt:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--color-accent-primary) 40%, transparent); box-shadow: 0 2px 4px rgba(20,18,40,.06), 0 20px 44px rgba(110,91,255,.16); }
+.prism .fl-opt:focus-visible { outline: 3px solid var(--color-accent-primary); outline-offset: 3px; }
+.prism .fl-opt-art { width: 72px; height: 72px; margin-bottom: 6px; }
+.prism .fl-opt b { font: var(--type-ui-title-3); }
+.prism .fl-opt span:not(.fl-opt-art) { color: var(--color-text-secondary); font: var(--type-ui-subhead); }
+.prism .fl-opt-go { margin-top: auto; padding-top: 12px; font-style: normal; font: 600 15px var(--font-ui); color: var(--color-accent-text); }
+@keyframes fl-rise { from { opacity: 0; transform: translateY(14px); } }
+.prism[data-motion="reduce"] .fl-opt, .prism[data-motion="reduce"] .fl-choose { animation: fl-fade 160ms ease both; }
+.prism[data-motion="reduce"] .fl-opt:hover { transform: none; }
+@media (max-width: 640px) { .prism .fl-choose-opts { grid-template-columns: 1fr; } .prism .fl-choose-card h1 { font-size: 34px; line-height: 38px; } .prism .fl-opt-art { width: 52px; height: 52px; } }
+
+/* ---- Tour cursor ---- */
+.fl-cursor-host { position: absolute; inset: 0; z-index: 70; pointer-events: none; overflow: hidden; }
+.fl-cursor-host.is-off { display: none; }
+.fl-cursor { position: absolute; left: -22px; top: -22px; width: 44px; height: 44px; opacity: 0; transition: opacity 220ms; will-change: transform; }
+.fl-cursor.is-shown { opacity: 1; }
+.fl-cursor::before { content: ''; position: absolute; inset: 6px; border-radius: 50%; background: rgba(255,255,255,.55); box-shadow: 0 0 0 1.5px rgba(20,18,40,.38), 0 6px 16px rgba(20,18,40,.28), inset 0 0 0 6px rgba(110,91,255,.18); backdrop-filter: blur(2px); transition: transform 140ms cubic-bezier(.3,.7,.3,1); }
+.fl-cursor.is-tap::before, .fl-cursor.is-down::before { transform: scale(.78); background: rgba(110,91,255,.42); }
+.fl-cursor-ring { position: absolute; inset: 6px; border-radius: 50%; border: 2px solid rgba(110,91,255,.75); opacity: 0; }
+.fl-cursor.is-tap .fl-cursor-ring { animation: fl-ring 520ms cubic-bezier(.2,.7,.3,1) both; }
+@keyframes fl-ring { 0% { opacity: .9; transform: scale(.7); } 100% { opacity: 0; transform: scale(2.1); } }
+.prism[data-motion="reduce"] .fl-cursor { transition: none; }
+.prism[data-motion="reduce"] .fl-cursor.is-tap .fl-cursor-ring { animation: fl-ringr 360ms linear both; }
+@keyframes fl-ringr { 0% { opacity: .9; transform: scale(1.3); } 100% { opacity: 0; transform: scale(1.3); } }
+/* Press feedback on whatever the cursor taps */
+.prism .fl-press { transition: transform 120ms ease, filter 120ms ease !important; transform: scale(.96); filter: brightness(.96); }
+.prism[data-motion="reduce"] .fl-press { transform: none; filter: brightness(.9); }
+
+/* ---- Core screen additions: Trips home bar, Trip shortcuts ---- */
+.prism .fl-homebar { display: flex; align-items: center; gap: 10px; margin: 0 0 6px; }
+.prism .fl-homebar-sp { flex: 1; }
+.prism .fl-avatar { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; padding: 0; }
+.prism .fl-roundbtn { position: relative; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; color: var(--color-text-primary); }
+.prism .fl-roundbtn.is-accent { background: var(--color-accent-primary); color: #fff; box-shadow: 0 6px 16px rgba(110,91,255,.3); }
+.prism .fl-badge { position: absolute; top: 10px; right: 11px; width: 8px; height: 8px; border-radius: 50%; background: var(--color-accent-primary); box-shadow: 0 0 0 2px var(--color-bg-canvas); }
+.prism .fl-avatar:focus-visible, .prism .fl-roundbtn:focus-visible, .prism .fl-shortcut:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 2px; }
+.prism .fl-shortcuts { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; padding-bottom: 8px; }
+.prism .fl-shortcut { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; padding: 4px 0; color: var(--color-text-secondary); font: 500 12px/15px var(--font-ui); text-align: center; }
+.prism .fl-shortcut-ico { width: 52px; height: 52px; border-radius: 18px; display: grid; place-items: center; color: var(--color-accent-text); transition: transform 160ms cubic-bezier(.3,.7,.3,1); }
+.prism .fl-shortcut:active .fl-shortcut-ico { transform: scale(.92); }
+.prism[data-motion="reduce"] .fl-shortcut:active .fl-shortcut-ico { transform: none; opacity: .7; }
+
+/* Phone-size web shell: keep top-right controls clear of the reviewer button */
+.pt-mobile .b-top-right, .pt-mobile .b-head-tools { margin-right: 52px; }
+.pt-mobile .b-float-top .b-top-right { margin-right: 52px; }
+.pt-mobile .b-appbanner { padding-right: 60px; }

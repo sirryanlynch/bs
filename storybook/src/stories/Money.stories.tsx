@@ -2,6 +2,9 @@ import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
 import { ExpenseRow, ReceiptSplit, DebtSimplify, PaymentRow, SettleContent } from '../components/money';
 import { DebtUntangle } from '../components/untangle';
+import '../components/untangle-solver';
+import { MoneyBalance, IouLog, NetLog, PairRows } from '../components/settle';
+import { rawDebts, simplifiedDebts } from '../components/money';
 import { BottomSheet } from '../components/overlays';
 import { ListGroup } from '../components/core';
 import { people as P, crewWithRen } from '../lib/data';
@@ -14,14 +17,14 @@ export default meta;
 
 export const Expense: StoryObj<typeof ExpenseRow> = {
   name: 'ExpenseRow',
-  args: { title: 'Douro tinto, 2 bottles', amount: 38, share: 7.6, date: 'Fri', category: 'wine', state: 'default', splitCount: 5 },
+  args: { title: 'Vinho Verde (bottle) × 2', amount: 38, share: 7.6, date: 'Fri', category: 'wine', state: 'default', splitCount: 5 },
   argTypes: { state: { control: 'inline-radio', options: ['default', 'youExcluded', 'pending', 'settled'] }, category: { control: 'select', options: ['fork', 'wine', 'bed', 'tram', 'plane', 'receipt'] } },
   render: (a) => (<>
     <ListGroup><ExpenseRow {...a} payer={P.ari} excluded={[P.ren, P.nic]} /></ListGroup>
     <Label>States</Label>
     <ListGroup>
       <ExpenseRow title="Dinner, Taberna da Rua das Flores" payer={P.ari} amount={248.7} share={37.7} date="Fri" category="fork" />
-      <ExpenseRow title="Douro tinto, 2 bottles" payer={P.mara} amount={38} share={7.6} date="Sat" category="wine" excluded={[P.ren, P.nic]} splitCount={5} />
+      <ExpenseRow title="Vinho Verde (bottle) × 2" payer={P.mara} amount={38} share={7.6} date="Sat" category="wine" excluded={[P.ren, P.nic]} splitCount={5} />
       <ExpenseRow title="Ginjinha round" payer={P.joao} amount={14} date="Fri" category="wine" state="youExcluded" excluded={[P.ari]} />
       <ExpenseRow title="Alfama flat, 3 nights" payer={P.sofia} amount={612} share={102} date="Oct 2" category="bed" />
       <ExpenseRow title="Uber from LIS" payer={P.nic} amount={22.4} date="Just now" category="tram" state="pending" />
@@ -44,16 +47,41 @@ export const Simplify: StoryObj<typeof DebtSimplify> = {
 };
 
 export const Untangle: StoryObj<typeof DebtUntangle> = {
-  name: 'DebtUntangle',
-  args: { solved: false, compact: false, startButton: true },
-  render: (a) => <div style={{ maxWidth: 402 }}><DebtUntangle {...a} /></div>,
-  parameters: { docs: { description: { story: 'The settle-up solve, shown as a graph. Six IOUs between seven people start as crossing threads. Step 1 nets each balance, step 2 matches debtors to creditors and the people who net to zero drop out, step 3 redraws the money as three payments: €190.60 of IOUs becomes €124.50 of payments, and every net balance is unchanged. Untangle plays it in 3.6 s, Replay runs it again, and the scrubber moves through it by hand. With Reduce Motion, Untangle jumps to the result and the scrubber steps through the three stages.' } } },
+  name: 'DebtUntangle (v4 Instrument)',
+  args: { solved: false, controls: 'full', startButton: true, skin: 'instrument' },
+  argTypes: { controls: { control: 'inline-radio', options: ['full', 'inline', 'none'] }, skin: { control: 'inline-radio', options: ['solver', 'instrument'], description: 'Visual layer. The model, timeline and controls stay the same; register another skin with registerUntangleSkin().' } },
+  render: (a) => <div style={{ maxWidth: 362 }}><DebtUntangle {...a} /></div>,
+  parameters: { docs: { description: { story: 'Figma set 121:4174, card 362 × 268. Three steps: 01 Tangled (6 graphite IOUs, 4 computed crossings marked as knots, $190.60 of flow), 02 Netting (each person becomes one balance ring; Σ net 0.00 ✓), 03 Solved (3 Iris arcs, $124.50, 50% fewer payments). The nets-unchanged check is computed, never hard-coded. Untangle plays 600 ms steps with a 900 ms hold; Replay restarts; the scrubber or the stepper labels move by hand. Reduce Motion: 200 ms cross-fades, scrubber snaps per step.' } } },
+};
+
+export const UntangleSolver: StoryObj<typeof DebtUntangle> = {
+  name: 'DebtUntangle (v5.1 Solver, restraint pass)',
+  args: { solved: false, controls: 'full', startButton: true, skin: 'solver' },
+  argTypes: { controls: { control: 'inline-radio', options: ['full', 'inline', 'none'] }, skin: { control: 'inline-radio', options: ['solver', 'instrument'] } },
+  render: (a) => <div style={{ maxWidth: 362 }}><DebtUntangle {...a} /></div>,
+  parameters: { docs: { description: { story: 'The Money screen skin. Same model, timeline and controls as v4; only the visual layer changes. Photo medallions in glass, one graphite thread color with two weights (1.25 under $40, 2 from $40), no amounts on threads in Tangled (the IOU log carries them), the 4 crossings as soft dots. Netting: ghost dashes, spokes into a small still solver core, Σ 0.00. Solved: 3 Iris arcs with amounts and one glint, played once per solve and never while scrubbing. No source chips, tokens, gauge rings or grid. Reduce Motion: 200 ms cross-fades, no drawing, a still core and a static star.' } } },
+};
+
+export const UntangleInline: StoryObj<typeof DebtUntangle> = {
+  name: 'DebtUntangle, inline controls (Money screen)',
+  args: { solved: false, controls: 'inline', startButton: false, skin: 'solver' },
+  render: (a) => <div style={{ maxWidth: 362 }}><DebtUntangle {...a} /></div>,
 };
 
 export const UntangleSolved: StoryObj<typeof DebtUntangle> = {
   name: 'DebtUntangle, solved',
-  args: { solved: true, compact: true },
-  render: (a) => <div style={{ maxWidth: 402 }}><DebtUntangle {...a} /></div>,
+  args: { solved: true, controls: 'inline', skin: 'solver' },
+  render: (a) => <div style={{ maxWidth: 362 }}><DebtUntangle {...a} /></div>,
+};
+
+export const MoneyLogs: StoryObj = {
+  name: 'Money v4 logs and rows',
+  render: () => (<div style={{ maxWidth: 362, display: 'grid', gap: 12 }}>
+    <MoneyBalance net={-23.7} caption="2 IOUs: you owe Tomás $42.10. Ren owes you $18.40." />
+    <IouLog raw={rawDebts} people={P} />
+    <NetLog nets={{ nic: 42.1, joao: 64, sofia: 0, tomas: 0, ren: -18.4, ari: -23.7, mara: -64 }} people={P} />
+    <PairRows plan={simplifiedDebts} people={P} />
+  </div>),
 };
 
 export const Payments: StoryObj<typeof PaymentRow> = {

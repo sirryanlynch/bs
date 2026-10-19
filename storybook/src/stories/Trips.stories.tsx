@@ -11,13 +11,13 @@ export default meta;
 
 export const Trip: StoryObj<typeof TripCard> = {
   name: 'TripCard',
-  args: { name: 'Lisbon', dates: '12 to 17 Oct', status: 'upcoming', balance: -23.7, nextUp: 'Dinner poll closes 19:30', size: 'hero', photo: photo.alfama },
+  args: { name: 'Lisbon', dates: 'Oct 12 to 17', status: 'upcoming', balance: -23.7, nextUp: 'Poll closes 7:30 PM', size: 'hero', photo: photo.alfama },
   argTypes: { status: { control: 'inline-radio', options: ['upcoming', 'live', 'planning', 'past'] }, size: { control: 'inline-radio', options: ['hero', 'compact'] }, photo: { control: 'select', options: Object.values(photo) } },
   render: (a) => (<>
     <TripCard {...a} people={crewWithRen} />
     <Label>Compact</Label>
-    <TripCard size="compact" name="Porto" dates="5 to 8 Dec · planning" photo={photo.tiles} people={crew.slice(0, 4)} />
-    <TripCard size="compact" name="Sintra day" dates="Sun 25 Oct" photo={photo.facade} people={crew} balance={-12.5} />
+    <TripCard size="compact" name="Porto" dates="Dec 5 to 8 · planning" photo={photo.tiles} people={crew.slice(0, 4)} />
+    <TripCard size="compact" name="Sintra day" dates="Sun Oct 25" photo={photo.facade} people={crew} balance={-12.5} />
     <TripCard size="compact" name="Madrid" dates="March · wrapped" photo={photo.chiado} people={crew.slice(1)} balance={0} />
   </>),
 };
@@ -38,19 +38,19 @@ export const Place: StoryObj<typeof PlaceCard> = {
 
 export const Itinerary: StoryObj<typeof ItineraryItem> = {
   name: 'ItineraryItem',
-  args: { time: '20:30', title: 'Dinner at Taberna da Rua das Flores', place: 'Chiado · booked for 7', icon: 'fork', kind: 'decided', decidedBy: '71%', photo: places.taberna.photo },
+  args: { time: '8:30 PM', title: 'Dinner at Taberna da Rua das Flores', place: 'Chiado · booked for 7', icon: 'fork', kind: 'decided', decidedBy: '71%', photo: places.taberna.photo },
   argTypes: { kind: { control: 'inline-radio', options: ['plan', 'decided', 'tentative', 'now'] } },
   render: (a) => (<>
     <ol style={{ listStyle: 'none', margin: 0, padding: 0 }}><ItineraryItem {...a} last /></ol>
     <Label>Kinds</Label>
     <ol style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-      <ItineraryItem time="09:30" title="Tram 28 from Martim Moniz" place="Board at the first stop" icon="tram" kind="now" />
-      <ItineraryItem time="13:00" title="Lunch at Cervejaria Ramiro" place="Intendente" icon="fork" kind="plan" />
-      <ItineraryItem time="23:00" title="Drinks on Pink Street" place="Cais do Sodré" icon="wine" kind="tentative" last />
+      <ItineraryItem time="9:30 AM" title="Tram 28 from Martim Moniz" place="Board at the first stop" icon="tram" kind="now" />
+      <ItineraryItem time="1:00 PM" title="Lunch at Cervejaria Ramiro" place="Intendente" icon="fork" kind="plan" />
+      <ItineraryItem time="11:00 PM" title="Drinks on Pink Street" place="Cais do Sodré" icon="wine" kind="tentative" last />
     </ol>
   </>),
 };
-export const Timelines: StoryObj = { name: 'Timeline', render: () => <><Timeline day="Friday" date="16 Oct" items={friday} /><Timeline day="Saturday" date="17 Oct" items={saturday} /></> };
+export const Timelines: StoryObj = { name: 'Timeline', render: () => <><Timeline day="Friday" date="Oct 16" items={friday} /><Timeline day="Saturday" date="Oct 17" items={saturday} /></> };
 
 export const Members: StoryObj<typeof MemberPicker> = {
   name: 'MemberPicker',
