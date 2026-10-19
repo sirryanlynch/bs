@@ -114,7 +114,7 @@ export function PollCard({ question, options, voters, total: totalProp, yourVote
 }
 
 /** Poll composer. Options can be places from the plan or free text. */
-export function PollBuilder({ question = 'Dinner tonight?', options = ['Taberna da Rua das Flores', 'Cervejaria Ramiro', 'Park Rooftop'], anonymous = false, multi = false, closesIn = '6 hours' }:
+export function PollBuilder({ question = 'Saturday dinner', options = ['Taberna da Rua das Flores', 'Cervejaria Ramiro', 'Park Rooftop'], anonymous = false, multi = false, closesIn = '6 hours' }:
   { question?: string; options?: string[]; anonymous?: boolean; multi?: boolean; closesIn?: string }) {
   const [opts, setOpts] = useState(options);
   const [q, setQ] = useState(question);

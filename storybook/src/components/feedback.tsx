@@ -60,7 +60,7 @@ export function LiveActivity({ kind = 'poll', compact }: { kind?: 'poll' | 'trip
   return (
     <div className="p-live" role="status">
       {kind === 'poll' && <>
-        <div className="p-live-head"><AppMark size={24} /><b>Dinner tonight?</b><span className="p-live-time tu-num">to 7:30 PM</span></div>
+        <div className="p-live-head"><AppMark size={24} /><b>Saturday dinner</b><span className="p-live-time tu-num">to 7:30 PM</span></div>
         <div className="p-live-bars">
           {[['Taberna da Rua das Flores', 3], ['Cervejaria Ramiro', 2], ['Park Rooftop', 0]].map(([l, v], i) => (
             <div key={l as string} className={`p-live-bar ${i === 0 ? 'is-lead' : ''}`}><span className="p-live-fill" style={{ width: `${((v as number) / 5) * 100}%` }} /><span>{l}</span><b className="tu-num">{v}</b></div>

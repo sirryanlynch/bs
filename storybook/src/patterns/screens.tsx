@@ -21,7 +21,7 @@ export function HomeScreen() {
         <section className="scr-section">
           <div className="scr-section-head"><h2>Needs you</h2><span className="scr-link">See all</span></div>
           <ListGroup>
-            <ListRow leading={<span className="p-rowicon p-rowicon-accent"><Icon name="poll" size={20} /></span>} title="Dinner tonight?" subtitle="Mara asked · 5 of 7 voted" chevron />
+            <ListRow leading={<span className="p-rowicon p-rowicon-accent"><Icon name="poll" size={20} /></span>} title="Saturday dinner" subtitle="Mara asked · 5 of 7 voted" chevron />
             <ListRow leading={<span className="p-rowicon p-rowicon-owe"><Icon name="wallet" size={20} /></span>} title="You owe Nic $42.10" subtitle="Ren owes you $18.40 · net −$23.70" trailing={<button className="p-pay-nudge" style={{ height: 30, padding: '0 12px', borderRadius: 15, font: 'var(--type-ui-footnote)', fontWeight: 600 }}>Pay</button>} />
           </ListGroup>
         </section>

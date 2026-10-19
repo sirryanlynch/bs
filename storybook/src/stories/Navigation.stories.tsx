@@ -16,7 +16,7 @@ export const Nav: StoryObj<typeof NavBar> = {
     <Label>Large, UI title</Label>
     <NavBar title="Trips" actions={[{ icon: 'bell', label: 'Activity', badge: 2 }]} />
     <Label>Inline</Label>
-    <NavBar title="Dinner tonight?" subtitle="5 of 7 voted" large={false} back="Polls" actions={[{ icon: 'share', label: 'Share' }]} />
+    <NavBar title="Saturday dinner" subtitle="5 of 7 voted" large={false} back="Polls" actions={[{ icon: 'share', label: 'Share' }]} />
   </>),
 };
 

@@ -23,7 +23,7 @@ export const SETTLE_VIEWS: { id: SettleView; label: string; time: string; hifi: 
 ];
 export const isSettleView = (v: string | undefined): v is SettleView => SETTLE_VIEWS.some(x => x.id === v);
 export const PLACE_NAMES: Record<string, [string, string, string]> = {
-  taberna: ['Taberna da Rua das Flores', 'Taberna', '$$ · 6 min walk'], ramiro: ['Cervejaria Ramiro', 'Ramiro', '$$ · 14 min walk'],
+  taberna: ['Taberna da Rua das Flores', 'Taberna', '$$ · 6 min walk'], ramiro: ['Cervejaria Ramiro', 'Ramiro', '$$$ · 14 min walk'],
   park: ['Park Rooftop', 'Park Rooftop', '$$ · 9 min walk'], eurico: ['O Velho Eurico', 'Eurico', '$$ · 12 min walk'],
   cevi: ['A Cevicheria', 'Cevicheria', '$$ · 11 min walk'], esquina: ['Tasca da Esquina', 'Esquina', '$$ · 13 min walk'],
 };

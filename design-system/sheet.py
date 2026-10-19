@@ -10,7 +10,7 @@ types=''
 for n,v in T['type'].items():
     fam='var(--font-display)' if v['family'].startswith('display') else 'var(--font-ui)'
     st='italic' if v.get('fontStyle')=='italic' else 'normal'
-    sample={'display/xl':'Lisbon, tonight','display/l':'€184.60','display/m':'Taberna wins','display/celebrate':'All squared up.','ui/large-title':'Lisbon Crew','ui/title-1':'Tonight','ui/title-2':'Dinner poll','ui/title-3':'Balances','ui/headline':'Taberna da Rua das Flores','ui/body':'Ari added Ren to the trip','ui/callout':'Votes close at 19:30','ui/subhead':'Tasca · €€ · 6 min walk','ui/footnote':'Updated just now','ui/caption-1':'4 VOTES · 57%','ui/caption-2':'LEADING','ui/amount':'+€18.40'}[n]
+    sample={'display/xl':'Lisbon, tonight','display/l':'$184.60','display/m':'Taberna wins','display/celebrate':'All squared up.','ui/large-title':'Lisbon Crew','ui/title-1':'Tonight','ui/title-2':'Dinner poll','ui/title-3':'Balances','ui/headline':'Taberna da Rua das Flores','ui/body':'Ari added Ren to the trip','ui/callout':'Votes close at 7:30 PM','ui/subhead':'Tasca · $$ · 6 min walk','ui/footnote':'Updated just now','ui/caption-1':'4 VOTES · 57%','ui/caption-2':'LEADING','ui/amount':'+$18.40'}[n]
     size=min(v['size'],46)
     cls=' class="tu-celebrate-text"' if n=='display/celebrate' else ''
     tf='font-variant-numeric:tabular-nums;' if 'fontFeatures' in v else ''
@@ -49,14 +49,14 @@ PH='../moodboards/photos/px_{}.jpg'.format
 def pollcard(dark=False):
     return f'''<div class="poll tu-glass">
   <div class="ph"><div><div class="t-headline">Dinner tonight?</div><div class="t-footnote sec">Ari’s poll · 5 of 7 voted</div></div><span class="timer tu-num">{ico('bell',13)} 12:40</span></div>
-  <div class="opt lead"><span class="badge">Leading</span><img src="{PH(34110274)}"><div class="oc"><div class="t-headline">Taberna da Rua das Flores</div><div class="t-subhead sec">Tasca · €€ · 6 min walk</div><div class="bar"><i style="width:57%"></i></div></div><div class="pct"><b class="tu-num">57%</b><div class="stack">{av('A',20)}{av('M',20)}{av('J',20)}{av('S',20)}</div></div></div>
-  <div class="opt mine"><img src="{PH(6314564)}"><div class="oc"><div class="t-headline">Cervejaria Ramiro <span class="myvote">{ico('check',12)} Your vote</span></div><div class="t-subhead sec">Seafood · €€€ · 14 min</div><div class="bar"><i style="width:29%"></i></div></div><div class="pct"><b class="tu-num">29%</b><div class="stack">{av('R',20)}{av('N',20)}</div></div></div>
-  <div class="opt"><img src="{PH(20594880)}"><div class="oc"><div class="t-headline">Park Rooftop</div><div class="t-subhead sec">Drinks &amp; bites · €€ · 9 min</div><div class="bar"><i style="width:14%"></i></div></div><div class="pct"><b class="tu-num">14%</b><div class="stack">{av('J',20)}</div></div></div>
+  <div class="opt lead"><span class="badge">Leading</span><img src="{PH(34110274)}"><div class="oc"><div class="t-headline">Taberna da Rua das Flores</div><div class="t-subhead sec">Tasca · $$ · 6 min walk</div><div class="bar"><i style="width:57%"></i></div></div><div class="pct"><b class="tu-num">57%</b><div class="stack">{av('A',20)}{av('M',20)}{av('J',20)}{av('S',20)}</div></div></div>
+  <div class="opt mine"><img src="{PH(6314564)}"><div class="oc"><div class="t-headline">Cervejaria Ramiro <span class="myvote">{ico('check',12)} Your vote</span></div><div class="t-subhead sec">Seafood · $$$ · 14 min</div><div class="bar"><i style="width:29%"></i></div></div><div class="pct"><b class="tu-num">29%</b><div class="stack">{av('R',20)}{av('N',20)}</div></div></div>
+  <div class="opt"><img src="{PH(20594880)}"><div class="oc"><div class="t-headline">Park Rooftop</div><div class="t-subhead sec">Drinks &amp; bites · $$ · 9 min</div><div class="bar"><i style="width:14%"></i></div></div><div class="pct"><b class="tu-num">14%</b><div class="stack">{av('J',20)}</div></div></div>
 </div>'''
 def chips():
-    return f'''<div class="chip tu-surface">{av('R',36)}<div><b>Ren</b><small>owes you</small></div><span class="amt owed tu-num">+€18.40</span></div>
-<div class="chip tu-surface">{av('N',36)}<div><b>Nic</b><small>you owe</small></div><span class="amt owe tu-num">−€42.10</span></div>
-<div class="chip tu-surface settled">{av('M',36)}<div><b>Mara</b><small>settled</small></div><span class="amt tu-num" style="color:var(--color-status-settled)">{ico('check',16)} €0.00</span></div>'''
+    return f'''<div class="chip tu-surface">{av('R',36)}<div><b>Ren</b><small>owes you</small></div><span class="amt owed tu-num">+$18.40</span></div>
+<div class="chip tu-surface">{av('N',36)}<div><b>Nic</b><small>you owe</small></div><span class="amt owe tu-num">−$42.10</span></div>
+<div class="chip tu-surface settled">{av('M',36)}<div><b>Mara</b><small>settled</small></div><span class="amt tu-num" style="color:var(--color-status-settled)">{ico('check',16)} $0.00</span></div>'''
 def tabbar():
     return f'''<div class="tabwrap"><div class="tabbar tu-glass">
   <span class="tab on">{ico('trips',22)}<em>Trips</em></span><span class="tab">{ico('plan',22)}<em>Plan</em></span><span class="tab">{ico('poll',22)}<em>Polls</em></span><span class="tab">{ico('money',22)}<em>Money</em></span></div>
@@ -65,10 +65,10 @@ def settle():
     return f'''<div class="sheet tu-glass-thick"><i class="grab"></i>
   <div class="sh-h"><div><div class="t-title-2">Settle up</div><div class="t-subhead sec">Lisbon Crew · whole trip</div></div><span class="pill-acc">{ico('check',13)} Simplified</span></div>
   <div class="simp"><span class="tu-num"><s>6</s> → <b>3</b> payments</span><small>Same totals, fewer transfers</small></div>
-  <div class="pay">{av('A',30)}<span class="ar">{ico('arrow',14)}</span>{av('N',30)}<div><b>You → Nic</b><small>Dinner, tram, wine</small></div><b class="tu-num owe">€42.10</b></div>
-  <div class="pay">{av('R',30)}<span class="ar">{ico('arrow',14)}</span>{av('A',30)}<div><b>Ren → You</b><small>Dinner (no wine)</small></div><b class="tu-num owed">€18.40</b></div>
-  <div class="pay">{av('M',30)}<span class="ar">{ico('arrow',14)}</span>{av('J',30)}<div><b>Mara → João</b><small>Airbnb</small></div><b class="tu-num">€64.00</b></div>
-  <span class="btn primary full">{ico('apple',18)} Pay Nic €42.10</span>
+  <div class="pay">{av('A',30)}<span class="ar">{ico('arrow',14)}</span>{av('N',30)}<div><b>You → Nic</b><small>Dinner, tram, wine</small></div><b class="tu-num owe">$42.10</b></div>
+  <div class="pay">{av('R',30)}<span class="ar">{ico('arrow',14)}</span>{av('A',30)}<div><b>Ren → You</b><small>Dinner (no wine)</small></div><b class="tu-num owed">$18.40</b></div>
+  <div class="pay">{av('M',30)}<span class="ar">{ico('arrow',14)}</span>{av('J',30)}<div><b>Mara → João</b><small>Airbnb</small></div><b class="tu-num">$64.00</b></div>
+  <span class="btn primary full">{ico('apple',18)} Pay Nic $42.10</span>
   <span class="btn ghost full">Mark paid another way</span></div>'''
 
 html=f'''<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="tokens.css"><style>
@@ -169,16 +169,16 @@ table{{border-collapse:collapse;width:100%;font-size:12px}} td,th{{text-align:le
 .note{{font:500 12px/1.45 var(--font-ui);color:var(--color-text-secondary);margin-top:10px}} .note b{{color:var(--color-text-primary)}}
 </style></head><body>
 <header><div><div class="eyebrow">TripUp · Design system · <b>Prism v1.0</b> · iPhone 17 (402×874 pt) · iOS 26</div><h1>Prism <em>system</em></h1></div>
-<p class="lede">Pearl-white Liquid Glass that refracts into colour only on the big moments. The tokens live in <code>tokens.json</code> and <code>tokens.css</code>. SF Pro (Inter shown as a stand-in here) runs the UI; Instrument Serif carries trip names, amounts and celebrations. Light mode is “Pearl”, dark mode is “Graphite Pearl”.</p></header>
+<p class="lede">Pearl-white Liquid Glass that refracts into color only on the big moments. The tokens live in <code>tokens.json</code> and <code>tokens.css</code>. SF Pro (Inter shown as a stand-in here) runs the UI; Instrument Serif carries trip names, amounts and celebrations. Light mode is “Pearl”, dark mode is “Graphite Pearl”.</p></header>
 
-<div class="sectitle">Foundations <small>colour roles · type · space · radius · glass · shadow · motion</small></div>
+<div class="sectitle">Foundations <small>color roles · type · space · radius · glass · shadow · motion</small></div>
 <div class="grid" style="grid-template-columns:1.25fr 1fr">
- <div class="card"><h2>Semantic colour <span>each swatch: light | dark</span></h2>
+ <div class="card"><h2>Semantic color <span>each swatch: light | dark</span></h2>
   <div class="grid" style="grid-template-columns:repeat(4,1fr);gap:14px">{colors}</div>
   <h2 style="margin-top:14px">Celebration spectrum <span>reserved: poll won · all squared up · trip milestones</span></h2>
   <div class="spectrum"></div>
   <div class="grid" style="grid-template-columns:repeat(5,1fr);gap:6px;margin-top:8px">{''.join(f'<code style="color:var(--color-text-secondary)"><i style="display:inline-block;width:9px;height:9px;border-radius:9px;background:{T["color"]["primitive"]["spectrum"][k]["$value"]};margin-right:5px"></i>{k} {T["color"]["primitive"]["spectrum"][k]["$value"]}</code>' for k in ['blush','apricot','mint','sky','lilac'])}</div>
-  <p class="note"><b>Allowed forms:</b> a light sheen over glass, the 1.5 pt celebrate-button border, spectrum text on <code>display/celebrate</code> (use the <code>text-*</code> deep stops on light surfaces), and 3D confetti. <b>Never</b> as a UI fill, as a status colour, more than once per view, or while a task is in progress. <b>Contrast:</b> all text roles pass AA in both modes (on-accent 4.56; owed jade-600 4.9; owe rose-600 5.7; tertiary 5.3).</p>
+  <p class="note"><b>Allowed forms:</b> a light sheen over glass, the 1.5 pt celebrate-button border, spectrum text on <code>display/celebrate</code> (use the <code>text-*</code> deep stops on light surfaces), and 3D confetti. <b>Never</b> as a UI fill, as a status color, more than once per view, or while a task is in progress. <b>Contrast:</b> all text roles pass AA in both modes (on-accent 4.56; owed jade-600 4.9; owe rose-600 5.7; tertiary 5.3).</p>
  </div>
  <div class="card"><h2>Type scale <span>SF Pro UI · Instrument Serif display · tabular numerals</span></h2>{types}</div>
 </div>
@@ -225,20 +225,20 @@ table{{border-collapse:collapse;width:100%;font-size:12px}} td,th{{text-align:le
   <div><div class="lbl">Balance chips</div><div class="grid" style="gap:8px">{chips()}</div></div>
  </div>
  <div class="grid" style="gap:22px">
-  <div><div class="lbl">Notification · actionable</div><div class="notif tu-glass"><span class="appicon">T</span><div><b class="t-headline" style="font-size:15px">Ari started a poll</b><div class="t-subhead sec" style="font-size:14px">Dinner tonight? 3 spots · closes 19:30</div><div class="quick"><span class="on">Taberna</span><span>Ramiro</span><span>Rooftop</span></div></div><span class="t-footnote ter">now</span></div></div>
+  <div><div class="lbl">Notification · actionable</div><div class="notif tu-glass"><span class="appicon">T</span><div><b class="t-headline" style="font-size:15px">Ari started a poll</b><div class="t-subhead sec" style="font-size:14px">Dinner tonight? 3 spots · closes 7:30 PM</div><div class="quick"><span class="on">Taberna</span><span>Ramiro</span><span>Rooftop</span></div></div><span class="t-footnote ter">now</span></div></div>
   <div><div class="lbl">Live Activity · Dynamic Island</div><div class="island"><span style="display:flex;gap:8px;align-items:center"><span class="mini"></span>Taberna leads</span><span class="lv tu-num">57% · 12:40</span></div></div>
   <div><div class="lbl">Explore progress ring · 1/5 · 3/5 · ready</div><div style="display:flex;gap:8px">{ring('s1')}{ring('s3')}{ring('ready')}</div><div class="t-footnote ter">Each filter lights a segment and the count narrows live. When ready, the ring refracts into the spectrum once (a moment).</div></div>
  </div>
 </div>
 <div class="grid" style="grid-template-columns:1fr 1fr 1fr;gap:26px;margin-top:30px;align-items:start">
  <div><div class="lbl">Expense row · with exclusion</div><div class="card" style="padding:6px 18px">
-   <div class="erow"><span class="eic">{ico('fork',20)}</span><div><b class="t-headline">Dinner at Taberna</b><div class="t-subhead sec">Paid by Ari · split 6 ways</div></div><b class="tu-num" style="font:600 17px/1 var(--font-ui)">€146.60</b></div>
-   <div class="erow" style="border:0"><span class="eic" style="color:var(--color-accent-primary);background:var(--color-accent-subtle)">{ico('wine',20)}</span><div><b class="t-headline">Vinho Verde × 2</b><div class="t-subhead sec">Split 4 · €9.50 each</div><span class="excl-tag"><span class="stack">{av('R',20,'excl')}{av('N',20,'excl')}</span>Ren &amp; Nic not on wine</span></div><b class="tu-num" style="font:600 17px/1 var(--font-ui)">€38.00</b></div></div></div>
+   <div class="erow"><span class="eic">{ico('fork',20)}</span><div><b class="t-headline">Dinner at Taberna</b><div class="t-subhead sec">Paid by Ari · split 6 ways</div></div><b class="tu-num" style="font:600 17px/1 var(--font-ui)">$146.60</b></div>
+   <div class="erow" style="border:0"><span class="eic" style="color:var(--color-accent-primary);background:var(--color-accent-subtle)">{ico('wine',20)}</span><div><b class="t-headline">Vinho Verde × 2</b><div class="t-subhead sec">Split 4 · $9.50 each</div><span class="excl-tag"><span class="stack">{av('R',20,'excl')}{av('N',20,'excl')}</span>Ren &amp; Nic not on wine</span></div><b class="tu-num" style="font:600 17px/1 var(--font-ui)">$38.00</b></div></div></div>
  <div><div class="lbl">Settle sheet · simplified debts</div>{settle()}</div>
  <div class="grid" style="gap:16px"><div class="lbl">Toasts · confirmation</div>
   <span class="toast tu-glass"><span class="ok">{ico('check',16)}</span><span>Ren’s in<small>Added to Lisbon Crew · he’ll see tonight’s poll</small></span></span>
-  <span class="toast tu-glass"><span class="ok">{ico('plan',16)}</span><span>Taberna is on tonight<small>Added to itinerary · 20:30</small></span></span>
-  <div class="confirm tu-glass-thick"><img src="../moodboards/icons/prism_celebrate.png" style="width:150px;height:150px;margin:-18px auto -14px;display:block;transform:scale(1.5)"><div class="tu-celebrate-text" style="font:italic 400 40px/44px var(--font-display)">All squared up.</div><div class="t-subhead sec" style="margin:6px 0 14px">3 payments · €124.50 settled · everyone’s notified</div><span class="btn glass m">Share the recap</span></div>
+  <span class="toast tu-glass"><span class="ok">{ico('plan',16)}</span><span>Taberna is on tonight<small>Added to itinerary · 8:30 PM</small></span></span>
+  <div class="confirm tu-glass-thick"><img src="../moodboards/icons/prism_celebrate.png" style="width:150px;height:150px;margin:-18px auto -14px;display:block;transform:scale(1.5)"><div class="tu-celebrate-text" style="font:italic 400 40px/44px var(--font-display)">All squared up.</div><div class="t-subhead sec" style="margin:6px 0 14px">3 payments · $124.50 settled · everyone’s notified</div><span class="btn glass m">Share the recap</span></div>
  </div>
 </div>
 </div>

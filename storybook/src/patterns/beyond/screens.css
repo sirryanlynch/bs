@@ -47,7 +47,7 @@
 /* Sheets */
 .prism .b-sheet-layer { position: absolute; inset: 0; z-index: 30; }
 .prism .b-scrim { position: absolute; inset: 0; background: var(--color-bg-scrim); animation: b-fade 220ms both; }
-.prism .b-sheet { position: absolute; left: 8px; right: 8px; bottom: 8px; display: flex; flex-direction: column; border-radius: var(--radius-sheet); padding: 8px 20px 0; overflow: hidden;
+.prism .b-sheet { position: absolute; left: 12px; right: 12px; bottom: 12px; display: flex; flex-direction: column; border-radius: var(--radius-sheet); padding: 8px 20px 0; overflow: hidden;
   background: var(--color-glass-fill-thick); -webkit-backdrop-filter: var(--glass-backdrop-thick); backdrop-filter: var(--glass-backdrop-thick); border: 1px solid var(--color-glass-stroke); box-shadow: var(--shadow-float); animation: b-sheet 460ms cubic-bezier(.2,.9,.25,1.02) both; }
 .prism:not(.theme-dark) .b-sheet { background: rgba(251,250,253,.94); }
 .prism[data-transparency="reduce"] .b-sheet { background: var(--color-bg-surface-raised); }
@@ -67,9 +67,8 @@
 .prism .b-toast .p-icon { color: #5FD9A0; flex: none; }
 @keyframes b-island { from { transform: translateX(-50%) scaleX(.45); opacity: .4; } to { transform: translateX(-50%); opacity: 1; } }
 .prism[data-motion="reduce"] .b-toast { animation: b-fade 160ms both; }
-.prism .b-screen-anim { position: absolute; inset: 0; animation: b-push 420ms cubic-bezier(.2,.9,.25,1.02) both; }
+.prism .b-screen-anim { position: absolute; inset: 0; }
 @keyframes b-push { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
-.prism[data-motion="reduce"] .b-screen-anim { animation: b-fade 160ms both; }
 .prism .b-review-card { border-radius: var(--radius-xl); background: var(--color-bg-surface); border: 1px solid var(--color-border-subtle); overflow: hidden; }
 .prism .b-review-cover { position: relative; height: 150px; color: #fff; }
 .prism .b-review-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -145,7 +144,7 @@
 .prism .b-handoff-guest { color: var(--color-text-tertiary); text-decoration: line-through; animation: b-fade 600ms both; }
 .prism .b-handoff-member { color: var(--color-accent-text); animation: b-rise 500ms 500ms both; }
 .prism .b-hero.is-tall { height: 380px; }
-.prism .b-hl { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 calc(-1 * var(--layout-margin)); padding: 0 var(--layout-margin); scroll-snap-type: x mandatory; }
+.prism .b-hl { display: flex; gap: 8px; overflow-x: auto; scroll-padding-inline: var(--layout-margin); scrollbar-width: none; margin: 0 calc(-1 * var(--layout-margin)); padding: 0 var(--layout-margin); scroll-snap-type: x mandatory; }
 .prism .b-hl figure { margin: 0; flex: 0 0 150px; scroll-snap-align: start; display: flex; flex-direction: column; gap: 6px; }
 .prism .b-hl img { width: 150px; height: 190px; object-fit: cover; border-radius: var(--radius-lg); }
 .prism .b-hl figcaption { font: var(--type-ui-caption-1); color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -166,3 +165,17 @@
 .prism .b-pollopt.is-link { width: 100%; text-align: left; color: inherit; transition: background var(--duration-quick); } .prism .b-pollopt.is-link:active { background: var(--color-bg-pressed, var(--color-bg-sunken)); }
 /* Scroll columns never squeeze their children: content scrolls instead of collapsing */
 .prism .b-scroll > *, .prism .b-sheet-body > * { flex-shrink: 0; }
+
+/* v5 quality pass: no flat white cards on gray. Content cards and stat tiles are Prism glass with a soft float. */
+.prism .b-card, .prism .b-stat { background: color-mix(in srgb, var(--color-bg-surface) 74%, transparent); border: 0; -webkit-backdrop-filter: blur(16px) saturate(1.3); backdrop-filter: blur(16px) saturate(1.3);
+  box-shadow: inset 0 1px 0 var(--color-glass-highlight), 0 0 0 1px var(--color-glass-stroke), 0 12px 28px -20px rgba(60, 50, 110, .38); }
+.prism[data-transparency="reduce"] .b-card, .prism[data-transparency="reduce"] .b-stat { background: var(--color-bg-surface); -webkit-backdrop-filter: none; backdrop-filter: none; }
+/* v5 quality pass, extended screens: the same Prism glass the core screens use, over a quiet ambient light, instead of white boxes on gray. */
+.prism .b-scr:not(.b-cmp)::before { content: ''; position: absolute; inset: 0 0 auto; height: 420px; pointer-events: none;
+  background: radial-gradient(60% 70% at 15% 0%, color-mix(in srgb, var(--color-accent-primary) 14%, transparent), transparent 70%), radial-gradient(50% 60% at 95% 10%, rgba(255, 170, 140, .16), transparent 70%); }
+.prism .b-crewcard, .prism .b-cal, .prism .b-dest-row, .prism .b-assign-row, .prism .b-linkbox, .prism .b-profile-stats, .prism .b-set-body, .prism .b-tli-card, .prism .b-list, .prism .b-review, .prism .b-appbanner {
+  background: color-mix(in srgb, var(--color-bg-surface) 74%, transparent) !important; border-color: transparent !important; -webkit-backdrop-filter: blur(16px) saturate(1.3); backdrop-filter: blur(16px) saturate(1.3);
+  box-shadow: inset 0 1px 0 var(--color-glass-highlight), 0 0 0 1px var(--color-glass-stroke), 0 12px 28px -20px rgba(60, 50, 110, .38); }
+.prism .b-assign-row.is-open { box-shadow: inset 0 1px 0 var(--color-glass-highlight), 0 0 0 1.5px color-mix(in srgb, var(--color-accent-primary) 45%, transparent), 0 16px 32px -20px rgba(60, 50, 110, .45); }
+.prism[data-transparency="reduce"] .b-crewcard, .prism[data-transparency="reduce"] .b-cal, .prism[data-transparency="reduce"] .b-dest-row, .prism[data-transparency="reduce"] .b-assign-row, .prism[data-transparency="reduce"] .b-linkbox,
+.prism[data-transparency="reduce"] .b-profile-stats, .prism[data-transparency="reduce"] .b-set-body, .prism[data-transparency="reduce"] .b-tli-card, .prism[data-transparency="reduce"] .b-list, .prism[data-transparency="reduce"] .b-review { background: var(--color-bg-surface) !important; -webkit-backdrop-filter: none; backdrop-filter: none; }

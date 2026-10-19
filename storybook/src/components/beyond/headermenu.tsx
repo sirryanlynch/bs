@@ -1,0 +1,60 @@
+import React, { useEffect, useRef, useState } from 'react';
+import './beyond.css';
+import './headermenu.css';
+import { BIcon, BIconName } from './icons';
+
+/*
+ * HeaderMenu: the one-row header on every top-level screen.
+ *   An inset glass bar: avatar (or Back) on the left, the page title, and one round menu button on the right.
+ *   The menu button grows leftward into a glass capsule of five shortcuts while the title steps aside.
+ *   Tap again, tap outside, press Escape or scroll to close. Arrow keys move between shortcuts.
+ */
+export type HeaderMenuItem = { id: string; label: string; icon: BIconName; dot?: boolean };
+export const HEADER_MENU_ITEMS: HeaderMenuItem[] = [
+  { id: 'notifications', label: 'Notifications', icon: 'bellX', dot: true },
+  { id: 'album', label: 'Album', icon: 'images' },
+  { id: 'expense', label: 'Add expense', icon: 'receiptX' },
+  { id: 'invite', label: 'Invite', icon: 'crew' },
+  { id: 'settings', label: 'Settings', icon: 'gear' },
+];
+
+export function HeaderMenu({ title, sub, avatar, onAvatar, onBack, backLabel = 'Back', items = HEADER_MENU_ITEMS, dot = true, onPick, light, defaultOpen = false }: {
+  title?: string; sub?: string; avatar?: string; onAvatar?: () => void; onBack?: () => void; backLabel?: string;
+  items?: HeaderMenuItem[]; dot?: boolean; onPick?: (id: string) => void; light?: boolean; defaultOpen?: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  const ref = useRef<HTMLDivElement>(null); const btn = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const t = setTimeout(() => (ref.current?.querySelector('.b-hm-item') as HTMLElement | null)?.focus({ preventScroll: true }), 60);
+    const down = (e: Event) => { if (!ref.current?.contains(e.target as Node)) setOpen(false); };
+    const key = (e: KeyboardEvent) => { if (e.key === 'Escape') { setOpen(false); btn.current?.focus(); } };
+    const scroll = (e: Event) => { const root = ref.current?.parentElement; if (root && e.target instanceof Node && root.contains(e.target)) setOpen(false); };
+    document.addEventListener('pointerdown', down, true); document.addEventListener('keydown', key); document.addEventListener('scroll', scroll, true);
+    return () => { clearTimeout(t); document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key); document.removeEventListener('scroll', scroll, true); };
+  }, [open]);
+  const onKey = (e: React.KeyboardEvent) => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const els = Array.from(ref.current?.querySelectorAll<HTMLElement>('.b-hm-item') ?? []); const i = els.indexOf(document.activeElement as HTMLElement);
+    if (i < 0) return; e.preventDefault(); els[(i + (e.key === 'ArrowRight' ? 1 : els.length - 1)) % els.length].focus();
+  };
+  return (
+    <div className={`b-hm ${open ? 'is-open' : ''} ${light ? 'is-light' : ''}`} ref={ref}>
+      <div className="b-hm-bar tu-glass">
+        {onBack ? <button type="button" className="b-hm-lead is-back" onClick={onBack} aria-label={backLabel}><BIcon name="chevronLeft" size={20} /></button>
+          : avatar ? <button type="button" className="b-hm-lead" onClick={onAvatar} aria-label="Profile"><img src={avatar} alt="" /></button> : null}
+        <div className="b-hm-title" aria-hidden={open}>{title && <h1>{title}</h1>}{sub && <small className="tu-num">{sub}</small>}</div>
+        <div className="b-hm-menu" role="menu" aria-label="Shortcuts" aria-hidden={!open} onKeyDown={onKey}>
+          {items.map((it, i) => (
+            <button key={it.id} type="button" role="menuitem" className="b-hm-item" style={{ ['--i' as any]: i }} tabIndex={open ? 0 : -1} aria-label={it.label} title={it.label}
+              onClick={() => { setOpen(false); onPick?.(it.id); }}><BIcon name={it.icon} size={20} />{it.dot && dot && <span className="b-hm-dot" aria-hidden />}</button>
+          ))}
+        </div>
+        <button type="button" ref={btn} className="b-hm-btn" aria-expanded={open} aria-haspopup="menu" aria-label={open ? 'Close shortcuts' : `Shortcuts${dot ? ', new activity' : ''}`} onClick={() => setOpen(o => !o)}>
+          <span className="b-hm-ico is-grid"><BIcon name="grid" size={20} /></span><span className="b-hm-ico is-x"><BIcon name="close" size={18} /></span>
+          {dot && !open && <span className="b-hm-dot" aria-hidden />}
+        </button>
+      </div>
+    </div>
+  );
+}

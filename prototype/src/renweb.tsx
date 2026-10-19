@@ -25,7 +25,7 @@ export function RenWeb() {
   } else if (s.pollSent && !s.pollClosed) {
     const mine = s.votes.ren;
     body = (<>
-      <h1 className="pt-web-h1">Dinner tonight?</h1>
+      <h1 className="pt-web-h1">Saturday dinner</h1>
       <p className="pt-web-p tu-num">{n} of 7 voted · closes 7:30 PM</p>
       <div className="pt-poll-opts">{optIds(s).map((id, i) => (
         <PollOption key={id} label={PLACE_NAMES[id][0]} detail={optDetail(s, i)} votes={mine != null ? t[i] : 0} total={Math.max(n, 1)}

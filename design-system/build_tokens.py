@@ -55,7 +55,7 @@ sem = {
 }
 roles = {
  "_contrast":"Verified WCAG AA (≥4.5:1) for text roles on bg/surface in both modes: on-accent 4.56 (light) / ink on iris-400 5.74 (dark); owed jade-600 4.9; owe rose-600 ≈5.6; tertiary pearl-600 ≈5.3.",
- "accent/primary":"The only acting colour: primary buttons, your vote, selected filter chips, and the active tab. Max one accent-filled element per view.",
+ "accent/primary":"The only acting color: primary buttons, your vote, selected filter chips, and the active tab. Max one accent-filled element per view.",
  "status/leading":"The live leading poll option (bar fill + 'Leading' badge). Same hue as the accent, by design.",
  "status/owed":"Someone owes YOU. Always paired with a '+' sign and the words 'owes you'.",
  "status/owe":"YOU owe someone. Always paired with a '−' sign and the words 'you owe'.",
@@ -79,7 +79,7 @@ font = {"ui":"SF Pro","ui-fallback-web":"-apple-system, 'SF Pro Text', 'SF Pro D
 # name: family role, weight, size, lineHeight, tracking(pt), extras
 type_scale = [
  ("display/xl","display",400,56,56,-1.0,"Trip names on hero, e.g. 'Lisbon, tonight'"),
- ("display/l","display",400,44,48,-0.6,"Big amounts, e.g. €184.60 (tabular lining)"),
+ ("display/l","display",400,44,48,-0.6,"Big amounts, e.g. $184.60 (tabular lining)"),
  ("display/m","display",400,34,38,-0.3,"Section heroes, poll winner name"),
  ("display/celebrate","display-italic",400,40,44,-0.4,"Celebration line only: 'All squared up.' (spectrum text allowed)"),
  ("ui/large-title","ui",700,34,41,0.4,"Screen title"),
@@ -91,7 +91,7 @@ type_scale = [
  ("ui/callout","ui",400,16,21,-0.31,""),
  ("ui/subhead","ui",400,15,20,-0.23,"Meta lines"),
  ("ui/footnote","ui",400,13,18,-0.08,"Helper text, timestamps"),
- ("ui/caption-1","ui",500,12,16,0,"Tags, € · walk time"),
+ ("ui/caption-1","ui",500,12,16,0,"Tags, $ · walk time"),
  ("ui/caption-2","ui",600,11,13,0.06,"Badges (uppercase +0.6 tracking)"),
  ("ui/amount","ui-tnum",600,17,22,-0.43,"Inline amounts in rows/chips (tabular)"),
 ]
@@ -102,7 +102,7 @@ motion = {
            "css-approx":{"ui":"cubic-bezier(0.32, 0.72, 0, 1) 350ms","live":"cubic-bezier(0.34, 1.32, 0.64, 1) 450ms","moment":"cubic-bezier(0.34, 1.56, 0.64, 1) 550ms"}},
  "haptics":{"vote":"selection","live-vote-received":"light impact (max 1/s)","poll-closed":"success","settled":"success","object":"warning"},
  "patterns":{
-   "poll-bar-fill":{"rich":"spring.live on width; leader gets one travelling glint (900ms, once per lead change); % digits roll","reduced":"200ms opacity crossfade to final width; digits swap without rolling"},
+   "poll-bar-fill":{"rich":"spring.live on width; leader gets one traveling glint (900ms, once per lead change); % digits roll","reduced":"200ms opacity crossfade to final width; digits swap without rolling"},
    "debt-simplify-merge":{"rich":"bubbles drift + metaball fuse over duration.merge; arrows redraw as light paths","reduced":"crossfade before→after (240ms) + label '6 → 3 payments'"},
    "settle-celebration":{"rich":"spectrum sweep across glass + 3D confetti, ≤ moment-max, once, success haptic","reduced":"static spectrum badge + success haptic, no particles"},
    "sheet-present":{"rich":"spring.ui slide + glass blur ramp","reduced":"240ms fade"},
@@ -114,7 +114,7 @@ motion = {
 celebration_rules = {
  "allowed_moments":["poll-won","all-squared-up","trip-milestone (first poll, last night, trip wrapped; max 1/day)"],
  "forms":["light sheen across glass (L3 Moment layer)","1.5pt spectrum border on the celebrate button","spectrum text on display/celebrate (use celebration/text-* on light surfaces)","3D confetti renders"],
- "never":["UI fills, backgrounds of regular cards","status colours","more than one spectrum element per view","during a task in progress"],
+ "never":["UI fills, backgrounds of regular cards","status colors","more than one spectrum element per view","during a task in progress"],
  "gradient":"linear-gradient(90deg, blush 0%, apricot 25%, mint 50%, sky 75%, lilac 100%)",
  "gradient-text-light":"linear-gradient(90deg, blush-deep, apricot-deep 28%, mint-deep 52%, sky-deep 74%, lilac-deep)"
 }
@@ -148,7 +148,7 @@ def rgba(h):
 L=[":root {","  /* ---------- Primitives ---------- */"]
 for g,d in prim.items():
     for k,v in d.items(): L.append(f"  --prim-{g}-{k}: {rgba(v)};")
-L.append("\n  /* ---------- Semantic colour · light ---------- */")
+L.append("\n  /* ---------- Semantic color · light ---------- */")
 for n,(l,d) in sem.items(): L.append(f"  --color-{cssname(n)}: var(--prim-{cssname(l)});")
 L.append("  --celebration-gradient: linear-gradient(90deg, var(--color-celebration-blush) 0%, var(--color-celebration-apricot) 25%, var(--color-celebration-mint) 50%, var(--color-celebration-sky) 75%, var(--color-celebration-lilac) 100%);")
 L.append("  --celebration-gradient-text: linear-gradient(90deg, var(--color-celebration-text-blush), var(--color-celebration-text-apricot) 28%, var(--color-celebration-text-mint) 52%, var(--color-celebration-text-sky) 74%, var(--color-celebration-text-lilac));")

@@ -15,7 +15,7 @@ export function coreTarget(step: string, a: any, s: any): Target | null {
     case 'go': return x.step === 'invite' ? { sel: '[aria-label="Add people"]' } : null;
     case 'join': return { sel: '.pt-qr' };
     case 'set':
-      if (x.patch?.exploreStage) return { sel: '.pt-qopt', nth: [0, 1, 0, 1][x.patch.exploreStage - 1] ?? 0 };
+      if (x.patch?.exploreStage) return { sel: '.b-fp-photo, .b-fp-glass', nth: [0, 1, 0, 1][x.patch.exploreStage - 1] ?? 0 };
       if (x.patch?.shortlist) return { sel: '.pt-place' };
       if (x.patch?.pollSent) return { sel: 'button', text: 'Send to' };
       if (x.patch?.simplified) return { sel: 'button', text: 'Simplify' };
@@ -43,27 +43,32 @@ export type TourStep =
   | { wait: number; say?: string };
 export const CHAPTER: TourStep[] = [
   // Same order as Part 2 of the step list: each flow once, never revisited.
-  { hash: '#/beyond/create/where', wait: 1600, say: 'Create a trip: Porto, in six short steps.' },
-  { hash: '#/beyond/create/review', wait: 1500, say: 'Review the trip before it is created.' },
+  { hash: '#/beyond/create/where', wait: 1600, say: 'Create a trip: Porto, in three short steps.' },
   { hash: '#/beyond/explore', wait: 1500, say: 'Explore: places other crews booked, reviewed and photographed.' },
   { scroll: 380, wait: 700 },
-  { tap: { sel: '.b-fchip', text: 'Active' }, wait: 1300, say: 'One row of type filters. The list fades instead of jumping.' },
+  { tap: { sel: '.b-fchip', text: 'Activity' }, wait: 1300, say: 'One row of type filters. The list fades instead of jumping.' },
   { tap: { sel: '.b-fchip', text: 'All' }, wait: 700 },
   { scroll: -380, wait: 500 },
-  { hash: '#/beyond/explore/curate', wait: 1800, say: 'Four quick questions: how you get there, how long, what kind of place.' },
-  { hash: '#/beyond/explore/addpoll', wait: 1500, say: 'Add a pick straight to a poll.' },
+  { hash: '#/beyond/explore/curate', wait: 1400, say: 'Find a place: one question per screen. Tap a tile and it moves on.' },
+  { tap: { sel: '.b-fp-photo' }, wait: 1100 },
+  { tap: { sel: '.b-fp-glass', nth: 1 }, wait: 1100 },
+  { tap: { sel: '.b-fp-photo' }, wait: 1100 },
+  { tap: { sel: '.b-fp-glass', nth: 1 }, wait: 1600, say: 'Six picks, sorted by how often crews like yours booked.' },
   { hash: '#/beyond/place/taberna', wait: 1500, say: 'The place card: photos, ratings, been-here count.' },
   { scroll: 520, wait: 1200 },
-  { hash: '#/poll/new', wait: 1600, say: 'A new poll from the + button. Seeded: scuba diving, Tuesday, Oct 13 at 6:00 AM.' },
-  { scroll: 420, wait: 700 },
-  { tap: { sel: '.b-bottom button', text: 'Send to crew' }, wait: 1500 },
+  { hash: '#/beyond/explore', wait: 1300, say: 'Back on the feed: places other crews booked and photographed.' },
+  { scroll: 300, wait: 600 },
+  { tap: { sel: '.b-act.is-accent', text: 'Add to poll' }, wait: 1300, say: 'Add to poll, right from the feed.' },
+  { tap: { sel: '.b-listrow', text: 'new poll' }, wait: 1700, optional: true, say: 'A new poll opens with that place already in it. Seeded title: Saturday dinner.' },
+  { tap: { sel: '.b-tok', nth: 1 }, wait: 1500, say: 'The poll reads as one sentence. Tap any token to change it.' },
+  { tap: { sel: '.b-cs-x' }, wait: 600 },
+  { tap: { sel: '.b-cs-pick' }, wait: 1200, say: 'Add a second pick from Explore with one tap.' },
+  { tap: { sel: '.b-cmp-cta', text: 'Send' }, wait: 1500, say: 'Send to crew. Everyone gets a push and can vote from the Lock Screen.' },
   { hash: '#/beyond/plan/day', wait: 1600, say: 'The day plan for Saturday, Oct 17. Dinner landed as a booked item at 8:30 PM.' },
   { tap: { sel: '.b-fchip', text: 'Culture' }, wait: 1300 },
   { tap: { sel: '.b-fchip', text: 'All' }, wait: 900 },
   { hash: '#/beyond/expense/scan', wait: 4400, say: 'Add expense: scan the lunch receipt, then check the lines.' },
-  { tap: { sel: '.b-bottom button', text: 'Review 6 lines' }, wait: 1200, optional: true },
-  { tap: { sel: '.b-bottom button', text: 'Assign items' }, wait: 1300, optional: true, say: 'Assign lines to people.' },
-  { tap: { sel: '.b-bottom button', text: 'Choose a split' }, wait: 1400, optional: true, say: 'Five short steps. Skip any optional one and it takes the default.' },
+  { tap: { sel: '.b-bottom button', text: 'Assign items' }, wait: 1300, optional: true, say: 'Assign lines to people. Skip the wine if you did not drink it.' },
   { hash: '#/beyond/album', wait: 1300, say: 'The shared album, by day or by place.' },
   { scroll: 320, wait: 600 },
   { tap: { sel: '.b-pcell' }, wait: 1600, say: 'Who took it, when and where.' },
@@ -73,9 +78,6 @@ export const CHAPTER: TourStep[] = [
   { hash: '#/beyond/activity', wait: 1500, say: 'Activity: every vote, expense and payment in one feed.' },
   { hash: '#/beyond/recap', wait: 1600, say: 'The trip recap, and the money all settled.' },
   { scroll: 400, wait: 800 },
-  { hash: '#/beyond/profile', wait: 1400, say: 'Profile and settings: payments, appearance, privacy.' },
-  { hash: '#/beyond/expense/failed', wait: 1500, say: 'States: a receipt that could not be read.' },
-  { hash: '#/beyond/poll/novotes', wait: 1300, say: 'A poll nobody has voted on yet.' },
-  { hash: '#/beyond/explore/offline', wait: 1500, say: 'Explore with no connection.' },
+  { hash: '#/beyond/profile', wait: 1400, say: 'Profile and settings on one screen.' },
   { wait: 1200 },
 ];

@@ -13,6 +13,8 @@ import { isBeyondHash, routeFromHash, hashForRoute } from './flows/nav';
 import { FLOWS, ALL_ROUTES } from '@sb/patterns/beyond/router';
 import { TourCursor, cursor } from './flows/cursor';
 import { coreTarget } from './flows/tour';
+import { PACE } from './flows/pacing';
+import { navClass } from '@sb/lib/motion';
 import { ModeChooser, ModeSwitch, initialMode, showChooserAtStart, trackMode, useChapter, Mode } from './flows/shell';
 import { track } from './analytics';
 
@@ -21,7 +23,7 @@ const EMBED = params.has('embed');
 /** The deck sits one level up. Opened from the deck (?from=deck&slide=7), Back returns to that slide. */
 const DECK_SLIDE = (() => {
   const n = parseInt(params.get('slide') ?? '', 10);
-  if (params.get('from') === 'deck') return n >= 1 && n <= 9 ? n : 0;
+  if (params.get('from') === 'deck') return n >= 1 && n <= 10 ? n : 0;
   try { const r = new URL(document.referrer); if (r.origin === location.origin && !/\/(prototype|case-study|storybook)\//.test(r.pathname)) return parseInt(r.hash.slice(1), 10) || 0; } catch {}
   return 0;
 })();
@@ -195,14 +197,17 @@ export function App() {
   const tourKey = `${s.step}|${s.tie && s.winner == null}|${s.recap}|${s.me}|${s.settleView}`;
   useEffect(() => {
     if (!tour || chapter || bz.active) return;
+    // In the deck the last slide holds on the All squared up moment instead of looping.
+    if (EMBED && (s.step === 'squared' || /[?&]hold=1/.test(location.hash))) return;
     const script = tourScript(s);
     const timers: number[] = []; let at = 0;
-    script.forEach(([ms, a]) => { at += motion === 'reduce' ? ms * 0.8 : ms;
-      // The cursor glides to the control first, then taps it as the action lands.
+    const rm = motion === 'reduce'; const P = rm ? PACE.reduce : PACE;
+    script.forEach(([ms, a]) => { at += ms * (rm ? PACE.reduce.coreScale : PACE.coreScale);
+      // Glide to the control, hover, press, hold, then the action lands (pacing lives in flows/pacing.ts).
       const tg = EMBED ? null : coreTarget(s.step, a, s); let el: Element | null = null;
-      if (tg) timers.push(window.setTimeout(() => { cursor.moveTo(tg).then(x => { el = x; }); }, Math.max(0, at - 950)));
+      if (tg) timers.push(window.setTimeout(() => { cursor.moveTo(tg).then(x => { el = x; }); }, Math.max(0, at - PACE.coreLead)));
+      if (tg) timers.push(window.setTimeout(() => { if (el) cursor.tap(el, false); }, Math.max(0, at - P.press - P.hold)));
       timers.push(window.setTimeout(() => {
-        if (el) cursor.tap(el, false);
         if (a === 'next') next(); else (Array.isArray(a) ? a : [a]).forEach(x => d(x));
       }, at)); });
     return () => timers.forEach(clearTimeout);
@@ -243,8 +248,9 @@ export function App() {
 
   const screen = (
     <div className="pt-screen-inner" onPointerDown={onDown}>
-      {bz.active ? <div className="pt-anim" key="beyond"><BeyondLayer bz={bz} /></div>
-        : <div className="pt-anim" key={`${s.step === 'settle' && s.settleView === 'confirmed' ? 'money' : s.step}-${s.me}-${s.recap}-${s.step === 'settle' ? s.settleView : ''}`}><PhoneScreen s={s} /></div>}
+      {bz.active ? <div className="pt-anim mo-none" key="beyond"><BeyondLayer bz={bz} /></div>
+        : (() => { const id = `${s.step === 'settle' && s.settleView === 'confirmed' ? 'money' : s.step}-${s.me}-${s.recap}-${s.step === 'settle' ? s.settleView : ''}`;
+          return <div className={`pt-anim ${navClass(id.replace(/-ari-false-$/, ''))}`} key={id}><PhoneScreen s={s} /></div>; })()}
       {s.toast && <div className={`pt-itoast ${s.toast.tone === 'success' ? 'is-success' : ''}`} key={s.toast.id} role="status"><Icon name={s.toast.tone === 'success' ? 'check' : 'info'} size={20} /><span>{s.toast.msg}</span></div>}
       {ripples.map(r => <span key={r.id} className="pt-ripple" style={{ left: r.x, top: r.y }} aria-hidden />)}
       {!EMBED && <TourCursor on={tour} reduce={motion === 'reduce'} />}

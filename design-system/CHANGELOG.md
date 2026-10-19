@@ -2,6 +2,17 @@
 
 `tokens.json` is the source of truth. `tokens.css` and the Figma variables are generated from it by `build_tokens.py`. Anyone building on `tokens.*` (for example the Storybook in `/workspace/tripup/storybook/`) should check here before they rebuild.
 
+## v5 · Oct 19, 2026
+
+- **HeaderMenu**: one-row inset glass header (avatar or Back, title, glass menu that grows into Notifications, Album, Add expense, Invite, Settings). Used on Trips, Lisbon Crew, Tonight and Money.
+- **Insets**: GlassHeader and every sheet sit 12 px from the screen edges with full radius and float shadow. No full-bleed rounded cards.
+- **All squared up**: simplified to check, title, one summary line, face stack, Share the recap, and See payments for the list. The mono ledger and eyebrow are gone.
+- **Core poll and Find a place** use the same sentence composer and one-question tiles as the flows beyond tonight.
+- **Glass surfaces** replace flat white cards on the extended screens; section labels are sentence case; the create-trip stepper shows only the kept steps.
+- **Motion tokens** (`storybook/src/lib/motion.ts`, `motion.css`): tab crossfade with gliding lens and one icon bounce, push from the right, pop with parallax, sheets rise on a spring. Reduce Motion: 160 ms crossfades.
+- **Guided tour pacing** (`prototype/src/flows/pacing.ts`): glide, hover, press, hold, dwell; slow eased scrolls; a small "Tap ..." caption by the cursor. The tour now goes Explore feed, Add to poll, Start a new poll.
+- **Spacing audit**: all gaps on the 4 px grid, every tap target at least 44 px (see `qa/v5/spacing-audit.md`).
+
 ## 2026-10-18 (PDT), 11:10 PM: removed "How we got here"
 
 No token values changed. Figma only: AI Enabled, Walkthrough deck and Deck (web). Pages 0:1 and 3:402 untouched.

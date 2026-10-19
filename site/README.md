@@ -11,8 +11,8 @@ Everything here is static and uses relative paths, so it works from a GitHub Pag
 
 ## Deck
 
-- Keys: arrows, Space, Page Up/Down, Home/End, 1 to 9. `O` or `G` shows all slides, `T` labels the design tokens, `R` previews Reduce Motion.
-- Each slide has a hash (`#1` to `#9`). Arrow keys, Space, the dock arrows, a horizontal swipe or a click on empty space move between slides. Scrolling never changes slides.
+- Keys: arrows, Space, Page Up/Down, Home/End, 1 to 9. `O` or `G` shows all slides, `T` labels the design tokens, `R` previews Reduce Motion. Slide 10 is End or the last arrow.
+- Each slide has a hash (`#1` to `#10`). Arrow keys, Space, the dock arrows, a horizontal swipe or a click on empty space move between slides. Scrolling never changes slides.
 - The iPhone on slides 1, 7 and 9 is one live embed of `prototype/?embed=1` that moves between slides.
 - Content and sources for the interactive parts live in `deck/data.js`. Overview thumbnails are in `deck/thumbs/` (regenerate with `qa/deck.cjs`).
 - GA4: `./build-site.sh` writes `G-T7WTSRRSGT` into the `ga-measurement-id` meta tag (a `GA_MEASUREMENT_ID` override replaces it). Each slide change sends a `slide_view` event. The deck, case study, and prototype share that id. Do Not Track keeps the loader off.

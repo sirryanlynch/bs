@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import './beyond.css';
 import { BIcon, BIconName } from './icons';
 import { ExperienceType, typesFor } from '../../data/experienceTypes';
@@ -12,6 +12,13 @@ export function FilterChips({ value, onChange, surface = 'explore', counts, show
   { value: ExperienceType; onChange?: (t: ExperienceType) => void; surface?: 'itinerary' | 'explore' | 'poll' | 'album'; counts?: Partial<Record<ExperienceType, number>>; showCounts?: boolean; label?: string; noAll?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const types = typesFor(surface).filter(t => (t.id === 'all' ? !noAll : !counts || (counts[t.id] ?? 0) > 0));
+  /* Keep the selected chip fully in view: scroll the row sideways only, never the page. */
+  useEffect(() => {
+    const row = ref.current; const el = row?.querySelector('[aria-checked="true"]') as HTMLElement | null; if (!row || !el) return;
+    const pad = 20, l = el.getBoundingClientRect().left - row.getBoundingClientRect().left + row.scrollLeft, r = l + el.offsetWidth;
+    const to = l - pad < row.scrollLeft ? l - pad : r + pad > row.scrollLeft + row.clientWidth ? r + pad - row.clientWidth : null;
+    if (to != null) row.scrollTo({ left: Math.max(0, to), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches || document.querySelector('.prism[data-motion="reduce"]') ? 'auto' : 'smooth' });
+  }, [value]);
   const onKey = (e: React.KeyboardEvent) => {
     if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
     const i = types.findIndex(t => t.id === value); const n = types[(i + (e.key === 'ArrowRight' ? 1 : types.length - 1)) % types.length];

@@ -25,15 +25,15 @@ window.DECK = {
     { app: 'Splitwise', kind: 'Splitter',
       cells: [['n', 'No itinerary or planning feature found in its help center.'], ['n', 'No polls or voting found.'], ['y', 'Tracks group expenses and balances.', [2]], ['y', 'Simplify debts cuts the number of payments. It is off by default.', [1, 2]], ['p', 'You can add friends by email or phone before they join, and Splitwise wants everyone to log in to see balances.', [3]]],
       gap: 'Money only. The decision happens somewhere else, so the bill starts from nothing.',
-      ans: 'The poll and the bill live on one trip. The winning restaurant flows straight into the split.', go: 8 },
+      ans: 'The poll and the bill live on one trip. The winning restaurant flows straight into the split.', go: 9 },
     { app: 'Tricount / Settle Up', kind: 'Splitter',
       cells: [['n', 'No planning found in either.'], ['n', 'No polls found in either.'], ['y', 'Both track shared expenses.', [4, 7]], ['y', 'Settle Up minimizes transactions and lets you turn that off.', [7]], ['u', 'Unclear. Tricount says its web app is gone and links open the app, while one Tricount page says friends can add from the browser.', [4, 5, 6]]],
       gap: 'No plan and no vote, and a guest without the app may be stuck.',
-      ans: 'Ren votes and pays from a web link, no install.', go: 7 },
+      ans: 'Ren votes and pays from a web link, no install.', go: 8 },
     { app: 'Wanderlog', kind: 'Planner',
       cells: [['y', 'Shared itinerary with view or edit rights for tripmates.', [8, 9]], ['n', 'No poll or vote found on its help or features pages.', [8, 9]], ['y', 'Budgeting, expense tracking and splitting for group trips.', [9]], ['p', 'A debt summary and a way to record payments. Even splits only, per the Wanderlog team.', [10]], ['u', 'Invites go by email or message. Whether a guest needs an account is not stated.', [8]]],
       gap: 'Whoever edits last decides, and nothing records how the group got there.',
-      ans: 'A poll with a deadline, and the winner lands on the itinerary.', go: 7 },
+      ans: 'A poll with a deadline, and the winner lands on the itinerary.', go: 8 },
     { app: 'TripIt', kind: 'Planner',
       cells: [['y', 'Itineraries you can share with view or edit rights.', [11]], ['n', 'No group decision feature found.'], ['n', 'No expense splitting found.'], ['n', 'No settle feature found.'], ['p', 'A read-only share by SMS or email, with nothing to vote on or pay.', [11]]],
       gap: "Built around one traveler's logistics. Group choices happen outside it.",
@@ -41,11 +41,11 @@ window.DECK = {
     { app: 'WhatsApp / iMessage', kind: 'Group chat',
       cells: [['p', 'Plans live in the thread itself.'], ['y', 'Native polls. WhatsApp offers single-vote polls. iMessage allows up to 12 options.', [12, 14]], ['n', 'No expense tracking found.'], ['p', 'iMessage group chats can send money with Apple Cash. No split math found.', [15]], ['p', 'Everyone needs the app already. iMessage polls need iOS 26; others only see that a poll was sent.', [14]]],
       gap: 'WhatsApp polls have no time limit, so a decision can stay open while the chat moves on.', gapSrc: [13],
-      ans: 'Polls close at 7:30 PM, or when everyone votes, and the winner goes straight into tonight\'s plan.', go: 7 },
+      ans: 'Polls close at 7:30 PM, or when everyone votes, and the winner goes straight into tonight\'s plan.', go: 8 },
     { app: 'Google Docs / Sheets', kind: 'DIY',
       cells: [['y', 'A shared doc works as a plan.'], ['p', 'By hand, in a table.'], ['p', 'By hand, with formulas.'], ['n', 'No settle flow. The math is yours.'], ['y', 'People with the link can open it without signing in. They show up as anonymous animals.', [16]]],
       gap: 'Flexible, until someone has to be the spreadsheet person.',
-      ans: 'TripUp does the math and shows its work.', go: 8 }
+      ans: 'TripUp does the math and shows its work.', go: 9 }
   ],
   STAGES: [
     { name: 'Spark', time: 'Early evening', y: 0.60, photo: 'Bento Justin', shot: 'hifi-04-create-poll', alt: 'New poll screen with three Lisbon restaurants',
@@ -74,8 +74,8 @@ window.DECK = {
   TANGLED: [['ari', 'tomas', 42.10], ['tomas', 'nic', 42.10], ['ren', 'ari', 18.40], ['mara', 'joao', 40.00], ['mara', 'sofia', 24.00], ['sofia', 'joao', 24.00]],
   SIMPLE: [['ari', 'nic', 42.10], ['ren', 'ari', 18.40], ['mara', 'joao', 64.00]],
   BOARDS: {
-    prism: 'Chosen. Calm by default, with color as light on the moments worth celebrating. Since this board, the celebration has calmed to a single glow.',
-    golden: 'Warm and photo-led. Glass over busy photos makes text harder to read, and money screens need to be easy to read.',
-    night: 'Confident nightlife energy. Too loud for a calm moment about who owes whom.'
+    prism: 'Chosen: calm by default, with color saved for the moments worth celebrating.',
+    golden: 'Not chosen: glass over busy photos made money screens hard to read.',
+    night: 'Not chosen: too loud for a calm moment about who owes whom.'
   }
 };

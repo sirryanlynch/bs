@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import { FindHeader, FindQuestion, findBack, findSkip } from '@sb/components/beyond/findplace';
+import { curateStage, CurateAnswers } from '@sb/components/beyond/explore';
+import { HeaderMenu } from '@sb/components/beyond/headermenu';
+import { AVATAR } from '@sb/assets/solver-assets';
+import React, { useRef, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Icon } from '@sb/components/Icon';
 import { Avatar, AvatarStack, Button, IconButton, ListRow, ListGroup, SegmentedControl } from '@sb/components/core';
@@ -32,6 +36,14 @@ export function Tabs({ active }: { active: string }) {
   );
 }
 
+/** One-row inset glass header for top-level screens. The menu opens the flows beyond tonight. */
+export function CoreHeader(props: { title?: string; sub?: string; onBack?: () => void; backLabel?: string; avatar?: boolean; light?: boolean }) {
+  const bz = useBridge();
+  const to: Record<string, string> = { notifications: 'activity', album: 'album', expense: 'expense/scan', invite: 'invite', settings: 'profile' };
+  return <HeaderMenu title={props.title} sub={props.sub} onBack={props.onBack} backLabel={props.backLabel} light={props.light} avatar={props.avatar ? AVATAR.ari : undefined}
+    onAvatar={() => { haptic(); bz.go('profile'); }} onPick={id => { haptic(); bz.go(to[id]); }} />;
+}
+
 export function TopBar({ back, title, sub, right, onBack }: { back?: string; title?: string; sub?: string; right?: React.ReactNode; onBack?: () => void }) {
   return (
     <div className="pt-top">
@@ -54,14 +66,8 @@ export function Home() {
   const madeDest = made && DESTINATIONS.find(x => x.id === made.dest);
   return (
     <div className="scr">
-      <div className="scr-scroll">
-        <div className="fl-homebar">
-          <button type="button" className="fl-avatar" onClick={() => { haptic(); bz.go('profile'); }} aria-label="Profile and settings"><Avatar person={P.ari} size={36} ring="none" /></button>
-          <span className="fl-homebar-sp" />
-          <button type="button" className="fl-roundbtn tu-glass" onClick={() => { haptic(); bz.go('activity'); }} aria-label="Activity, 3 new"><BIcon name="bell" size={20} /><span className="fl-badge" aria-hidden /></button>
-          <button type="button" className="fl-roundbtn tu-glass is-accent" onClick={() => { haptic(); bz.go('create/where'); }} aria-label="New trip"><BIcon name="add" size={20} /></button>
-        </div>
-        <h1 className="pt-largetitle">Trips</h1>
+      <CoreHeader title="Trips" avatar />
+      <div className="scr-scroll has-hm">
         <button type="button" className="pt-cardbtn" onClick={() => { haptic(); d({ t: 'go', step: 'trip' }); }}>
           <TripCard name="Lisbon" dates="Oct 12 to 17" photo={photo.alfama} people={crew} status="live" nextUp={next} balance={s.dinnerSaved ? bal : undefined} />
         </button>
@@ -84,10 +90,10 @@ export function Trip() {
   const start = () => { haptic(); d({ t: 'go', step: s.renJoined ? 'explore' : 'invite' }); };
   return (
     <div className="scr">
+      <CoreHeader light onBack={() => d({ t: 'go', step: 'home' })} backLabel="Back to Trips" />
       <div className="scr-scroll">
         <div className="scr-hero pt-hero">
           <img src={photo.roofs} alt="" />
-          <div className="scr-hero-bar"><button type="button" className="pt-back is-light" onClick={() => d({ t: 'go', step: 'home' })} aria-label="Back to Trips"><Icon name="chevronLeft" size={20} /></button></div>
           <div className="scr-hero-text"><p>Oct 12 to 17 · last night</p><h1>Lisbon Crew</h1></div>
         </div>
         <div className="pt-people">
@@ -196,14 +202,32 @@ export const EXPLORE_PLACES = [
   { id: 'esquina', name: 'Tasca da Esquina', area: 'Campo de Ourique', kind: 'Petiscos', price: '$$', rating: 4.6, photo: photo.azulejo, walk: '13 min', note: '' },
 ];
 const pickLabel: string[] = [];
+const ANS_KEYS = ['mode', 'dur', 'after', 'budget'] as const;
+const ANS_DEF: CurateAnswers = { mode: 'walk', dur: 1, after: 0, budget: 1 } as CurateAnswers;
+/** Keeps the tile answers in step with exploreStage, which the guided tour can also move. */
+function syncAnswers(a: CurateAnswers, st: number): CurateAnswers {
+  if (curateStage(a) === st) return a;
+  const o: any = {}; ANS_KEYS.slice(0, st).forEach(k => { o[k] = (a as any)[k] ?? (ANS_DEF as any)[k]; }); return o;
+}
 export function Explore() {
   const { s, d } = useApp();
+  const ansRef = useRef<CurateAnswers>({});
   const [picks, setPicks] = useState<string[]>([]);
   const st = s.exploreStage;
   const QUESTIONS = questionsFor(pickLabel);
   const spots = st === 0 || pickLabel[0] === 'Any way' && st <= 2 ? 120 : (QUESTIONS[st - 1].opts.find(o => o[0] === pickLabel[st - 1]) ?? QUESTIONS[st - 1].opts[QUESTIONS[st - 1].def])[1];
   const shortlist = s.shortlist.length ? s.shortlist : picks;
   const toggle = (id: string) => { haptic(); setPicks(p => p.includes(id) ? p.filter(x => x !== id) : p.length >= 3 ? p : [...p, id]); };
+  // v5: the questions use the same one-question-per-screen tiles as Find a place beyond tonight.
+  const A = syncAnswers(ansRef.current, st); ansRef.current = A;
+  const setStage = (a: CurateAnswers) => { ansRef.current = a; d({ t: 'set', patch: { exploreStage: curateStage(a), shortlist: [] } }); };
+  if (st < QN) return (
+    <div className="b-scr b-cmp">
+      <div className="b-cmp-amb" aria-hidden />
+      <FindHeader answers={A} onBack={() => (st === 0 ? d({ t: 'go', step: 'trip' }) : (haptic(), setStage(findBack(A))))} onSkip={() => { haptic(); setStage(findSkip(A)); }} />
+      <div className="b-scroll b-cmp-scroll is-q"><FindQuestion answers={A} onAnswer={a => { haptic(10); setStage(a); }} /></div>
+    </div>
+  );
   return (
     <div className="scr">
       <div className={`scr-scroll pt-explore ${st >= QN ? 'has-cta' : ''}`}>

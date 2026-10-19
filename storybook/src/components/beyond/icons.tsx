@@ -3,7 +3,7 @@ import {
   BookmarkSimple, Star, Images, CameraPlus, DotsSixVertical, Scan, Percent, Moon, Eye, ShieldCheck, PersonSimpleWalk, Car, MapTrifold,
   Mountains, Waves, Ticket, UsersThree, UploadSimple, CheckCircle, Sun, DeviceMobile, ShareNetwork, AppleLogo, CalendarPlus, CaretUp,
   Hourglass, Storefront, Martini, Binoculars, Tag, AddressBook, Timer, CurrencyDollar, Compass, SignOut, SquaresFour, MapPinLine, ArrowsDownUp,
-  ForkKnife, Plus, Bell, Lock, GlobeSimple, CaretDown, Sparkle, Camera, Receipt, CreditCard, Bank, Wallet,
+  ForkKnife, Plus, Bell, ArrowRight, Lock, GlobeSimple, CaretDown, Sparkle, Camera, Receipt, CreditCard, Bank, Wallet,
 } from '@phosphor-icons/react';
 import type { Icon as PhIcon, IconWeight } from '@phosphor-icons/react';
 import { Icon, IconName } from '../Icon';
@@ -15,7 +15,7 @@ const X = {
   crew: UsersThree, upload: UploadSimple, checkCircle: CheckCircle, sunny: Sun, phone: DeviceMobile, shareNet: ShareNetwork, apple: AppleLogo,
   calendarPlus: CalendarPlus, caretUp: CaretUp, caretDown: CaretDown, hourglass: Hourglass, shop: Storefront, martini: Martini, binoculars: Binoculars, tag: Tag,
   contacts: AddressBook, timer: Timer, dollar: CurrencyDollar, explore: Compass, signOut: SignOut, grid: SquaresFour, pinLine: MapPinLine, reorder: ArrowsDownUp,
-  food: ForkKnife, add: Plus, bellX: Bell, lockX: Lock, globeX: GlobeSimple, sparkleX: Sparkle, cameraX: Camera, receiptX: Receipt, cardX: CreditCard, bankX: Bank, walletX: Wallet,
+  food: ForkKnife, add: Plus, arrowRight: ArrowRight, bellX: Bell, lockX: Lock, globeX: GlobeSimple, sparkleX: Sparkle, cameraX: Camera, receiptX: Receipt, cardX: CreditCard, bankX: Bank, walletX: Wallet,
 } satisfies Record<string, PhIcon>;
 export type BIconName = keyof typeof X | IconName;
 

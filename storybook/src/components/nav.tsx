@@ -1,3 +1,5 @@
+import { tabMemory } from '../lib/motion';
+import '../lib/motion.css';
 import React, { useState } from 'react';
 import { Icon, IconName } from './Icon';
 import { IconButton } from './core';
@@ -36,12 +38,16 @@ export function TabBar({ active = 'trips', tabs = defaultTabs, accessory = 'plus
   const [a, setA] = useState(active);
   React.useEffect(() => setA(active), [active]);
   const i = Math.max(0, tabs.findIndex(t => t.id === a));
+  // Glide the lens from the tab the last screen showed, and bounce the icon once when the tab changed.
+  const [from] = useState(() => tabMemory.i); const [li, setLi] = useState(from >= 0 ? from : i);
+  React.useEffect(() => { const r = requestAnimationFrame(() => setLi(i)); tabMemory.i = i; return () => cancelAnimationFrame(r); }, [i]);
+  const bounce = from >= 0 && from !== i;
   return (
     <nav className={`p-tabbar ${floating ? 'p-tabbar-float' : ''}`} aria-label="Main">
-      <div className="p-tabbar-pill tu-glass" style={{ ['--n' as any]: tabs.length, ['--i' as any]: i }}>
+      <div className="p-tabbar-pill tu-glass" style={{ ['--n' as any]: tabs.length, ['--i' as any]: li }}>
         <span className="p-tabbar-lens" aria-hidden />
         {tabs.map(t => (
-          <button key={t.id} type="button" className={`p-tab ${t.id === a ? 'is-active' : ''}`} aria-current={t.id === a ? 'page' : undefined}
+          <button key={t.id} type="button" className={`p-tab ${t.id === a ? 'is-active' : ''} ${t.id === a && bounce ? 'is-bounce' : ''}`} aria-current={t.id === a ? 'page' : undefined}
             onClick={() => { setA(t.id); onChange?.(t.id); }}>
             <Icon name={t.icon} size={24} fill={t.id === a} />
             <span>{t.label}</span>

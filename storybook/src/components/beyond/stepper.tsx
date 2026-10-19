@@ -12,7 +12,7 @@ import './beyond.css';
 export function Stepper({ steps, current, onStep, onBack, onSkip, label }:
   { steps: string[]; current: number; onStep?: (i: number) => void; onBack?: () => void; onSkip?: () => void; label?: string; doneLabel?: string }) {
   const n = steps.length; const cur = Math.min(current, n - 1);
-  const caption = `Step ${cur + 1} of ${n}`;
+  const caption = `${steps[cur]} · ${cur + 1} of ${n}`;
   return (
     <div className="b-stepper" role="group" aria-label={label ?? 'Progress'}>
       <div className="b-stepper-row">

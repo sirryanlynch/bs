@@ -1,3 +1,6 @@
+import { PollComposer, ComposerValue, ComposerPick } from '@sb/components/beyond/composer';
+import { COMMUNITY, DAYS } from '@sb/lib/beyond';
+import { CoreHeader } from './screens1';
 import React, { useEffect, useState } from 'react';
 import { Icon, AppMark } from '@sb/components/Icon';
 import { Avatar, Button, Toggle, ListRow, ListGroup } from '@sb/components/core';
@@ -15,23 +18,14 @@ void AppMark;
 /* ---------------- 05 Create poll ---------------- */
 export function Create() {
   const { s, d } = useApp();
-  const [closeAll, setCloseAll] = useState(true);
+  // v5: the same sentence composer as New poll, seeded with the three picks from Explore. The core story keeps these three options.
+  const [v, setV] = useState<ComposerValue>(() => ({ title: '', category: 'food', day: 'oct17', time: '8:30 PM', closes: '7:30 PM',
+    options: optIds(s).map(id => ({ label: PLACE_NAMES[id][0], from: `From Explore · ${PLACE_NAMES[id][2]}`, photo: photoOf(id) })) }));
+  const picks: ComposerPick[] = COMMUNITY.map(c => ({ id: c.id, name: c.name, kind: c.kind, photo: c.photos[0], meta: `${c.type} · ${c.price} · ${c.walk ? `${c.walk} min walk` : c.area}` }));
   return (
     <div className="scr">
-      <div className="scr-scroll has-cta">
-        <TopBar back="Explore" onBack={() => d({ t: 'go', step: 'explore' })} title="New poll" />
-        <h1 className="pt-question">Where do we eat tonight?</h1>
-        <ListGroup>
-          {optIds(s).map(id => <ListRow key={id} title={PLACE_NAMES[id][0]} subtitle={PLACE_NAMES[id][2]} leading={<img className="pt-thumb" src={photoOf(id)} alt="" />} />)}
-        </ListGroup>
-        <ListGroup footer="On a tie, you pick.">
-          <ListRow title="Closes" trailing={<span className="pt-pillval tu-num">7:30 PM</span>} />
-          <ListRow title="Close early when all vote" trailing={<Toggle checked={closeAll} label="Close early when everyone has voted" onChange={setCloseAll} />} />
-        </ListGroup>
-      </div>
-      <div className="scr-bottombar">
-        <Button label="Send to 7 people" fullWidth onClick={() => { haptic(18); d({ t: 'set', patch: { pollSent: true } }); d({ t: 'done', key: 'create' }); d({ t: 'go', step: 'push' }); }} />
-      </div>
+      <PollComposer value={v} onChange={x => setV(o => ({ ...o, ...x }))} days={DAYS} today="oct17" picks={picks} crew={7} onBack={() => d({ t: 'go', step: 'explore' })}
+        onSend={() => { haptic(18); d({ t: 'set', patch: { pollSent: true } }); d({ t: 'done', key: 'create' }); d({ t: 'go', step: 'push' }); }} />
     </div>
   );
 }
@@ -89,7 +83,7 @@ export function PollView() {
   return (
     <div className="scr">
       <div className="scr-scroll">
-        <TopBar back="Lisbon Crew" onBack={() => d({ t: 'go', step: 'trip' })} title="Dinner tonight?" sub={closed ? `Closed · ${n} of 7 voted` : `${n} of 7 voted · closes 7:30 PM`} />
+        <TopBar back="Lisbon Crew" onBack={() => d({ t: 'go', step: 'trip' })} title="Saturday dinner" sub={closed ? `Closed · ${n} of 7 voted` : `${n} of 7 voted · closes 7:30 PM`} />
         {!closed && mine == null && <p className="pt-prompt">Tap a place to vote</p>}
         <div className="pt-poll-opts" aria-live="polite">
           {optIds(s).map((id, i) => (
@@ -156,8 +150,8 @@ export function Plan() {
   const pct = Math.round((t[w] / Math.max(n, 1)) * 100);
   return (
     <div className="scr">
-      <div className="scr-scroll has-cta-tabs">
-        <TopBar back="Lisbon Crew" onBack={() => d({ t: 'go', step: 'trip' })} title="Tonight" sub="Saturday, Oct 17" />
+      <CoreHeader onBack={() => d({ t: 'go', step: 'trip' })} backLabel="Back to Lisbon Crew" title="Tonight" sub="Saturday, Oct 17" />
+      <div className="scr-scroll has-cta-tabs has-hm">
         <ol className="pt-itin">
           <ItinBlock it={{ time: '6:00 PM', title: 'Sunset, Santa Catarina', icon: 'sun', kind: 'plan' }} />
           <ItinBlock it={{ time: '7:15 PM', title: 'Pastéis at Manteigaria', icon: 'fork', kind: 'now' }} />

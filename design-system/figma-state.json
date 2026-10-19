@@ -1,470 +1,549 @@
 {
+ "page": "108:3229",
+ "pages": [
+  [
+   "0:1",
+   "Page 1"
+  ],
+  [
+   "3:402",
+   "Icon Library MUI"
+  ],
+  [
+   "108:3229",
+   "AI Enabled"
+  ]
+ ],
+ "sections": [
+  [
+   "108:3230",
+   "01 \u00b7 Mood boards",
+   0,
+   0,
+   8160,
+   1600
+  ],
+  [
+   "108:3233",
+   "02 \u00b7 Design System \u00b7 Prism v1",
+   0,
+   1840,
+   14320,
+   16680
+  ],
+  [
+   "109:3579",
+   "03 \u00b7 Research",
+   0,
+   18760,
+   7380,
+   1735
+  ],
+  [
+   "110:3836",
+   "04 \u00b7 Personas",
+   0,
+   20735,
+   3580,
+   1413
+  ],
+  [
+   "111:3584",
+   "05 \u00b7 Journey map",
+   3820,
+   20735,
+   3640,
+   1656
+  ],
+  [
+   "112:3584",
+   "06 \u00b7 Feature tree",
+   0,
+   22631,
+   3740,
+   1616
+  ],
+  [
+   "113:3600",
+   "07 \u00b7 Click flow / user flow",
+   3980,
+   22631,
+   4940,
+   2281
+  ],
+  [
+   "114:3600",
+   "08 \u00b7 Wireflow",
+   0,
+   25152,
+   6780,
+   1663
+  ],
+  [
+   "114:3619",
+   "09 \u00b7 Hi-fi",
+   0,
+   27055,
+   4016,
+   2786
+  ],
+  [
+   "114:3638",
+   "10 \u00b7 Prototype",
+   0,
+   30081,
+   2600,
+   1184
+  ]
+ ],
+ "sets": {
+  "Button": [
+   "101:3392",
+   35
+  ],
+  "Icon Button": [
+   "116:3872",
+   7
+  ],
+  "Avatar": [
+   "101:3338",
+   6
+  ],
+  "Balance Chip": [
+   "102:3275",
+   4
+  ],
+  "Poll Option": [
+   "102:3328",
+   5
+  ],
+  "Countdown": [
+   "117:3888",
+   3
+  ],
+  "Explore Ring": [
+   "103:3405",
+   3
+  ],
+  "Nav Bar": [
+   "103:3305",
+   2
+  ],
+  "Tab Item": [
+   "103:3316",
+   2
+  ],
+  "Notification": [
+   "118:3954",
+   4
+  ],
+  "Live Activity": [
+   "118:4059",
+   2
+  ],
+  "Toast": [
+   "118:4120",
+   3
+  ],
+  "Banner": [
+   "118:4215",
+   4
+  ],
+  "Expense Row": [
+   "104:3334",
+   2
+  ],
+  "Receipt Split Item": [
+   "121:3978",
+   3
+  ],
+  "Settle-up Row": [
+   "104:3372",
+   5
+  ],
+  "Debt Simplification": [
+   "121:4174",
+   2
+  ],
+  "Celebration Overlay": [
+   "121:4318",
+   2
+  ],
+  "Text Field": [
+   "122:3963",
+   5
+  ],
+  "Search Field": [
+   "122:4058",
+   3
+  ],
+  "Filter Chip": [
+   "122:4129",
+   3
+  ],
+  "Segmented Control": [
+   "122:4220",
+   3
+  ],
+  "Toggle": [
+   "122:4286",
+   4
+  ],
+  "Stepper": [
+   "122:4359",
+   3
+  ],
+  "Date Time Chip": [
+   "122:4429",
+   3
+  ],
+  "List Row": [
+   "123:4041",
+   4
+  ],
+  "Trip Card": [
+   "123:4175",
+   3
+  ],
+  "Place Card": [
+   "123:4264",
+   3
+  ],
+  "Itinerary Item": [
+   "123:4375",
+   4
+  ],
+  "Member Picker Row": [
+   "123:4527",
+   4
+  ],
+  "Bottom Sheet": [
+   "125:4270",
+   2
+  ],
+  "Alert": [
+   "125:4389",
+   2
+  ],
+  "Menu": [
+   "125:4488",
+   2
+  ],
+  "Tooltip": [
+   "125:4566",
+   2
+  ],
+  "Invite Sheet": [
+   "125:5278",
+   2
+  ],
+  "Poll Builder": [
+   "125:5437",
+   2
+  ],
+  "Progress": [
+   "126:4394",
+   3
+  ],
+  "Skeleton": [
+   "126:4474",
+   3
+  ],
+  "Empty State": [
+   "126:4562",
+   3
+  ],
+  "Keyboard Safe Layout": [
+   "126:4709",
+   2
+  ]
+ },
+ "comps": {
+  "Icon/chev": "101:3241",
+  "Icon/plus": "101:3246",
+  "Icon/person+": "101:3252",
+  "Icon/trips": "101:3258",
+  "Icon/plan": "101:3264",
+  "Icon/poll": "101:3269",
+  "Icon/money": "101:3275",
+  "Icon/check": "101:3280",
+  "Icon/bell": "101:3286",
+  "Icon/wine": "101:3291",
+  "Icon/fork": "101:3296",
+  "Icon/arrow": "101:3301",
+  "Icon/x": "101:3306",
+  "Icon/explore": "101:3312",
+  "Icon/card": "101:3318",
+  "Avatar Stack": "101:3339",
+  "Poll Card": "102:3329",
+  "Tab Bar": "103:3317",
+  "Settle Sheet": "104:3373",
+  "Confirmation / All squared up": "104:3446"
+ },
+ "boards": {
+  "Board / Icons": "101:3234",
+  "Board / Colour \u00b7 semantic (Light)": "105:3361",
+  "Board / Colour \u00b7 semantic (Dark)": "105:3518",
+  "Board / Colour \u00b7 primitives": "105:3675",
+  "Board / Type": "105:3829",
+  "Board / Spacing & radius": "105:3881",
+  "Board / Glass, blur & shadow": "105:3947",
+  "Board / Components in Dark \u00b7 Graphite Pearl": "105:3962",
+  "Reference / Prism design-system sheet (HTML render, 1920w)": "105:4207",
+  "Component / Button": "116:3762",
+  "Component / Icon Button": "116:3873",
+  "Component / Avatar": "116:3927",
+  "Component / Balance Chip": "117:3670",
+  "Component / Poll Option": "117:3754",
+  "Component / Countdown": "117:3889",
+  "Component / Explore Ring": "117:3952",
+  "Component / Nav Bar": "118:3754",
+  "Component / Tab Bar": "118:3830",
+  "Component / Push Notification": "118:3955",
+  "Component / Live Activity": "118:4060",
+  "Component / Toast": "118:4121",
+  "Component / Banner": "118:4216",
+  "Component / Expense Row": "121:3868",
+  "Component / Receipt Split Item": "121:3979",
+  "Component / Settle-up Row": "121:4075",
+  "Component / Debt Simplification": "121:4175",
+  "Component / Settle Sheet": "121:4248",
+  "Component / Celebration Overlay": "121:4319",
+  "Component / Text Field": "122:3964",
+  "Component / Search Field": "122:4059",
+  "Component / Filter Chip": "122:4130",
+  "Component / Segmented Control": "122:4221",
+  "Component / Toggle": "122:4287",
+  "Component / Stepper": "122:4360",
+  "Component / Date Time Chip": "122:4430",
+  "Component / List Row": "123:4042",
+  "Component / Trip Card": "123:4176",
+  "Component / Place Card": "123:4265",
+  "Component / Itinerary Item": "123:4376",
+  "Component / Member Picker Row": "123:4528",
+  "Component / Bottom Sheet": "125:4271",
+  "Component / Alert": "125:4390",
+  "Component / Menu": "125:4489",
+  "Component / Tooltip": "125:4567",
+  "Component / Invite Sheet": "125:5279",
+  "Component / Poll Builder": "125:5438",
+  "Component / Progress": "126:4395",
+  "Component / Skeleton": "126:4475",
+  "Component / Empty State": "126:4563",
+  "Component / Keyboard Safe Layout": "126:4710"
+ },
+ "instances": 1047,
+ "broken": 0,
+ "run": "prism-v1",
+ "fileKey": "z4TesJNPe6UfvgwmWtIA4y",
+ "updated": "2026-10-18",
+ "wireflow": {
+  "01": "141:7176",
+  "02": "134:4945",
+  "03": "134:5044",
+  "04": "134:5169",
+  "05": "137:6191",
+  "06": "137:6241",
+  "07": "135:5363",
+  "08": "143:7344",
+  "09": "137:6385",
+  "10": "134:5844"
+ },
+ "hifi": {
+  "06 light": "137:6528",
+  "06 dark": "137:6668",
+  "09 light": "137:6808",
+  "09 dark": "137:6901",
+  "01": "141:7268",
+  "02": "136:5788",
+  "03": "136:5886",
+  "04": "136:6010",
+  "05": "137:6482",
+  "07": "136:6217",
+  "08": "143:7455",
+  "10": "136:6452"
+ },
+ "scripts": "/workspace/tripup/figma-scripts (prelude4.js + screens.js are the screen builders)",
+ "edgeCases": {
+  "E01 Tie \u00b7 Ari picks": "144:6775",
+  "E02 Mark paid in cash": "143:6885",
+  "E03 Add Ren from TripUp": "143:7010",
+  "E04 Ren votes on the web": "141:6559",
+  "E05 Explore \u00b7 step 3 of 5": "141:6630",
+  "E06 Explore \u00b7 6 picks": "141:6691",
+  "E07 How we got here": "143:7157",
+  "E08 Empty \u00b7 no trips": "141:6981",
+  "E09 Empty \u00b7 no expenses": "141:7043",
+  "E10 Squared-up recap": "142:7072"
+ },
+ "notes_2026-10-16_edge": "Section 09 resized to 4016x5210; section 10 moved to y=32505. 743 instances in sections 08+09, 0 broken.",
+ "review_pass_2026_10_16": {
   "page": "108:3229",
-  "pages": [
-    [
-      "0:1",
-      "Page 1"
-    ],
-    [
-      "3:402",
-      "Icon Library MUI"
-    ],
-    [
-      "108:3229",
-      "AI Enabled"
-    ]
+  "sections": {
+   "00_start_here": "161:8661",
+   "cover": "161:8664",
+   "guide": "161:8759",
+   "checklist": "161:8860",
+   "10_prototype": "114:3638",
+   "prototype_link_card": "152:7167",
+   "11_design_decisions": "153:7679",
+   "12_before_after": "153:7892",
+   "before_after_pairs": [
+    "153:7895",
+    "153:7972",
+    "153:8161",
+    "153:8260",
+    "153:8406",
+    "153:8608"
+   ],
+   "13_success_metrics": "154:8266",
+   "14_accessibility": "157:8442"
+  },
+  "walkthrough_deck_slides": [
+   "159:8442",
+   "159:8525",
+   "158:8558",
+   "158:8575",
+   "158:8729",
+   "158:8937",
+   "159:8557",
+   "159:8684",
+   "159:8778",
+   "159:8855",
+   "159:8951",
+   "159:9001"
   ],
-  "sections": [
-    [
-      "108:3230",
-      "01 · Mood boards",
-      0,
-      0,
-      8160,
-      1600
-    ],
-    [
-      "108:3233",
-      "02 · Design System · Prism v1",
-      0,
-      1840,
-      14320,
-      16680
-    ],
-    [
-      "109:3579",
-      "03 · Research",
-      0,
-      18760,
-      7380,
-      1735
-    ],
-    [
-      "110:3836",
-      "04 · Personas",
-      0,
-      20735,
-      3580,
-      1413
-    ],
-    [
-      "111:3584",
-      "05 · Journey map",
-      3820,
-      20735,
-      3640,
-      1656
-    ],
-    [
-      "112:3584",
-      "06 · Feature tree",
-      0,
-      22631,
-      3740,
-      1616
-    ],
-    [
-      "113:3600",
-      "07 · Click flow / user flow",
-      3980,
-      22631,
-      4940,
-      2281
-    ],
-    [
-      "114:3600",
-      "08 · Wireflow",
-      0,
-      25152,
-      6780,
-      1663
-    ],
-    [
-      "114:3619",
-      "09 · Hi-fi",
-      0,
-      27055,
-      4016,
-      2786
-    ],
-    [
-      "114:3638",
-      "10 · Prototype",
-      0,
-      30081,
-      2600,
-      1184
-    ]
-  ],
-  "sets": {
-    "Button": [
-      "101:3392",
-      35
-    ],
-    "Icon Button": [
-      "116:3872",
-      7
-    ],
-    "Avatar": [
-      "101:3338",
-      6
-    ],
-    "Balance Chip": [
-      "102:3275",
-      4
-    ],
-    "Poll Option": [
-      "102:3328",
-      5
-    ],
-    "Countdown": [
-      "117:3888",
-      3
-    ],
-    "Explore Ring": [
-      "103:3405",
-      3
-    ],
-    "Nav Bar": [
-      "103:3305",
-      2
-    ],
-    "Tab Item": [
-      "103:3316",
-      2
-    ],
-    "Notification": [
-      "118:3954",
-      4
-    ],
-    "Live Activity": [
-      "118:4059",
-      2
-    ],
-    "Toast": [
-      "118:4120",
-      3
-    ],
-    "Banner": [
-      "118:4215",
-      4
-    ],
-    "Expense Row": [
-      "104:3334",
-      2
-    ],
-    "Receipt Split Item": [
-      "121:3978",
-      3
-    ],
-    "Settle-up Row": [
-      "104:3372",
-      5
-    ],
-    "Debt Simplification": [
-      "121:4174",
-      2
-    ],
-    "Celebration Overlay": [
-      "121:4318",
-      2
-    ],
-    "Text Field": [
-      "122:3963",
-      5
-    ],
-    "Search Field": [
-      "122:4058",
-      3
-    ],
-    "Filter Chip": [
-      "122:4129",
-      3
-    ],
-    "Segmented Control": [
-      "122:4220",
-      3
-    ],
-    "Toggle": [
-      "122:4286",
-      4
-    ],
-    "Stepper": [
-      "122:4359",
-      3
-    ],
-    "Date Time Chip": [
-      "122:4429",
-      3
-    ],
-    "List Row": [
-      "123:4041",
-      4
-    ],
-    "Trip Card": [
-      "123:4175",
-      3
-    ],
-    "Place Card": [
-      "123:4264",
-      3
-    ],
-    "Itinerary Item": [
-      "123:4375",
-      4
-    ],
-    "Member Picker Row": [
-      "123:4527",
-      4
-    ],
-    "Bottom Sheet": [
-      "125:4270",
-      2
-    ],
-    "Alert": [
-      "125:4389",
-      2
-    ],
-    "Menu": [
-      "125:4488",
-      2
-    ],
-    "Tooltip": [
-      "125:4566",
-      2
-    ],
-    "Invite Sheet": [
-      "125:5278",
-      2
-    ],
-    "Poll Builder": [
-      "125:5437",
-      2
-    ],
-    "Progress": [
-      "126:4394",
-      3
-    ],
-    "Skeleton": [
-      "126:4474",
-      3
-    ],
-    "Empty State": [
-      "126:4562",
-      3
-    ],
-    "Keyboard Safe Layout": [
-      "126:4709",
-      2
-    ]
+  "components": {
+   "status_bar": "149:6832",
+   "live_activity_set": "118:4059",
+   "live_activity_instances": [
+    "149:6794",
+    "149:6813"
+   ]
   },
-  "comps": {
-    "Icon/chev": "101:3241",
-    "Icon/plus": "101:3246",
-    "Icon/person+": "101:3252",
-    "Icon/trips": "101:3258",
-    "Icon/plan": "101:3264",
-    "Icon/poll": "101:3269",
-    "Icon/money": "101:3275",
-    "Icon/check": "101:3280",
-    "Icon/bell": "101:3286",
-    "Icon/wine": "101:3291",
-    "Icon/fork": "101:3296",
-    "Icon/arrow": "101:3301",
-    "Icon/x": "101:3306",
-    "Icon/explore": "101:3312",
-    "Icon/card": "101:3318",
-    "Avatar Stack": "101:3339",
-    "Poll Card": "102:3329",
-    "Tab Bar": "103:3317",
-    "Settle Sheet": "104:3373",
-    "Confirmation / All squared up": "104:3446"
+  "removed": [
+   "114:3657 (old cover)"
+  ]
+ },
+ "settle_v3_2026_10_18": {
+  "debtSimplificationSet": "121:4174",
+  "variants": {
+   "Tangled": "121:4135",
+   "Netting": "197:8975",
+   "Solved": "121:4153"
   },
-  "boards": {
-    "Board / Icons": "101:3234",
-    "Board / Colour · semantic (Light)": "105:3361",
-    "Board / Colour · semantic (Dark)": "105:3518",
-    "Board / Colour · primitives": "105:3675",
-    "Board / Type": "105:3829",
-    "Board / Spacing & radius": "105:3881",
-    "Board / Glass, blur & shadow": "105:3947",
-    "Board / Components in Dark · Graphite Pearl": "105:3962",
-    "Reference / Prism design-system sheet (HTML render, 1920w)": "105:4207",
-    "Component / Button": "116:3762",
-    "Component / Icon Button": "116:3873",
-    "Component / Avatar": "116:3927",
-    "Component / Balance Chip": "117:3670",
-    "Component / Poll Option": "117:3754",
-    "Component / Countdown": "117:3889",
-    "Component / Explore Ring": "117:3952",
-    "Component / Nav Bar": "118:3754",
-    "Component / Tab Bar": "118:3830",
-    "Component / Push Notification": "118:3955",
-    "Component / Live Activity": "118:4060",
-    "Component / Toast": "118:4121",
-    "Component / Banner": "118:4216",
-    "Component / Expense Row": "121:3868",
-    "Component / Receipt Split Item": "121:3979",
-    "Component / Settle-up Row": "121:4075",
-    "Component / Debt Simplification": "121:4175",
-    "Component / Settle Sheet": "121:4248",
-    "Component / Celebration Overlay": "121:4319",
-    "Component / Text Field": "122:3964",
-    "Component / Search Field": "122:4059",
-    "Component / Filter Chip": "122:4130",
-    "Component / Segmented Control": "122:4221",
-    "Component / Toggle": "122:4287",
-    "Component / Stepper": "122:4360",
-    "Component / Date Time Chip": "122:4430",
-    "Component / List Row": "123:4042",
-    "Component / Trip Card": "123:4176",
-    "Component / Place Card": "123:4265",
-    "Component / Itinerary Item": "123:4376",
-    "Component / Member Picker Row": "123:4528",
-    "Component / Bottom Sheet": "125:4271",
-    "Component / Alert": "125:4390",
-    "Component / Menu": "125:4489",
-    "Component / Tooltip": "125:4567",
-    "Component / Invite Sheet": "125:5279",
-    "Component / Poll Builder": "125:5438",
-    "Component / Progress": "126:4395",
-    "Component / Skeleton": "126:4475",
-    "Component / Empty State": "126:4563",
-    "Component / Keyboard Safe Layout": "126:4710"
-  },
-  "instances": 1047,
-  "broken": 0,
-  "run": "prism-v1",
-  "fileKey": "z4TesJNPe6UfvgwmWtIA4y",
-  "updated": "2026-10-18",
-  "wireflow": {
-    "01": "141:7176",
-    "02": "134:4945",
-    "03": "134:5044",
-    "04": "134:5169",
-    "05": "137:6191",
-    "06": "137:6241",
-    "07": "135:5363",
-    "08": "143:7344",
-    "09": "137:6385",
-    "10": "134:5844"
-  },
+  "matrix": "121:4221",
   "hifi": {
-    "06 light": "137:6528",
-    "06 dark": "137:6668",
-    "09 light": "137:6808",
-    "09 dark": "137:6901",
-    "01": "141:7268",
-    "02": "136:5788",
-    "03": "136:5886",
-    "04": "136:6010",
-    "05": "137:6482",
-    "07": "136:6217",
-    "08": "143:7455",
-    "10": "136:6452"
+   "09a Tangled": "201:9341",
+   "09b Netting": "201:9484",
+   "09 light": "137:6808",
+   "09 dark": "137:6901",
+   "labels": [
+    "201:9478",
+    "201:9618"
+   ]
   },
-  "scripts": "/workspace/tripup/figma-scripts (prelude4.js + screens.js are the screen builders)",
-  "edgeCases": {
-    "E01 Tie · Ari picks": "144:6775",
-    "E02 Mark paid in cash": "143:6885",
-    "E03 Add Ren from TripUp": "143:7010",
-    "E04 Ren votes on the web": "141:6559",
-    "E05 Explore · step 3 of 5": "141:6630",
-    "E06 Explore · 6 picks": "141:6691",
-    "E07 How we got here": "143:7157",
-    "E08 Empty · no trips": "141:6981",
-    "E09 Empty · no expenses": "141:7043",
-    "E10 Squared-up recap": "142:7072"
+  "celebration": {
+   "confirmation": "104:3446",
+   "overlaySet": "121:4318",
+   "rich": "121:4299",
+   "reduceMotion": "121:4309"
   },
-  "notes_2026-10-16_edge": "Section 09 resized to 4016x5210; section 10 moved to y=32505. 743 instances in sections 08+09, 0 broken.",
-  "review_pass_2026_10_16": {
-    "page": "108:3229",
-    "sections": {
-      "00_start_here": "161:8661",
-      "cover": "161:8664",
-      "guide": "161:8759",
-      "checklist": "161:8860",
-      "10_prototype": "114:3638",
-      "prototype_link_card": "152:7167",
-      "11_design_decisions": "153:7679",
-      "12_before_after": "153:7892",
-      "before_after_pairs": [
-        "153:7895",
-        "153:7972",
-        "153:8161",
-        "153:8260",
-        "153:8406",
-        "153:8608"
-      ],
-      "13_success_metrics": "154:8266",
-      "14_accessibility": "157:8442"
-    },
-    "walkthrough_deck_slides": [
-      "159:8442",
-      "159:8525",
-      "158:8558",
-      "158:8575",
-      "158:8729",
-      "158:8937",
-      "159:8557",
-      "159:8684",
-      "159:8778",
-      "159:8855",
-      "159:8951",
-      "159:9001"
-    ],
-    "components": {
-      "status_bar": "149:6832",
-      "live_activity_set": "118:4059",
-      "live_activity_instances": [
-        "149:6794",
-        "149:6813"
-      ]
-    },
-    "removed": [
-      "114:3657 (old cover)"
-    ]
+  "section12": {
+   "pair01": "204:9559",
+   "pair02": "204:9618",
+   "pair03": "204:9696"
   },
-  "settle_v3_2026_10_18": {
-    "debtSimplificationSet": "121:4174",
-    "variants": {
-      "Tangled": "121:4135",
-      "Netting": "197:8975",
-      "Solved": "121:4153"
-    },
-    "matrix": "121:4221",
-    "hifi": {
-      "09a Tangled": "201:9341",
-      "09b Netting": "201:9484",
-      "09 light": "137:6808",
-      "09 dark": "137:6901",
-      "labels": [
-        "201:9478",
-        "201:9618"
-      ]
-    },
-    "celebration": {
-      "confirmation": "104:3446",
-      "overlaySet": "121:4318",
-      "rich": "121:4299",
-      "reduceMotion": "121:4309"
-    },
-    "section12": {
-      "pair01": "204:9559",
-      "pair02": "204:9618",
-      "pair03": "204:9696"
-    },
-    "deck": {
-      "slide04": "158:8575",
-      "slide08": "159:8684",
-      "slide08Devices": [
-        "205:11969",
-        "205:11989",
-        "205:12010"
-      ]
-    },
-    "ledgerSource": "prototype/src/ledger.ts pairwise()+simplify(), dinner with Ren and Nic off wine",
-    "spec": "prototype/SPEC-settle-v3.md",
-    "scripts": "figma-scripts/v3/"
-  }
+  "deck": {
+   "slide04": "158:8575",
+   "slide08": "159:8684",
+   "slide08Devices": [
+    "205:11969",
+    "205:11989",
+    "205:12010"
+   ]
+  },
+  "ledgerSource": "prototype/src/ledger.ts pairwise()+simplify(), dinner with Ren and Nic off wine",
+  "spec": "prototype/SPEC-settle-v3.md",
+  "scripts": "figma-scripts/v3/"
+ },
+ "settle_v4_2026_10_18": {
+  "graph": {
+   "component": "121:4174",
+   "direction": "A Instrument",
+   "board": "Explore \u00b7 Tangled graph directions (DS page, beside the component)",
+   "scripts": "figma-scripts/v4/g.js, apply.js, explore.js"
+  },
+  "settleFlow": {
+   "light": {
+    "S1": "226:6928",
+    "S2": "226:7018",
+    "S3": "226:7100",
+    "S4": "226:7183",
+    "S5": "226:7245",
+    "S6": "226:7310",
+    "S7": "226:7385",
+    "E1": "226:7489",
+    "E2": "226:7563",
+    "E3": "226:7637"
+   },
+   "dark": {
+    "S1": "227:7211",
+    "S2": "227:7301",
+    "S3": "227:7383",
+    "S4": "227:7466",
+    "S5": "227:7528",
+    "S6": "227:7593",
+    "S7": "227:7668",
+    "E1": "227:7772",
+    "E2": "227:7846",
+    "E3": "227:7920"
+   },
+   "edgeE02": "143:6885",
+   "strip07": "227:7989",
+   "scripts": "figma-scripts/v4/flowlib.js, screens.js, run1.js, run2.js"
+  },
+  "sectionsY": {
+   "07": 22631,
+   "08": 25689,
+   "09": 27592,
+   "10": 37732,
+   "11": 39544,
+   "12": 41584,
+   "13": 43571,
+   "14": 45836
+  },
+  "page": "108:3229 (AI ENABLED); use prelude5.js"
+ },
+ "extended_flows_2026_10_18": {
+  "section": "261:8285",
+  "header": "283:10422",
+  "rows": {
+   "01": "267:8478",
+   "02": "268:18319",
+   "03": "270:8379",
+   "04": "272:8379",
+   "05": "291:10137",
+   "06": "274:8983",
+   "07": "275:9198",
+   "08": "276:9386",
+   "09": "277:9461",
+   "10": "278:9581",
+   "11": "279:9703",
+   "12": "292:10086"
+  },
+  "sets": {
+   "Tab Bar \u00b7 5": "264:8560",
+   "Choice Tile": "264:8581",
+   "Explore Feed Card": "264:8641",
+   "Photo Tile": "264:8658",
+   "Review Snippet": "264:8681",
+   "Activity Row": "264:8717",
+   "Day Pill": "264:8730",
+   "Filter Chips \u00b7 Experience": "266:8717",
+   "Stepper": "286:10097"
+  },
+  "ext": "264:8380",
+  "icons_count": 38
+ }
 }

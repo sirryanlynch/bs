@@ -136,7 +136,7 @@ export const DURATIONS: Record<Mode, { label: string; n: number }[]> = {
 };
 export const CURATE_STEPS = ['How are you getting there?', 'How long is OK?', 'What are you in the mood for?', 'Price per person'];
 /** Step 3 type options: the experience types Explore offers (no All, no Travel). */
-export const AFTER = [{ label: 'Food', id: 'food', f: 0.42 }, { label: 'Drinks', id: 'drinks', f: 0.6 }, { label: 'Culture', id: 'culture', f: 0.34 }, { label: 'Active', id: 'active', f: 0.22 }] as const;
+export const AFTER = [{ label: 'Food', id: 'food', f: 0.42 }, { label: 'Drinks', id: 'drinks', f: 0.6 }, { label: 'Culture', id: 'culture', f: 0.34 }, { label: 'Activity', id: 'active', f: 0.22 }] as const;
 export const BUDGET = [{ label: '$', f: 0.45 }, { label: '$$', f: 0.7 }, { label: '$$$', f: 0.5 }, { label: 'Any', f: 1 }];
 
 /* ---------- Trips ---------- */

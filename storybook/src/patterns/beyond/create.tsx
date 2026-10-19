@@ -7,6 +7,9 @@ import { DESTINATIONS, CREW } from '../../lib/beyond';
 import { QRCodeSVG } from 'qrcode.react';
 
 export const CREATE_STEPS = ['Where to', 'Dates', 'Cover photo', 'Starter budget', 'Invite crew'];
+/** v5 scope cut: the happy path keeps Where, Dates and Crew. Cover and budget get smart defaults. */
+const KEPT = [0, 1, 4];
+const prevKept = (step: number) => [...KEPT].reverse().find(i => i < step) ?? 0;
 const ROUTES = ['create/where', 'create/when', 'create/cover', 'create/budget', 'create/crew', 'create/review'];
 /** Days from the story's today (Sat, Oct 17, 2026) to a trip start. */
 const daysUntil = (y: number, m: number, dd: number) => Math.round((Date.UTC(y, m, dd) - Date.UTC(2026, 9, 17)) / 864e5);
@@ -18,8 +21,8 @@ function Shell({ step, title, lead, children, cta, ctaDisabled, onCta, onSkip }:
   return (
     <div className="b-scr">
       <div className="b-scroll has-cta">
-        <Top title="New trip" sub={step < 5 ? CREATE_STEPS[step] : 'Check it, then create'} back={step > 0} onBack={step > 0 ? () => go(ROUTES[step - 1]) : undefined} right={cancel} />
-        {step < 5 && <TripCreateStepper steps={CREATE_STEPS} current={step} onStep={i => go(ROUTES[i])} onSkip={onSkip} />}
+        <Top title="New trip" sub={step < 5 ? undefined : 'Check it, then create'} back={step > 0} onBack={step > 0 ? () => go(ROUTES[prevKept(step)]) : undefined} right={cancel} />
+        {step < 5 && <TripCreateStepper steps={KEPT.map(i => CREATE_STEPS[i])} current={Math.max(0, KEPT.indexOf(step))} onStep={i => go(ROUTES[KEPT[i]])} onSkip={onSkip} />}
         <div className="b-section"><h1 className="b-title">{title}</h1>{lead && <p className="b-help">{lead}</p>}</div>
         {children}
       </div>

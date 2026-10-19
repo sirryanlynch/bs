@@ -1,7 +1,7 @@
 import { people as P, crewWithRen, places, photo } from './data';
 // Numbers match the Figma hi-fi story: 7 people, Taberna wins 5 of 7 (71%), booked 8:30 PM, poll closes 7:30 PM.
 export const dinnerPoll = {
-  question: 'Dinner tonight?',
+  question: 'Saturday dinner',
   options: [
     { label: 'Taberna da Rua das Flores', detail: 'Chiado · petiscos · $$', votes: 3, voters: [P.mara, P.joao, P.sofia], photo: places.taberna.photo },
     { label: 'Cervejaria Ramiro', detail: 'Intendente · seafood · $$$', votes: 2, voters: [P.ari, P.tomas], photo: places.ramiro.photo },
@@ -9,7 +9,7 @@ export const dinnerPoll = {
   ],
 };
 export const dinnerPollClosed = {
-  question: 'Dinner tonight?',
+  question: 'Saturday dinner',
   options: [
     { label: 'Taberna da Rua das Flores', detail: 'Booked 8:30 PM · Chiado', votes: 5, voters: [P.mara, P.joao, P.sofia, P.nic, P.ren], photo: places.taberna.photo },
     { label: 'Cervejaria Ramiro', detail: 'Intendente · seafood · $$$', votes: 2, voters: [P.ari, P.tomas], photo: places.ramiro.photo },

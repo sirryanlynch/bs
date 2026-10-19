@@ -1,3 +1,4 @@
+import { CoreHeader } from './screens1';
 import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '@sb/components/core';
 import { DebtUntangle, UntanglePhase } from '@sb/components/untangle';
@@ -42,7 +43,7 @@ export function MoneyScreen() {
   void nm; void later;
   return (
     <div className="scr pt-v3">
-      <div className="p-sscroll pt-money">
+      <div className="p-sscroll pt-money has-hm">
         <MoneyBalance net={net} caption={caption} />
         <div className="pt-graph4"><DebtUntangle raw={raw} simple={plan} people={P} solved={s.simplified} controls="inline" startButton={false} skin="solver" onPhase={setPhase}
           onSolved={() => { haptic(16); if (!s.simplified) d({ t: 'set', patch: { simplified: true } }); d({ t: 'done', key: 'simplify' }); }} /></div>
@@ -50,7 +51,7 @@ export function MoneyScreen() {
         {phase === 1 && <NetLog nets={nets(raw)} people={P} me={s.me} />}
         {phase === 2 && <PairRows plan={plan} people={P} me={s.me} onRow={e => { if (e.from === 'ari' && s.me === 'ari') { haptic(); d({ t: 'view', v: 'choose' }); } }} />}
       </div>
-      <GlassHeader back="Lisbon Crew" onBack={() => { haptic(); d({ t: 'go', step: 'trip' }); }} title="Money" subtitle={`Whole trip · ${Object.keys(nets(raw)).length} people`} />
+      <CoreHeader onBack={() => { haptic(); d({ t: 'go', step: 'trip' }); }} backLabel="Back to Lisbon Crew" title="Money" sub={`Whole trip · ${Object.keys(nets(raw)).length} people`} />
       <div className="p-sbottom">
         {phase === 0 && !s.simplified ? <Button label={`Simplify ${raw.length} IOUs`} fullWidth onClick={() => { haptic(16); d({ t: 'set', patch: { simplified: true } }); }} />
           : phase < 2 ? <Button label="Finding the fewest payments" disabled fullWidth />
@@ -114,7 +115,7 @@ function MoneyProgress() {
         <SettleProgress done={done} total={plan.length} paid={paidSum} sum={sum} />
         <PlanRowsClickable rows={rows} onMine={() => d({ t: 'view', v: stl && stl.status === 'disputed' ? 'dispute' : stl && stl.status === 'queued' ? 'offline' : stl ? 'receipt' : 'choose' })} />
       </div>
-      <GlassHeader back="Lisbon Crew" onBack={() => { haptic(); d({ t: 'go', step: 'trip' }); }} title="Money" subtitle="Whole trip · 7 people" />
+      <CoreHeader onBack={() => { haptic(); d({ t: 'go', step: 'trip' }); }} backLabel="Back to Lisbon Crew" title="Money" sub="Whole trip · 7 people" />
       {cta && <div className="p-sbottom">{cta}</div>}
     </div>
   );
@@ -310,6 +311,7 @@ export function SquaredOverlay({ onAction }: { onAction: () => void }) {
   const handed = r2(plan.reduce((a, e) => a + (r2(s.transfers.filter(t => t.from === e.from && t.to === e.to).reduce((x, t) => x + t.amt, 0)) || e.amt), 0));
   const sum = r2(plan.reduce((a, e) => a + e.amt, 0));
   const carry = r2(sum - handed);
-  const body = carry > 0.004 ? `${plan.length} payments, ${usd2(handed)} handed over, ${usd2(carry)} carried to your next split.` : `${plan.length} payments, ${usd2(sum)} in total. Everyone in Lisbon Crew is at $0.00.`;
-  return <SquaredSheet rows={rows} total={[usd2(handed), `${plan.length} of ${plan.length}`]} body={body} onAction={onAction} />;
+  const body = carry > 0.004 ? `${plan.length} payments · ${usd2(handed)} · ${usd2(carry)} rolls over` : `${plan.length} payments · ${usd2(sum)} · everyone at $0.00`;
+  const people = [...new Set(plan.flatMap(e => [e.from, e.to]))];
+  return <SquaredSheet rows={rows} people={people} body={body} onAction={onAction} />;
 }

@@ -28,8 +28,8 @@ export function ExploreCard({ place, saved, inPoll, mode = 'walk', onSave, onAdd
           <BIcon name="star" size={14} fill />{place.rating.toFixed(1)}</p>
         <p className="b-xcard-quote">“{place.snippet.text}” <span>{place.snippet.who}</span></p>
         <div className="b-xcard-actions">
-          <button type="button" className={`b-act ${saved ? 'is-on' : ''}`} aria-pressed={!!saved} onClick={onSave}><BIcon name="bookmark" size={20} fill={saved} />{saved ? 'Saved to trip' : 'Save to trip'}</button>
-          <button type="button" className={`b-act is-accent ${inPoll ? 'is-on' : ''}`} onClick={onAddToPoll} disabled={inPoll}><BIcon name={inPoll ? 'check' : 'poll'} size={20} />{inPoll ? 'In the poll' : 'Add to poll'}</button>
+          <button type="button" className={`b-act ${saved ? 'is-on' : ''}`} aria-pressed={!!saved} onClick={onSave}><BIcon name="bookmark" size={20} fill={saved} />{saved ? 'Saved' : 'Save'}</button>
+          <button type="button" className={`b-act is-accent ${inPoll ? 'is-on' : ''}`} onClick={onAddToPoll} disabled={inPoll}><BIcon name={inPoll ? 'check' : 'add'} size={20} />{inPoll ? 'In the poll' : 'Add to poll'}</button>
         </div>
       </div>
     </article>

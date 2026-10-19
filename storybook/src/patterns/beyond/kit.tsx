@@ -23,7 +23,7 @@ export type FlowState = {
   guest: { voted?: number; banner: boolean };
   notif: { expanded?: string; done: string[]; prefs: Record<string, boolean> };
   settings: { appearance: 'light' | 'dark' | 'system'; reduceMotion: boolean; albumDefault: 'crew' | 'public'; publicName: 'initial' | 'anon'; method: string };
-  poll: { day: string; time: string; category: ExperienceType; what: string; title: string; options: { label: string; from?: string; photo?: string }[]; draft: string; sent: boolean; seeded: boolean };
+  poll: { day: string; time: string; closes: string; today: string; category: ExperienceType; what: string; title: string; options: { label: string; from?: string; photo?: string }[]; draft: string; sent: boolean; seeded: boolean };
   toast?: { msg: string; id: number };
 };
 export const LINES_ALL = ['ari', 'mara', 'nic', 'joao', 'sofia', 'tomas', 'ren'];
@@ -38,12 +38,25 @@ export const flowInitial = (): FlowState => ({
   guest: { banner: true },
   notif: { done: [], prefs: { polls: true, votes: false, photos: true, money: true, reminders: true, quiet: true } },
   settings: { appearance: 'system', reduceMotion: false, albumDefault: 'crew', publicName: 'initial', method: 'Apple Pay' },
-  poll: { day: 'oct17', time: '11:30 PM', category: 'drinks', what: '', title: '', options: [], draft: '', sent: false, seeded: false },
+  poll: { day: 'oct17', time: '8:30 PM', closes: '7:30 PM', today: 'oct17', category: 'food', what: '', title: '', options: [], draft: '', sent: false, seeded: false },
 });
 export type FlowAction =
   | { t: 'go'; route: string; replace?: boolean } | { t: 'back' } | { t: 'toast'; msg: string }
   | { t: 'patch'; k: keyof FlowState; v: any } | { t: 'set'; v: Partial<FlowState> } | { t: 'reset' } | { t: 'load'; s: FlowState };
+/** Screens cut in the scope pass. Old deep links and in-app buttons land on the nearest kept screen. */
+export const REDIRECT: Record<string, string> = {
+  'create/cover': 'create/crew', 'create/budget': 'create/crew', 'create/review': 'create/done',
+  'place/park/add': 'place/park', 'place/taberna/add': 'place/taberna', 'polls': 'poll/new/sent', 'plan/edit': 'plan/day',
+  'expense/items': 'expense/assign', 'expense/split': 'expense/done', 'expense/tip': 'expense/done', 'expense/review': 'expense/done',
+  'album/upload': 'album', 'album/tag': 'album', 'guest/install': 'guest/welcome',
+  'activity/lock': 'activity', 'activity/settings': 'activity', 'recap/places': 'recap',
+  'profile/payments': 'profile', 'profile/appearance': 'profile', 'profile/privacy': 'profile',
+  'expense/failed': 'expense/scan', 'poll/novotes': 'poll/new/sent', 'explore/offline': 'explore',
+};
+export const resolveRoute = (r: string) => REDIRECT[r] ?? r;
+
 export function flowReducer(s: FlowState, a: FlowAction): FlowState {
+  if (a.t === 'go') a = { ...a, route: resolveRoute(a.route) };
   switch (a.t) {
     case 'go': return a.route === s.route ? s : { ...s, route: a.route, history: a.replace ? s.history : [...s.history.slice(-30), s.route] };
     case 'back': { const h = [...s.history]; const r = h.pop(); return r ? { ...s, route: r, history: h } : s; }
@@ -57,6 +70,7 @@ export function flowReducer(s: FlowState, a: FlowAction): FlowState {
 
 /** Deep-link presets: each route lands with the state that makes it meaningful. */
 export function presetFor(route: string, base: FlowState = flowInitial()): FlowState {
+  route = resolveRoute(route);
   let s: FlowState = { ...base, route, history: [] };
   const P = (k: keyof FlowState, v: any) => { s = { ...s, [k]: { ...(s[k] as any), ...v } }; };
   const porto = DESTINATIONS[0];
@@ -78,8 +92,9 @@ export function presetFor(route: string, base: FlowState = flowInitial()): FlowS
   if (['expense/split', 'expense/tip', 'expense/review', 'expense/done'].includes(route)) P('expense', { assign: { ...s.expense.assign, wine: ['ari', 'mara', 'joao', 'sofia', 'tomas'] }, saved: route === 'expense/done' });
   if (route === 'guest/voted' || route === 'guest/install' || route === 'guest/welcome') P('guest', { voted: 0 });
   if (route === 'activity/lock') P('notif', { expanded: 'vote' });
-  if (route === 'poll/new') P('poll', { day: 'oct13', time: '6:00 AM', category: 'active', what: 'Scuba diving', title: '', options: [{ label: 'Dive Point Sesimbra', from: '2 dives · $95 each · 50 min drive', photo: './photos/px_37296507.jpg' }, { label: 'Arrábida coast dive', from: '1 dive · $70 each · 45 min drive' }], draft: 'Sleep in, meet at 11:00 AM', seeded: true });
-  if (route === 'poll/new/sent') P('poll', { day: 'oct13', time: '6:00 AM', category: 'active', what: 'Scuba diving', title: '', options: [{ label: 'Dive Point Sesimbra' }, { label: 'Arrábida coast dive' }], sent: true, seeded: true });
+  if (route === 'poll/new') P('poll', { day: 'oct13', time: '6:00 AM', closes: '10:00 PM', today: 'oct12', category: 'active', what: 'Scuba diving', title: '', options: [{ label: 'Dive Point Sesimbra', from: '2 dives · $95 each · 50 min drive', photo: './photos/px_3113225.jpg' }, { label: 'Arrábida coast dive', from: '1 dive · $70 each · 45 min drive', photo: './photos/px_29693824.jpg' }, { label: 'Sleep in, meet at 11:00 AM', from: 'Typed by you' }], draft: '', seeded: true });
+  if (route === 'poll/new/dinner') P('poll', { day: 'oct17', time: '8:30 PM', closes: '7:30 PM', today: 'oct17', category: 'food', what: '', title: '', options: [{ label: 'Taberna da Rua das Flores', from: 'Petiscos · $$ · 6 min walk', photo: './photos/px_34110274.jpg' }, { label: 'Cervejaria Ramiro', from: 'Seafood · $$$ · 14 min walk', photo: './photos/px_6314564.jpg' }, { label: 'Park Rooftop', from: 'Rooftop bar · $$ · 9 min walk', photo: './photos/px_33659321.jpg' }], draft: '', seeded: true });
+  if (route === 'poll/new/sent') P('poll', { day: 'oct13', time: '6:00 AM', closes: '10:00 PM', today: 'oct12', category: 'active', what: 'Scuba diving', title: '', options: [{ label: 'Dive Point Sesimbra' }, { label: 'Arrábida coast dive' }], sent: true, seeded: true });
   return s;
 }
 
@@ -103,7 +118,7 @@ export const TABS = [
   { id: 'explore', label: 'Explore', icon: 'compass' as const }, { id: 'polls', label: 'Polls', icon: 'poll' as const }, { id: 'money', label: 'Money', icon: 'wallet' as const },
 ];
 /** Where each item in the global create menu lands. */
-export const CREATE_ROUTES: Record<CreateKind, string> = { poll: 'poll/new', expense: 'expense/scan', photos: 'album/upload', plan: 'plan/add', trip: 'create/where' };
+export const CREATE_ROUTES: Record<CreateKind, string> = { poll: 'poll/new', expense: 'expense/scan', photos: 'album', plan: 'plan/add', trip: 'create/where' };
 /** The 5-tab bar plus the global + (create menu) that sits next to it on every tab. */
 export function GlobalTabs({ active, onTab, onCreate }: { active: string; onTab: (id: string) => void; onCreate: (k: CreateKind) => void }) {
   const [open, setOpen] = useState(false);

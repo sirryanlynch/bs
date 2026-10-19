@@ -15,9 +15,8 @@ body { background: #E9E8EF; }
 .pt-caption.is-tour { color: var(--color-text-primary); font: var(--type-ui-callout); }
 
 .pt-screen-inner { position: absolute; inset: 0; background: var(--color-bg-canvas); color: var(--color-text-primary); overflow: hidden; }
-.pt-anim { position: absolute; inset: 0; animation: pt-in 460ms var(--motion-spring-ui, cubic-bezier(.2,.9,.25,1.05)) both; }
+.pt-anim { position: absolute; inset: 0; }
 @keyframes pt-in { from { opacity: 0; transform: translateX(28px) scale(.995); } to { opacity: 1; transform: none; } }
-[data-motion="reduce"] .pt-anim { animation: pt-fade 160ms ease both; }
 @keyframes pt-fade { from { opacity: 0; } to { opacity: 1; } }
 .pt-toast { position: absolute; z-index: 45; left: 16px; right: 16px; top: 56px; display: flex; justify-content: center; pointer-events: none; }
 .pt-toast .p-toast { pointer-events: auto; max-width: 100%; }
@@ -156,7 +155,7 @@ html.is-embed, html.is-embed body, html.is-embed .prism, html.is-embed .pt-embed
 .prism .pt-place-check { position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,.9); box-shadow: inset 0 0 0 1.5px rgba(0,0,0,.12); display: grid; place-items: center; color: #fff; }
 .prism .pt-place.is-on .pt-place-check { background: var(--color-accent-primary); box-shadow: none; }
 .prism .pt-question { font: var(--type-display-m); font-size: 30px; line-height: 34px; }
-.prism .pt-pillval { display: inline-flex; align-items: center; gap: 5px; height: 30px; padding: 0 12px; border-radius: 15px; background: var(--color-accent-subtle); color: var(--color-accent-text); font: 600 14px var(--font-ui); }
+.prism .pt-pillval { display: inline-flex; align-items: center; gap: 4px; height: 30px; padding: 0 12px; border-radius: 15px; background: var(--color-accent-subtle); color: var(--color-accent-text); font: 600 14px var(--font-ui); }
 .prism .pt-lock .p-lock-inner { padding-top: 72px; }
 .prism .pt-lock-time { margin-bottom: 170px !important; }
 .prism .pt-notifbtn { all: unset; display: block; cursor: pointer; }

@@ -6,9 +6,16 @@ import { ExploreFeed, CurateRing, CurateFlow, CurateCount, curateCount, curateSt
 import { Stepper } from '../../components/beyond/stepper';
 import { FilterChips, FilterItem } from '../../components/beyond/filterchips';
 import { PlaceGallery, PlaceCommunityCard, ContributeForm } from '../../components/beyond/place';
-import { DayTimePicker, CategoryPicker, OptionEditor } from '../../components/beyond/pollnew';
+import { PollComposer, ComposerPick, defaultTitle } from '../../components/beyond/composer';
+import { FindHeader, FindQuestion, FindPicks, findBack, findSkip } from '../../components/beyond/findplace';
 import { COMMUNITY, placeById, reviewsOf, POLLS, DAYS, ALBUM } from '../../lib/beyond';
 import { typeLabel } from '../../data/experienceTypes';
+import { photo } from '../../lib/data';
+
+/** Save on glass. Saved shows a filled Iris bookmark, never a dark fill, so it sits calmly next to the Iris primary. */
+export function GlassSave({ saved, onClick }: { saved: boolean; onClick: () => void }) {
+  return <button type="button" className={`b-glasssave tu-glass ${saved ? 'is-saved' : ''}`} aria-pressed={saved} onClick={onClick}><BIcon name="bookmark" size={20} fill={saved} />{saved ? 'Saved' : 'Save'}</button>;
+}
 
 /* ---------------- Explore feed (its own tab) ---------------- */
 export function ExploreFeedScreen() {
@@ -24,12 +31,12 @@ export function ExploreFeedScreen() {
           <div><p className="b-overline">Lisbon · from TripUp travelers</p><h1 className="b-title-xl">Explore</h1></div>
           <div className="b-head-tools"><TopBtn icon="add" label="Start a poll" accent onClick={() => go('poll/new')} /></div>
         </div>
-        <button type="button" className="b-curate-card" onClick={() => go('explore/curate')}>
-          {st >= 4 ? <CurateRing done={4} total={4} count={6} size={64} /> : <span className="b-curate-ico"><BIcon name="explore" size={24} /></span>}
-          <span><b>{st >= 4 ? '6 picks for tonight' : st ? 'Keep going' : 'Find a place for tonight'}</b><small>{st ? curateSummary(s.curate).join(' · ') || 'Any way' : '4 quick steps, 6 picks for the crew'}</small></span>
-          <BIcon name="chevronRight" size={20} className="b-muted" />
+        <button type="button" className="b-findhero" onClick={() => go('explore/curate')}>
+          <img src={photo.roofs} alt="" />
+          <span className="b-findhero-t"><b>{st >= 4 ? '6 picks for tonight' : st ? 'Keep going' : 'Find a place for tonight'}</b><small className="tu-num">{st ? curateSummary(s.curate).join(' · ') || 'Any way' : '4 quick questions · 6 picks for the crew'}</small></span>
+          <span className="b-findhero-go" aria-hidden><BIcon name="arrowRight" size={20} /></span>
         </button>
-        <FilterChips value={xt} surface="explore" counts={counts} onChange={t => d({ t: 'set', v: { exploreXt: t } })} />
+        <FilterChips value={xt} surface="explore" counts={counts} onChange={t => { d({ t: 'set', v: { exploreXt: t } }); const sc = document.querySelector('.b-scr .b-scroll') as HTMLElement | null; const ch = document.querySelector('.b-scr .b-fchips') as HTMLElement | null; if (sc && ch && sc.scrollTop > ch.offsetTop - 70) sc.scrollTo({ top: ch.offsetTop - 70, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }} />
         <div className="b-feed">
           {COMMUNITY.map((p, i) => (
             <FilterItem key={p.id} show={xt === 'all' || p.kind === xt}>
@@ -59,26 +66,21 @@ export function AddPollSheetScreen() {
 
 /* ---------------- Curate: progressive disclosure, 4 steps ---------------- */
 export function CurateScreen() {
-  const { s, d, go, back } = useFlow(); const a = s.curate; const st = curateStage(a); const step = curateStep(st);
+  const { s, d, go, back } = useFlow(); const a = s.curate; const st = curateStage(a);
   const m = curateMode(a);
   const list = st >= 4 ? COMMUNITY.filter(p => (m === 'walk' ? p.walk <= 20 : m === 'drive' ? p.drive <= 40 : true)).slice(0, 6) : [];
   const set = (v: CurateAnswers) => d({ t: 'set', v: { curate: v } });
-  /* The nav bar's back steps back inside the flow and keeps earlier answers; on step 1 it exits. */
-  const navBack = () => (step === 0 ? back() : set(curateUpTo(a, step - 1)));
+  /* Back steps back one question and keeps earlier answers; on the first question it exits. */
+  const navBack = () => (st === 0 ? back() : set(findBack(a)));
   return (
-    <div className="b-scr">
-      <div className={`b-scroll ${st >= 4 ? 'has-cta' : ''}`}>
-        <Top title="Find a place" sub={st < 4 ? 'For 7 · tonight' : `${list.length} picks for tonight`} onBack={navBack} />
-        <Stepper steps={CURATE_LABELS} current={step} label="Find a place progress" onStep={i => set(curateUpTo(a, i))} onSkip={st < 4 ? () => set(curateSkip(a)) : undefined} />
-        {st < 4 ? <><CurateCount answers={a} /><CurateFlow key={step} answers={a} onAnswer={set} /></>
-          : (<div className="b-section anim-rise">
-              <div className="b-picks-head"><CurateRing done={4} total={4} count={list.length} size={88} /><span><b>All answered</b><small>Sorted by how often crews like yours booked</small><span className="b-curate-trail">{curateSummary(a).join(' · ')}</span></span><button type="button" className="b-textbtn" onClick={() => set({})}>Edit</button></div>
-              <div className="b-list">{list.map(p => (
-                <button key={p.id} type="button" className="b-listrow" onClick={() => go(`place/${p.id}`)}><img className="b-thumb" src={p.photos[0]} alt="" /><span className="b-listrow-text"><b>{p.name}</b><small className="tu-num">{p.type} · {p.price} · {distanceText(p, m)}</small></span><BIcon name="chevronRight" size={20} className="b-muted" /></button>
-              ))}</div>
-            </div>)}
+    <div className="b-scr b-cmp">
+      <div className="b-cmp-amb" aria-hidden />
+      <FindHeader answers={a} onBack={navBack} onSkip={() => set(findSkip(a))} />
+      <div className={`b-scroll b-cmp-scroll ${st >= 4 ? 'has-cta' : 'is-q'}`}>
+        {st < 4 ? <FindQuestion answers={a} onAnswer={set} /> : <FindPicks answers={a} list={list} onOpen={id => go(`place/${id}`)} />}
       </div>
-      {st >= 4 && <div className="b-bottom"><Button label="Start a poll with 3" fullWidth onClick={() => { d({ t: 'patch', k: 'poll', v: { options: list.slice(0, 3).map(p => ({ label: p.name, from: `From Explore · ${distanceText(p, m)}`, photo: p.photos[0] })), category: (['food', 'drinks', 'culture', 'active'] as const)[Math.max(0, a.after ?? 0)], what: '', seeded: false, sent: false, title: '' } }); go('poll/new'); }} /></div>}
+      {st >= 4 && <div className="b-cmp-bottom"><button type="button" className="b-cmp-cta" onClick={() => { d({ t: 'patch', k: 'poll', v: { options: list.slice(0, 3).map(p => ({ label: p.name, from: `${p.type} · ${p.price} · ${distanceText(p, m)}`, photo: p.photos[0] })), category: (['food', 'drinks', 'culture', 'active'] as const)[a.after != null && a.after >= 0 ? a.after : 0], title: '', what: '' } }); go('poll/new'); }}>Start a poll with 3</button>
+        <p className="b-cmp-rule">The top 3 become options. You can change them.</p></div>}
     </div>
   );
 }
@@ -97,7 +99,7 @@ export function PlaceScreen({ id }: { id: string }) {
         <PlaceCommunityCard place={p} reviews={reviewsOf(p.id)} mine={s.place.mine && id === 'taberna' ? s.place.mine : undefined} beenThere={visited && !(s.place.mine && id === 'taberna') ? (p.id === 'taberna' ? 'tonight' : 'on Oct 15') : undefined} onContribute={() => go(`place/${p.id}/add`)} />
       </div>
       <div className="b-bottom">
-        <Button label={saved ? 'Saved' : 'Save to trip'} icon={saved ? 'check' : undefined} variant="secondary" fullWidth onClick={() => { d({ t: 'set', v: { saved: saved ? s.saved.filter(x => x !== p.id) : [...s.saved, p.id] } }); toast(saved ? 'Removed from Lisbon Crew' : 'Saved to Lisbon Crew'); }} />
+        <GlassSave saved={saved} onClick={() => { d({ t: 'set', v: { saved: saved ? s.saved.filter(x => x !== p.id) : [...s.saved, p.id] } }); toast(saved ? 'Removed from Lisbon Crew' : 'Saved to Lisbon Crew'); }} />
         <Button label={s.inPoll.includes(p.id) ? 'In the poll' : 'Add to poll'} fullWidth disabled={s.inPoll.includes(p.id)} onClick={() => { d({ t: 'set', v: { sheetPlace: p.id } }); go('explore/addpoll'); }} />
       </div>
     </div>
@@ -150,25 +152,13 @@ export function PollsScreen() {
 /* ---------------- Poll composer: any day, any time, any kind of plan ---------------- */
 export function PollNewScreen() {
   const { s, d, go, back } = useFlow(); const p = s.poll;
-  const day = DAYS.find(x => x.id === p.day)!;
-  const auto = `${p.what.trim() || typeLabel(p.category)}, ${day.label.split(',')[0]} at ${p.time}?`;
-  const title = p.title || auto;
-  const add = () => { if (!p.draft.trim()) return; d({ t: 'patch', k: 'poll', v: { options: [...p.options, { label: p.draft.trim(), from: 'Typed by you' }], draft: '' } }); };
+  const day = DAYS.find(x => x.id === p.day) ?? DAYS[DAYS.length - 1];
+  const title = p.title.trim() || (p.what ? p.what : defaultTitle(day.dow, p.category, p.time));
+  const picks: ComposerPick[] = COMMUNITY.map(c => ({ id: c.id, name: c.name, kind: c.kind, photo: c.photos[0], meta: `${c.type} · ${c.price} · ${c.walk ? `${c.walk} min walk` : c.area}` }));
   return (
-    <div className="b-scr">
-      <div className="b-scroll has-cta">
-        <Top title="New poll" sub="Lisbon Crew" onBack={back} />
-        <label className="b-polltitle"><span className="sr-only">Question</span><textarea rows={2} value={title.replace(/ (AM|PM)\b/g, '\u00a0$1')} onChange={e => d({ t: 'patch', k: 'poll', v: { title: e.target.value.replace(/\n/g, ' ').replace(/\u00a0/g, ' ') } })} aria-label="Question" /></label>
-        <section className="b-section"><h2 className="b-overline">What</h2><label className="b-search is-flat"><BIcon name="edit" size={20} /><input value={p.what} placeholder="Scuba diving, dinner, a day trip" onChange={e => d({ t: 'patch', k: 'poll', v: { what: e.target.value, title: '' } })} aria-label="What" /></label></section>
-        <section className="b-section"><h2 className="b-overline">Type</h2><CategoryPicker value={p.category} onChange={c => d({ t: 'patch', k: 'poll', v: { category: c, title: '' } })} /></section>
-        <section className="b-section"><h2 className="b-overline">When</h2><DayTimePicker days={DAYS} day={p.day} time={p.time} onDay={id => d({ t: 'patch', k: 'poll', v: { day: id } })} onTime={t => d({ t: 'patch', k: 'poll', v: { time: t } })} /></section>
-        <section className="b-section"><h2 className="b-overline">Options</h2>
-          <OptionEditor options={p.options} draft={p.draft} onDraft={t => d({ t: 'patch', k: 'poll', v: { draft: t } })} onAdd={add} onRemove={i => d({ t: 'patch', k: 'poll', v: { options: p.options.filter((_, k) => k !== i) } })} onExplore={() => go('explore')} />
-        </section>
-        <p className="b-fine tu-num">Closes at 10:00 PM, or when all 7 have voted. Ties go to you.</p>
-      </div>
-      <div className="b-bottom"><Button label={p.options.length < 2 ? `Add ${2 - p.options.length} more ${p.options.length === 1 ? 'option' : 'options'}` : 'Send to crew · closes 10:00 PM'} fullWidth disabled={p.options.length < 2} onClick={() => { d({ t: 'patch', k: 'poll', v: { sent: true, title } }); go('poll/new/sent', true); }} /></div>
-    </div>
+    <PollComposer value={{ title: p.title || p.what, category: p.category, day: p.day, time: p.time, closes: p.closes, options: p.options }} days={DAYS} today={p.today} picks={picks} onBack={back}
+      onChange={v => d({ t: 'patch', k: 'poll', v: { ...v, ...(v.title !== undefined ? { what: '' } : {}) } })}
+      onSend={() => { d({ t: 'patch', k: 'poll', v: { sent: true, title } }); go('poll/new/sent', true); }} />
   );
 }
 export function PollSentScreen() {

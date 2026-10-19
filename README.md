@@ -1,6 +1,6 @@
 # TripUp
 
-TripUp is a group trip app for the two arguments every trip has: where to eat, and who owes what. I designed one night in Lisbon, from Ren joining on a guest link through a dinner poll to a bill that squares up. This repo holds a nine-slide deck, the long case study, the clickable prototype, and Prism, the design system behind both.
+TripUp is a group trip app for the two arguments every trip has: where to eat, and who owes what. I designed one night in Lisbon, from Ren joining on a guest link through a dinner poll to a bill that squares up. This repo holds a ten-slide deck, the long case study, the clickable prototype, and Prism, the design system behind both.
 
 ## See it
 

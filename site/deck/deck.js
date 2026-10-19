@@ -24,6 +24,7 @@
     [[-10, -20, .9], [64, 10, .9], [40, 72, .8], [80, 70, .6]],
     [[60, -30, 1], [-20, 50, .8], [70, 70, .8], [0, 90, .6]],
     [[56, -26, 1.2], [-18, 30, 1], [62, 58, 1], [2, 74, .9]],
+    [[-16, -20, .9], [68, -6, 1], [54, 74, .8], [-6, 80, .6]],
     [[70, -30, .8], [-25, 60, .7], [65, 80, .6], [0, 95, .5]],
     [[-12, -24, 1], [66, 0, .9], [58, 70, .8], [-10, 70, .7]],
     [[64, -14, 1], [-16, 56, .9], [36, 76, .7], [80, 80, .6]],
@@ -31,7 +32,7 @@
   ];
   var blobs = $$('.f');
   function setField(i) {
-    FIELD[i].forEach(function (p, k) { blobs[k].style.transform = 'translate3d(' + p[0] + 'vw,' + p[1] + 'vh,0) scale(' + p[2] + ')'; });
+    (FIELD[i] || FIELD[FIELD.length - 1]).forEach(function (p, k) { blobs[k].style.transform = 'translate3d(' + p[0] + 'vw,' + p[1] + 'vh,0) scale(' + p[2] + ')'; });
   }
 
   /* ---------- pointer: cursor, magnetic, parallax ---------- */
@@ -153,16 +154,18 @@
       var r = slotRect(slot), sc = r.w / 422;
       device.style.transform = 'translate3d(' + r.x + 'px,' + r.y + 'px,0) scale(' + sc + ')';
       device.classList.add('on');
-      var want = slot.dataset.device === 'push' ? addHash : '/' + slot.dataset.device;
+      var want = slot.dataset.device === 'push' ? hold(addHash) : '/' + slot.dataset.device;
       setProto(want);
     } else device.classList.remove('on');
     if (instant) { void device.offsetWidth; device.classList.remove('no-anim'); }
   }
+  // Slide 9 phone holds on the chosen view; the hero phone keeps playing the tour.
+  function hold(h) { return h + (h.indexOf('?') < 0 ? '?' : '&') + 'hold=1'; }
   function setProto(h) {
-    if (!proto.src) { proto.src = 'prototype/?embed=1&v=5#' + h; protoHash = h; return; }
+    if (!proto.src) { proto.src = 'prototype/?embed=1&v=7#' + h; protoHash = h; return; }
     if (h === protoHash) return;
     protoHash = h;
-    try { proto.contentWindow.location.hash = '#' + h; } catch (e) { proto.src = 'prototype/?embed=1&v=5#' + h; }
+    try { proto.contentWindow.location.hash = '#' + h; } catch (e) { proto.src = 'prototype/?embed=1&v=7#' + h; }
   }
 
   /* ---------- navigation ---------- */
@@ -514,17 +517,32 @@
       all.forEach(function (x) { x.setAttribute('aria-checked', x === t); }); card.dataset.mode = t.dataset.mode; reset();
     }); });
     $('#pollRM').addEventListener('change', function (e) { card.classList.toggle('is-rm', e.target.checked); });
-    enter[6] = function () {
+    enter[8] = function () {
       $('#pollRM').checked = RM(); card.classList.toggle('is-rm', RM());
       st = { v: [0, 0, 0], mine: null, closed: false }; render();
       later(function () { reset(); }, RM() ? 0 : 700);
     };
     reset();
-    var adds = $$('.add-list button');
-    adds.forEach(function (b) { b.addEventListener('click', function () {
-      adds.forEach(function (x) { x.setAttribute('aria-selected', x === b); });
-      addHash = b.dataset.hash; setProto(addHash); $('#addOpen').href = protoLink(addHash, 7);
-    }); });
+    /* Stages: 1 create, 2 vote (the card above is its centerpiece), 3 lands on the plan. Each stage remembers its phone view. */
+    var stages = $$('.s7-stages [role=tab]'), panels = $$('.s7-panel'), line = $('.s7-line span');
+    function show(hash) { addHash = hash; var sl = slides[cur]; if (sl && $('.slot', sl) && $('.slot', sl).dataset.device === 'push') setProto(hold(hash)); $('#addOpen').href = protoLink(hash, 8); }
+    function stage(n, focus) {
+      stages.forEach(function (t, i) { var on = i === n - 1; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; t.classList.toggle('is-done', i < n - 1); if (on && focus) t.focus(); });
+      panels.forEach(function (p, i) { p.hidden = i !== n - 1; });
+      line.style.transform = 'scaleX(' + ((n - 1) / 2) + ')';
+      var v = $('.sp-views [aria-pressed=true]', panels[n - 1]); if (v) show(v.dataset.hash);
+    }
+    stages.forEach(function (t, i) {
+      t.addEventListener('click', function () { stage(i + 1); });
+      t.addEventListener('keydown', function (e) {
+        var k = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!k) return;
+        e.preventDefault(); e.stopPropagation(); stage(Math.max(1, Math.min(3, i + 1 + k)), true);
+      });
+    });
+    $$('.sp-views').forEach(function (g) { var bs = $$('button', g); bs.forEach(function (b) { b.addEventListener('click', function () {
+      bs.forEach(function (x) { x.setAttribute('aria-pressed', x === b); }); show(b.dataset.hash);
+    }); }); });
+    stage(2);
   })();
 
   /* ---------- 8 · untangle (v4 "Instrument", Figma set 121:4174) ---------- */
@@ -664,8 +682,8 @@
     }
     $('#replay').addEventListener('click', replay);
     var seen = false;
-    enter[7] = function () { seen = false; show(0, false); if (!mobileMQ.matches) { seen = true; later(replay, 0); } };
-    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting && cur === 7 && !seen) { seen = true; replay(); } }); }, { threshold: .5 }).observe($('.graph'));
+    enter[9] = function () { seen = false; show(0, false); if (!mobileMQ.matches) { seen = true; later(replay, 0); } };
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting && cur === 9 && !seen) { seen = true; replay(); } }); }, { threshold: .5 }).observe($('.graph'));
     show(2, false);
   })();
 
@@ -696,6 +714,34 @@
     var a = e.target.closest && e.target.closest('a[target="_blank"]');
     if (a && typeof window.gtag === 'function') window.gtag('event', 'outbound_click', { link_url: a.href, link_text: a.textContent.replace(' (opens in a new tab)', '').trim().slice(0, 80), slide_number: cur + 1 });
   });
+
+  /* ---------- zoom: mood boards (slide 5) and the Storybook preview (slide 7) open full size ---------- */
+  (function () {
+    var lb = document.createElement('div'); lb.className = 'zoom'; lb.hidden = true;
+    lb.innerHTML = '<div class="zoom-scrim"></div><figure class="zoom-fig" role="dialog" aria-modal="true" aria-label="Enlarged image"><img alt=""><figcaption></figcaption>' +
+      '<button type="button" class="zoom-x" aria-label="Close">×</button><button type="button" class="zoom-nav is-prev" aria-label="Previous direction">‹</button><button type="button" class="zoom-nav is-next" aria-label="Next direction">›</button></figure>';
+    document.body.appendChild(lb);
+    var img = $('img', lb), cap = $('figcaption', lb), list = [], at = 0, back = null;
+    function paint() { var it = list[at]; img.src = it.src; img.alt = it.alt; cap.textContent = it.cap || ''; $$('.zoom-nav', lb).forEach(function (b) { b.hidden = list.length < 2; }); }
+    function open(items, i, from) { list = items; at = i; back = from; paint(); lb.hidden = false; requestAnimationFrame(function () { lb.classList.add('is-on'); }); $('.zoom-x', lb).focus(); }
+    function close() { lb.classList.remove('is-on'); setTimeout(function () { lb.hidden = true; img.removeAttribute('src'); }, RM() ? 0 : 220); if (back) back.focus(); }
+    function step(k) { at = (at + k + list.length) % list.length; paint(); var t = $$('.board-tabs button')[at]; if (list[0].board && t) t.click(); }
+    $('.zoom-scrim', lb).addEventListener('click', close); $('.zoom-x', lb).addEventListener('click', close);
+    $('.is-prev', lb).addEventListener('click', function () { step(-1); }); $('.is-next', lb).addEventListener('click', function () { step(1); });
+    document.addEventListener('keydown', function (e) {
+      if (lb.hidden) return; e.stopPropagation();
+      if (e.key === 'Escape') { e.preventDefault(); close(); } else if (e.key === 'ArrowRight') { e.preventDefault(); step(1); } else if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+      else if (e.key === 'Tab') { var f = $$('button:not([hidden])', lb); var i = f.indexOf(document.activeElement); e.preventDefault(); f[(i + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus(); }
+    }, true);
+    $$('.zoomable').forEach(function (z) { z.addEventListener('click', function () {
+      if (z.classList.contains('board-stage')) {
+        var ims = $$('img', z), items = ims.map(function (im) { var name = $('.board-tabs [data-board="' + im.dataset.board + '"]'); return { board: im.dataset.board, src: im.getAttribute('src').replace('.jpg', '@2x.jpg'), alt: im.alt, cap: (name ? name.childNodes[0].textContent.trim() + '. ' : '') + D.BOARDS[im.dataset.board] }; });
+        open(items, Math.max(0, ims.findIndex(function (im) { return im.classList.contains('on'); })), z);
+      } else { var i0 = $('img', z); open([{ src: z.dataset.zoom || i0.src, alt: i0.alt }], 0, z); }
+    }); });
+  })();
+
+  if (window.SB_COUNTS) { [['sbStories', 'stories'], ['sbComps', 'components'], ['sbDocs', 'docs']].forEach(function (k) { var el = document.getElementById(k[0]); if (el) el.textContent = window.SB_COUNTS[k[1]]; }); }
 
   /* ---------- start ---------- */
   slides.forEach(function (s) { s.setAttribute('aria-hidden', 'true'); s.inert = true; });

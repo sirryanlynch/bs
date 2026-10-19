@@ -46,7 +46,7 @@ export const CardClosed: StoryObj = { name: 'PollCard · winner', render: () => 
 
 export const Builder: StoryObj<typeof PollBuilder> = {
   name: 'PollBuilder',
-  args: { question: 'Dinner tonight?', anonymous: false, multi: false, closesIn: '6 hours' },
+  args: { question: 'Saturday dinner', anonymous: false, multi: false, closesIn: '6 hours' },
   render: (a) => <PollBuilder {...a} />,
 };
 

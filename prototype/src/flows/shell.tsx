@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { cursor } from './cursor';
 import { CHAPTER, TourStep } from './tour';
+import { PACE } from './pacing';
 import { Render3D } from '@sb/components/Icon';
 
 export type Mode = 'self' | 'tour';
@@ -75,19 +76,20 @@ export function useChapter({ on, reduce, onCaption, onEnd }: { on: boolean; redu
   useEffect(() => {
     if (!on) { gen.current.id++; cursor.hide(); return; }
     const id = ++gen.current.id;
+    const W = (ms: number) => ms * (reduce ? PACE.reduce.dwellScale : PACE.dwellScale);
     (async () => {
       for (let k = iRef.current; k < CHAPTER.length; k++) {
         const st = CHAPTER[k] as TourStep & Record<string, any>;
         setI(k);
         if (st.say) onCaption(st.say);
-        if ('hash' in st && st.hash) { cursor.hide(); location.hash = st.hash; if (!(await sleep(st.wait ?? 1200, gen.current, id))) return; continue; }
-        if ('scroll' in st && st.scroll) { await cursor.drag(st.scroll); if (gen.current.id !== id) return; if (!(await sleep(st.wait ?? 600, gen.current, id))) return; continue; }
+        if ('hash' in st && st.hash) { cursor.hide(); location.hash = st.hash; if (!(await sleep(W(st.wait ?? 1200), gen.current, id))) return; continue; }
+        if ('scroll' in st && st.scroll) { await cursor.drag(st.scroll); if (gen.current.id !== id) return; if (!(await sleep(W(st.wait ?? 600), gen.current, id))) return; continue; }
         if ('tap' in st && st.tap) {
           const el = await cursor.moveTo(st.tap); if (gen.current.id !== id) return;
-          if (el) { await sleep(reduce ? 80 : 140, gen.current, id); if (gen.current.id !== id) return; await cursor.tap(el); }
-          if (!(await sleep(st.wait ?? 900, gen.current, id))) return; continue;
+          if (el) await cursor.tap(el);
+          if (!(await sleep(W(st.wait ?? 900), gen.current, id))) return; continue;
         }
-        if (!(await sleep(st.wait ?? 800, gen.current, id))) return;
+        if (!(await sleep(W(st.wait ?? 800), gen.current, id))) return;
       }
       setI(0); cursor.hide(); onEnd();
     })();

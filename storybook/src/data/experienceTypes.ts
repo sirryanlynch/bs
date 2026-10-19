@@ -11,7 +11,7 @@ export const EXPERIENCE_TYPES: ExperienceDef[] = [
   { id: 'food', label: 'Food', covers: 'Dinner, lunch, cafes', icon: 'food' },
   { id: 'drinks', label: 'Drinks', covers: 'Bars, wine, rooftops', icon: 'martini' },
   { id: 'culture', label: 'Culture', covers: 'Museums, fado, landmarks', icon: 'bank' },
-  { id: 'active', label: 'Active', covers: 'Scuba, tours, hikes, beaches', icon: 'waves' },
+  { id: 'active', label: 'Activity', covers: 'Scuba, tours, hikes, beaches', icon: 'waves' },
   { id: 'travel', label: 'Travel', covers: 'Flights, stays, transfers', icon: 'plane', itineraryOnly: true },
 ];
 

@@ -1,3 +1,5 @@
+import { navClass } from '../../lib/motion';
+import '../../lib/motion.css';
 import React from 'react';
 import { useFlow, FlowToast } from './kit';
 import * as C from './create';
@@ -25,7 +27,7 @@ const FLOW_DEFS: { id: string; title: string; start: string; routes: RouteMeta[]
     { route: 'place/taberna/add', flow: 'place', label: 'Add photo and review', time: '9:52 PM' }] },
   { id: 'polls', title: 'Polls and composer', start: 'poll/new', routes: [
     { route: 'polls', flow: 'polls', label: 'All polls', time: '9:41 PM' }, { route: 'poll/new', flow: 'polls', label: 'New poll: scuba', time: '9:10 PM' },
-    { route: 'poll/new/sent', flow: 'polls', label: 'Poll sent', time: '9:11 PM' }] },
+    { route: 'poll/new/sent', flow: 'polls', label: 'Poll sent', time: '9:11 PM' }, { route: 'poll/new/dinner', flow: 'polls', label: 'New poll: Saturday dinner', time: '6:58 PM' }] },
   { id: 'album', title: 'Shared album', start: 'album', routes: [
     { route: 'album', flow: 'album', label: 'Grid', time: '10:02 PM' }, { route: 'album/upload', flow: 'album', label: 'Pick photos', time: '10:03 PM' },
     { route: 'album/tag', flow: 'album', label: 'Tag and share', time: '10:03 PM' }, { route: 'album/viewer', flow: 'album', label: 'Viewer', time: '10:04 PM', light: true }] },
@@ -54,11 +56,27 @@ const FLOW_DEFS: { id: string; title: string; start: string; routes: RouteMeta[]
     { route: 'explore/offline', flow: 'states', label: 'Explore offline', time: '5:40 PM' }] },
 ];
 /** Story order for Part 2, Beyond tonight: each flow once, never revisited. The step list, Next and Back, and the guided tour all follow it. */
-export const FLOW_ORDER = ['create', 'explore', 'place', 'polls', 'plan', 'expense', 'album', 'invite', 'activity', 'recap', 'profile', 'states'];
-export const FLOWS = FLOW_ORDER.map(id => FLOW_DEFS.find(f => f.id === id)!);
+export const FLOW_ORDER = ['create', 'explore', 'polls', 'plan', 'expense', 'album', 'invite', 'activity', 'recap', 'profile'];
+/** Happy path only: 2 to 4 screens per use case. Place card rides inside Explore (feed, find a place, place card, add to poll). */
+const KEEP: Record<string, string[]> = {
+  create: ['create/where', 'create/when', 'create/crew', 'create/done'],
+  explore: ['explore', 'explore/curate', 'place/taberna', 'explore/addpoll'],
+  polls: ['poll/new', 'poll/new/sent'],
+  plan: ['plan/day', 'plan/add'],
+  expense: ['expense/scan', 'expense/assign', 'expense/done'],
+  album: ['album', 'album/viewer'],
+  invite: ['invite', 'guest', 'guest/welcome'],
+  activity: ['activity'],
+  recap: ['recap', 'recap/card'],
+  profile: ['profile'],
+};
+const ROUTE_DEFS = FLOW_DEFS.flatMap(f => f.routes);
+export const FLOWS = FLOW_ORDER.map(id => { const f = FLOW_DEFS.find(x => x.id === id)!; const routes = KEEP[id].map(r => ({ ...ROUTE_DEFS.find(x => x.route === r)!, flow: id })); return { ...f, title: id === 'polls' ? 'New poll' : id === 'activity' ? 'Notifications' : f.title, start: routes[0].route, routes }; });
+export { REDIRECT, resolveRoute } from './kit';
 export const ALL_ROUTES = FLOWS.flatMap(f => f.routes);
-export const metaOf = (route: string): RouteMeta => ALL_ROUTES.find(r => r.route === route) ?? (route.startsWith('place/') ? { route, flow: 'place', label: 'Place', time: '9:50 PM', light: !route.endsWith('/add') } : { route, flow: 'explore', label: route, time: '9:41 PM' });
-export const isBeyondRoute = (r: string) => !!ALL_ROUTES.find(x => x.route === r) || /^place\/[a-z]+(\/add)?$/.test(r);
+const ANY_ROUTE = [...ALL_ROUTES, ...ROUTE_DEFS.map(r => r.flow === 'place' ? { ...r, flow: 'explore' } : r)];
+export const metaOf = (route: string): RouteMeta => ALL_ROUTES.find(r => r.route === route) ?? ANY_ROUTE.find(r => r.route === route) ?? (route.startsWith('place/') ? { route, flow: 'explore', label: 'Place', time: '9:50 PM', light: !route.endsWith('/add') } : { route, flow: 'explore', label: route, time: '9:41 PM' });
+export const isBeyondRoute = (r: string) => !!ANY_ROUTE.find(x => x.route === r) || /^place\/[a-z]+(\/add)?$/.test(r);
 
 export function BeyondScreen() {
   const { s } = useFlow(); const r = s.route;
@@ -69,7 +87,7 @@ export function BeyondScreen() {
     case 'create/where': el = <C.CreateWhere />; break; case 'create/when': el = <C.CreateWhen />; break; case 'create/cover': el = <C.CreateCover />; break;
     case 'create/budget': el = <C.CreateBudget />; break; case 'create/crew': el = <C.CreateCrew />; break; case 'create/review': el = <C.CreateReview />; break; case 'create/done': el = <C.CreateDone />; break;
     case 'explore': el = <X.ExploreFeedScreen />; break; case 'explore/curate': el = <X.CurateScreen />; break; case 'explore/addpoll': el = <X.AddPollSheetScreen />; break;
-    case 'polls': el = <X.PollsScreen />; break; case 'poll/new': el = <X.PollNewScreen />; break; case 'poll/new/sent': el = <X.PollSentScreen />; break;
+    case 'polls': el = <X.PollsScreen />; break; case 'poll/new': case 'poll/new/dinner': el = <X.PollNewScreen />; break; case 'poll/new/sent': el = <X.PollSentScreen />; break;
     case 'album': el = <A.AlbumScreen />; break; case 'album/upload': el = <A.UploadScreen />; break; case 'album/tag': el = <A.TagScreen />; break; case 'album/viewer': el = <A.ViewerScreen />; break;
     case 'plan/day': el = <PL.PlanDayScreen />; break; case 'plan/add': el = <PL.PlanAddScreen />; break; case 'plan/edit': el = <PL.PlanEditScreen />; break;
     case 'expense/scan': el = <E.ScanScreen />; break; case 'expense/items': el = <E.ItemsScreen />; break; case 'expense/assign': el = <E.AssignScreen />; break; case 'expense/split': el = <E.SplitScreen />; break; case 'expense/tip': el = <E.TipScreen />; break; case 'expense/review': el = <E.ReviewScreen />; break; case 'expense/done': el = <E.DoneScreen />; break;
@@ -82,5 +100,5 @@ export function BeyondScreen() {
   }
   // Sheets keep their base screen mounted, so only animate when the base changes.
   const base = r.replace(/\/(addpoll|upload|tag|viewer|edit|install)$/, '').replace(/^plan\/add$/, 'plan/day').replace(/^guest\/voted$/, 'guest');
-  return <><div className="b-screen-anim" key={base}>{el}</div><FlowToast /></>;
+  return <><div className={`b-screen-anim ${navClass('b:' + base)}`} key={base}>{el}</div><FlowToast /></>;
 }

@@ -35,15 +35,15 @@ const O = __dirname + '/hotfix/';
     await p.close(); }
   // 3. Deck links: slide 7 tabs, open full screen, slide 8, slide 9
   { const ctx = await br.newContext({ viewport: { width: 1440, height: 900 } }); const p = await ctx.newPage();
-    await p.goto(B + '#7'); await p.waitForTimeout(1500);
-    const tabs = p.locator('.add-list [role=tab]');
+    await p.goto(B + '#8'); await p.waitForTimeout(1500);
+    const tabs = p.locator('.s7-stages [role=tab]');
     for (let i = 0; i < await tabs.count(); i++) {
       await tabs.nth(i).click(); await p.waitForTimeout(2600);
       await p.screenshot({ path: O + `s7-tab${i + 1}.png` });
       const fh = await p.evaluate(() => { const f = document.querySelector('iframe#proto, .device iframe, iframe[src*="prototype"]'); try { return f.contentWindow.location.hash; } catch (e) { return f && f.src; } });
-      log.push(`slide7 tab ${i + 1} "${(await tabs.nth(i).locator('b').textContent())}" iframe=${fh} link=${await p.locator('#addOpen').getAttribute('href')}`);
+      log.push(`slide8 stage ${i + 1} "${(await tabs.nth(i).locator('b').textContent())}" iframe=${fh} link=${await p.locator('#addOpen').getAttribute('href')}`);
     }
-    const links = [['#7', '#addOpen'], ['#8', '.cashlink'], ['#9', '.s9 a.btn-hero']];
+    const links = [['#8', '#addOpen'], ['#9', '.cashlink'], ['#10', '.s9 a.btn-hero']];
     for (const [sl, sel] of links) {
       await p.goto(B + sl); await p.waitForTimeout(1200);
       const [np] = await Promise.all([ctx.waitForEvent('page'), p.locator(sel).first().click()]);
@@ -55,7 +55,7 @@ const O = __dirname + '/hotfix/';
       log.push(`${sl} ${sel}: deck stays ${deckHash}; new tab ${np.url().replace(B, '')}... back href ${bh} -> ${np.url().replace(B, '')}`);
       await np.close();
     }
-    await p.goto(B + '#8'); await p.waitForTimeout(2500); await p.screenshot({ path: O + 's8.png' });
+    await p.goto(B + '#10'); await p.waitForTimeout(2500); await p.screenshot({ path: O + 's10.png' });
     await p.goto(B + '#1'); await p.waitForTimeout(2500); await p.screenshot({ path: O + 's1.png' });
     await p.goto(B + '#9'); await p.waitForTimeout(2500); await p.screenshot({ path: O + 's9.png' });
   }

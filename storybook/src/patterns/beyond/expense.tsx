@@ -25,7 +25,9 @@ export function amountsOf(e: ReturnType<typeof useFlow>['s']['expense']) {
 /* Spec: five Stepper steps after the camera. Scan has no stepper; Balances updated is the result. */
 const EXP_STEPS = ['Line items', 'Assign to people', 'Split mode', 'Tip and tax', 'Review'];
 const EXP_ROUTES = ['expense/items', 'expense/assign', 'expense/split', 'expense/tip', 'expense/review'];
-function ExpSteps({ at, onSkip }: { at: number; onSkip?: () => void }) { const { go } = useFlow(); return <Stepper steps={EXP_STEPS} current={at} onStep={i => go(EXP_ROUTES[i])} onSkip={onSkip} label="Add expense progress" />; }
+/* v5 scope cut: the happy path is scan, assign, done, so assign needs no stepper. Kept for Storybook stories of the full flow. */
+const SHOW_EXP_STEPS = false;
+function ExpSteps({ at, onSkip }: { at: number; onSkip?: () => void }) { const { go } = useFlow(); if (!SHOW_EXP_STEPS) return null; return <Stepper steps={EXP_STEPS} current={at} onStep={i => go(EXP_ROUTES[i])} onSkip={onSkip} label="Add expense progress" />; }
 
 export function ScanScreen() {
   const { go, back } = useFlow(); const reduce = useReducedMotion();
@@ -36,9 +38,9 @@ export function ScanScreen() {
       <div className="b-scroll has-cta">
         <Top title="Scan receipt" sub={`${RECEIPT_PLACE} · Lunch`} onBack={back} light />
         <ReceiptScanner phase={phase} lines={RECEIPT} total={RECEIPT_TOTAL} />
-        <p className="b-help b-center">{phase === 'done' ? `All ${RECEIPT.length} lines read. Check them on the next screen.` : 'The camera reads each line and the total. Nothing is uploaded until you save.'}</p>
+        <p className="b-help b-center">{phase === 'done' ? `All ${RECEIPT.length} lines read. Assign them on the next screen.` : 'The camera reads each line and the total. Nothing is uploaded until you save.'}</p>
       </div>
-      <div className="b-bottom">{phase === 'done' ? <Button label={`Check ${RECEIPT.length} lines`} fullWidth onClick={() => go('expense/items', true)} /> : <Button label="Type it in instead" variant="secondary" fullWidth onClick={() => go('expense/items', true)} />}</div>
+      <div className="b-bottom">{phase === 'done' ? <Button label="Assign items" fullWidth onClick={() => go('expense/assign', true)} /> : <Button label="Type it in instead" variant="secondary" fullWidth onClick={() => go('expense/items', true)} />}</div>
     </div>
   );
 }
@@ -73,7 +75,7 @@ export function AssignScreen() {
           onToggle={(line, who) => { const w = e.assign[line] ?? []; patch({ assign: { ...e.assign, [line]: w.includes(who) ? w.filter(x => x !== who) : [...w, who] }, mode: 'item' }); }} />
         {wineOff && <p className="b-note"><BIcon name="wine" size={20} />Ren and Nic skipped the wine, so they pay {money(amts.ren ?? 0)} each with the tip.</p>}
       </div>
-      <div className="b-bottom"><Button label="Choose a split" fullWidth onClick={() => go('expense/split')} /></div>
+      <div className="b-bottom"><Button label="Save expense" fullWidth onClick={() => { patch({ saved: true }); go('expense/done'); }} /></div>
     </div>
   );
 }

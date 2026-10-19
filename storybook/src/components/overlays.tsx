@@ -1,3 +1,4 @@
+import { AVATAR } from '../assets/solver-assets';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Icon } from './Icon';
 import { Button, IconButton } from './core';
@@ -61,17 +62,21 @@ function CelebrateMark({ kind }: { kind: 'squared' | 'pollWon' | 'milestone' }) 
   );
 }
 
-/** Calm pearl glass. The spectrum shows up once, as light traveling along the card edge. Under 1.4 s, then still. */
+/** Payment rows for the optional detail: [from, to, amount, how]. */
 export type SquaredRow = [string, string, string, string];
 const SQ_ROWS: SquaredRow[] = [['Ari', 'Nic', '$42.10', '10:39 PM'], ['Ren', 'Ari', '$18.40', '10:40 PM'], ['Mara', 'João', '$64.00', 'cash ✓']];
+const SQ_PEOPLE = ['ari', 'nic', 'ren', 'mara', 'joao'];
 /**
- * All squared up (Figma hifi-10). A white sheet over a dimmed Money screen. The only color is a soft spectrum glow
- * behind the check disc; it blooms once (about 900 ms) and then holds still. Reduce Motion shows it at rest with a 200 ms fade.
+ * All squared up (Figma hifi-10, v5 simplified). An inset glass sheet over a dimmed Money screen: the check disc with its
+ * soft spectrum glow, the title, one summary line, the faces of everyone who paid or got paid, and one action.
+ * The payment list stays one tap away behind "See payments". The glow blooms once (about 900 ms), then holds still.
+ * Reduce Motion shows it at rest with a 200 ms fade.
  */
-export function SquaredSheet({ eyebrow = '10:41 PM · Lisbon Crew · settled', title = 'All squared up.', body = '3 payments, $124.50 in total. Everyone in Lisbon Crew is at $0.00.',
-  rows = SQ_ROWS, total = ['$124.50', '3 of 3'], actionLabel = 'Share the recap', onAction, replayKey = 0 }:
-  { eyebrow?: string; title?: string; body?: React.ReactNode; rows?: SquaredRow[]; total?: [string, string]; actionLabel?: string; onAction?: () => void; replayKey?: number }) {
+export function SquaredSheet({ title = 'All squared up.', body = '3 payments · $124.50 · everyone at $0.00', people = SQ_PEOPLE,
+  rows = SQ_ROWS, actionLabel = 'Share the recap', onAction, replayKey = 0, detailsOpen = false }:
+  { eyebrow?: string; title?: string; body?: React.ReactNode; people?: string[]; rows?: SquaredRow[]; total?: [string, string]; actionLabel?: string; onAction?: () => void; replayKey?: number; detailsOpen?: boolean }) {
   const reduce = useReducedMotion();
+  const [open, setOpen] = React.useState(detailsOpen);
   return (
     <div className={`p-sq ${reduce ? 'is-reduced' : ''}`} key={replayKey} role="status" aria-live="polite">
       <div className="p-sq-scrim" aria-hidden />
@@ -80,14 +85,14 @@ export function SquaredSheet({ eyebrow = '10:41 PM · Lisbon Crew · settled', t
           <span className="p-sq-glow" />
           <svg className="p-sq-disc" width="72" height="72" viewBox="0 0 72 72"><circle cx="36" cy="36" r="35.5" /><path d="M23 37.5 32 46.5 50 27" pathLength={100} /></svg>
         </div>
-        <p className="p-sq-eyebrow tu-num">{eyebrow}</p>
         <h2 className="p-sq-title">{title}</h2>
-        <p className="p-sq-body">{body}</p>
-        <table className="p-sq-receipt tu-num">
-          <tbody>{rows.map(r => <tr key={r[0] + r[1]}><td>{r[0]}</td><td className="p-sq-arrow">→</td><td>{r[1]}</td><td>{r[2]}</td><td>{r[3]}</td></tr>)}</tbody>
-          <tfoot><tr><td colSpan={3}>total</td><td>{total[0]}</td><td>{total[1]}</td></tr></tfoot>
-        </table>
+        <p className="p-sq-body tu-num">{body}</p>
+        <ul className="p-sq-faces" aria-label={`${people.length} people settled`}>
+          {people.map((id, i) => <li key={id} style={{ ['--i' as any]: i }}>{AVATAR[id] ? <img src={AVATAR[id]} alt="" /> : <span>{id[0].toUpperCase()}</span>}</li>)}
+        </ul>
+        {open && <ul className="p-sq-list tu-num">{rows.map(r => <li key={r[0] + r[1]}><span>{r[0]} → {r[1]}</span><b>{r[2]}</b><small>{r[3].includes('cash') ? 'Paid in cash' : `Paid in app · ${r[3]}`}</small></li>)}</ul>}
         <Button label={actionLabel} onClick={onAction} />
+        <button type="button" className="p-sq-more" aria-expanded={open} onClick={() => setOpen(o => !o)}>{open ? 'Hide payments' : 'See payments'}</button>
       </section>
     </div>
   );
@@ -96,7 +101,7 @@ export function SquaredSheet({ eyebrow = '10:41 PM · Lisbon Crew · settled', t
 export function CelebrationOverlay({ kind = 'squared', title, subtitle, eyebrow, replayKey = 0, stats, actionLabel, onAction, secondaryLabel, onSecondary }:
   { kind?: 'squared' | 'pollWon' | 'milestone'; title?: string; subtitle?: string; eyebrow?: string; replayKey?: number; stats?: [string, string][]; actionLabel?: string; onAction?: () => void; secondaryLabel?: string; onSecondary?: () => void }) {
   const reduce = useReducedMotion();
-  if (kind === 'squared') return <SquaredSheet replayKey={replayKey} title={title} eyebrow={eyebrow} body={subtitle} actionLabel={actionLabel} onAction={onAction} />;
+  if (kind === 'squared') return <SquaredSheet replayKey={replayKey} title={title} body={subtitle} actionLabel={actionLabel} onAction={onAction} />;
   const t = title ?? { squared: 'All squared up.', pollWon: 'Taberna wins.', milestone: 'Lisbon, booked.' }[kind];
   const s = subtitle ?? { squared: 'Three payments instead of six. Nobody owes anything.', pollWon: '5 of 7 picked Taberna da Rua das Flores. Booked for 8:30 PM.', milestone: 'Flights, the Alfama flat and both dinners are locked in.' }[kind];
   const e = eyebrow ?? { squared: 'Lisbon Crew · settled', pollWon: 'Poll closed', milestone: 'Lisbon Crew' }[kind];
