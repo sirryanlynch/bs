@@ -28,7 +28,7 @@ export const ChooseMethod: StoryObj = {
   name: 'S1 Method picker',
   parameters: { docs: { description: { story: 'Five methods in one list card. The CTA label follows the selection. MB WAY and Revolut hand off by deep link with the amount and reference prefilled; on return the app asks "Did it go through?" because those apps do not confirm back.' } } },
   render: () => { const [m, setM] = useState<SettleMethod>('cash'); return (
-    <Frame back="Money" title="Pay Nic" sub="Payment 1 of 3 · simplified" bottom={<Button label={METHODS.find(x => x.id === m)!.cta('$42.10')} fullWidth />}>
+    <Frame back="Money" title="Pay Nic" sub="Your action 1 of 2" bottom={<Button label={METHODS.find(x => x.id === m)!.cta('$42.10')} fullWidth />}>
       <PairHero amount={42.1} caption="For the Tejo boat tour, routed through Tomás." pill={<SPill tone="accent">1 OF 3</SPill>} link="Why $42.10" />
       <Overline>HOW YOU'LL PAY</Overline>
       <MethodPicker value={m} onChange={setM} />

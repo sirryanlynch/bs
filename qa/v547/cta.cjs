@@ -1,7 +1,7 @@
-const { chromium } = require('/workspace/tripup/qa/v3/node_modules/playwright-core'); const O = '/workspace/tripup/qa/v547/'; const B = process.argv[2] || 'http://localhost:8080/prototype/';
+const { chromium } = require('/workspace/tripup/qa/v3/node_modules/playwright-core'); const O = '/workspace/tripup/qa/v549/'; const B = process.argv[2] || 'http://localhost:8080/prototype/';
 (async () => { const b = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--no-sandbox'] });
   const p = await b.newPage({ viewport: { width: 1280, height: 1000 }, deviceScaleFactor: 2 }); const errs = []; p.on('pageerror', e => errs.push(e.message));
-  const go = async h => { await p.goto(B + '?mode=self&v=' + Date.now() + h); await p.waitForTimeout(1600); };
+  const go = async h => { await p.goto(B + (process.env.MODE||'?mode=self')+'&v=' + Date.now() + h); await p.waitForTimeout(1600); };
   const H = () => p.evaluate(() => location.hash); const sh = n => p.locator('.phone-screen').first().screenshot({ path: O + n + '.png' });
   const has = async () => ({ hdr: await p.locator('.phone-screen .b-hm-bar').count(), tabs: await p.locator('.phone-screen .p-tabbar, .phone-screen .b-tabbar, .phone-screen [role=tablist]').count() });
   await go('#/trip'); await p.locator('button:has-text("Start a poll")').first().click(); await p.waitForTimeout(1200); console.log('trip Start a poll ->', await H(), 'findplace hdr', JSON.stringify(await has()), 'invite sheet', await p.locator('text=/QR|Invite/i').count()); await sh('trip-startpoll');

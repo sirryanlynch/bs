@@ -579,18 +579,14 @@
       am.textContent = v === 0 ? 'even' : (v > 0 ? '+' : '−') + Math.round(Math.abs(v));
       return { g: g, bar: bar, am: am, v: v };
     });
-    // hops
-    var spans = D.SIMPLE.map(function (e, i) { return { i: i, s: Math.abs(X[e[1]] - X[e[0]]) }; }).sort(function (a, b) { return a.s - b.s; });
-    var hops = D.SIMPLE.map(function (e, i) {
-      var a = X[e[0]], b = X[e[1]], rank = spans.findIndex(function (o) { return o.i === i; }), lift = [64, 88, 112][rank], cy = ZERO - lift;
-      var g = mk('g', { class: 'rs-hop' }, gE); g.style.transitionDelay = (i * 120) + 'ms';
-      mk('path', { d: 'M' + a + ' ' + (ZERO + 6) + ' C' + a + ' ' + cy + ' ' + b + ' ' + cy + ' ' + b + ' ' + (ZERO - 6), class: 'rs-hopline' }, g);
-      mk('path', { d: 'M' + (b - 4) + ' ' + (ZERO - 13) + ' L' + b + ' ' + (ZERO - 7) + ' L' + (b + 4) + ' ' + (ZERO - 13), class: 'rs-hophead' }, g);
-      var mx = (a + b) / 2, my = ZERO - .75 * lift;
-      mk('rect', { x: mx - 30, y: my - 11, width: 60, height: 22, rx: 11, class: 'rs-pill' }, g);
-      mk('text', { x: mx, y: my + 5, 'text-anchor': 'middle', class: 'rs-pilltx' }, g).textContent = '$' + e[2].toFixed(2);
-      return g;
-    });
+    // v5.6.1: no per-payment connectors. One quiet "netting" pulse runs along the zero line (aria-hidden, no text, static under reduced motion).
+    var defs = mk('defs', {}, svg), lg = mk('linearGradient', { id: 'rsPulseG', x1: 0, x2: 1, y1: 0, y2: 0 }, defs);
+    [[0, 0], [.5, .55], [1, 0]].forEach(function (o) { mk('stop', { offset: o[0], 'stop-color': '#6E5BFF', 'stop-opacity': o[1] }, lg); });
+    var pulse = mk('g', { class: 'rs-pulse', 'aria-hidden': 'true' }, gE);
+    mk('rect', { x: 8, y: ZERO - 3, width: W - 16, height: 6, rx: 3, class: 'rs-glow' }, pulse);
+    var run = mk('g', { class: 'rs-run' }, pulse); mk('rect', { x: -90, y: ZERO - 2, width: 90, height: 4, rx: 2, fill: 'url(#rsPulseG)' }, run);
+    [60, 130, 190, 250, 310].forEach(function (x, i) { var m = mk('circle', { cx: x, cy: ZERO - 14 - (i % 3) * 9, r: 1.6, class: 'rs-mote' }, pulse); m.style.animationDelay = (i * .55) + 's'; });
+    var hops = [pulse];
     // receipt: one perforated strip per IOU, each with its own torn edge
     var PX = 96, PW = 170, PY = 30, HEAD = 24, ROW = 21;
     var torn = function (y, seed, dir) { var o = [], x = PX, k = 0; while (x < PX + PW) { x = Math.min(PX + PW, x + 3.2 + ((seed * 7 + k * 13) % 5) * .55); o.push(x.toFixed(1) + ' ' + (y + (k % 2 ? 0 : (1.1 + ((seed * 11 + k * 5) % 4) * .45) * dir)).toFixed(1)); k++; } return o; };
@@ -620,7 +616,7 @@
       var host = svg.parentNode, oldE = host.querySelector('.ut-engine'); if (oldE) oldE.remove();
       svg.classList.toggle('rs-anim', !!animate && !RM()); svg.classList.toggle('rs-rm', RM());
       btns.forEach(function (b, i) { b.setAttribute('aria-checked', i === k); });
-      counter.textContent = ['1 IOUs', '2 Balances', '3 Payments'][k];
+      counter.textContent = ['IOUs', 'Balances', 'Payments'][k];
       $('#ro1').textContent = D.READOUT[k][0]; $('#ro2').textContent = D.READOUT[k][1];
       cap.textContent = CAPS[k];
       // restart CSS animations on the strips when tearing

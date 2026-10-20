@@ -1014,3 +1014,13 @@ html[data-motion="reduce"] .hg-col { animation: none !important; }
 @keyframes rs-print { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
 #graph.rs.rs-rm * { animation: none !important; transition-property: opacity !important; transition-duration: .2s !important; transition-delay: 0s !important; }
 #graph.rs.rs-rm .rs-bar, #graph.rs.rs-rm .rs-hop { transform: none !important; } #graph.rs.rs-rm #nodes:not(.is-on) .rs-bar { opacity: 0; }
+
+/* v5.6.1 slide 9: connectors removed; one subtle netting pulse on the zero line */
+#graph.rs .rs-pulse { opacity: 0; transition: opacity .6s ease; } #graph.rs .rs-pulse.is-on { opacity: 1; }
+#graph.rs .rs-glow { fill: #6E5BFF; opacity: .08; }
+#graph.rs .rs-run { animation: rsRun 3.2s cubic-bezier(.45,0,.55,1) infinite; }
+#graph.rs .rs-mote { fill: #6E5BFF; opacity: 0; animation: rsMote 2.8s ease-in-out infinite; }
+@keyframes rsRun { from { transform: translateX(0); } to { transform: translateX(452px); } }
+@keyframes rsMote { 0%, 100% { opacity: 0; transform: translateY(4px); } 50% { opacity: .35; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { #graph.rs .rs-run { animation: none; transform: translateX(271px); } #graph.rs .rs-mote { animation: none; opacity: .2; } }
+#graph.rs.rs-rm .rs-run { animation: none; transform: translateX(271px); } #graph.rs.rs-rm .rs-mote { animation: none; opacity: .2; }

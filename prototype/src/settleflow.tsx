@@ -4,6 +4,8 @@ import { Button, Avatar } from '@sb/components/core';
 import { DebtUntangle, UntanglePhase } from '@sb/components/untangle';
 import '@sb/components/untangle-solver';
 import { ReceiptStacksLive } from '@sb/components/untangle-receipt';
+import { EmptyState } from '@sb/components/beyond/emptystate';
+import { SettleActions, SettleAllSheet, SettleAction, SettleStatus } from '@sb/components/settle-actions';
 import { BottomSheet, SquaredSheet, SquaredRow } from '@sb/components/overlays';
 import {
   GlassHeader, PairHero, SPill, Overline, Readout, MethodPicker, CashCount, SlideToSettle, PendingMark, UndoToast, ReceiverConfirm,
@@ -11,7 +13,7 @@ import {
   MoneyBalance, IouLog, NetLog, PairRows, PLAN_REASON, NIC_PROVENANCE, planRank,
 } from '@sb/components/settle';
 import { nets } from './ledger';
-import { useApp, rawOf, simplifyOf, liveNets, haptic, myEdge, keyOf, dueOf, SettleView, hm } from './store';
+import { useApp, rawOf, simplifyOf, liveNets, haptic, myEdge, keyOf, dueOf, SettleView, hm, stateAt } from './store';
 
 const r2 = (n: number) => Math.round(n * 100) / 100;
 function useLater() {
@@ -21,6 +23,77 @@ function useLater() {
 }
 
 /* ---------------- 11 Money: Tangled, Netting, Solved, then 1 of 3 ---------------- */
+/** v5.6.1: YOUR netted actions (Pay X / Request from Y) plus everyone else's, read-only. One source for MoneyScreen and MoneyProgress. */
+function useSettleActions() {
+  const { s, d, P } = useApp();
+  const plan = [...simplifyOf(s)].sort((x, y) => planRank(x, s.me) - planRank(y, s.me));
+  const [nudged, setNudged] = useState<Record<string, boolean>>({});
+  const [sheet, setSheet] = useState(false);
+  // v5.6.1: simulated payer timers belong to this screen and are cleared when you navigate away.
+  const timers = useRef<number[]>([]);
+  useEffect(() => () => { timers.current.forEach(clearTimeout); timers.current = []; }, []);
+  const later = (ms: number, f: () => void) => { timers.current.push(window.setTimeout(f, ms)); };
+  const stl = s.stl;
+  const status = (e: { from: string; to: string }): SettleStatus => {
+    const k = `${e.from}>${e.to}`; const f = s.paid[k];
+    if (f === 'app' || f === 'cash') return 'paid';
+    if (k === keyOf(s) && stl && (stl.status === 'pending' || stl.status === 'queued' || stl.status === 'disputed')) return 'pending';
+    if (f === 'pending') return 'pending';
+    if (s.requested?.[k]) return 'sent';
+    return 'open';
+  };
+  const all: SettleAction[] = plan.map(e => { const k = `${e.from}>${e.to}`; const out = e.from === s.me, inn = e.to === s.me;
+    return { key: k, kind: out ? 'pay' : inn ? 'request' : 'other', who: P[out ? e.to : e.from], to: out || inn ? undefined : P[e.to], amt: out && k === keyOf(s) && status(e) === 'open' && dueOf(s) > 0.004 ? dueOf(s) : e.amt, status: status(e), nudged: nudged[k] }; });
+  const mine = all.filter(a => a.kind !== 'other'), others = all.filter(a => a.kind === 'other');
+  const open = mine.filter(a => a.status === 'open');
+    const othersSettle = () => others.filter(a => a.status !== 'paid').forEach((a, i) => later(2600 + i * 1000, () => { haptic(10); d({ t: 'pay', key: a.key, how: 'cash' }); d({ t: 'toast', msg: `${a.to!.name} confirmed ${a.who.name}'s cash`, tone: 'success' }); }));
+  const request = (a: SettleAction, quiet = false) => {
+    d({ t: 'set', patch: { requested: { ...(s.requested ?? {}), [a.key]: true } } });
+    if (!quiet) d({ t: 'toast', msg: `Request sent to ${a.who.name}`, tone: 'neutral' });
+    later(1300, () => { haptic(10); d({ t: 'pay', key: a.key, how: 'app' }); d({ t: 'toast', msg: `${a.who.name} paid you ${usd2(a.amt)}`, tone: 'success' }); });
+  };
+  const act = (a: SettleAction) => {
+    haptic(10);
+    if (a.kind === 'pay') {
+      if (a.key === keyOf(s)) { d({ t: 'view', v: 'choose' }); return; } // the existing Pay sheet and cash path
+      d({ t: 'pay', key: a.key, how: 'app' }); d({ t: 'toast', msg: `Paid ${a.who.name} ${usd2(a.amt)} with TripUp Pay`, tone: 'success' });
+    } else request(a);
+    if (open.length <= 1) othersSettle();
+  };
+  const nudge = (a: SettleAction) => { haptic(10); setNudged(x => ({ ...x, [a.key]: true })); d({ t: 'toast', msg: `Nudged ${a.who.name} to pay ${a.to!.name}`, tone: 'neutral' }); };
+  const approveAll = () => {
+    haptic(16); setSheet(false);
+    const req = open.filter(a => a.kind === 'request'), pay = open.filter(a => a.kind === 'pay');
+    let reqd = { ...(s.requested ?? {}) }; req.forEach(a => { reqd[a.key] = true; });
+    if (req.length) d({ t: 'set', patch: { requested: reqd } });
+    pay.forEach(a => d({ t: 'pay', key: a.key, how: 'app' }));
+    d({ t: 'toast', msg: [pay.length ? `Paid ${pay.length}` : '', req.length ? `requested ${req.length}` : ''].filter(Boolean).join(', ').replace(/^r/, 'R'), tone: 'success' });
+    req.forEach((a, i) => later(1300 + i * 700, () => { haptic(10); d({ t: 'pay', key: a.key, how: 'app' }); d({ t: 'toast', msg: `${a.who.name} paid you ${usd2(a.amt)}`, tone: 'success' }); }));
+    othersSettle();
+  };
+  const cta = (fallback: React.ReactNode) => open.length >= 2 ? <Button label={`Settle all (${open.length})`} fullWidth onClick={() => { haptic(); setSheet(true); }} />
+    : open.length === 1 ? <Button label={open[0].kind === 'pay' ? `Pay ${open[0].who.name} ${usd2(open[0].amt)}` : `Request ${usd2(open[0].amt)} from ${open[0].who.name}`} fullWidth onClick={() => act(open[0])} />
+    : fallback;
+  const sheetEl = sheet ? <SettleAllSheet actions={open} onApprove={approveAll} onClose={() => setSheet(false)} /> : null;
+  return { mine, others, open, act, nudge, cta, sheetEl };
+}
+
+/** v5.6.1: Money with nothing to settle yet. A real screen (header, tabs with Money active), never a toast. */
+function MoneyEmpty() {
+  const { s, d } = useApp();
+  return (
+    <div className="scr pt-v3">
+      <div className="p-sscroll pt-money has-hm pt-mempty">
+        <EmptyState render="settle" title="Nothing to settle yet" body="Add a shared expense and TripUp keeps everyone's balance here, netted to the fewest payments."
+          action="Add an expense" onAction={() => { haptic(); d({ t: 'go', step: 'expense' }); }}
+          secondary="Open Lisbon Crew's Money" onSecondary={() => { haptic(); d({ t: 'load', s: { ...stateAt('money', s), step: 'money', me: s.me } }); }} />
+      </div>
+      <CoreHeader onBack={() => { haptic(); d({ t: 'go', step: 'trip' }); }} backLabel="Back to Lisbon Crew" title="Money" sub="Nothing to settle" />
+      <Tabs active="money" />
+    </div>
+  );
+}
+
 export function MoneyScreen() {
   const { s, d, P } = useApp();
   const raw = rawOf(s), plan = simplifyOf(s);
@@ -32,11 +105,13 @@ export function MoneyScreen() {
   const st = (e: { from: string; to: string }) => s.paid[`${e.from}>${e.to}`];
   const progressed = !!s.stl || plan.some(e => st(e));
 
+  const [info, setInfo] = useState(false);
+  const acts = useSettleActions();
+  if (!s.dinnerSaved && !s.done.money) return <MoneyEmpty />;
   if (progressed) return <MoneyProgress />;
 
   // v5.4.2: You / Whole trip. One count per view, never both. The IOU detail sits behind the info button.
   const view = s.moneyView ?? 'trip';
-  const [info, setInfo] = useState(false);
   const mine = plan.filter(e => e.from === s.me || e.to === s.me).sort((a, b) => planRank(a, s.me) - planRank(b, s.me));
   const myOut = plan.find(e => e.from === s.me);
   const myIn = plan.find(e => e.to === s.me);
@@ -50,17 +125,12 @@ export function MoneyScreen() {
           <span className="pt-mseg-lens" style={{ ['--x' as any]: view === 'you' ? 0 : 1 }} aria-hidden />
         </div>
         {view === 'you' ? (<>
-          <MoneyBalance net={net} caption={mine.length ? `${mine.length} ${mine.length === 1 ? 'payment' : 'payments'} to settle` : 'You are square.'} />
-          <ul className="pt-mylist anim-rise">{mine.map(e => { const out = e.from === s.me; const k = `${e.from}>${e.to}`; const other = P[out ? e.to : e.from]; const req = s.requested?.[k]; return (
-            <li key={k} className="pt-myrow">
-              <Avatar person={other} size={44} ring="none" />
-              <span className="pt-myrow-t"><b>{out ? `You owe ${other.name}` : `${other.name} owes you`}</b><small className="tu-num">{usd2(e.amt)}</small></span>
-              {out ? <button type="button" className="pt-myrow-btn is-pay" onClick={() => { haptic(); d({ t: 'view', v: 'choose' }); }}>Pay</button>
-                : <button type="button" className={`pt-myrow-btn ${req ? 'is-done' : ''}`} disabled={req} onClick={() => ask(e)}>{req ? 'Requested' : 'Request'}</button>}
-            </li>); })}</ul>
+          <MoneyBalance net={net} caption={mine.length ? `${mine.length} ${mine.length === 1 ? 'action' : 'actions'} to settle` : 'You are square.'} />
+          <div className="anim-rise"><SettleActions mine={acts.mine} onAct={acts.act} /></div>
         </>) : (<>
           <div className="pt-graph4"><DebtUntangle raw={raw} simple={plan} people={P} solved={s.simplified} controls="inline" startButton={false} skin="receipt" onPhase={setPhase}
             onSolved={() => { haptic(16); if (!s.simplified) d({ t: 'set', patch: { simplified: true } }); d({ t: 'done', key: 'simplify' }); }} /></div>
+          {(phase === 2 || s.simplified) && <div className="anim-rise"><SettleActions mine={acts.mine} others={acts.others} onAct={acts.act} onNudge={acts.nudge} /></div>}
           <button type="button" className="pt-minfo" aria-expanded={info} onClick={() => setInfo(x => !x)}><span aria-hidden>i</span>{info ? 'Hide the details' : 'How TripUp got here'}</button>
           {info && <div className="anim-rise">{phase === 0 ? <IouLog raw={raw} people={P} me={s.me} /> : phase === 1 ? <NetLog nets={nets(raw)} people={P} me={s.me} /> : <PairRows plan={plan} people={P} me={s.me} onRow={e => { if (e.from === 'ari' && s.me === 'ari') { haptic(); d({ t: 'view', v: 'choose' }); } }} />}</div>}
         </>)}
@@ -69,11 +139,10 @@ export function MoneyScreen() {
       <div className="p-sbottom is-tabs">
         {view === 'trip' && phase === 0 && !s.simplified ? <Button label={`Simplify ${raw.length} IOUs`} fullWidth onClick={() => { haptic(16); d({ t: 'set', patch: { simplified: true } }); }} />
           : view === 'trip' && phase < 2 ? <Button label="Finding the fewest payments" disabled fullWidth />
-          : myOut ? <Button label={`Pay ${P[myOut.to].name} ${usd2(myOut.amt)}`} fullWidth onClick={() => { haptic(); d({ t: 'view', v: 'choose' }); }} />
-          : myIn ? <Button label={s.requested?.[`${myIn.from}>${myIn.to}`] ? `Requested from ${P[myIn.from].name}` : `Request ${usd2(myIn.amt)} from ${P[myIn.from].name}`} disabled={!!s.requested?.[`${myIn.from}>${myIn.to}`]} fullWidth onClick={() => ask(myIn)} />
-          : <Button label="Back to the trip" variant="secondary" fullWidth onClick={() => d({ t: 'go', step: 'trip' })} />}
+          : acts.cta(<Button label="Back to the trip" variant="secondary" fullWidth onClick={() => d({ t: 'go', step: 'trip' })} />)}
       </div>
       <Tabs active="money" />
+      {acts.sheetEl}
     </div>
   );
 }
@@ -81,6 +150,7 @@ export function MoneyScreen() {
 /** S6: the Money screen once a payment exists. Balances only move on confirmed. */
 function MoneyProgress() {
   const { s, d, P } = useApp();
+  const acts = useSettleActions();
   const later = useLater();
   const plan = [...simplifyOf(s)].sort((x, y) => planRank(x, s.me) - planRank(y, s.me));
   const net = liveNets(s)[s.me] ?? 0;
@@ -114,8 +184,9 @@ function MoneyProgress() {
     later(1300, () => { haptic(10); d({ t: 'pay', key: `${e.from}>${e.to}`, how: 'app' }); d({ t: 'toast', msg: `${P[e.from].name} paid you ${usd2(e.amt)}`, tone: 'success' }); });
     plan.filter(x => x.from !== s.me && x.to !== s.me && !flag(x)).forEach((x, i) => later(2500 + i * 1000, () => { haptic(10); d({ t: 'pay', key: `${x.from}>${x.to}`, how: 'cash' }); d({ t: 'toast', msg: `${P[x.to].name} confirmed ${P[x.from].name}'s cash`, tone: 'success' }); }));
   };
-  const cta = myOpen ? <Button label={`Pay ${P[myEdge(s).to].name} ${usd2(dueOf(s))}`} fullWidth onClick={() => d({ t: 'view', v: 'choose' })} />
-    : openIn.length ? <Button label={`Request ${usd2(openIn[0].amt)} from ${P[openIn[0].from].name}`} fullWidth onClick={askRen} />
+  void askRen; void rows;
+  const myDone = acts.mine.filter(a => a.status === 'paid').length;
+  const cta = acts.open.length ? acts.cta(null)
     : done === plan.length ? null
     : stl && stl.status !== 'confirmed' ? <>{/* v5.4.2: no dead end while Nic confirms. Done leaves, Nudge is quiet. */}
         <Button label="Done" fullWidth onClick={() => { haptic(); d({ t: 'go', step: 'trip' }); }} />
@@ -132,11 +203,13 @@ function MoneyProgress() {
         {success}
         {/* v5.6: the three hops to $0. Stacks only move on paid (app or cash), never on pending. */}
         <div className="pt-graph4 pt-stacks-live"><ReceiptStacksLive raw={rawOf(s)} simple={simplifyOf(s)} people={P} me={s.me} paid={simplifyOf(s).map(e => flag(e) === 'app' || flag(e) === 'cash')} /></div>
-        <SettleProgress done={done} total={plan.length} paid={paidSum} sum={sum} />
-        <PlanRowsClickable rows={rows} onMine={() => d({ t: 'view', v: stl && stl.status === 'disputed' ? 'dispute' : stl && stl.status === 'queued' ? 'offline' : stl ? 'receipt' : 'choose' })} />
+        {/* v5.6.1: progress counts YOUR netted actions, never the trip's IOUs */}
+        <SettleProgress done={myDone} total={acts.mine.length} paid={r2(acts.mine.filter(a => a.status === 'paid').reduce((x, a) => x + a.amt, 0))} sum={r2(acts.mine.reduce((x, a) => x + a.amt, 0))} />
+        <SettleActions mine={acts.mine} others={acts.others} onAct={a => (a.key === keyOf(s) && stl ? d({ t: 'view', v: stl.status === 'disputed' ? 'dispute' : stl.status === 'queued' ? 'offline' : 'receipt' }) : acts.act(a))} onNudge={acts.nudge} />
       </div>
       <CoreHeader onBack={() => { haptic(); d({ t: 'go', step: 'trip' }); }} backLabel="Back to Lisbon Crew" title="Money" sub="Whole trip · 7 people" />
       {cta && <div className="p-sbottom">{cta}</div>}
+      {acts.sheetEl}
     </div>
   );
 }
@@ -174,7 +247,7 @@ function Choose() {
       <PairHero from={P[e.from]} to={P[e.to]} amount={due} caption={due < e.amt ? `What's left after ${usd2(r2(e.amt - due))} in cash.` : 'For the Tejo boat tour, routed through Tomás.'} link={`Why ${usd2(e.amt)}`} onLink={() => setWhy(true)} />
       <MethodPicker value={s.pick} onChange={pick => d({ t: 'set', patch: { pick } })} />
     </div>
-    <CoreHeader onBack={toMoney(d)} menu={false} backLabel="Back to Money" title={`Pay ${P[e.to].name}`} sub="Payment 1 of 3 · simplified" />
+    <CoreHeader onBack={toMoney(d)} menu={false} backLabel="Back to Money" title={`Pay ${P[e.to].name}`} sub={(() => { const m = [...simplifyOf(s)].filter(x => x.from === s.me || x.to === s.me).sort((x, y) => planRank(x, s.me) - planRank(y, s.me)); return `Your action ${Math.max(1, m.findIndex(x => x.from === e.from && x.to === e.to) + 1)} of ${m.length}`; })()} />
     <div className="p-sbottom"><Button label={m.cta(usd2(due))} fullWidth onClick={go} /></div>
     {why && <BottomSheet title={`Why ${usd2(e.amt)}`} detent="compact" onClose={() => setWhy(false)}>
       <div className="pt-why"><Readout title="WHERE IT CAME FROM" rows={NIC_PROVENANCE.map((p, i) => [p.label, i === 0 ? `+${p.amount.toFixed(2)}` : `${p.amount < 0 ? '−' : ''}${Math.abs(p.amount).toFixed(2)}`, i === NIC_PROVENANCE.length - 1 ? 'carry' : undefined])} />

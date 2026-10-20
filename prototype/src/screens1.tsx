@@ -36,7 +36,8 @@ export function Tabs({ active }: { active: string }) {
         // Explore and Photos are their own tabs. Polls have no tab (v5.4): they live on Trip home, in + and in Up next.
         if (id === 'explore') return go('explore');
         if (id === 'photos') return go('album');
-        const t = map[id].find(x => s.done[x]); if (t) d({ t: 'go', step: t }); else d({ t: 'toast', msg: id === 'money' ? 'Money opens after dinner' : 'Nothing here yet' }); }} />
+        // v5.6.1: a tab always lands on its real screen (no toast redirects). Money with nothing to settle shows its own empty state.
+        const t = map[id].find(x => s.done[x]) ?? map[id][0]; if (s.done[t]) d({ t: 'go', step: t }); else d({ t: 'load', s: { ...s, step: t, settleOpen: false } }); }} />
   );
 }
 

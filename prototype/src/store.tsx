@@ -16,7 +16,7 @@ export const SETTLE_VIEWS: { id: SettleView; label: string; time: string; hifi: 
   { id: 'pending', label: 'Pending, with undo', time: '10:39 PM', hifi: 'S4' },
   { id: 'handoff', label: 'MB WAY hand-off', time: '10:39 PM', hifi: 'S1' },
   { id: 'confirm', label: 'Nic confirms', time: '10:39 PM', hifi: 'S5', as: 'nic' },
-  { id: 'confirmed', label: 'Confirmed, 1 of 3', time: '10:40 PM', hifi: 'S6' },
+  { id: 'confirmed', label: 'Confirmed, 1 of 2 yours', time: '10:40 PM', hifi: 'S6' },
   { id: 'receipt', label: 'Receipt', time: '10:40 PM', hifi: 'S7' },
   { id: 'dispute', label: 'Dispute', time: '10:41 PM', hifi: 'X2' },
   { id: 'offline', label: 'Offline', time: '10:39 PM', hifi: 'X3' },

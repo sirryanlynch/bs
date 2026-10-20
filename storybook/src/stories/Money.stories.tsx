@@ -4,6 +4,7 @@ import { ExpenseRow, ReceiptSplit, DebtSimplify, PaymentRow, SettleContent } fro
 import { DebtUntangle } from '../components/untangle';
 import '../components/untangle-solver';
 import { ReceiptStacksLive } from '../components/untangle-receipt';
+import { SettleActions, SettleAllSheet, SettleAction } from '../components/settle-actions';
 import { MoneyBalance, IouLog, NetLog, PairRows } from '../components/settle';
 import { rawDebts, simplifiedDebts } from '../components/money';
 import { BottomSheet } from '../components/overlays';
@@ -118,3 +119,18 @@ export const StacksOne: StoryObj = { name: 'Receipt stacks · 1 of 3 paid', para
   render: () => <div style={{ maxWidth: 362 }}><ReceiptStacksLive raw={rawDebts} simple={simplifiedDebts} people={P} me="ari" paid={simplifiedDebts.map(e => e.from === 'ari')} /></div> };
 export const StacksSquared: StoryObj = { name: 'Receipt stacks · all squared', parameters: liveDoc,
   render: () => <div style={{ maxWidth: 362 }}><ReceiptStacksLive raw={rawDebts} simple={simplifiedDebts} people={P} me="ari" paid={[true, true, true]} /></div> };
+
+// v5.6.1: many IOUs fit the card (two columns, clamped rows) and the settle action list that replaces per-payment connectors.
+const manyRaw = [{ from: 'mara', to: 'joao', amt: 12 }, { from: 'mara', to: 'nic', amt: 9.5 }, { from: 'ari', to: 'nic', amt: 21 }, { from: 'ari', to: 'tomas', amt: 6 }, { from: 'sofia', to: 'joao', amt: 14 }, { from: 'tomas', to: 'mara', amt: 8.2 }, { from: 'nic', to: 'sofia', amt: 5 }, { from: 'joao', to: 'ari', amt: 7.75 }, { from: 'ari', to: 'sofia', amt: 11 }, { from: 'tomas', to: 'nic', amt: 4.4 }];
+const manySimple = [{ from: 'ari', to: 'nic', amt: 29.9 }, { from: 'mara', to: 'joao', amt: 13.3 }, { from: 'tomas', to: 'joao', amt: 4.95 }, { from: 'tomas', to: 'sofia', amt: 1.65 }, { from: 'ari', to: 'sofia', amt: 0.35 }];
+export const ManyIous: StoryObj = { name: 'Receipt · 10 IOUs fit the card', parameters: liveDoc,
+  render: () => <div style={{ maxWidth: 362 }}><DebtUntangle raw={manyRaw} simple={manySimple} people={P} controls="inline" startButton={false} skin="receipt" /></div> };
+const sa = (key: string, kind: SettleAction['kind'], who: any, amt: number, status: SettleAction['status'], to?: any): SettleAction => ({ key, kind, who, amt, status, to });
+const myActs = [sa('ari>nic', 'pay', P.nic, 42.1, 'open'), sa('ari>tomas', 'pay', P.tomas, 12.4, 'open'), sa('ren>ari', 'request', crewWithRen.find(p => p.id === 'ren') ?? P.ren, 18.4, 'open')];
+const others = [sa('mara>joao', 'other', P.mara, 64, 'open', P.joao)];
+export const ActionList: StoryObj = { name: 'SettleActions · your actions', render: () => {
+  const [mine, setMine] = React.useState(myActs);
+  return <div style={{ maxWidth: 370 }}><SettleActions mine={mine} others={others} onAct={a => setMine(m => m.map(x => x.key === a.key ? { ...x, status: a.kind === 'pay' ? 'paid' : 'sent' } : x))} /></div>; } };
+export const ActionStatuses: StoryObj = { name: 'SettleActions · statuses', render: () =>
+  <div style={{ maxWidth: 370 }}><SettleActions mine={[sa('a', 'pay', P.nic, 42.1, 'pending'), sa('b', 'request', P.ren, 18.4, 'sent'), sa('c', 'pay', P.tomas, 12.4, 'paid')]} others={[{ ...others[0], nudged: true }]} /></div> };
+export const SettleAll: StoryObj = { name: 'SettleAllSheet · confirm batch', render: () => <SettleAllSheet actions={myActs} onApprove={() => {}} onClose={() => {}} /> };

@@ -69,7 +69,26 @@ export function simplify(edges: Transfer[]) {
     E.push({ from: ins.from, to: outs.to, amt: v });
     E = merge(E);
   }
-  return merge(E);
+  const routed = merge(E);
+  // v5.6.1: routing through zero-net friends only works when someone nets to zero. Any other split (even split, one person off the
+  // wine, ...) used to fall through with every pairwise IOU still standing. Fall back to minimal netting: largest debtor pays largest
+  // creditor until everyone is square, so at most people - 1 payments. The canonical story keeps its routed plan (3 payments).
+  const greedy = netPlan(n);
+  return routed.length <= greedy.length ? routed : greedy;
+}
+
+/** Minimal-ish netting from balances: at most (people with a non-zero net) - 1 transfers. */
+export function netPlan(n: Record<string, number>) {
+  const owe = Object.keys(n).filter(k => n[k] < -0.004).map(k => ({ k, v: -n[k] })).sort((a, b) => b.v - a.v || a.k.localeCompare(b.k));
+  const get = Object.keys(n).filter(k => n[k] > 0.004).map(k => ({ k, v: n[k] })).sort((a, b) => b.v - a.v || a.k.localeCompare(b.k));
+  const out: Transfer[] = []; let i = 0, j = 0;
+  while (i < owe.length && j < get.length) {
+    const v = r2(Math.min(owe[i].v, get[j].v));
+    if (v > 0.004) out.push({ from: owe[i].k, to: get[j].k, amt: v });
+    owe[i].v = r2(owe[i].v - v); get[j].v = r2(get[j].v - v);
+    if (owe[i].v < 0.005) i++; if (get[j].v < 0.005) j++;
+  }
+  return out;
 }
 
 function merge(E: Transfer[]) {

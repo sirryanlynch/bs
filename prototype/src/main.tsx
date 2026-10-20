@@ -8,4 +8,6 @@ import { App } from './App';
 
 if (new URLSearchParams(location.search).has('embed')) document.documentElement.classList.add('is-embed');
 
+import { installCtaClear } from './ctaclear';
+installCtaClear();
 createRoot(document.getElementById('root')!).render(<App />);

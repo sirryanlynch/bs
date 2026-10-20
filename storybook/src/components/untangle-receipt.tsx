@@ -22,7 +22,6 @@ const r2 = (n: number) => Math.round(n * 100) / 100;
 
 export const RS_W = 362, RS_H = 268;
 const ZERO = 128, BAR = 26, MAXH = 54, NAME_Y = 224;
-const PAPER = { x: 96, y: 30, w: 170, head: 24, row: 21 };
 
 /** Deterministic torn edge: a perforated zigzag with irregular teeth, so every strip tears a little differently. */
 function tornEdge(x0: number, x1: number, y: number, seed: number, dir: 1 | -1) {
@@ -31,145 +30,128 @@ function tornEdge(x0: number, x1: number, y: number, seed: number, dir: 1 | -1) 
     pts.push(`${x.toFixed(1)} ${(y + (k % 2 ? 0 : a * dir)).toFixed(1)}`); k++; }
   return pts;
 }
-function stripPath(i: number, top: number, h: number, first: boolean, last: boolean) {
-  const { x, w } = PAPER; const x1 = x + w;
-  const topEdge = first ? [`${x1} ${top}`] : tornEdge(x, x1, top, i, -1);
-  const bot = last ? [`${x} ${top + h}`] : tornEdge(x, x1, top + h, i + 1, 1).reverse().map(p => p).concat([`${x} ${top + h}`]);
-  return `M${x} ${top} L${topEdge.join(' L')} L${x1} ${top + h} L${bot.join(' L')} Z`;
+function stripPath(seed: number, x: number, w: number, top: number, h: number) {
+  const x1 = x + w;
+  return `M${x} ${top} L${tornEdge(x, x1, top, seed, -1).join(' L')} L${x1} ${top + h} L${tornEdge(x, x1, top + h, seed + 1, 1).reverse().join(' L')} L${x} ${top + h} Z`;
+}
+/** Receipt layout that always fits the card: one column up to 7 IOUs, then two columns, and rows shrink (never below 15) before that. */
+export function receiptLayout(n: number) {
+  const cols = n > 7 ? 2 : 1, per = Math.max(1, Math.ceil(n / cols));
+  const top = 30, head = 22, foot = 22, room = 200 - head - foot; // paper spans y 30..230, the caption sits at 250
+  const row = Math.max(15, Math.min(21, room / per));
+  const colW = cols === 2 ? 156 : 170, gutter = 8, w = cols * colW + (cols - 1) * gutter, x = (RS_W - w) / 2;
+  const cell = (i: number) => { const c = Math.floor(i / per), r = i % per; return { x: x + c * (colW + gutter), y: top + head + r * row, w: colW }; };
+  return { cols, per, row, colW, w, x, top, head, foot, bodyH: per * row, cell, font: row >= 19 ? 12.5 : 11.5 };
 }
 
 export type StacksModel = { order: string[]; colX: Record<string, number>; h: (n: number) => number };
 export function stacksModel(ids: string[], net: Record<string, number>, maxNet: number): StacksModel {
   // Debtors on the left (most owed first), even in the middle, creditors on the right: money reads left to right.
   const order = [...ids].sort((a, b) => (net[a] ?? 0) - (net[b] ?? 0));
-  const gap = (RS_W - 64) / Math.max(1, order.length - 1); // 32 units of card padding each side, the same inset as the receipt
+  const gap = (RS_W - 64) / Math.max(1, order.length - 1); // 32 units of card padding each side
   const colX = Object.fromEntries(order.map((id, i) => [id, 32 + i * gap])) as Record<string, number>;
   const m = Math.max(1, maxNet);
   return { order, colX, h: n => (Math.abs(n) / m) * MAXH };
 }
 
 type DrawProps = { t: number; intro: number; reduce: boolean; uid: string; ids: string[]; people: Record<string, Person>; net: Record<string, number>; maxNet: number;
-  raw: Edge[]; simple: Edge[]; summary: string; phase: number; minimal?: boolean; paid?: boolean[]; live?: boolean; stepper?: boolean };
+  raw: Edge[]; simple: Edge[]; summary: string; phase: number; minimal?: boolean; paid?: boolean[]; live?: boolean };
+
+/**
+ * v5.6.1: no per-payment connectors on the chart. One decorative "netting" motif instead: a soft Iris light that travels along the zero
+ * line while the system balances the stacks (aria-hidden, low contrast, no text). Amounts live in the settle action list.
+ */
+function NettingPulse({ uid, reduce, on, strong }: { uid: string; reduce: boolean; on: number; strong?: boolean }) {
+  if (on < 0.01) return null;
+  return <g aria-hidden className="p-rs-motif" opacity={on * (strong ? 1 : 0.8)}>
+    <defs><linearGradient id={`rsp${uid}`} x1="0" x2="1" y1="0" y2="0"><stop offset="0" stopColor="#8F80FF" stopOpacity="0" /><stop offset=".5" stopColor="#8F80FF" stopOpacity=".55" /><stop offset="1" stopColor="#8F80FF" stopOpacity="0" /></linearGradient>
+      <radialGradient id={`rsg${uid}`}><stop offset="0" stopColor="#C9C1FF" stopOpacity=".5" /><stop offset="1" stopColor="#C9C1FF" stopOpacity="0" /></radialGradient></defs>
+    {reduce ? <rect x={RS_W / 2 - 60} y={ZERO - 3} width={120} height={6} rx={3} fill={`url(#rsp${uid})`} />
+      : <g className="p-rs-pulse"><rect x={-90} y={ZERO - 3} width={90} height={6} rx={3} fill={`url(#rsp${uid})`} /><circle cx={-45} cy={ZERO} r={14} fill={`url(#rsg${uid})`} /></g>}
+    {!reduce && [0, 1, 2, 3, 4].map(i => <circle key={i} r={1.6} cx={0} cy={0} className="p-rs-mote" style={{ animationDelay: `${-i * 0.9}s`, ['--mx' as any]: `${40 + i * 62}px` }} />)}
+  </g>;
+}
 
 export function ReceiptStacksSvg(p: DrawProps) {
   const { t, intro, reduce, uid, ids, people, net, maxNet, raw, simple, summary, phase, paid = [], live } = p;
-  const M = stacksModel(ids, net, maxNet);
+  const M = stacksModel(ids, net, maxNet); const R = receiptLayout(raw.length);
   const nm = (id: string) => (people[id]?.you ? 'You' : people[id]?.name ?? id);
-  const nP = paid.filter(Boolean).length, squared = live && nP === simple.length && simple.length > 0;
-  // Live balances after paid hops.
+  const nP = paid.filter(Boolean).length, squared = !!live && nP === simple.length && simple.length > 0;
   const cur: Record<string, number> = { ...net }; simple.forEach((e, i) => { if (paid[i]) { cur[e.from] = r2((cur[e.from] ?? 0) + e.amt); cur[e.to] = r2((cur[e.to] ?? 0) - e.amt); } });
-  const paperH = PAPER.head + raw.length * PAPER.row + 24;
   // ---- per-frame values (t units) ----
-  const introK = (i: number) => (reduce ? 1 : ease((intro * 900 - i * 55) / 380));
-  const tearK = (i: number) => (reduce ? 0 : easeIO((t - 0.08 - i * 0.07) / 0.55));       // strip i leaves the receipt
+  const introK = (i: number) => (reduce ? 1 : ease((intro * 900 - i * 45) / 380));
+  const tearK = (i: number) => (reduce ? 0 : easeIO((t - 0.08 - i * (0.42 / Math.max(6, raw.length))) / 0.55));
   const paperOp = reduce ? 1 - clamp(t / 0.5) : 1 - ease((t - 0.1) / 0.5);
   const barK = reduce ? clamp((t - 0.5) / 0.5) : ease((t - 0.42) / 0.55);
   const lineOp = reduce ? clamp((t - 0.5) / 0.5) : ease((t - 0.3) / 0.4);
-  const hopK = (i: number) => (reduce ? clamp(t - 1) : ease((t - 1.15 - i * 0.12) / 0.55));
+  const motif = live ? (squared ? 0 : 1) : reduce ? clamp(t - 1) : ease((t - 1.1) / 0.5);
   const evenDim = 1 - 0.5 * clamp(t - 1);
   const capOp = [1 - clamp(t / 0.4), clamp(t / 0.4) * (1 - clamp((t - 1.3) / 0.4)), clamp((t - 1.3) / 0.4)];
-  const caps = live
-    ? [squared ? 'All squared. Every stack is level at $0.' : `${nP} of ${simple.length} paid · ${usd(simple.reduce((a, e, i) => a + (paid[i] ? 0 : e.amt), 0))} still to move`]
-    : [`${raw.length} IOUs · ${usd(raw.reduce((a, e) => a + e.amt, 0))} moving`, `Balances: above the line is owed, below owes`, `${simple.length} payments · ${usd(simple.reduce((a, e) => a + e.amt, 0))} moving`];
+  const caps = live ? [squared ? 'All squared. Every stack is level at $0.' : 'Stacks level out as each payment lands']
+    : [`${raw.length} IOUs · ${usd(raw.reduce((a, e) => a + e.amt, 0))}`, 'Above the line is owed, below owes', `Netted to ${simple.length} ${simple.length === 1 ? 'payment' : 'payments'}`];
   const steps = ['IOUs', 'Balances', 'Payments'], stepX = [16, 125, 236];
   const tr = live && !reduce ? 'transform .7s cubic-bezier(.2,.8,.2,1), opacity .4s' : live ? 'opacity .2s linear' : 'none';
+  const aria = live ? `${caps[0]}.` : summary;
 
   return (
-    <svg viewBox={live ? `0 16 ${RS_W} ${RS_H - 16}` : `0 0 ${RS_W} ${RS_H}`} width="100%" className="p-ut-svg p-rs" role="img" aria-label={live ? `${caps[0]} ${simple.map((e, i) => `${nm(e.from)} to ${nm(e.to)} ${usd(e.amt)} ${paid[i] ? 'paid' : 'open'}`).join(', ')}.` : summary}>
+    <svg viewBox={live ? `0 16 ${RS_W} ${RS_H - 16}` : `0 0 ${RS_W} ${RS_H}`} width="100%" className="p-ut-svg p-rs" role="img" aria-label={aria}>
       <defs>
         <filter id={`rsd${uid}`} x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" floodColor="#16161D" floodOpacity=".12" /></filter>
         <linearGradient id={`rsup${uid}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" className="p-rs-up0" /><stop offset="1" className="p-rs-up1" /></linearGradient>
       </defs>
+      <g opacity={live ? 1 : lineOp} aria-hidden><line x1={12} x2={RS_W - 12} y1={ZERO} y2={ZERO} className={squared ? 'p-rs-zero is-level' : 'p-rs-zero'} /></g>
+      <NettingPulse uid={uid} reduce={reduce} on={motif} strong={!live && phase === 2} />
 
-      {/* zero line */}
-      <g opacity={live ? 1 : lineOp} aria-hidden>
-        <line x1={8} x2={RS_W - 8} y1={ZERO} y2={ZERO} className={squared ? 'p-rs-zero is-level' : 'p-rs-zero'} />
-        <text x={RS_W - 10} y={ZERO - 5} textAnchor="end" className="p-rs-tiny">$0</text>
-      </g>
-
-      {/* stacks: one bar per person, scaled from the zero line (transform only) */}
       {M.order.map(id => {
-        const n = live ? cur[id] ?? 0 : net[id] ?? 0; const h = M.h(n); const up = n > 0; const zero = Math.abs(net[id] ?? 0) < 0.005;
+        const n = live ? cur[id] ?? 0 : net[id] ?? 0; const h = M.h(n); const up = n > 0; const zero = Math.abs(net[id] ?? 0) < 0.005; const flat = Math.abs(n) < 0.005;
         const k = live ? 1 : barK; const x = M.colX[id];
         return (
           <g key={id} opacity={!live && zero ? evenDim : 1}>
             <g style={{ transform: `translate(${x - BAR / 2}px, ${ZERO}px) scaleY(${(up ? -1 : 1) * Math.max(0.0001, (h / MAXH) * k)})`, transformOrigin: '0 0', transition: tr }}>
-              <rect width={BAR} height={MAXH} rx={0} className={up ? 'p-rs-bar is-owed' : 'p-rs-bar is-owe'} fill={up ? `url(#rsup${uid})` : undefined} />
+              <rect width={BAR} height={MAXH} className={up ? 'p-rs-bar is-owed' : 'p-rs-bar is-owe'} fill={up ? `url(#rsup${uid})` : undefined} />
             </g>
-            {/* chip seams on the stack, like torn strips piled up */}
-            {!zero && h * k > 10 && <g opacity={k} style={{ transition: tr }} aria-hidden>
-              {Array.from({ length: Math.floor((h * k) / 9) }, (_, j) => <line key={j} x1={x - BAR / 2 + 3} x2={x + BAR / 2 - 3} y1={ZERO + (up ? -1 : 1) * (j + 1) * 9} y2={ZERO + (up ? -1 : 1) * (j + 1) * 9} className="p-rs-seam" />)}
-            </g>}
-            {(zero || Math.abs(n) < 0.005) && <rect x={x - BAR / 2} y={ZERO - 1.5} width={BAR} height={3} rx={1.5} className="p-rs-even" opacity={live ? 1 : lineOp} />}
+            {!flat && h * k > 10 && <g opacity={k} aria-hidden>{Array.from({ length: Math.floor((h * k) / 9) }, (_, j) => <line key={j} x1={x - BAR / 2 + 3} x2={x + BAR / 2 - 3} y1={ZERO + (up ? -1 : 1) * (j + 1) * 9} y2={ZERO + (up ? -1 : 1) * (j + 1) * 9} className="p-rs-seam" />)}</g>}
+            {flat && <rect x={x - BAR / 2} y={ZERO - 1.5} width={BAR} height={3} rx={1.5} className="p-rs-even" opacity={live ? 1 : lineOp} />}
             <text x={x} y={NAME_Y} textAnchor="middle" className={people[id]?.you ? 'p-rs-name is-me' : 'p-rs-name'} opacity={live ? 1 : lineOp}>{nm(id)}</text>
-            <text x={x} y={up ? ZERO - h - 7 : Math.abs(n) < 0.005 ? ZERO - 8 : ZERO + h + 16} textAnchor="middle" className={up ? 'p-rs-amt is-owed' : Math.abs(n) < 0.005 ? 'p-rs-amt is-zero' : 'p-rs-amt'}
-              opacity={live ? 1 : clamp((t - 0.75) / 0.25)} style={{ transition: live ? 'opacity .3s' : 'none' }}>{Math.abs(n) < 0.005 ? (squared ? '$0' : 'even') : `${up ? '+' : '−'}${Math.round(Math.abs(n))}`}</text>
+            {/* amount label: above owed bars, below owing bars; never on the zero line where the motif runs */}
+            <text x={x} y={up ? ZERO - h - 7 : flat ? ZERO - 9 : ZERO + h + 16} textAnchor="middle" className={up ? 'p-rs-amt is-owed' : flat ? 'p-rs-amt is-zero' : 'p-rs-amt'}
+              opacity={live ? 1 : clamp((t - 0.75) / 0.25)} style={{ transition: live ? 'opacity .3s' : 'none' }}>{flat ? (squared ? '$0' : 'even') : `${up ? '+' : '−'}${Math.round(Math.abs(n))}`}</text>
           </g>
         );
       })}
 
-      {/* hops: the three payments, debtor stack to creditor stack */}
-      {simple.map((e, i) => {
-        const a = M.colX[e.from], b = M.colX[e.to]; if (a == null || b == null) return null;
-        // Wider hops fly higher, so the amount pills stack at distinct heights and never touch (pill y = ZERO - 0.75 * lift).
-        const rank = [...simple].map((x, j) => ({ j, span: Math.abs((M.colX[x.to] ?? 0) - (M.colX[x.from] ?? 0)) })).sort((u, v) => u.span - v.span).findIndex(o => o.j === i);
-        const lift = [64, 88, 112, 132][Math.min(3, rank)]; const y0 = ZERO + 6, y1 = ZERO - 6, top = 0;
-        const cy = ZERO - lift;
-        const d = `M${a} ${y0} C${a} ${cy} ${b} ${cy} ${b} ${y1}`;
-        const k = live ? 1 : hopK(i); const done = !!paid[i];
-        const mx = (a + b) / 2, my = (y0 + 3 * cy + 3 * cy + y1) / 8;
-        void top;
-        return k > 0.001 && (
-          <g key={`h${i}`} opacity={live ? (done ? 0.28 : 1) : k} style={{ transition: live ? 'opacity .5s' : 'none', transform: live || reduce ? undefined : `translateY(${(1 - k) * 8}px)` }}>
-            <path d={d} className="p-rs-hop" />
-            <path d={`M${b - 4} ${y1 - 7} L${b} ${y1 - 1} L${b + 4} ${y1 - 7}`} className="p-rs-hophead" />
-            <g style={{ transform: `translate(${mx}px, ${my}px)` }}>
-              <rect x={-25} y={-9} width={50} height={18} rx={9} className={done ? 'p-rs-pill is-done' : 'p-rs-pill'} filter={done ? undefined : `url(#rsd${uid})`} />
-              <text y={4.5} textAnchor="middle" className={done ? 'p-rs-pilltx is-done' : 'p-rs-pilltx'}>{done ? 'Paid' : usd(e.amt)}</text>
-            </g>
-            {live && done && !reduce && <circle r={6} className="p-rs-chip p-rs-fly" style={{ offsetPath: `path("${d}")` } as React.CSSProperties} />}
-          </g>
-        );
-      })}
-
-      {/* the receipt: each IOU is a perforated strip that tears off and drops into the stacks */}
+      {/* the receipt: one perforated strip per IOU; it always fits the card (two columns past 7 IOUs) */}
       {!live && paperOp > 0.001 && <g aria-hidden>
-        <g opacity={paperOp}>
-          <rect x={PAPER.x} y={PAPER.y} width={PAPER.w} height={PAPER.head} className="p-rs-paper" filter={`url(#rsd${uid})`} opacity={introK(0)} />
-          <text x={PAPER.x + PAPER.w / 2} y={PAPER.y + 16} textAnchor="middle" className="p-rs-rhead" opacity={introK(0)}>LISBON CREW · IOUs</text>
+        <g opacity={paperOp * introK(0)}>
+          <rect x={R.x} y={R.top} width={R.w} height={R.head} className="p-rs-paper" filter={`url(#rsd${uid})`} />
+          <text x={RS_W / 2} y={R.top + 15} textAnchor="middle" className="p-rs-rhead">LISBON CREW · IOUs</text>
         </g>
         {raw.map((e, i) => {
-          const top = PAPER.y + PAPER.head + i * PAPER.row; const k = tearK(i); const ik = introK(i + 1);
-          const last = i === raw.length - 1;
-          // Path of the strip: peel (rotate around its left corner), lift, then shrink toward the payer stack.
-          const tx = M.colX[e.from] ?? PAPER.x, peel = clamp(k / 0.3), fly = clamp((k - 0.25) / 0.75);
-          const cx = PAPER.x + PAPER.w / 2, cyy = top + PAPER.row / 2;
+          const c = R.cell(i); const k = tearK(i); const ik = introK(i + 1);
+          const tx = M.colX[e.from] ?? c.x, peel = clamp(k / 0.3), fly = clamp((k - 0.25) / 0.75);
+          const cx = c.x + c.w / 2, cyy = c.y + R.row / 2;
           const dx = (tx - cx) * fly, dy = (ZERO + 14 - cyy) * fly - Math.sin(fly * Math.PI) * 26 - peel * 4;
           const rot = (i % 2 ? 1 : -1) * (peel * 4 + fly * 8), sc = 1 - fly * 0.82;
           const op = reduce ? paperOp : ik * (1 - clamp((fly - 0.75) / 0.25));
           return (
             <g key={i} opacity={op} style={{ transform: `translate(${dx}px, ${dy + (1 - ik) * -10}px) rotate(${rot}deg) scale(${sc})`, transformOrigin: `${cx}px ${cyy}px` }}>
-              <path d={stripPath(i, top, PAPER.row, false, last)} className="p-rs-paper" filter={`url(#rsd${uid})`} />
-              {k < 0.05 && i > 0 && <line x1={PAPER.x + 6} x2={PAPER.x + PAPER.w - 6} y1={top} y2={top} className="p-rs-perf" />}
-              <text x={PAPER.x + 12} y={top + 14.5} className="p-rs-line">{nm(e.from)} → {nm(e.to)}</text>
-              <text x={PAPER.x + PAPER.w - 12} y={top + 14.5} textAnchor="end" className="p-rs-line is-num">{e.amt.toFixed(2)}</text>
+              <path d={stripPath(i, c.x, c.w, c.y, R.row)} className="p-rs-paper" filter={`url(#rsd${uid})`} />
+              <text x={c.x + 10} y={c.y + R.row / 2 + R.font * 0.36} className="p-rs-line" style={{ fontSize: R.font }}>{nm(e.from)} → {nm(e.to)}</text>
+              <text x={c.x + c.w - 10} y={c.y + R.row / 2 + R.font * 0.36} textAnchor="end" className="p-rs-line is-num" style={{ fontSize: R.font }}>{e.amt.toFixed(2)}</text>
             </g>
           );
         })}
         <g opacity={paperOp * introK(raw.length + 1)}>
-          <path d={`M${PAPER.x} ${PAPER.y + paperH - 24} L${PAPER.x + PAPER.w} ${PAPER.y + paperH - 24} L${PAPER.x + PAPER.w} ${PAPER.y + paperH - 4} L${tornEdge(PAPER.x, PAPER.x + PAPER.w, PAPER.y + paperH - 2, 9, 1).reverse().join(' L')} L${PAPER.x} ${PAPER.y + paperH - 2} Z`} className="p-rs-paper" style={{ transform: `translateY(${-(raw.length * PAPER.row) * 0}px)` }} />
-          <text x={PAPER.x + 12} y={PAPER.y + paperH - 10} className="p-rs-line is-total">Total</text>
-          <text x={PAPER.x + PAPER.w - 12} y={PAPER.y + paperH - 10} textAnchor="end" className="p-rs-line is-total">{raw.reduce((a, e) => a + e.amt, 0).toFixed(2)}</text>
+          <path d={`M${R.x} ${R.top + R.head + R.bodyH} L${R.x + R.w} ${R.top + R.head + R.bodyH} L${R.x + R.w} ${R.top + R.head + R.bodyH + R.foot - 2} L${tornEdge(R.x, R.x + R.w, R.top + R.head + R.bodyH + R.foot, 9, 1).reverse().join(' L')} L${R.x} ${R.top + R.head + R.bodyH + R.foot} Z`} className="p-rs-paper" />
+          <text x={R.x + 10} y={R.top + R.head + R.bodyH + 15} className="p-rs-line is-total">Total</text>
+          <text x={R.x + R.w - 10} y={R.top + R.head + R.bodyH + 15} textAnchor="end" className="p-rs-line is-total">{raw.reduce((a, e) => a + e.amt, 0).toFixed(2)}</text>
         </g>
       </g>}
 
-      {/* squared: a quiet level line and $0 */}
       {squared && <g className={reduce ? '' : 'p-rs-celebrate'}><text x={RS_W / 2} y={ZERO - 30} textAnchor="middle" className="p-rs-zero-big">$0 owed</text></g>}
-
-      {/* stepper (same hit areas as the inline controls) and one-line caption */}
       {!live && <g className="p-ut-stepper">
         {steps.map((s, i) => <g key={s} className={phase === i ? 'is-on' : ''} transform={`translate(${stepX[i]} 18)`}>
-          <circle cx={3} cy={0} r={2.5} className="p-ut-stepdot" /><text x={10} y={4} className="p-rs-step">{`${i + 1} ${s}`}</text></g>)}
+          <circle cx={3} cy={0} r={2.5} className="p-ut-stepdot" /><text x={10} y={4} className="p-rs-step">{s}</text></g>)}
       </g>}
       <g transform="translate(16 236)">
         {caps.map((c, i) => <text key={i} x={165} y={14} textAnchor="middle" className="p-rs-cap" opacity={live ? 1 : capOp[i]}>{c}</text>)}
