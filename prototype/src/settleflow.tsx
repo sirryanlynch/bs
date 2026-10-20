@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Button, Avatar } from '@sb/components/core';
 import { DebtUntangle, UntanglePhase } from '@sb/components/untangle';
 import '@sb/components/untangle-solver';
+import { ReceiptStacksLive } from '@sb/components/untangle-receipt';
 import { BottomSheet, SquaredSheet, SquaredRow } from '@sb/components/overlays';
 import {
   GlassHeader, PairHero, SPill, Overline, Readout, MethodPicker, CashCount, SlideToSettle, PendingMark, UndoToast, ReceiverConfirm,
@@ -58,7 +59,7 @@ export function MoneyScreen() {
                 : <button type="button" className={`pt-myrow-btn ${req ? 'is-done' : ''}`} disabled={req} onClick={() => ask(e)}>{req ? 'Requested' : 'Request'}</button>}
             </li>); })}</ul>
         </>) : (<>
-          <div className="pt-graph4"><DebtUntangle raw={raw} simple={plan} people={P} solved={s.simplified} controls="inline" startButton={false} skin="solver" onPhase={setPhase}
+          <div className="pt-graph4"><DebtUntangle raw={raw} simple={plan} people={P} solved={s.simplified} controls="inline" startButton={false} skin="receipt" onPhase={setPhase}
             onSolved={() => { haptic(16); if (!s.simplified) d({ t: 'set', patch: { simplified: true } }); d({ t: 'done', key: 'simplify' }); }} /></div>
           <button type="button" className="pt-minfo" aria-expanded={info} onClick={() => setInfo(x => !x)}><span aria-hidden>i</span>{info ? 'Hide the details' : 'How TripUp got here'}</button>
           {info && <div className="anim-rise">{phase === 0 ? <IouLog raw={raw} people={P} me={s.me} /> : phase === 1 ? <NetLog nets={nets(raw)} people={P} me={s.me} /> : <PairRows plan={plan} people={P} me={s.me} onRow={e => { if (e.from === 'ari' && s.me === 'ari') { haptic(); d({ t: 'view', v: 'choose' }); } }} />}</div>}
@@ -126,9 +127,11 @@ function MoneyProgress() {
     : null;
   return (
     <div className="scr pt-v3">
-      <div className="p-sscroll pt-money is-progress">
+      <div className="p-sscroll pt-money is-progress has-hm" tabIndex={0} aria-label="Settle progress">{/* v5.6: the stacks card makes this region scroll, so it takes keyboard focus (axe scrollable-region-focusable) */}
         <MoneyBalance net={net} caption={sentence} compact />
         {success}
+        {/* v5.6: the three hops to $0. Stacks only move on paid (app or cash), never on pending. */}
+        <div className="pt-graph4 pt-stacks-live"><ReceiptStacksLive raw={rawOf(s)} simple={simplifyOf(s)} people={P} me={s.me} paid={simplifyOf(s).map(e => flag(e) === 'app' || flag(e) === 'cash')} /></div>
         <SettleProgress done={done} total={plan.length} paid={paidSum} sum={sum} />
         <PlanRowsClickable rows={rows} onMine={() => d({ t: 'view', v: stl && stl.status === 'disputed' ? 'dispute' : stl && stl.status === 'queued' ? 'offline' : stl ? 'receipt' : 'choose' })} />
       </div>

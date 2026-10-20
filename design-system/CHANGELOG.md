@@ -2,6 +2,21 @@
 
 `tokens.json` is the source of truth. `tokens.css` and the Figma variables are generated from it by `build_tokens.py`. Anyone building on `tokens.*` (for example the Storybook in `/workspace/tripup/storybook/`) should check here before they rebuild.
 
+## v5.5 — Mobile deck (2026-10-19)
+
+- Deck: phone layout only under `@media (max-width:700px)` (+ pointer:coarse): stacked slides, 2-col hero grid with fades, compact dock, swipe, safe areas, 15px+ body, 44px taps.
+- Autoplay demos (s8, s10) and Storybook (s7) become static posters with "Open in prototype" (new tab); no iframes on phones.
+- Prototype: frameless full-viewport phone mode now ≤700px (was 560px); reviewer panel opens as bottom sheet.
+- Desktop unchanged: pixel diff vs live at 1440×900 and 1024×640 = 0.
+
+### v5.5 follow-up (phones only)
+
+- Slide 8: caption and chips now sit before the still image and the Open in prototype button.
+- Tap targets are at least 44px: source, trace and cash links, From-slide links, the stepper, and the skip link when focused.
+- Text floor of 15px under 700px; dense diagram and matrix labels (svg, .mapp/.mcell, .stage) are 13px.
+- Reviewer button shows on all phones and opens the bottom sheet. On phones it sits on the right edge above the CTAs.
+- New check: qa/v55/a11y-size.cjs.
+
 ## v5.4.9 (Oct 19, 2026)
 
 - **Money keeps the in-trip tab bar** (Plan / Explore / Photos / Money and +, with Money selected). Simplify, Pay and Request sit above the bar with a 34px gap. Toasts sit above the button.

@@ -7,6 +7,7 @@ import { Icon } from '@sb/components/Icon';
 import { Avatar, AvatarStack, Button, useCountUp } from '@sb/components/core';
 import { PaymentRow } from '@sb/components/money';
 import { DebtUntangle } from '@sb/components/untangle';
+import '@sb/components/untangle-receipt';
 import { BottomSheet, CelebrationOverlay } from '@sb/components/overlays';
 import { Face } from '@sb/components/settle';
 import { usd, photo } from '@sb/lib/data';
@@ -80,7 +81,7 @@ export function Money() {
           <span className={`pt-balance-amt tu-num ${net < -0.004 ? 'is-owe' : net > 0.004 ? 'is-owed' : ''}`}>{`${net < -0.004 ? '−' : net > 0.004 ? '+' : ''}$${shown.toFixed(2)}`}</span>
           <span className="pt-balance-sub">{Math.abs(net) < 0.005 ? 'All settled' : sentence}</span>
         </div>
-        <div className="pt-graph"><DebtUntangle raw={raw} simple={plan} people={P} solved={s.simplified} startButton={false}
+        <div className="pt-graph"><DebtUntangle raw={raw} simple={plan} people={P} solved={s.simplified} startButton={false} skin="receipt"
           onSolved={() => { haptic(16); setShown(true); if (!s.simplified) d({ t: 'set', patch: { simplified: true } }); d({ t: 'done', key: 'simplify' }); }} /></div>
         {s.simplified && rowsShown && (
           <div className="pt-payrows anim-rise">{plan.map(e => { const k = `${e.from}>${e.to}`; const st = s.paid[k]; return (

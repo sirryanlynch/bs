@@ -1,6 +1,6 @@
 /* Navigation motion (tokens in lib/motion.ts) */
-.prism .mo-tab { animation: mo-fade 220ms ease-out both; }
-.prism .mo-fade { animation: mo-fade 200ms ease both; }
+/* v5.5 navjank: tab and fade screens arrive opaque; the outgoing ghost fades out above them (see .mo-out-tab). No blank frame, no shell flicker. */
+.prism .mo-tab, .prism .mo-fade { animation: none; }
 .prism .mo-push { animation: mo-push 440ms cubic-bezier(.32,.72,0,1) both; box-shadow: -14px 0 34px -18px rgba(20, 18, 40, .45); }
 .prism .mo-pop { animation: mo-pop 400ms cubic-bezier(.32,.72,0,1) both; }
 .prism .mo-sheet { animation: mo-sheet 520ms cubic-bezier(.2,.9,.25,1.04) both; box-shadow: 0 -18px 40px -24px rgba(20, 18, 40, .5); border-radius: 0; }
@@ -12,15 +12,18 @@
 /* The active tab icon gives one small bounce when the tab changes */
 .prism .p-tab.is-bounce svg { animation: mo-bounce 420ms cubic-bezier(.3,1.6,.5,1) both; }
 @keyframes mo-bounce { 0% { transform: scale(.82); } 100% { transform: none; } }
-.prism[data-motion="reduce"] .mo-tab, .prism[data-motion="reduce"] .mo-fade, .prism[data-motion="reduce"] .mo-push, .prism[data-motion="reduce"] .mo-pop, .prism[data-motion="reduce"] .mo-sheet { animation: mo-fade 160ms linear both; box-shadow: none; }
+.prism[data-motion="reduce"] .mo-push, .prism[data-motion="reduce"] .mo-pop, .prism[data-motion="reduce"] .mo-sheet { animation: mo-fade 160ms linear both; box-shadow: none; }
 .prism[data-motion="reduce"] .p-tab.is-bounce svg { animation: none; }
-@media (prefers-reduced-motion: reduce) { .prism .mo-tab, .prism .mo-fade, .prism .mo-push, .prism .mo-pop, .prism .mo-sheet { animation: mo-fade 160ms linear both; box-shadow: none; } .prism .p-tab.is-bounce svg { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .prism .mo-push, .prism .mo-pop, .prism .mo-sheet { animation: mo-fade 160ms linear both; box-shadow: none; } .prism .p-tab.is-bounce svg { animation: none; } }
 /* v5.1 exit half: the outgoing screen is a cloned, inert ghost (lib/navghost.ts) */
 .prism .mo-ghost { pointer-events: none !important; z-index: 0; }
 .prism .mo-ghost ~ :not(.mo-ghost) { z-index: 1; }
 .prism .mo-out-push { animation: mo-out-push 440ms cubic-bezier(.32,.72,0,1) both; }
 .prism .mo-out-pop { z-index: 2 !important; animation: mo-out-pop 400ms cubic-bezier(.32,.72,0,1) both; box-shadow: -14px 0 34px -18px rgba(20, 18, 40, .45); }
-.prism .mo-out-tab, .prism .mo-out-fade { animation: mo-out-fade 200ms ease both; }
+.prism .mo-out-tab, .prism .mo-out-fade { z-index: 2; animation: mo-out-fade 180ms cubic-bezier(.4,0,.2,1) both; }
+.prism .mo-out-tab ~ :not(.mo-ghost), .prism .mo-out-fade ~ :not(.mo-ghost) { z-index: 80; }
+.prism .mo-ghost * { animation: none !important; transition: none !important; }
+.prism .mo-ghost .mo-ghost-hide { visibility: hidden !important; }
 .prism .mo-out-sheet { animation: mo-out-sheet 520ms cubic-bezier(.2,.9,.25,1) both; }
 @keyframes mo-out-push { to { transform: translateX(-30%); opacity: .5; } }
 @keyframes mo-out-pop { to { transform: translateX(100%); } }

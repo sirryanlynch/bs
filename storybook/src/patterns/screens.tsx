@@ -4,6 +4,7 @@ import { TripCard, PlaceCard, Timeline, MemberPicker, InviteContent, ExploreRing
 import { PollCard, PollBuilder } from '../components/poll';
 import { DebtUntangle } from '../components/untangle';
 import '../components/untangle-solver';
+import '../components/untangle-receipt';
 import { ExpenseRow, DebtSimplify, PaymentRow, SettleContent } from '../components/money';
 import { Avatar, AvatarStack, BalanceChip, Button, IconButton, ListGroup, ListRow, SegmentedControl, FilterChip, TextField, useCountUp } from '../components/core';
 import { Banner, Toast, LiveActivity } from '../components/feedback';
@@ -160,7 +161,7 @@ export function BalancesScreen() {
           <span className="scr-balance-label tu-num">You pay Nic $42.10 · Ren pays you $18.40</span>
           <div className="scr-balance-row"><Button label="Settle up" size="medium" /><Button label="Add expense" size="medium" variant="secondary" icon="plus" /></div>
         </div>
-        <DebtUntangle solved compact controls={false} />
+        <DebtUntangle solved compact controls={false} skin="receipt" />
         <ListGroup header="Recent">
           <ExpenseRow title="Vinho Verde (bottle) × 2" payer={P.ari} amount={38} share={7.6} date="Sat" category="wine" excluded={[P.ren, P.nic]} splitCount={5} />
           <ExpenseRow title="Dinner, Taberna da Rua das Flores" payer={P.ari} amount={248.7} share={37.7} date="Fri" excluded={[P.ren, P.nic]} />

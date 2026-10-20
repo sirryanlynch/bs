@@ -8,7 +8,7 @@ import { useLayoutEffect, useRef } from 'react';
  *   tab, fade -> outgoing fades out; sheet -> outgoing settles back under the rising sheet
  * Reduce Motion turns every exit into a short fade (motion.css).
  */
-const DUR: Record<string, number> = { push: 460, pop: 420, tab: 220, fade: 220, sheet: 540 };
+const DUR: Record<string, number> = { push: 460, pop: 420, tab: 200, fade: 200, sheet: 540 };
 export function useNavGhost<T extends HTMLElement = HTMLDivElement>(id: string, cls: string) {
   const el = useRef<T | null>(null);
   const prev = useRef(id);
@@ -25,7 +25,15 @@ export function useNavGhost<T extends HTMLElement = HTMLDivElement>(id: string, 
     const kind = (cls.match(/mo-(push|pop|tab|fade|sheet)/) ?? [])[1]; if (!kind) return;
     const g = p.node; g.className = g.className.replace(/\bmo-[a-z]+\b/g, '').trim() + ` mo-ghost mo-out-${kind}`;
     g.setAttribute('aria-hidden', 'true'); (g as any).inert = true; g.removeAttribute('id');
-    if (kind === 'pop') cur.after(g); else cur.before(g);
+    // v5.5 navjank: nested screen wrappers inside the clone must not replay their own entrance (that blanked the ghost).
+    g.querySelectorAll('[class*="mo-"]').forEach(n => { n.className = String(n.className).replace(/\bmo-(tab|fade|push|pop|sheet|none)\b/g, '').trim(); });
+    if (kind === 'tab' || kind === 'fade') {
+      // Crossfade without a dip: the incoming screen is opaque at once and the outgoing ghost fades out on top of it.
+      // Shell chrome the incoming screen also has (header, tab bar) is hidden in the ghost, so the live header and tab bar stay put.
+      if (cur.querySelector('.b-hm')) g.querySelectorAll('.b-hm').forEach(n => n.classList.add('mo-ghost-hide'));
+      if (cur.querySelector('.p-tabset:not(.is-swap), .p-tabbar') && !cur.querySelector('.p-tabset.is-swap')) g.querySelectorAll('.p-tabset, .p-tabbar').forEach(n => n.classList.add('mo-ghost-hide'));
+      cur.after(g);
+    } else if (kind === 'pop') cur.after(g); else cur.before(g);
     const all = g.querySelectorAll('*'); p.scrolls.forEach(([i, t]) => { const n = all[i] as HTMLElement | undefined; if (n) n.scrollTop = t; });
     const t = window.setTimeout(() => g.remove(), DUR[kind] ?? 400);
     return () => { window.clearTimeout(t); g.remove(); };

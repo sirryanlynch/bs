@@ -109,7 +109,9 @@ export function BeyondScreen() {
     default: el = <X.ExploreFeedScreen />;
   }
   // Sheets keep their base screen mounted, so only animate when the base changes.
-  const base = r.replace(/\/(addpoll|upload|tag|viewer|edit|install)$/, '').replace(/^plan\/add$/, 'plan/day').replace(/^guest\/voted$/, 'guest');
+  const base = baseOf(r);
   const cls = navClass('b:' + base); const ghost = useNavGhost(base, cls);
   return <><div className={`b-screen-anim ${cls}`} key={base} ref={ghost}>{el}</div><FlowToast /></>;
 }
+/** Sheets keep their base screen mounted; this is the screen identity used for nav motion. */
+export const baseOf = (r: string) => r.replace(/\/(addpoll|upload|tag|viewer|edit|install)$/, '').replace(/^plan\/add$/, 'plan/day').replace(/^guest\/voted$/, 'guest');

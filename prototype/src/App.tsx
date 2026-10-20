@@ -11,7 +11,7 @@ import { Expense, Squared } from './screens3';
 import { RenWeb } from './renweb';
 import { useBeyond, BeyondLayer, BeyondPanel, BeyondBridge } from './flows';
 import { isBeyondHash, routeFromHash, hashForRoute } from './flows/nav';
-import { FLOWS, ALL_ROUTES } from '@sb/patterns/beyond/router';
+import { FLOWS, ALL_ROUTES, baseOf } from '@sb/patterns/beyond/router';
 import { TourCursor, cursor } from './flows/cursor';
 import { coreTarget } from './flows/tour';
 import { PACE } from './flows/pacing';
@@ -32,7 +32,7 @@ const DECK_SLIDE = (() => {
 /** Relative when served next to the deck; the single-file build points at the live deck instead. */
 const DECK_HREF = (location.pathname.includes('/prototype/') ? '../' : 'https://sirryanlynch.github.io/bs/') + (DECK_SLIDE ? `#${DECK_SLIDE}` : '');
 const BackToDeck = ({ cls = '' }: { cls?: string }) => EMBED ? null : <a className={`fl-back ${cls}`} href={DECK_HREF}><Icon name="chevronLeft" size={16} />Back to deck</a>;
-const isPhone = () => window.matchMedia('(max-width: 560px)').matches;
+const isPhone = () => window.matchMedia('(max-width: 700px)').matches;
 
 function parseHash(): { step?: StepId; view?: SettleView; me?: Me; tie?: boolean; open?: string } {
   const [p, q] = location.hash.replace(/^#\/?/, '').split('?');
@@ -212,7 +212,7 @@ export function App() {
     const h = hashOf(s);
     if (location.hash !== h) history.replaceState(null, '', h);
   }, [s.step, s.me, s.tiePath, s.settleView]);
-  useEffect(() => { const m = matchMedia('(max-width: 560px)'); const f = () => setPhone(m.matches); m.addEventListener('change', f); return () => m.removeEventListener('change', f); }, []);
+  useEffect(() => { const m = matchMedia('(max-width: 700px)'); const f = () => setPhone(m.matches); m.addEventListener('change', f); return () => m.removeEventListener('change', f); }, []);
 
   // Toast auto dismiss
   useEffect(() => { if (!s.toast) return; const t = setTimeout(() => d({ t: 'set', patch: { toast: undefined } }), 2600); return () => clearTimeout(t); }, [s.toast?.id]);
@@ -308,10 +308,12 @@ export function App() {
 
   const coreId = `${s.step === 'settle' && s.settleView === 'confirmed' ? 'money' : s.step}-${s.me}-${s.recap}-${s.step === 'settle' ? s.settleView : ''}`;
   const coreCls = bz.active ? '' : navClass(coreId.replace(/-ari-false-$/, ''));
-  const coreGhost = useNavGhost(bz.active ? 'beyond' : coreId, coreCls);
+  // v5.5 navjank: one ghost for both layers, so crossing core <> beyond (Plan/Money <> Explore/Photos) crossfades instead of blanking.
+  const beyondCls = bz.active ? navClass('b:' + baseOf(bz.route)) : '';
+  const coreGhost = useNavGhost(bz.active ? 'beyond' : coreId, bz.active ? beyondCls : coreCls);
   const screen = (
     <div className="pt-screen-inner" onPointerDown={onDown} ref={swipeRoot}>
-      {bz.active ? <div className="pt-anim mo-none" key="beyond"><BeyondLayer bz={bz} /></div>
+      {bz.active ? <div className="pt-anim mo-none" key="beyond" ref={coreGhost}><BeyondLayer bz={bz} /></div>
         : <div className={`pt-anim ${coreCls}`} key={coreId} ref={coreGhost}><PhoneScreen s={s} /></div>}
       {s.toast && <div className={`pt-itoast ${s.toast.tone === 'success' ? 'is-success' : ''}`} key={s.toast.id} role="status"><Icon name={s.toast.tone === 'success' ? 'check' : 'info'} size={20} /><span>{s.toast.msg}</span></div>}
       {ripples.map(r => <span key={r.id} className="pt-ripple" style={{ left: r.x, top: r.y }} aria-hidden />)}

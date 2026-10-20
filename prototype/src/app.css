@@ -357,7 +357,7 @@ html.is-embed, html.is-embed body, html.is-embed .prism, html.is-embed .pt-embed
 .prism .scr-hero.pt-hero-card img { border-radius: inherit; }
 /* v5.4.3: toasts sit low, above the bottom action, so they never cover a switch or title */
 .prism .pt-toast { top: auto; bottom: calc(var(--layout-safe-bottom, 34px) + 96px); }
-@media (max-width: 500px) { .pt-fab { display: none !important; } }
+/* v5.5.1: reviewer fab shown on all phones (opens the bottom-sheet drawer) */
 /* v5.4.4: every toast sits low, just above the bottom action stack, never over a switch, title or button. */
 .prism, .phone-screen { --toast-b: 124px; }
 .phone-screen:has(.p-sbottom > :nth-child(2)), .prism:has(.p-sbottom > :nth-child(2)) { --toast-b: 182px; }
@@ -385,3 +385,16 @@ html.is-embed, html.is-embed body, html.is-embed .prism, html.is-embed .pt-embed
 .prism .p-sbottom.is-tabs { bottom: 118px; }
 .phone-screen:has(.p-sbottom.is-tabs), .prism:has(.p-sbottom.is-tabs) { --toast-b: 190px; }
 .prism .p-sscroll:has(~ .p-sbottom.is-tabs), .prism .pt-money-scroll { padding-bottom: 220px !important; }
+@media (max-width: 700px) { .pt-fab { top: auto !important; bottom: calc(env(safe-area-inset-bottom) + 200px); right: 10px; opacity: .92; } }
+
+/* ---------- v5.6.1 settle-up spacing: one scale for every settle screen (Money, You / Whole trip, Pay, cash, pending, confirm, receipt, squared) ----------
+   --st-top: content starts 16px under the header, the same gap as Home and Plan (header bottom 110 -> content 126).
+   --st-gap: 12px between sections. --st-clear: at least 24px between the last row and the CTA or tab bar. */
+.prism .pt-v3 { --st-top: 16px; --st-gap: 12px; --st-clear: 24px; }
+.prism .pt-v3 .p-sscroll.has-hm { padding-top: calc(var(--layout-safe-top) + 48px + var(--st-top)) !important; gap: var(--st-gap); }
+/* Screens with the tall glass header (pending, handoff, partial, offline, confirm, receipt, dispute): header bottom 194 -> content 210. */
+.prism .pt-v3 .p-sscroll:not(.has-hm) { padding-top: calc(var(--layout-safe-top) + 132px + var(--st-top)); gap: var(--st-gap); }
+.prism .pt-v3 .p-sscroll.pt-elev { gap: var(--st-gap); }
+.prism .pt-v3 .pt-mseg { margin: 0 16px; }
+.prism .pt-v3 .p-sscroll:has(~ .p-sbottom) { padding-bottom: calc(var(--st-clear) + 120px); }
+.prism .pt-v3 .p-sscroll:has(~ .p-sbottom > :nth-child(2)) { padding-bottom: calc(var(--st-clear) + 172px); }

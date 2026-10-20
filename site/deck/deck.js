@@ -8,6 +8,17 @@
   var slides = $$('.slide'), N = slides.length, cur = -1;
   var sysRM = window.matchMedia('(prefers-reduced-motion: reduce)');
   var mobileMQ = window.matchMedia('(max-width: 900px)');
+  /* v5.5 phones: no live iframes; each demo is a poster plus an Open in prototype link */
+  var phoneMQ = window.matchMedia('(max-width: 700px)');
+  var POSTER = { '/beyond/explore/curate': 's8-curate', '/push': 's8-push', '/live?open=trip': 's8-live', '/live?as=ren': 's8-ren', '/closed?flow=1': 's8-closed', '/squared': 's10-squared' };
+  function bare(h) { return String(h || '').replace(/[?&]hold=1$/, '').replace(/[?&]hold=1&/, '?'); }
+  function poster(h) {
+    var sl = slides[cur], slot = sl && sl.querySelector('.slot'); if (!slot) return; var k = bare(h), f = POSTER[k]; if (!f) return;
+    var fig = slot.querySelector('.m-poster');
+    if (!fig) { fig = document.createElement('figure'); fig.className = 'm-poster'; fig.innerHTML = '<img alt="" decoding="async"><a class="m-open" target="_blank" rel="noopener">Open in prototype<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h9v9M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>'; slot.appendChild(fig); slot.removeAttribute('aria-hidden'); }
+    fig.querySelector('img').src = 'deck/img/poster/' + f + '.jpg'; fig.querySelector('img').alt = 'Prototype screen: ' + (sl.dataset.title || '');
+    fig.querySelector('a').href = protoLink(k, cur + 1);
+  }
   var RM = function () { return root.dataset.motion === 'reduce'; };
   root.dataset.motion = sysRM.matches ? 'reduce' : 'full';
   var timers = [];
@@ -163,6 +174,7 @@
   // Slide 9 phone holds on the chosen view; the hero phone keeps playing the tour.
   function hold(h) { return h + (h.indexOf('?') < 0 ? '?' : '&') + 'hold=1'; }
   function setProto(h) {
+    if (phoneMQ.matches) { poster(h); return; }
     if (!proto.src) { proto.src = 'prototype/?embed=1&v=7#' + h; protoHash = h; return; }
     if (h === protoHash) return;
     protoHash = h;
@@ -468,8 +480,8 @@
     if (mobileMQ.matches) { var p = path.split('/'); return 'storybook/iframe.html?id=' + p[1] + '&viewMode=' + (p[0] === 'docs' ? 'docs' : 'story'); }
     return 'storybook/index.html?path=/' + path + '&panel=false';
   }
-  $$('.sb-tabs button').forEach(function (t, _, all) { t.addEventListener('click', function () { all.forEach(function (x) { x.setAttribute('aria-selected', x === t); }); sb.src = sbUrl(t.dataset.sb); }); });
-  function preload(i) { if (i >= 4 && !sb.src) sb.src = sbUrl('docs/introduction--docs'); }
+  $$('.sb-tabs button').forEach(function (t, _, all) { t.addEventListener('click', function () { all.forEach(function (x) { x.setAttribute('aria-selected', x === t); }); if (!phoneMQ.matches) sb.src = sbUrl(t.dataset.sb); }); });
+  function preload(i) { if (phoneMQ.matches) return; if (i >= 4 && !sb.src) sb.src = sbUrl('docs/introduction--docs'); }
 
   /* ---------- 7 · poll demo + value adds ---------- */
   (function () {
@@ -544,145 +556,79 @@
     stage(1);
   })();
 
-  /* ---------- 8 · untangle (v4 "Instrument", Figma set 121:4174) ---------- */
+  /* ---------- 8 · untangle, v5.6 "Receipt to stacks" (same model as prototype DebtUntangle skin "receipt") ---------- */
   (function () {
-    var NS = 'http://www.w3.org/2000/svg', P = D.PEOPLE, NP = D.NODES, CX = 181, CY = 112, W = 362;
+    var NS = 'http://www.w3.org/2000/svg', P = D.PEOPLE, W = 362, ZERO = 128, BAR = 26, MAXH = 54, NAME_Y = 224;
     var svg = $('#graph'), gE = $('#edges'), gN = $('#nodes'), gT = $('#tech'), gP = $('#panel'), counter = $('#gCounter');
     var mk = function (t, a, par) { var e = document.createElementNS(NS, t); for (var k in a) e.setAttribute(k, a[k]); if (par) par.appendChild(e); return e; };
-    var defs = svg.querySelector('defs');
-    if (!document.getElementById('gAvClip')) mk('circle', { r: 16 }, mk('clipPath', { id: 'gAvClip' }, defs));
-    // Technical layer: 12 px dot grid with a radial falloff, the dashed orbit, side ticks, and a crosshair shown on Solved.
-    for (var x = 13; x <= 349; x += 12) for (var y = 34; y <= 194; y += 12) { var dd = Math.hypot((x - CX) / 170, (y - CY) / 82); if (dd < 1) mk('circle', { cx: x, cy: y, r: .625, class: 'g-dot', style: 'opacity:' + (dd < .6 ? 1 - dd * .6 : (1 - dd) * 1.6).toFixed(2) }, gT); }
-    mk('ellipse', { cx: CX, cy: CY, rx: 125, ry: 54, class: 'g-orbit' }, gT);
-    for (var i = 0; i < 15; i++) { var ty = 34 + i * 12, tl = i % 4 === 0 ? 6 : 3; mk('line', { x1: 4, x2: 4 + tl, y1: ty, y2: ty, class: 'g-tick' }, gT); mk('line', { x1: W - 4, x2: W - 4 - tl, y1: ty, y2: ty, class: 'g-tick' }, gT); }
-    var cross = mk('g', { class: 'g-cross' }, gT); mk('line', { x1: CX - 5, x2: CX + 5, y1: CY, y2: CY }, cross); mk('line', { x1: CX, x2: CX, y1: CY - 5, y2: CY + 5 }, cross);
-    // Quadratic threads: control = mid + (center - mid) * bend; start 24 px from the source, end 23 px from the target.
-    function geo(a, b, bend) {
-      var mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, c = [mx + (CX - mx) * bend, my + (CY - my) * bend];
-      var q = function (t) { var u = 1 - t; return [u * u * a[0] + 2 * u * t * c[0] + t * t * b[0], u * u * a[1] + 2 * u * t * c[1] + t * t * b[1]]; };
-      var pts = []; for (var k = 0; k <= 60; k++) pts.push(q(k / 60));
-      var cut = function (from, r) { for (var k = 1; k < pts.length; k++) { var p = from ? pts[k] : pts[pts.length - 1 - k]; if (Math.hypot(p[0] - (from ? a : b)[0], p[1] - (from ? a : b)[1]) >= r) return from ? k : pts.length - 1 - k; } return 0; };
-      var s0 = cut(true, 24), s1 = cut(false, 23), poly = pts.slice(s0, s1 + 1);
-      var d = 'M' + poly.map(function (p) { return p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' L');
-      var tip = poly[poly.length - 1], pre = poly[poly.length - 3], ang = Math.atan2(tip[1] - pre[1], tip[0] - pre[0]);
-      return { d: d, poly: poly, tip: tip, s: poly[0], ang: ang, mid: poly[Math.floor(poly.length / 2)] };
-    }
-    function head(g, w) { var L = 5 + w * 1.6, H = 3 + w * .9, c = Math.cos(g.ang), s = Math.sin(g.ang), t = g.tip;
-      return 'M' + (t[0] + c * 1.5) + ' ' + (t[1] + s * 1.5) + ' L' + (t[0] - c * L - s * H) + ' ' + (t[1] - s * L + c * H) + ' L' + (t[0] - c * L + s * H) + ' ' + (t[1] - s * L - c * H) + 'Z'; }
-    function segX(p, p2, q, q2) { var r = [p2[0] - p[0], p2[1] - p[1]], s = [q2[0] - q[0], q2[1] - q[1]], den = r[0] * s[1] - r[1] * s[0]; if (Math.abs(den) < 1e-9) return null;
-      var t = ((q[0] - p[0]) * s[1] - (q[1] - p[1]) * s[0]) / den, u = ((q[0] - p[0]) * r[1] - (q[1] - p[1]) * r[0]) / den; return t >= 0 && t <= 1 && u >= 0 && u <= 1 ? [p[0] + t * r[0], p[1] + t * r[1]] : null; }
-    var BEND = { 'ari>tomas': .12, 'ren>ari': .25, 'mara>joao': .15, 'mara>sofia': .10, 'sofia>joao': .10, 'tomas>nic': .28 };
-    var BEND_S = { 'ari>nic': .30, 'ren>ari': .30, 'mara>joao': .35 };
-    // Tags sit on their thread; a small search picks the spot that stays clearest of nodes, knots and other tags.
-    var placed = [], avoid = [];
-    function spot(g, w) {
-      var best = null, bs = -1;
-      for (var f = .3; f <= .71; f += .04) { var m = g.poly[Math.round(f * (g.poly.length - 1))], sc = 99;
-        Object.keys(NP).forEach(function (id) { sc = Math.min(sc, Math.max(0, Math.abs(NP[id][0] - m[0]) - w / 2 - 20) + Math.max(0, Math.abs(NP[id][1] - m[1]) - 27)); });
-        avoid.forEach(function (k) { sc = Math.min(sc, Math.hypot(k[0] - m[0], k[1] - m[1]) - w / 2 + 2); });
-        placed.forEach(function (r) { sc = Math.min(sc, Math.max(Math.abs(r[0] - m[0]) - (r[2] + w) / 2, Math.abs(r[1] - m[1]) - 15)); });
-        sc -= Math.abs(f - .5) * 4; if (sc > bs) { bs = sc; best = m; } }
-      placed.push([best[0], best[1], w]); return best;
-    }
-    function tag(g, txt, cls) { var w = txt.length * 6 + 10, m = spot(g, w), t = mk('g', { class: 'g-tag ' + cls }, gE);
-      mk('rect', { x: m[0] - w / 2, y: m[1] - 7, width: w, height: 14, rx: 7 }, t); var tx = mk('text', { x: m[0], y: m[1] + 3.4, 'text-anchor': 'middle' }, t); tx.textContent = txt; return t; }
-    var tang = D.TANGLED.map(function (e, i) {
-      var g = geo(NP[e[0]], NP[e[1]], BEND[e[0] + '>' + e[1]] || .1), w = 1 + 1.5 * Math.min(e[2], 42.1) / 42.1;
-      var lg = mk('linearGradient', { id: 'tg' + i, gradientUnits: 'userSpaceOnUse', x1: g.s[0], y1: g.s[1], x2: g.tip[0], y2: g.tip[1] }, defs);
-      mk('stop', { offset: 0, class: 'g-t0' }, lg); mk('stop', { offset: .22, class: 'g-t1' }, lg); mk('stop', { offset: 1, class: 'g-t2' }, lg);
-      var grp = mk('g', { class: 'g-thread' }, gE);
-      var path = mk('path', { d: g.d, stroke: 'url(#tg' + i + ')', 'stroke-width': w, class: 'g-iou' }, grp);
-      var dash = mk('path', { d: g.d, class: 'g-dash' }, grp);
-      var hd = mk('path', { d: head(g, w), class: 'g-head' }, grp);
-      var ep = mk('g', { class: 'g-ep' }, grp); mk('circle', { cx: g.s[0], cy: g.s[1], r: 2.5, class: 'owe' }, ep); mk('circle', { cx: g.tip[0], cy: g.tip[1], r: 2.5, class: 'owed' }, ep);
-      var L = path.getTotalLength(); path.style.strokeDasharray = L; path.dataset.len = L;
-      return { g: g, grp: grp, path: path, dash: dash, hd: hd, ep: ep, txt: e[2].toFixed(2) };
+    var nm = function (id) { return id === 'ari' ? 'You' : P[id]; };
+    svg.classList.add('rs');
+    var NET = D.NETS, ids = Object.keys(NET).sort(function (a, b) { return NET[a] - NET[b]; });
+    var gap = (W - 64) / (ids.length - 1), X = {}; ids.forEach(function (id, i) { X[id] = 32 + i * gap; });
+    var hOf = function (v) { return Math.abs(v) / 64 * MAXH; };
+    // zero line
+    var zl = mk('g', { class: 'rs-zl' }, gT); mk('line', { x1: 8, x2: W - 8, y1: ZERO, y2: ZERO, class: 'rs-zero' }, zl);
+    // stacks
+    var cols = ids.map(function (id, i) {
+      var v = NET[id], up = v > 0, h = hOf(v), g = mk('g', { class: 'rs-col' + (v === 0 ? ' is-even' : '') }, gN);
+      var bar = mk('rect', { x: X[id] - BAR / 2, y: up ? ZERO - h : ZERO, width: BAR, height: Math.max(h, .01), class: 'rs-bar ' + (up ? 'is-owed' : 'is-owe') }, g);
+      bar.style.transformOrigin = X[id] + 'px ' + ZERO + 'px'; bar.style.transitionDelay = (i * 40) + 'ms';
+      if (v === 0) mk('rect', { x: X[id] - BAR / 2, y: ZERO - 1.5, width: BAR, height: 3, rx: 1.5, class: 'rs-even' }, g);
+      var nmT = mk('text', { x: X[id], y: NAME_Y, 'text-anchor': 'middle', class: 'rs-name' + (id === 'ari' ? ' is-me' : '') }, g); nmT.textContent = nm(id);
+      var am = mk('text', { x: X[id], y: v > 0 ? ZERO - h - 7 : v < 0 ? ZERO + h + 17 : ZERO - 8, 'text-anchor': 'middle', class: 'rs-amt' + (v > 0 ? ' is-owed' : v === 0 ? ' is-zero' : '') }, g);
+      am.textContent = v === 0 ? 'even' : (v > 0 ? '+' : '−') + Math.round(Math.abs(v));
+      return { g: g, bar: bar, am: am, v: v };
     });
-    // Crossings are computed, never placed by hand.
-    var knots = [], gK = mk('g', { class: 'g-knots' }, gE);
-    for (var a = 0; a < tang.length; a++) for (var b = a + 1; b < tang.length; b++) { var A = tang[a].g.poly, B = tang[b].g.poly;
-      for (var m = 1; m < A.length; m++) for (var n = 1; n < B.length; n++) { var X = segX(A[m - 1], A[m], B[n - 1], B[n]);
-        if (X && !Object.keys(NP).some(function (id) { return Math.hypot(NP[id][0] - X[0], NP[id][1] - X[1]) < 26; }) && !knots.some(function (k) { return Math.hypot(k[0] - X[0], k[1] - X[1]) < 4; })) knots.push(X); } }
-    avoid = knots.slice(); tang.forEach(function (e) { e.tag = tag(e.g, e.txt, 'is-iou'); }); placed = []; avoid = [];
-    knots.forEach(function (k) { var g = mk('g', { class: 'g-knot', transform: 'translate(' + k[0].toFixed(1) + ' ' + k[1].toFixed(1) + ')' }, gK); mk('circle', { r: 6, class: 'glow' }, g); mk('circle', { r: 2.5, class: 'core' }, g); });
-    var pays = D.SIMPLE.map(function (e, i) {
-      var g = geo(NP[e[0]], NP[e[1]], BEND_S[e[0] + '>' + e[1]] || .3), w = e[2] >= 40 ? 3 : 2.25;
-      var lg = mk('linearGradient', { id: 'sg' + i, gradientUnits: 'userSpaceOnUse', x1: g.s[0], y1: g.s[1], x2: g.tip[0], y2: g.tip[1] }, defs);
-      mk('stop', { offset: 0, class: 'g-s0' }, lg); mk('stop', { offset: .35, class: 'g-s1' }, lg); mk('stop', { offset: 1, class: 'g-s1' }, lg);
-      var grp = mk('g', { class: 'g-pay' }, gE);
-      var path = mk('path', { d: g.d, stroke: 'url(#sg' + i + ')', 'stroke-width': w, class: 'g-arc' }, grp);
-      var hd = mk('path', { d: head(g, w), class: 'g-arc-head' }, grp);
-      var L = path.getTotalLength(); path.style.strokeDasharray = L; path.dataset.len = L;
-      return { grp: grp, path: path, hd: hd, tag: tag(g, '$' + e[2].toFixed(2), 'is-pay') };
+    // hops
+    var spans = D.SIMPLE.map(function (e, i) { return { i: i, s: Math.abs(X[e[1]] - X[e[0]]) }; }).sort(function (a, b) { return a.s - b.s; });
+    var hops = D.SIMPLE.map(function (e, i) {
+      var a = X[e[0]], b = X[e[1]], rank = spans.findIndex(function (o) { return o.i === i; }), lift = [64, 88, 112][rank], cy = ZERO - lift;
+      var g = mk('g', { class: 'rs-hop' }, gE); g.style.transitionDelay = (i * 120) + 'ms';
+      mk('path', { d: 'M' + a + ' ' + (ZERO + 6) + ' C' + a + ' ' + cy + ' ' + b + ' ' + cy + ' ' + b + ' ' + (ZERO - 6), class: 'rs-hopline' }, g);
+      mk('path', { d: 'M' + (b - 4) + ' ' + (ZERO - 13) + ' L' + b + ' ' + (ZERO - 7) + ' L' + (b + 4) + ' ' + (ZERO - 13), class: 'rs-hophead' }, g);
+      var mx = (a + b) / 2, my = ZERO - .75 * lift;
+      mk('rect', { x: mx - 30, y: my - 11, width: 60, height: 22, rx: 11, class: 'rs-pill' }, g);
+      mk('text', { x: mx, y: my + 5, 'text-anchor': 'middle', class: 'rs-pilltx' }, g).textContent = '$' + e[2].toFixed(2);
+      return g;
     });
-    var MAX = 64, nodes = {};
-    function arc(v) { var r = 19, ang = Math.min(1, Math.abs(v) / MAX) * 2 * Math.PI, sw = v > 0 ? 1 : 0; if (ang < .01) return '';
-      if (ang > 2 * Math.PI - .01) return 'M0 ' + (-r) + ' A' + r + ' ' + r + ' 0 1 ' + sw + ' 0 ' + r + ' A' + r + ' ' + r + ' 0 1 ' + sw + ' 0 ' + (-r);
-      var ex = Math.sin(ang) * r * (v > 0 ? 1 : -1), ey = -Math.cos(ang) * r; return 'M0 ' + (-r) + ' A' + r + ' ' + r + ' 0 ' + (ang > Math.PI ? 1 : 0) + ' ' + sw + ' ' + ex.toFixed(2) + ' ' + ey.toFixed(2); }
-    Object.keys(NP).forEach(function (id) {
-      var p = NP[id], v = D.NETS[id], g = mk('g', { class: 'g-node' + (id === 'ari' ? ' is-me' : '') + (v === 0 ? ' is-zero' : ''), transform: 'translate(' + p[0] + ' ' + p[1] + ')' }, gN);
-      var ar = mk('path', { d: arc(v), class: 'bal ' + (v < 0 ? 'owe' : 'owed') }, g);
-      // v5.1 medallion: 36 pt disc, 32 pt photo, same avatars as the prototype.
-      mk('circle', { r: 18, class: 'disc' }, g);
-      var im = mk('image', { x: -16, y: -16, width: 32, height: 32, 'clip-path': 'url(#gAvClip)', preserveAspectRatio: 'xMidYMid slice', class: 'av' }, g);
-      im.setAttribute('href', 'deck/img/av-' + id + '.jpg');
-      mk('circle', { r: 17.5, class: 'edge' }, g);
-      // Labels: above when the node sits high, otherwise below. Ari sits to the right of the chip, stacked; Sofia is nudged right so labels never collide.
-      var up = p[1] < CY - 20, nm = id === 'ari' ? 'You' : P[id], val = (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(2);
-      var lx = id === 'ari' ? 25 : id === 'sofia' ? 8 : 0, anchor = id === 'ari' ? 'start' : 'middle';
-      var l0 = mk('text', { x: lx, y: id === 'ari' ? -3 : up ? -26 : 34, 'text-anchor': anchor, class: 'lbl' }, g); l0.textContent = nm;
-      var l1 = mk('text', { x: lx, y: id === 'ari' ? -3 : up ? -26 : 34, 'text-anchor': anchor, class: 'lbl is-net' }, g);
-      if (id === 'ari') { l1.textContent = ''; mk('tspan', { x: lx, dy: 0 }, l1).textContent = nm; var t2 = mk('tspan', { x: lx, dy: 11, class: v < 0 ? 'owe' : 'owed' }, l1); t2.textContent = val; }
-      else { l1.textContent = nm + ' '; var sp = mk('tspan', { class: v < 0 ? 'owe' : v > 0 ? 'owed' : 'zero' }, l1); sp.textContent = val; }
-      nodes[id] = { g: g, ar: ar, l0: l0, l1: l1, v: v };
+    // receipt: one perforated strip per IOU, each with its own torn edge
+    var PX = 96, PW = 170, PY = 30, HEAD = 24, ROW = 21;
+    var torn = function (y, seed, dir) { var o = [], x = PX, k = 0; while (x < PX + PW) { x = Math.min(PX + PW, x + 3.2 + ((seed * 7 + k * 13) % 5) * .55); o.push(x.toFixed(1) + ' ' + (y + (k % 2 ? 0 : (1.1 + ((seed * 11 + k * 5) % 4) * .45) * dir)).toFixed(1)); k++; } return o; };
+    var rc = mk('g', { class: 'rs-receipt', 'aria-hidden': 'true' }, gP);
+    var head = mk('g', { class: 'rs-part' }, rc); mk('rect', { x: PX, y: PY, width: PW, height: HEAD, class: 'rs-paper' }, head);
+    mk('text', { x: PX + PW / 2, y: PY + 16, 'text-anchor': 'middle', class: 'rs-rhead' }, head).textContent = 'LISBON CREW · IOUs';
+    var strips = D.TANGLED.map(function (e, i) {
+      var top = PY + HEAD + i * ROW, g = mk('g', { class: 'rs-strip' }, rc);
+      var bot = torn(top + ROW, i + 1, 1).reverse();
+      mk('path', { d: 'M' + PX + ' ' + top + ' L' + torn(top, i, -1).join(' L') + ' L' + (PX + PW) + ' ' + (top + ROW) + ' L' + bot.join(' L') + ' L' + PX + ' ' + (top + ROW) + ' Z', class: 'rs-paper' }, g);
+      mk('text', { x: PX + 12, y: top + 14.5, class: 'rs-line' }, g).textContent = nm(e[0]) + ' → ' + nm(e[1]);
+      mk('text', { x: PX + PW - 12, y: top + 14.5, 'text-anchor': 'end', class: 'rs-line is-num' }, g).textContent = e[2].toFixed(2);
+      var cx = PX + PW / 2, cyy = top + ROW / 2;
+      g.style.setProperty('--dx', (X[e[0]] - cx).toFixed(1) + 'px'); g.style.setProperty('--dy', (ZERO + 14 - cyy).toFixed(1) + 'px');
+      g.style.setProperty('--r', ((i % 2 ? 1 : -1) * 12) + 'deg'); g.style.setProperty('--p', ((i % 2 ? 1 : -1) * 4) + 'deg'); g.style.animationDelay = (i * 70) + 'ms';
+      return g;
     });
-    // Mono instrument panel, one per step.
-    var PANELS = [[['IOUS', '6', ''], ['CROSSINGS', String(knots.length), ''], ['FLOW', '$190.60', '']],
-      [['Σ NET', '0.00 ✓', ''], ['OWED', '+106.10', '', 'owed'], ['OWE', '−106.10', '', 'owe']],
-      [['PAYMENTS', '3', ''], ['FLOW', '$124.50', ''], ['SAVED', '50%', '', 'acc']]];
-    mk('rect', { x: 16, y: 206, width: 330, height: 50, rx: 12, class: 'g-pbox' }, gP);
-    [1, 2].forEach(function (k) { mk('line', { x1: 16 + k * 110, x2: 16 + k * 110, y1: 214, y2: 248, class: 'g-pdiv' }, gP); });
-    var pg = PANELS.map(function (cells) { var g = mk('g', { class: 'g-pset' }, gP);
-      cells.forEach(function (c, ci) { var x = 30 + ci * 110; mk('text', { x: x, y: 225, class: 'g-cap' }, g).textContent = c[0];
-        var v = mk('text', { x: x, y: 243, class: 'g-val' + (c[3] ? ' ' + c[3] : '') }, g); v.textContent = c[1]; if (c[2]) { var s = mk('tspan', { dx: 6, class: 'g-sub' }, v); s.textContent = c[2]; } }); return g; });
+    var foot = mk('g', { class: 'rs-part' }, rc), fy = PY + HEAD + D.TANGLED.length * ROW;
+    mk('path', { d: 'M' + PX + ' ' + fy + ' L' + (PX + PW) + ' ' + fy + ' L' + (PX + PW) + ' ' + (fy + 20) + ' L' + torn(fy + 22, 9, 1).reverse().join(' L') + ' L' + PX + ' ' + (fy + 22) + ' Z', class: 'rs-paper' }, foot);
+    mk('text', { x: PX + 12, y: fy + 14, class: 'rs-line is-total' }, foot).textContent = 'Total';
+    mk('text', { x: PX + PW - 12, y: fy + 14, 'text-anchor': 'end', class: 'rs-line is-total' }, foot).textContent = '190.60';
+    var cap = mk('text', { x: W / 2, y: 250, 'text-anchor': 'middle', class: 'rs-cap' }, gP);
+    var CAPS = ['6 IOUs · $190.60 moving', 'Above the line is owed, below owes', '3 payments · $124.50 moving'];
     var view = 2, btns = $$('.stepper button');
     function show(k, animate) {
       view = k; svg.dataset.step = k;
-      // v5.4.2 Netting: the engine layer (math flying by, arrows collapsing, one dry line), then it lands on Solved.
       var host = svg.parentNode, oldE = host.querySelector('.ut-engine'); if (oldE) oldE.remove();
-      if (k === 1 && animate) {
-        var en = document.createElement('div'); en.className = 'ut-engine' + (RM() ? ' is-reduce' : ''); en.setAttribute('aria-hidden', 'true');
-        var G = ['Σ', '√', '±', 'Σ nets = 0', '→', '÷ 7', '≈', 'Δ', '+', '−', 'min(Σ)', '∫', '+$106.10', '−$44.27', '+$23.83', '−$2.17'];
-        if (!RM()) G.forEach(function (g, i) { var sp = document.createElement('span'); sp.className = 'ut-gl' + (/\$/.test(g) ? ' is-amt' : ''); sp.textContent = g;
-          sp.style.cssText = '--x:' + ((i * 37) % 100) + '%;--y:' + ((i * 53 + 11) % 80) + '%;--d:' + ((i % 6) * 110) + 'ms;--r:' + ((i % 2 ? 1 : -1) * (8 + (i * 7) % 18)) + 'deg'; en.appendChild(sp); });
-        var q = document.createElement('span'); q.className = 'ut-quip'; q.textContent = ['Doing the math so nobody has to.', 'Carrying the one. Several ones.'][Math.random() < .5 ? 0 : 1]; en.appendChild(q);
-        if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
-        host.appendChild(en); later(function () { if (view === 1) show(2, true); }, RM() ? 1600 : 2500);
-      }
+      svg.classList.toggle('rs-anim', !!animate && !RM()); svg.classList.toggle('rs-rm', RM());
       btns.forEach(function (b, i) { b.setAttribute('aria-checked', i === k); });
-      counter.textContent = ['01 TANGLED', '02 NETTING', '03 SOLVED'][k];
+      counter.textContent = ['1 IOUs', '2 Balances', '3 Payments'][k];
       $('#ro1').textContent = D.READOUT[k][0]; $('#ro2').textContent = D.READOUT[k][1];
-      pg.forEach(function (g, i) { g.style.opacity = i === k ? 1 : 0; });
-      tang.forEach(function (e, i) {
-        var L = +e.path.dataset.len;
-        e.path.style.opacity = k === 0 ? 1 : 0; e.hd.style.opacity = k === 0 ? 1 : 0; e.tag.style.opacity = k === 0 ? 1 : 0;
-        e.dash.style.opacity = k === 1 ? .35 : 0; e.ep.style.opacity = k === 1 ? 1 : 0;
-        if (k === 0 && animate && !RM()) { e.path.style.transition = 'none'; e.path.style.strokeDashoffset = L; void e.path.getBoundingClientRect(); e.path.style.transition = ''; later(function () { e.path.style.strokeDashoffset = 0; }, 40 * i); }
-        else e.path.style.strokeDashoffset = 0;
-      });
-      gK.style.opacity = k === 0 ? 1 : 0;
-      cross.style.opacity = k === 2 ? 1 : 0;
-      Object.keys(nodes).forEach(function (id) { var n = nodes[id]; n.ar.style.opacity = k >= 1 ? 1 : 0; n.l0.style.opacity = k === 0 ? 1 : 0; n.l1.style.opacity = k >= 1 ? 1 : 0; n.g.classList.toggle('is-faded', k === 2 && n.v === 0); });
-      pays.forEach(function (e, i) {
-        var L = +e.path.dataset.len;
-        if (k < 2) { e.grp.style.opacity = 0; e.path.style.transition = 'none'; e.path.style.strokeDashoffset = L; e.tag.style.opacity = 0; return; }
-        e.grp.style.opacity = 1; e.tag.style.opacity = 0; e.hd.style.opacity = 0;
-        if (!animate || RM()) { e.path.style.transition = RM() ? 'opacity .2s linear' : 'none'; e.path.style.strokeDashoffset = 0; e.tag.style.opacity = 1; e.hd.style.opacity = 1; return; }
-        e.path.style.transition = 'none'; e.path.style.strokeDashoffset = L; void e.path.getBoundingClientRect();
-        e.path.style.transition = '';
-        later(function () { e.path.style.strokeDashoffset = 0; }, 80 + i * 80);
-        later(function () { e.tag.style.opacity = 1; e.hd.style.opacity = 1; }, 560 + i * 80);
-      });
+      cap.textContent = CAPS[k];
+      // restart CSS animations on the strips when tearing
+      rc.classList.remove('is-torn'); if (k >= 1) { if (animate && !RM()) void rc.getBoundingClientRect(); rc.classList.add('is-torn'); }
+      gN.classList.toggle('is-on', k >= 1); zl.classList.toggle('is-on', k >= 1);
+      cols.forEach(function (c) { c.g.classList.toggle('is-dim', k === 2 && c.v === 0); });
+      hops.forEach(function (h) { h.classList.toggle('is-on', k === 2); });
+      if (k === 1 && animate) later(function () { if (view === 1) { show(2, true); sync(); } }, RM() ? 1600 : 2400);
     }
     var nextB = $('#gNext'), restart = $('#gRestart');
     function sync() { nextB.hidden = view === 2; restart.hidden = view !== 2; }
@@ -757,4 +703,21 @@
   var start = parseInt(location.hash.slice(1), 10);
   go(start >= 1 && start <= N ? start - 1 : 0);
   window.TripUpDeck = { go: go, get index() { return cur; } };
+})();
+/* v5.5.1: phone-only text floor (15px; 13px for dense matrix/diagram labels). Only runs under 700px; reverts above it. */
+(function () {
+  var mq = window.matchMedia('(max-width: 700px)');
+  var DENSE = 'svg, .mcell, .mapp, .matrix, .ds-states, .board, .stage';
+  function apply() {
+    var els = document.querySelectorAll('.slide *, .bar *, .dock *');
+    if (!mq.matches) { document.querySelectorAll('[data-mfs]').forEach(function (e) { e.style.removeProperty('font-size'); if (e.getAttribute('data-mfs')) e.style.fontSize = e.getAttribute('data-mfs'); e.removeAttribute('data-mfs'); }); return; }
+    els.forEach(function (e) {
+      if (e.hasAttribute('data-mfs') || e.closest('.hero-grid, .m-poster')) return;
+      var fs = parseFloat(getComputedStyle(e).fontSize), min = e.closest(DENSE) ? 13 : 15;
+      if (fs && fs < min) { e.setAttribute('data-mfs', e.style.fontSize || ''); e.style.setProperty('font-size', min + 'px', 'important'); }
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply); else apply();
+  window.addEventListener('load', apply); mq.addEventListener('change', apply);
+  setTimeout(apply, 1500); window.addEventListener('hashchange', function () { setTimeout(apply, 400); });
 })();

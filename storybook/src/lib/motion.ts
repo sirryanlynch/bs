@@ -17,16 +17,19 @@ export const MOTION = {
 export type NavKind = 'tab' | 'push' | 'pop' | 'sheet' | 'fade';
 
 /** Screens reached from the tab bar. Moving between two of these is a tab switch. */
-const TABS = new Set(['home', 'plan', 'money', 'b:explore', 'b:polls', 'b:poll/new/sent', 'b:plan/day']);
+// v5.5 navjank: every tab-bar destination (Plan lands on core 'trip', Photos on 'b:album', home level on discover/profile), so tab taps crossfade instead of pushing.
+const TABS = new Set(['home', 'trip', 'plan', 'money', 'b:explore', 'b:polls', 'b:poll/new/sent', 'b:plan/day', 'b:album', 'b:discover', 'b:profile']);
 /** Task starts that open as sheets. */
 const SHEETS = ['b:poll/new', 'b:create/where', 'b:expense/scan', 'b:album/upload', 'invite', 'create', 'expense'];
 const CORE_DEPTH: Record<string, number> = { home: 0, trip: 1, plan: 1, money: 1, invite: 2, explore: 2, create: 3, push: 3, live: 3, closed: 3, expense: 2, settle: 2, squared: 3 };
 const depth = (id: string) => (id.startsWith('b:') ? (TABS.has(id) ? 0 : id.slice(2).split('/').length) : CORE_DEPTH[id.split('-')[0]] ?? 1);
+/** Home-level tabs (no trip open). Moving between levels (open a trip, Back to Trips) stays a push/pop. */
+const HOME_LVL = new Set(['home', 'b:discover', 'b:profile']);
 const flowOf = (id: string) => (id.startsWith('b:') ? id.slice(2).split('/')[0] : 'core');
 
 export function navKind(from: string | null, to: string): NavKind {
   if (!from || from === to) return 'fade';
-  if (TABS.has(to) && (TABS.has(from) || flowOf(from) !== flowOf(to) && (from.startsWith('b:') !== to.startsWith('b:')))) return 'tab';
+  if (TABS.has(to) && (TABS.has(from) && HOME_LVL.has(from) === HOME_LVL.has(to) || flowOf(from) !== flowOf(to) && (from.startsWith('b:') !== to.startsWith('b:')))) return 'tab';
   if (SHEETS.some(s => to === s || to.startsWith(s + '-')) && (!to.startsWith('b:') || flowOf(from) !== flowOf(to))) return 'sheet';
   const a = depth(from), b = depth(to);
   if (b > a) return 'push';

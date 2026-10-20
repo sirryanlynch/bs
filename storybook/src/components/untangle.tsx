@@ -287,7 +287,7 @@ export function DebtUntangle({ raw = rawDebts, simple = simplifiedDebts, people 
   return (
     <div className={`p-ut ${ctl === 'full' ? 'has-ctl' : ''} is-skin-${Skin ? skin : 'instrument'}`}>
       <div className="p-ut-card">
-        {phase === 1 && <NetEngine key="eng" reduce={reduce} amounts={ids.map(id => net[id] ?? 0)} />}
+        {phase === 1 && skin !== 'receipt' && <NetEngine key="eng" reduce={reduce} amounts={ids.map(id => net[id] ?? 0)} />}
         {Skin && frame ? <Skin frame={frame} /> : <svg viewBox={`0 0 ${W} ${H}`} width="100%" className="p-ut-svg" role="img" aria-label={summary}>
           <defs>
             <radialGradient id={`dg${uid}`} cx="50%" cy="50%" r="50%"><stop offset="0" className="p-ut-dg0" /><stop offset="0.6" className="p-ut-dg1" /><stop offset="1" className="p-ut-dg2" /></radialGradient>

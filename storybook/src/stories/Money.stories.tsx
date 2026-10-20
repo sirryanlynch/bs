@@ -3,6 +3,7 @@ import React from 'react';
 import { ExpenseRow, ReceiptSplit, DebtSimplify, PaymentRow, SettleContent } from '../components/money';
 import { DebtUntangle } from '../components/untangle';
 import '../components/untangle-solver';
+import { ReceiptStacksLive } from '../components/untangle-receipt';
 import { MoneyBalance, IouLog, NetLog, PairRows } from '../components/settle';
 import { rawDebts, simplifiedDebts } from '../components/money';
 import { BottomSheet } from '../components/overlays';
@@ -47,22 +48,22 @@ export const Simplify: StoryObj<typeof DebtSimplify> = {
 };
 
 export const Untangle: StoryObj<typeof DebtUntangle> = {
-  name: 'DebtUntangle (v5.1 Solver, default)',
-  args: { solved: false, controls: 'steps', startButton: true, skin: 'solver' },
-  argTypes: { controls: { control: 'inline-radio', options: ['steps', 'full', 'inline', 'none'] }, skin: { control: 'inline-radio', options: ['solver', 'instrument'] } },
+  name: 'DebtUntangle (v5.6 Receipt to stacks, default)',
+  args: { solved: false, controls: 'steps', startButton: true, skin: 'receipt' },
+  argTypes: { controls: { control: 'inline-radio', options: ['steps', 'full', 'inline', 'none'] }, skin: { control: 'inline-radio', options: ['receipt', 'solver', 'instrument'] } },
   render: (a) => <div style={{ maxWidth: 362 }}><DebtUntangle {...a} /></div>,
   parameters: { docs: { description: { story: 'The Money screen skin. Same model, timeline and controls as v4; only the visual layer changes. Photo medallions in glass, one graphite thread color with two weights (1.25 under $40, 2 from $40), no amounts on threads in Tangled (the IOU log carries them), the 4 crossings as soft dots. Netting: ghost dashes, spokes into a small still solver core, Σ 0.00. Solved: 3 Iris arcs with amounts and one glint, played once per solve and never while scrubbing. No source chips, tokens, gauge rings or grid. Reduce Motion: 200 ms cross-fades, no drawing, a still core and a static star.' } } },
 };
 
 export const UntangleInline: StoryObj<typeof DebtUntangle> = {
   name: 'DebtUntangle, inline controls (Money screen)',
-  args: { solved: false, controls: 'inline', startButton: false, skin: 'solver' },
+  args: { solved: false, controls: 'inline', startButton: false, skin: 'receipt' },
   render: (a) => <div style={{ maxWidth: 362 }}><DebtUntangle {...a} /></div>,
 };
 
 export const UntangleSolved: StoryObj<typeof DebtUntangle> = {
   name: 'DebtUntangle, solved',
-  args: { solved: true, controls: 'inline', skin: 'solver' },
+  args: { solved: true, controls: 'inline', skin: 'receipt' },
   render: (a) => <div style={{ maxWidth: 362 }}><DebtUntangle {...a} /></div>,
 };
 
@@ -108,3 +109,12 @@ export const UntangleLegacyInstrument: StoryObj<typeof DebtUntangle> = {
   render: (a) => <div style={{ maxWidth: 362 }}><DebtUntangle {...a} /></div>,
   parameters: { docs: { description: { story: 'Figma set 121:4174, card 362 × 268. Three steps: 01 Tangled (6 graphite IOUs, 4 computed crossings marked as knots, $190.60 of flow), 02 Netting (each person becomes one balance ring; Σ net 0.00 ✓), 03 Solved (3 Iris arcs, $124.50, 50% fewer payments). The nets-unchanged check is computed, never hard-coded. Untangle plays 600 ms steps with a 900 ms hold; Replay restarts; the scrubber or the stepper labels move by hand. Reduce Motion: 200 ms cross-fades, scrubber snaps per step.' } } },
 };
+
+/* v5.6 Receipt to stacks: the settle path. Each paid hop moves a chip across and both stacks shrink to the zero line. */
+const liveDoc = { docs: { description: { story: 'ReceiptStacksLive sits above the plan rows on Money once a payment exists. Stacks only move when a payment is paid (app or cash), never while pending. Transform and opacity only; Reduce Motion cross-fades.' } } };
+export const StacksOpen: StoryObj = { name: 'Receipt stacks · 0 of 3 paid', parameters: liveDoc,
+  render: () => <div style={{ maxWidth: 362 }}><ReceiptStacksLive raw={rawDebts} simple={simplifiedDebts} people={P} me="ari" paid={[false, false, false]} /></div> };
+export const StacksOne: StoryObj = { name: 'Receipt stacks · 1 of 3 paid', parameters: liveDoc,
+  render: () => <div style={{ maxWidth: 362 }}><ReceiptStacksLive raw={rawDebts} simple={simplifiedDebts} people={P} me="ari" paid={simplifiedDebts.map(e => e.from === 'ari')} /></div> };
+export const StacksSquared: StoryObj = { name: 'Receipt stacks · all squared', parameters: liveDoc,
+  render: () => <div style={{ maxWidth: 362 }}><ReceiptStacksLive raw={rawDebts} simple={simplifiedDebts} people={P} me="ari" paid={[true, true, true]} /></div> };
